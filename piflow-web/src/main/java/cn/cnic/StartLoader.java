@@ -17,21 +17,23 @@ import cn.cnic.component.system.mapper.SysScheduleMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Component
 @Order(value = 1)
 public class StartLoader implements ApplicationRunner {
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final SysScheduleMapper sysScheduleMapper;
     private final Scheduler scheduler;
@@ -83,17 +85,23 @@ public class StartLoader implements ApplicationRunner {
 初始化部署：init   要改
  reload    先判断stops_hub是否有值，没有值没有jar包，都是默认组件，查看comp_type   是否为空，为空填上default；有jar包先UNmount再mount然后填，查看compone_type有没有空，有空填DEFAULT
 */
+        logger.info("checkTableValueForPython---------start----------------------");
         List<StopsHub> stopsHubs = stopsHubMapper.getAllStopsHub();
-        if ((stopsHubs.size() > 0) && (stopsHubs.stream().map(StopsHub::getType).collect(Collectors.toList()).size() > 0)) {
-
+        if ((stopsHubs.size() > 0) && (stopsHubs.stream().filter(x -> x.getType() != null).collect(Collectors.toList()).size() > 0)) {
+            logger.info("===================");
         } else {
             List<StopsComponent> stopsComponentList = stopsComponentMapper.getStopsComponentList();
             if (stopsHubs.size() > 0) {
                 //type is null
                 //update scala component type
+                Set<String> unrepeatedBundles = new HashSet<>();
                 List<String> bundles = stopsHubs.stream().map(StopsHub::getBundles).collect(Collectors.toList());
+                for (String bundle : bundles) {
+                    String[] split = bundle.split(",");
+                    unrepeatedBundles.addAll(Arrays.asList(split));
+                }
                 List<StopsComponent> scalaStopsComponents = stopsComponentList.stream()
-                        .filter(stopsComponent -> bundles.contains(stopsComponent.getBundel()))
+                        .filter(stopsComponent -> unrepeatedBundles.contains(stopsComponent.getBundel()))
                         .map(stopsComponent -> {
                             stopsComponent.setComponentType(ComponentFileType.SCALA);
                             stopsComponent.setLastUpdateDttm(new Date());
@@ -108,11 +116,12 @@ public class StartLoader implements ApplicationRunner {
                             return stopsComponent;
                         })
                         .collect(Collectors.toList());
-                if(CollectionUtils.isNotEmpty(scalaStopsComponents)){
-                    stopsComponentMapper.updateComponentTypeByIdAndType(scalaStopsComponents);
+                if (CollectionUtils.isNotEmpty(scalaStopsComponents)) {
+                    scalaStopsComponents.forEach(stopsComponentMapper::updateComponentTypeByIdAndType);
+
                 }
-                if(CollectionUtils.isNotEmpty(defaultStopsComponents)){
-                    stopsComponentMapper.updateComponentTypeByIdAndType(defaultStopsComponents);
+                if (CollectionUtils.isNotEmpty(defaultStopsComponents)) {
+                    defaultStopsComponents.forEach(stopsComponentMapper::updateComponentTypeByIdAndType);
                 }
                 //update stops_hub_type
                 List<StopsHub> scalaStopsHubs = stopsHubs.stream().map(stopsHub -> {
@@ -120,19 +129,19 @@ public class StartLoader implements ApplicationRunner {
                     stopsHub.setLastUpdateDttm(new Date());
                     return stopsHub;
                 }).collect(Collectors.toList());
-                stopsHubMapper.updateStopHubType(scalaStopsHubs);
+                scalaStopsHubs.forEach(stopsHubMapper::updateStopHubType);
             } else {
-                if(CollectionUtils.isNotEmpty(stopsComponentList)){
+                if (CollectionUtils.isNotEmpty(stopsComponentList)) {
                     List<StopsComponent> defaultStopsComponents = stopsComponentList.stream().map(stopsComponent -> {
                         stopsComponent.setComponentType(ComponentFileType.DEFAULT);
                         stopsComponent.setLastUpdateDttm(new Date());
                         return stopsComponent;
                     }).collect(Collectors.toList());
-                    stopsComponentMapper.updateComponentTypeByIdAndType(defaultStopsComponents);
+                    defaultStopsComponents.forEach(stopsComponentMapper::updateComponentTypeByIdAndType);
                 }
             }
         }
-
+        logger.info("checkTableValueForPython---------finish----------------------");
     }
 
 }

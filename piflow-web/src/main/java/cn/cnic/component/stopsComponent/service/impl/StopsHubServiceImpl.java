@@ -22,14 +22,17 @@ import cn.cnic.third.market.service.IMarket;
 import cn.cnic.third.service.IStop;
 import cn.cnic.third.vo.stop.StopsHubVo;
 import cn.cnic.third.vo.stop.ThirdStopsComponentVo;
+import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.dockerjava.api.DockerClient;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
@@ -75,20 +78,24 @@ public class StopsHubServiceImpl implements IStopsHubService {
      */
     @Override
     public String uploadStopsHubFile(String username, MultipartFile file, String type, String languageVersion) {
+        logger.info("==============upload stops hub start=============");
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
         }
         if (file.isEmpty()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Upload failed, please try again later");
         }
-
+        String stopsHubName = file.getOriginalFilename();
+        List<StopsHub> existStopHub = stopsHubDomain.getStopsHubByJarName("", true, stopsHubName);
+        if(CollectionUtils.isNotEmpty(existStopHub)){
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Stops hub exists!! Please confirm whether the upload is repeated!! If not,please change the file name!!  fileName: "+ stopsHubName);
+        }
         //call piflow server api: plunin/path
         String stopsHubPath = stopImpl.getStopsHubPath();
         if (!stopsHubPath.endsWith("/")) {
             stopsHubPath = stopsHubPath + "/";
         }
         //upload jar file to plugin path
-        String stopsHubName = file.getOriginalFilename();
         ComponentFileType fileType = ComponentFileType.selectGender(type);
         if (fileType == null) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Please select a file type or an incorrect file type");
@@ -102,6 +109,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         if (500 == code) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("failed to upload file");
         }
+        logger.info("==============upload stops hub upload to path result============="+ JSON.toJSONString(uploadMap));
 
         //save stopsHub to db
         StopsHub stopsHub = StopsHubUtils.stopsHubNewNoId(username);
@@ -112,12 +120,13 @@ public class StopsHubServiceImpl implements IStopsHubService {
         stopsHub.setType(fileType);
         stopsHub.setLanguageVersion(languageVersion);
         stopsHubDomain.addStopHub(stopsHub);
+        logger.info("==============upload stops hub finish=============");
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful jar upload");
     }
 
     @Override
     public String mountStopsHub(String username, Boolean isAdmin, String id) {
-
+        logger.info("=====mount stops hub=====start:id :{}",id);
         StopsHub stopsHub = stopsHubDomain.getStopsHubById(username, isAdmin, id);
 //        if(stopsHub.getStatus() == StopsHubState.MOUNT){
 //            return ReturnMapUtils.setFailedMsgRtnJsonStr("StopsHub have been Mounted already!");
@@ -236,6 +245,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
      * @author leilei
      */
     private String mountPythonStopsZip(StopsHub stopsHub, String username) {
+        logger.info("=====mount python start====stopsHub:{}",JSON.toJSONString(stopsHub));
         if (StringUtils.isNotEmpty(stopsHub.getJarUrl()) && StringUtils.isNotBlank(stopsHub.getJarName())) {
             List<StopsHubFileRecord> insertList = new ArrayList<>();
             String jarName = stopsHub.getJarName();
@@ -264,32 +274,31 @@ public class StopsHubServiceImpl implements IStopsHubService {
                             StringBuffer dockerFileSb = new StringBuffer();
                             dockerFileSb.append("FROM python:" + stopsHub.getLanguageVersion() + System.lineSeparator());
                             dockerFileSb.append("MAINTAINER " + jarName + System.lineSeparator());
-                            dockerFileSb.append("COPY " + stopsHub.getJarUrl() + " /usr/local" + System.lineSeparator());
-                            dockerFileSb.append("RUN apt update" + System.lineSeparator());
-                            dockerFileSb.append("&& apt-get install -y zip" + System.lineSeparator());
-                            dockerFileSb.append("RUN set -ex" + System.lineSeparator());
-                            dockerFileSb.append("&& mkdir -p /pythonDir" + System.lineSeparator());
-                            dockerFileSb.append("&& unzip /usr/local/" + jarName + " -d /pythonDir/" + System.lineSeparator());
+                            dockerFileSb.append("COPY ./" + stopsHub.getJarName() + " /usr/local" + System.lineSeparator());
+//                            dockerFileSb.append("RUN apt-get update --fix-missing -o Acquire::http::No-Cache=True \\" + System.lineSeparator());
+//                            dockerFileSb.append("    && apt-get install -y zip --fix-missing -o Acquire::http::No-Cache=True" + System.lineSeparator());
+                            dockerFileSb.append("RUN set -ex \\" + System.lineSeparator());
+                            dockerFileSb.append("    && mkdir -p /pythonDir \\" + System.lineSeparator());
+                            dockerFileSb.append("    && unzip /usr/local/" + jarName + " -d /pythonDir/ \\" + System.lineSeparator());
                             String line;
                             while ((line = br.readLine()) != null) {
                                 if (line.endsWith(".whl")) {
-                                    dockerFileSb.append("&& pip install " + line + System.lineSeparator());
+                                    dockerFileSb.append("    && pip install " + line + " \\"+System.lineSeparator());
                                 } else {
-                                    dockerFileSb.append("&& pip install -i https://mirrors.aliyun.com/pypi/simple/ " + line + System.lineSeparator());
+                                    dockerFileSb.append("    && pip install -i https://mirrors.aliyun.com/pypi/simple/ " + line + " \\"+ System.lineSeparator());
                                 }
                             }
-                            dockerFileSb.append("&& rm -rf  ~/.cache/pip/*" + System.lineSeparator());
-                            dockerFileSb.append("&& rm -rf /usr/local/" + jarName + System.lineSeparator());
+                            dockerFileSb.append("    && rm -rf  ~/.cache/pip/* \\" + System.lineSeparator());
+                            dockerFileSb.append("    && rm -rf /usr/local/" + jarName + System.lineSeparator());
                             //write dockerfile
                             String stopsHubPath = stopImpl.getStopsHubPath();
-                            String dockerFileSavePath = stopsHubPath + "/dockerFile/DockerFile-" + stopsHub.getId();
+                            String dockerFileSavePath = stopsHubPath + "/DockerFile-" + stopsHub.getId();
+                            logger.info("dockerfile:{}",dockerFileSavePath);
                             FileUtils.writeData(dockerFileSavePath, dockerFileSb.toString());
                             DockerClient dockerClient = DockerClientUtils.getDockerClient();
+                            logger.info("=====build docker image==dockerClient:{}",JSON.toJSONString(dockerClient));
                             File dockerFile = new File(dockerFileSavePath);
-                            Map<String, String> imageInfo = DockerUtils.buildImage(dockerClient, dockerFile, jarName, "latast", System.currentTimeMillis());
-                            //TODO with http
-                            dockerImagesName = imageInfo.get("imageName");
-                            Boolean pushInfo = DockerUtils.pushImage(dockerClient, dockerImagesName);
+                            dockerImagesName = buildImageAndPush(dockerClient, dockerFile,jarName,"latest");
                         }
                     }
                 }
@@ -317,12 +326,34 @@ public class StopsHubServiceImpl implements IStopsHubService {
         } else {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Mount failed, please try again later");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("Mount successful");
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("Mounting!! It takes about 10-20 minutes!!");
+    }
+
+    private String buildImageAndPush(DockerClient dockerClient, File dockerFile,String imageName,String tags) throws InterruptedException {
+        //拼成 name-时间戳:tag 格式   registryUrl/projectName/imageName-currentTimeMillis:tags
+        String registryUrl = DockerClientUtils.getRegistryUrl();
+        String registryProjectName = DockerClientUtils.getRegistryProjectName();
+        String originProjectPath = "";
+        if (registryUrl.endsWith("/")) {
+            originProjectPath = registryUrl + registryProjectName;
+        } else {
+            originProjectPath = registryUrl + "/" + registryProjectName+"/";
+        }
+        String tagsName = (originProjectPath + imageName + "-" + System.currentTimeMillis() + ":" + tags).replace("http://","");
+        excImageAsync(dockerClient, dockerFile, tagsName);
+        return tagsName;
+    }
+
+    public void excImageAsync(DockerClient dockerClient, File dockerFile, String tagsName) throws InterruptedException {
+        //TODO 很慢 制作镜像很慢 目前是同步
+        Map<String, String> imageInfo = DockerUtils.buildImage(dockerClient, dockerFile, tagsName);
+        Boolean pushInfo = DockerUtils.pushImage(dockerClient, tagsName);
+        //TODO delete dockerfile
     }
 
     @Override
     public String unmountStopsHub(String username, Boolean isAdmin, String id) {
-
+        logger.info("=========unmount stops hub start==id:{}",id);
         StopsHub stopsHub = stopsHubDomain.getStopsHubById(username, isAdmin, id);
         if (stopsHub.getStatus() == StopsHubState.UNMOUNT) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("StopsHub have been UNMounted already!");
@@ -351,6 +382,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
     public String unMountScalaStopsHub(StopsHub stopsHub, String username) {
+        logger.info("==========unmount scala stops hub start:stopsHub:{}=================",JSON.toJSONString(stopsHub));
         StopsHubVo stopsHubVo = stopImpl.unmountStopsHub(stopsHub.getMountId());
         if (stopsHubVo == null) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("UNMount failed, please try again later");
@@ -370,6 +402,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         stopsHub.setLastUpdateUser(username);
         stopsHub.setLastUpdateDttm(new Date());
         stopsHubDomain.updateStopHub(stopsHub);
+        logger.info("==========unmount scala stops hub finish=================");
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("UNMount successful");
     }
 
@@ -384,6 +417,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
      */
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
     public String unMountPythonStopsZip(StopsHub stopsHub, String username) {
+        logger.info("==========unmount python stops hub start:stopsHub:{}=================",JSON.toJSONString(stopsHub));
         //1.search stops_hub_file_record
         List<StopsHubFileRecord> fileRecordList = stopsHubFileRecordDomain.getStopsHubFileRecordByHubId(stopsHub.getId());
         //2.delete flow_stops_template、flow_stops_property_template、flow_stops_groups
@@ -401,6 +435,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         stopsHub.setLastUpdateUser(username);
         stopsHub.setLastUpdateDttm(new Date());
         stopsHubDomain.updateStopHub(stopsHub);
+        logger.info("==========unmount python stops hub finish=================");
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("UNMount successful");
     }
 
@@ -482,10 +517,12 @@ public class StopsHubServiceImpl implements IStopsHubService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         String[] bundlesArray = stopsHub.getBundles().split(",");
-        if (null == bundlesArray || bundlesArray.length <= 0) {
+        //each stops hub must contain only one component
+        List<StopsComponent> stopsComponents = stopsComponentDomain.getOnlyStopsComponentByBundles(bundlesArray);
+        if (null == stopsComponents || stopsComponents.size() <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
-        if (bundlesArray.length > 1) {
+        if (stopsComponents.size() > 1) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         PublishComponentVo publishComponentVo = new PublishComponentVo();
@@ -494,17 +531,18 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 break;
             case SCALA:
 //                StopsComponent stopsComponentByBundle1 = stopsComponentDomain.getStopsComponentByBundle(bundlesArray[0]);
-                ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(bundlesArray[0]);
+                ThirdStopsComponentVo thirdStopsComponentVo = stopImpl.getStopInfo(stopsComponents.get(0).getBundel());
                 if (null == thirdStopsComponentVo) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
                 }
                 publishComponentVo.setName(thirdStopsComponentVo.getName());
-                publishComponentVo.setLogo(thirdStopsComponentVo.getIcon());
+                //base64
+                publishComponentVo.setLogo(FileUtils.encryptToBase64(thirdStopsComponentVo.getIcon().replace("/images", "/storage/image")));
                 publishComponentVo.setDescription(thirdStopsComponentVo.getDescription());
                 publishComponentVo.setCategory(thirdStopsComponentVo.getGroups());
                 publishComponentVo.setBundle(thirdStopsComponentVo.getBundle());
                 publishComponentVo.setAuthorName(thirdStopsComponentVo.getOwner());
-                publishComponentVo.setSoftware(SysParamsCache.MARKET_SOFTWARE_FLAG);
+                publishComponentVo.setSoftware(Collections.singletonList(SysParamsCache.MARKET_SOFTWARE_FLAG));
                 publishComponentVo.setComponentType("algorithm");
                 List<Map<String, String>> params = new ArrayList<>();
                 thirdStopsComponentVo.getProperties().forEach(pro -> {
@@ -516,17 +554,18 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 publishComponentVo.setParameters(params);
                 break;
             case PYTHON:
-                StopsComponent stopsComponentByBundle = stopsComponentDomain.getStopsComponentByBundle(bundlesArray[0]);
+                StopsComponent stopsComponentByBundle = stopsComponentDomain.getStopsComponentByBundle(stopsComponents.get(0).getBundel());
                 if (null == stopsComponentByBundle) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("Please add a component before publishing");
                 }
                 publishComponentVo.setName(stopsComponentByBundle.getName());
-                publishComponentVo.setLogo(stopsComponentByBundle.getImageUrl());
+                //base64
+                publishComponentVo.setLogo(FileUtils.encryptToBase64(stopsComponentByBundle.getImageUrl().replace("/images", "/storage/image")));
                 publishComponentVo.setDescription(stopsComponentByBundle.getDescription());
                 publishComponentVo.setCategory(stopsComponentByBundle.getGroups());
                 publishComponentVo.setBundle(stopsComponentByBundle.getBundel());
                 publishComponentVo.setAuthorName(stopsComponentByBundle.getOwner());
-                publishComponentVo.setSoftware(SysParamsCache.MARKET_SOFTWARE_FLAG);
+                publishComponentVo.setSoftware(Collections.singletonList(SysParamsCache.MARKET_SOFTWARE_FLAG));
                 publishComponentVo.setComponentType("algorithm");
                 List<Map<String, String>> params1 = new ArrayList<>();
                 stopsComponentByBundle.getProperties().forEach(pro -> {
@@ -716,14 +755,14 @@ public class StopsHubServiceImpl implements IStopsHubService {
 
                 //inports outports
                 if (StringUtils.isBlank(stopsHubInfoVo.getInports())) {
-                    stopsComponent.setInports("Default");
+                    stopsComponent.setInports("DefaultPort");
                     stopsComponent.setInPortType(PortType.DEFAULT);
                 } else {
                     stopsComponent.setInports(stopsHubInfoVo.getInports());
                     stopsComponent.setInPortType(PortType.USER_DEFAULT);
                 }
                 if (StringUtils.isBlank(stopsHubInfoVo.getOutports())) {
-                    stopsComponent.setOutports("Default");
+                    stopsComponent.setOutports("DefaultPort");
                     stopsComponent.setOutPortType(PortType.DEFAULT);
                 } else {
                     stopsComponent.setOutports(stopsHubInfoVo.getInports());
@@ -755,7 +794,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 stopsComponent.setOwner(stopsHubInfoVo.getOwner());
 
                 if (StringUtils.isBlank(stopsHubInfoVo.getInports())) {
-                    stopsComponent.setInports("Default");
+                    stopsComponent.setInports("DefaultPort");
                     stopsComponent.setInPortType(PortType.DEFAULT);
                 } else {
                     stopsComponent.setInports(stopsHubInfoVo.getInports());
@@ -763,7 +802,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 }
 
                 if (StringUtils.isBlank(stopsHubInfoVo.getOutports())) {
-                    stopsComponent.setOutports("Default");
+                    stopsComponent.setOutports("DefaultPort");
                     stopsComponent.setOutPortType(PortType.DEFAULT);
                 } else {
                     stopsComponent.setOutports(stopsHubInfoVo.getOutports());

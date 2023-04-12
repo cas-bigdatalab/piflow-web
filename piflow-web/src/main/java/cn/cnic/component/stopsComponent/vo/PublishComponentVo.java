@@ -12,12 +12,13 @@ public class PublishComponentVo implements Serializable {
     //fill when update component market
     private String id;
     private String name;
+    //base64
     private String logo;
     private String description;
     private String category;
     private String bundle;
     private String authorName;
-    private String software;
+    private List<String> software;
     //front-end/back-end/algorithm
     private String componentType;
     private List<String> dependencies;

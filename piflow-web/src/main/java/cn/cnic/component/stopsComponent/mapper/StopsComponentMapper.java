@@ -141,8 +141,10 @@ public interface StopsComponentMapper {
      * @Author TY
      * @Date 14:19 2023/4/4
      **/
+//    @UpdateProvider(type = StopsComponentMapperProvider.class, method = "updateComponentTypeByIdAndType")
+//    int updateComponentTypeByIdAndType(@Param("stopsComponents") List<StopsComponent> stopsComponents);
     @UpdateProvider(type = StopsComponentMapperProvider.class, method = "updateComponentTypeByIdAndType")
-    int updateComponentTypeByIdAndType(@Param("stops") List<StopsComponent> stopsComponents);
+    int updateComponentTypeByIdAndType(@Param("stopsComponent") StopsComponent stopsComponent);
 
     /**
      * @Description get all default components
@@ -152,4 +154,6 @@ public interface StopsComponentMapper {
      **/
     @Select("select * from flow_stops_template where component_type = 'DEFAULT'")
     List<StopsComponent> getSystemDefaultStops();
+    @SelectProvider(type = StopsComponentMapperProvider.class, method = "getOnlyStopsComponentByBundles")
+    List<StopsComponent> getOnlyStopsComponentByBundles(@Param("bundles") String[] bundles);
 }

@@ -241,23 +241,53 @@ public class StopsComponentMapperProvider {
      * @Author TY
      * @Date 12:57 2023/4/4
      **/
-    public String updateComponentTypeByIdAndType(List<StopsComponent> stopsComponents) {
-        List<String> stopsIds = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("UPDATE flow_stops_template SET component_type = CASE id");
-        for (StopsComponent stopsComponent : stopsComponents) {
-            stopsIds.add(stopsComponent.getId());
-            sql.append(" WHEN ").append(stopsComponent.getId()).append(" THEN ").append(stopsComponent.getComponentType().name());
+//    public String updateComponentTypeByIdAndType(List<StopsComponent> stopsComponents) {
+//        List<String> stopsIds = new ArrayList<>();
+//        StringBuilder sql = new StringBuilder("UPDATE flow_stops_template SET component_type = CASE");
+//        for (StopsComponent stopsComponent : stopsComponents) {
+//            stopsIds.add(stopsComponent.getId());
+//            sql.append(" WHEN id = ").append(stopsComponent.getId()).append(" THEN ").append(stopsComponent.getComponentType().name());
+//        }
+//        sql.append(" END,version = CASE");
+//        for (StopsComponent stopsComponent : stopsComponents) {
+//            sql.append(" WHEN id = ").append(stopsComponent.getId()).append(" THEN ").append(stopsComponent.getVersion() + 1);
+//        }
+//        sql.append(" END,last_update_dttm = CASE");
+//        for (StopsComponent stopsComponent : stopsComponents) {
+//            sql.append(" WHEN id = ").append(stopsComponent.getId()).append(" THEN ").append(stopsComponent.getLastUpdateDttm());
+//        }
+//        sql.append(" END WHERE id IN (").append(SqlUtils.strListToStr(stopsIds)).append(") and enable_flag = 1");
+//        return sql.toString();
+//    }
+    public String updateComponentTypeByIdAndType(StopsComponent stopsComponent) {
+
+        String sqlStr = "SELECT 0";
+        boolean flag = this.preventSQLInjectionStops(stopsComponent);
+        if (flag) {
+            SQL sql = new SQL();
+            sql.UPDATE("flow_stops_template");
+            sql.SET("component_type = " + componentType);
+            String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != stopsComponent.getLastUpdateDttm() ? stopsComponent.getLastUpdateDttm() : new Date());
+            sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(lastUpdateDttmStr));
+            sql.SET("version = " + (stopsComponent.getVersion() + 1));
+            sql.WHERE("id = " + SqlUtils.preventSQLInjection(stopsComponent.getId()));
+            sql.WHERE("version = " + stopsComponent.getVersion());
+            sqlStr = sql.toString();
         }
-        sql.append(" END,version = CASE id");
-        for (StopsComponent stopsComponent : stopsComponents) {
-            sql.append(" WHEN ").append(stopsComponent.getId()).append(" THEN ").append(stopsComponent.getVersion() + 1);
-        }
-        sql.append(" END,last_update_dttm = CASE id");
-        for (StopsComponent stopsComponent : stopsComponents) {
-            sql.append(" WHEN ").append(stopsComponent.getId()).append(" THEN ").append(stopsComponent.getLastUpdateDttm());
-        }
-        sql.append(" END WHERE id IN (").append(SqlUtils.strListToStr(stopsIds)).append(") and enable_flag = 1");
-        return sql.toString();
+        this.reset();
+        return sqlStr;
     }
 
+    public String getOnlyStopsComponentByBundles(String[] bundles){
+        if (null == bundles || bundles.length <= 0) {
+            return "SELECT 0";
+        }
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select * ");
+        strBuf.append("from `flow_stops_template` ");
+        strBuf.append("where `enable_flag` = 1 ");
+        strBuf.append("and `bundel` in ( " + SqlUtils.strArrayToStr(bundles) + ") ");
+        String sqlStr = strBuf.toString();
+        return sqlStr;
+    }
 }

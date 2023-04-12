@@ -15,12 +15,6 @@ public class StopsHubInfoVo implements Serializable {
     private String id;
     private String stopHubId;
     private String stopBundle;
-    private String useInstructions;
-    private String description;
-    private String author;
-    private String authorEmail;
-    private String teamName;
-    private String chineseName;
     private String stopName;
 
     private String groups;

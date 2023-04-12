@@ -68,4 +68,7 @@ public class StopsHubDomain {
     }
 
 
+    public List<StopsHub> getStopsHubByJarName(String username, boolean isAdmin, String jarName) {
+        return stopsHubMapper.getStopsHubByJarName(username, isAdmin, jarName);
+    }
 }

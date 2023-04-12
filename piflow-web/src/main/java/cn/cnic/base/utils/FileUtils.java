@@ -30,12 +30,10 @@ import java.io.*;
 import java.net.URI;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
 import java.util.zip.ZipInputStream;
 
 
@@ -494,10 +492,42 @@ public class FileUtils {
 
     public static void writeData(String url, String data) throws IOException {
         InputStream in = org.apache.commons.io.IOUtils.toInputStream(data, StandardCharsets.UTF_8.name());
+        File file = new File(url);
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        if(!file.exists()){
+            file.createNewFile();
+        }
         FileOutputStream out = new FileOutputStream(url);
         IOUtils.copyBytes(in, out, 4096, true);
         //close stream
         in.close();
         out.close();
+    }
+
+    public static String encryptToBase64(String filePath) {
+        if (filePath == null) {
+            return null;
+        }
+        try {
+            byte[] b = Files.readAllBytes(Paths.get(filePath));
+            return Base64.getEncoder().encodeToString(b);
+        } catch (IOException e) {
+            logger.error("Encrypt to base64 error!! message:{}",e.getMessage());
+        }
+        return null;
+    }
+
+    public static String decryptByBase64(String base64, String filePath) {
+        if (base64 == null && filePath == null) {
+            return "Create file error! Please give data!!";
+        }
+        try {
+            Files.write(Paths.get(filePath), Base64.getDecoder().decode(base64), StandardOpenOption.CREATE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "Create success!!";
     }
 }

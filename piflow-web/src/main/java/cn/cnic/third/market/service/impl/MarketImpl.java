@@ -112,7 +112,7 @@ public class MarketImpl implements IMarket {
     @Override
     public Map<String, Object> publishComponents(String accessKey, PublishComponentVo publishComponentVo, File file) throws JsonProcessingException {
         if (StringUtils.isBlank(accessKey)) {
-            return ReturnMapUtils.setFailedMsg(MessageConfig.PARAM_IS_NULL_MSG("accessKey"));
+            return ReturnMapUtils.setFailedMsg(MessageConfig.PARAM_IS_NULL_MSG("accessKey")+",you need to bind market account!!");
         }
         if (StringUtils.isBlank(publishComponentVo.getBundle())) {
             return ReturnMapUtils.setFailedMsg(MessageConfig.PARAM_IS_NULL_MSG("bundle"));

@@ -147,6 +147,8 @@ public class StopsHubCtrl {
      * @return
      */
     @RequestMapping(value = "/updateComponentInfo",method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value="updateComponentInfo", notes="set python component")
     public String updateComponentInfo(StopsHubInfoVo stopsHubInfoVo, @RequestParam(name = "file", required = false) MultipartFile file){
         if (stopsHubInfoVo == null){
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());

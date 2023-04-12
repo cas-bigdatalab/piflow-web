@@ -21,9 +21,9 @@ public interface StopsHubFileRecordMapper {
 
     @Select("select * from stops_hub_file_record where stops_hub_id = #{hubId}")
     @Results(
-            @Result(column = "file_path", property = "stopsComponent", many = @Many(select = "cn.cnic.worker.local.stopsComponent.mapper.StopsComponentMapper.getOnlyStopsComponentByBundle", fetchType = FetchType.LAZY))
+            @Result(column = "file_path", property = "stopsComponent", one = @One(select = "cn.cnic.component.stopsComponent.mapper.StopsComponentMapper.getOnlyStopsComponentByBundle", fetchType = FetchType.LAZY))
     )
-    public List<StopsHubFileRecord> getStopsHubFileRecordByHubId(String hubId);
+    public List<StopsHubFileRecord> getStopsHubFileRecordByHubId(@Param("hubId") String hubId);
 
     /**
      * 根据id查询算法包的具体文件记录

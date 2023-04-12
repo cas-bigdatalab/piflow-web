@@ -10,6 +10,7 @@ import cn.cnic.component.stopsComponent.mapper.StopsComponentMapper;
 import cn.cnic.component.stopsComponent.mapper.StopsComponentPropertyMapper;
 import cn.cnic.component.stopsComponent.vo.StopsComponentVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -313,5 +314,9 @@ public class StopsComponentDomain {
 
     public StopsComponent getOnlyStopsComponentByBundle(String bundle) {
         return stopsComponentMapper.getOnlyStopsComponentByBundle(bundle);
+    }
+
+    public List<StopsComponent> getOnlyStopsComponentByBundles(String[] bundles) {
+        return stopsComponentMapper.getOnlyStopsComponentByBundles(bundles);
     }
 }

@@ -94,8 +94,8 @@ public class StopsHubMapperProvider {
         strBuf.append(",status ");
         strBuf.append(",bundles ");
         strBuf.append(",is_publishing ");
-        strBuf.append("type, ");
-        strBuf.append("language_version ");
+        strBuf.append(",type ");
+        strBuf.append(",language_version ");
         strBuf.append(") VALUES ( ");
         strBuf.append(SqlUtils.baseFieldValues(stopsHub));
         strBuf.append(", " + this.mountId);
@@ -104,8 +104,8 @@ public class StopsHubMapperProvider {
         strBuf.append(", " + this.status);
         strBuf.append(", " + this.bundles);
         strBuf.append(", " + this.isPublishing);
-        strBuf.append(this.type + ", ");
-        strBuf.append(this.languageVersion + " ");
+        strBuf.append( ", " + this.type);
+        strBuf.append( ", " + this.languageVersion + " ");
         strBuf.append(") ");
         String sqlStr = strBuf.toString();
         this.reset();
@@ -298,23 +298,82 @@ public class StopsHubMapperProvider {
      * @Author TY
      * @Date 12:58 2023/4/4
      **/
-    public String updateStopHubType(List<StopsHub> scalaStopsHubs) {
-        List<String> stopsHubIds = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("UPDATE stops_hub SET type = CASE id");
-        for (StopsHub  stopsHub: scalaStopsHubs) {
-            stopsHubIds.add(stopsHub.getId());
-            sql.append(" WHEN ").append(stopsHub.getId()).append(" THEN ").append(stopsHub.getType().name());
+//    public String updateStopHubType(List<StopsHub> scalaStopsHubs) {
+//        List<String> stopsHubIds = new ArrayList<>();
+//        StringBuilder sql = new StringBuilder("UPDATE stops_hub SET type = CASE id");
+//        for (StopsHub  stopsHub: scalaStopsHubs) {
+//            stopsHubIds.add(stopsHub.getId());
+//            sql.append(" WHEN ").append(stopsHub.getId()).append(" THEN ").append(stopsHub.getType().name());
+//        }
+//        sql.append(" END,version = CASE id");
+//        for (StopsHub  stopsHub: scalaStopsHubs) {
+//            sql.append(" WHEN ").append(stopsHub.getId()).append(" THEN ").append(stopsHub.getVersion() + 1);
+//        }
+//        sql.append(" END,last_update_dttm = CASE id");
+//        for (StopsHub  stopsHub: scalaStopsHubs) {
+//            sql.append(" WHEN ").append(stopsHub.getId()).append(" THEN ").append(stopsHub.getLastUpdateDttm());
+//        }
+//        sql.append(" END WHERE id IN (").append(SqlUtils.strListToStr(stopsHubIds)).append(") and enable_flag = 1");
+//        return sql.toString();
+//    }
+    public String updateStopHubType(StopsHub scalaStopsHub) {
+
+        boolean flag = this.preventSQLInjectionStopsHub(scalaStopsHub);
+        if (!flag) {
+            return "SELECT 0";
         }
-        sql.append(" END,version = CASE id");
-        for (StopsHub  stopsHub: scalaStopsHubs) {
-            sql.append(" WHEN ").append(stopsHub.getId()).append(" THEN ").append(stopsHub.getVersion() + 1);
+        if (StringUtils.isBlank(id)) {
+            return "SELECT 0";
         }
-        sql.append(" END,last_update_dttm = CASE id");
-        for (StopsHub  stopsHub: scalaStopsHubs) {
-            sql.append(" WHEN ").append(stopsHub.getId()).append(" THEN ").append(stopsHub.getLastUpdateDttm());
+        SQL sql = new SQL();
+
+        // INSERT_INTO brackets is table name
+        sql.UPDATE("stops_hub");
+        // The first string in the SET is the name of the field corresponding to the table in the database
+        sql.SET("last_update_dttm = " + lastUpdateDttmStr);
+        sql.SET("version = " + (version + 1));
+        sql.SET("type = " + type);
+
+        sql.WHERE("version = " + version);
+        sql.WHERE("id = " + id);
+        String sqlStr = sql.toString();
+        this.reset();
+        return sqlStr;
+//        List<String> stopsHubIds = new ArrayList<>();
+//        StringBuilder sql = new StringBuilder("UPDATE stops_hub SET type = CASE id");
+//        for (StopsHub  stopsHub: scalaStopsHubs) {
+//            stopsHubIds.add(stopsHub.getId());
+//            sql.append(" WHEN ").append(stopsHub.getId()).append(" THEN ").append(stopsHub.getType().name());
+//        }
+//        sql.append(" END,version = CASE id");
+//        for (StopsHub  stopsHub: scalaStopsHubs) {
+//            sql.append(" WHEN ").append(stopsHub.getId()).append(" THEN ").append(stopsHub.getVersion() + 1);
+//        }
+//        sql.append(" END,last_update_dttm = CASE id");
+//        for (StopsHub  stopsHub: scalaStopsHubs) {
+//            sql.append(" WHEN ").append(stopsHub.getId()).append(" THEN ").append(stopsHub.getLastUpdateDttm());
+//        }
+//        sql.append(" END WHERE id IN (").append(SqlUtils.strListToStr(stopsHubIds)).append(") and enable_flag = 1");
+//        return sql.toString();
+    }
+
+    public String getStopsHubByJarName(String username, boolean isAdmin, String jarName) {
+        String sqlStr = "SELECT 0";
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("select * ");
+        strBuf.append("from stops_hub ");
+        strBuf.append("where enable_flag = 1 ");
+        if (StringUtils.isNotBlank(jarName)) {
+            strBuf.append("and ( ");
+            strBuf.append("jar_name = " + SqlUtils.preventSQLInjection(jarName));
+            strBuf.append(") ");
         }
-        sql.append(" END WHERE id IN (").append(SqlUtils.strListToStr(stopsHubIds)).append(") and enable_flag = 1");
-        return sql.toString();
+        if (!isAdmin) {
+            strBuf.append("and crt_user = " + SqlUtils.preventSQLInjection(username));
+        }
+        strBuf.append("order by crt_dttm desc ");
+        sqlStr = strBuf.toString();
+        return sqlStr;
     }
 
 }

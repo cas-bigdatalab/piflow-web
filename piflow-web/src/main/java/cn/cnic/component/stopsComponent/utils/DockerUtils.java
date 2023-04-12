@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class DockerUtils {
     private final static Logger logger = LoggerFactory.getLogger(DockerUtils.class);
@@ -167,6 +168,7 @@ public class DockerUtils {
      * @throws InterruptedException
      */
     public static Boolean pushImage(DockerClient dockerClient, String imageName) throws InterruptedException {
+        logger.info("=========push image start==================");
         final Boolean[] result = {true};
         ResultCallback.Adapter<PushResponseItem> callBack = new ResultCallback.Adapter<PushResponseItem>() {
             @Override
@@ -182,6 +184,7 @@ public class DockerUtils {
             }
         };
         dockerClient.pushImageCmd(imageName).exec(callBack).awaitCompletion();
+        logger.info("=========push image finish==================");
         return result[0];
     }
 
@@ -205,20 +208,11 @@ public class DockerUtils {
      *
      * @param dockerClient
      * @param dockerFile
+     * @param tagsName
      * @return
      */
-    public static Map<String, String> buildImage(DockerClient dockerClient, File dockerFile, String imageName, String tags, long currentTimeMillis) {
+    public static Map<String, String> buildImage(DockerClient dockerClient, File dockerFile, String tagsName) {
         Set<String> tagsSet = new HashSet<>();
-        //拼成 name-时间戳:tag 格式   registryUrl/projectName/imageName-currentTimeMillis:tags
-        String registryUrl = DockerClientUtils.getRegistryUrl();
-        String registryProjectName = DockerClientUtils.getRegistryProjectName();
-        String originProjectPath = "";
-        if (registryUrl.endsWith("/")) {
-            originProjectPath = registryUrl + registryProjectName;
-        } else {
-            originProjectPath = registryUrl + "/" + registryProjectName+"/";
-        }
-        String tagsName = originProjectPath + imageName + "-" + currentTimeMillis + ":" + tags;
         //tagsSet.add(imageName+"-"+System.currentTimeMillis()+":"+tags);
         tagsSet.add(tagsName);
         BuildImageCmd buildImageCmd = dockerClient.buildImageCmd(dockerFile)
@@ -231,7 +225,7 @@ public class DockerUtils {
             }
         };
         Map<String, String> result = new HashMap<>();
-        String imageId = buildImageCmd.exec(buildImageResultCallback).awaitImageId();
+        String imageId = buildImageCmd.exec(buildImageResultCallback).awaitImageId(30, TimeUnit.MINUTES);
         result.put("imageId", imageId);
         result.put("imageName", tagsName);
         logger.info("docker image create:" + JSON.toJSONString(result));
