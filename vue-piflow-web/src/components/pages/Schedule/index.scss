@@ -13,7 +13,7 @@ section {
       font-weight: bold;
     }
   }
-  /deep/ .ivu-input-wrapper {
+  ::v-deep .ivu-input-wrapper {
     margin: 6px 0;
     .ivu-input {
       padding: 8px 10px;
@@ -58,10 +58,10 @@ section {
     }
   }
  .Schedule{
-   /deep/ .ivu-form-item-label{
+   ::v-deep .ivu-form-item-label{
      width: 133px!important;
    }
-   /deep/ .form-content>.ivu-form-item-content{
+   ::v-deep .form-content>.ivu-form-item-content{
      margin-left: 120px!important;
    }
  }

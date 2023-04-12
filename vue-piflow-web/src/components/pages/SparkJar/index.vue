@@ -377,7 +377,7 @@ export default {
     margin-top: 5px;
   }
 }
-/deep/ .ivu-upload-drag:hover{
+::v-deep .ivu-upload-drag:hover{
   border: 1px dashed #20784b;
 }
 </style>

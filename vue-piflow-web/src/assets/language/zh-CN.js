@@ -23,6 +23,13 @@ module.exports = {
         log:'通知管理',
         modification:"修改密码",
         bindingAccount:"绑定开发者账号",
+        basicInfo:"基本信息",
+        LocalDataSource:"本地数据源",
+        LocalModelAlgorithm:"本地模型算法",
+        Example:"流水线样例",
+        admin:"管理员",
+        LabelManagement:"标签管理",
+        selectSource:"选择数据源"
     },
     page: {
         prev_text: "上一页",
@@ -76,7 +83,9 @@ module.exports = {
         cancel_text: "取消",
         reset_text: "重置",
         delete_content: "确定要删除",
-        cancel_content: "确定要取消本次创建吗"
+        cancel_content: "确定要取消本次创建吗",
+        editSave:"编辑&保存",
+        next:"下一步"
     },
     flow_columns: {
         create_title: "新建流水线",
@@ -127,7 +136,9 @@ module.exports = {
         CreateTime: "创建时间",
         dataSourceType: "数据源类型",
         action: "操作",
-        isLinked: "是否同步更改?相关的组件："
+        isLinked: "是否同步更改?相关的组件：",
+        yes: "Yes",
+        no: "No",
     },
     schedule_columns: {
         create_title: "新建流水线调度",
@@ -147,6 +158,7 @@ module.exports = {
     StopHub_columns: {
         upload: "新建自定义组件",
         name: "组件名称",
+        time:"日期",
         version: "版本",
         jarUrl: "Jar 地址",
         status: "状态",
@@ -249,5 +261,48 @@ module.exports = {
         groupStatistics: "流水线组统计信息，包括流水线组Group数量、运行态流水线组Processor数量，以及各运行状态下Processor数量。",
         OtherStatistics: "其他统计信息，包括数据源DataSource数量、自定义组件插件StopsHub数量、模板Template数量。",
         ComponentStatistics: "组件统计信息，包括数据处理组件Stop数量，数据处理组件组StopGroup数量。",
-    }
+    },
+    python:{
+        packageName:"组件包名称",
+        version:"版本",
+        FileUrl:"zip地址",
+        state:"状态",
+        componentName:"组件名",
+        viewDetail:"查看详情",
+        noData:"暂无数据",
+        detailInfo:"详情信息",
+        pythonComponent:"Python组件",
+        pythonVersion:"python版本",
+        parameter:"是否有参数传入",
+        uploadLogo:"上传图标",
+        expandInfo:"拓展信息",
+        logo:"图标",
+        team:"团队",
+        componentClass:"组件类",
+        chineseName:"中文名",
+        Instructions:"使用说明",
+        description:"详细描述信息",
+        author:"组件作者",
+        email:"作者联系邮箱",
+        algorithm:"协同模型算法",
+        added:"已添加",
+        unadded:"未添加",
+        upload: '上传',
+        language: '算法语言',
+        version_lang: '语言版本',
+    },
+    basicInfo:{
+        basicInfo:"基本信息",
+        dataCenterName:"数据中心名称",
+        email:"联系邮箱",
+        org:'依托单位',
+        province:'省市',
+        address:'平台网址',
+        desc:"描述信息",
+        tel:'联系电话',
+        info:'附件信息',
+        uploadImg:'上传图片',
+        save:"保存",
+        department:'主管部门'
+    },
 }

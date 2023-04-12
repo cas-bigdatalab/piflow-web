@@ -227,7 +227,7 @@ export default {
     cursor: pointer;
   }
 }
-/deep/ .code-dialog {
+::v-deep .code-dialog {
   &::before {
     content: '';
     position: absolute;

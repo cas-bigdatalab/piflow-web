@@ -23,6 +23,13 @@ module.exports = {
         log:"Log",
         modification:"Modification",
         bindingAccount:"BindingAccount",
+        basicInfo:"Basic Information",
+        LocalDataSource:"Local Data",
+        LocalModelAlgorithm:"Local Model",
+        Example:"Flow Sample",
+        admin:"Admin",
+        LabelManagement:"Label Management",
+        selectSource:"Select Label"
     },
     page: {
         prev_text: "Previous",
@@ -68,7 +75,7 @@ module.exports = {
         data_fail_content: "Data acquisition failed！",
     },
     modal: {
-        placeholder: "please enter the content...",
+        placeholder: "Please enter…",
         template_title: "Template name",
         ok_text: "Submit",
         upload_text: "upload",
@@ -76,7 +83,9 @@ module.exports = {
         cancel_text: "Cancel",
         reset_text: "Reset",
         delete_content: "Are you sure to delete",
-        cancel_content: "Are you sure you want to cancel this creation"
+        cancel_content: "Are you sure you want to cancel this creation",
+        editSave:"Edit or save",
+        next:"Next"
     },
     flow_columns: {
         create_title: "Create Flow",
@@ -127,7 +136,9 @@ module.exports = {
         CreateTime: "CreateTime",
         dataSourceType: "DataSourceType",
         action: "Actions",
-        isLinked: "Do you synchronize the changes? Related components are："
+        isLinked: "Do you synchronize the changes? Related components are：",
+        yes: "Yes",
+        no: "No",
     },
     schedule_columns: {
         create_title: "Create Schedule",
@@ -147,6 +158,7 @@ module.exports = {
     StopHub_columns: {
         upload: "Upload Jar",
         name: "Name",
+        time:"Time",
         version: "Version",
         jarUrl: "JarUrl",
         status: "Status",
@@ -249,5 +261,48 @@ module.exports = {
         groupStatistics: "Pipeline group statistics, include the number of pipeline groups, the number of processors of the pipeline groups in the running state, and the number of processors in each running state.",
         OtherStatistics: "Other statistics include the number of DataSources, the number of custom component plug-ins StopsHub, and the number of templates.",
         ComponentStatistics: "Component statistics, include the number of data processing components Stop and the number of data processing component groups StopGroup.",
-    }
+    },
+    python:{
+        packageName:"ComponentPackageName",
+        version:"Version",
+        FileUrl:"FileUrl",
+        state:"State",
+        componentName:"Component name",
+        viewDetail:"View details",
+        noData:"NoData",
+        detailInfo:"Detailed information",
+        pythonComponent:"Python component：",
+        pythonVersion:"Python version：",
+        parameter:"Whether a parameter is passed",
+        uploadLogo:"Upload icon",
+        expandInfo:"Expand info",
+        logo:"logo",
+        team:"Team",
+        componentClass:"Component class",
+        chineseName:"Chinese name",
+        Instructions:"Instructions",
+        description:"description",
+        author:"author",
+        email:"email",
+        algorithm:"Collaborative model algorithm",
+        added:"added",
+        unadded:"unadded",
+        upload: 'Upload',
+        language: 'Language',
+        version_lang: 'Version',
+    },
+    basicInfo:{
+        basicInfo:"Basic Information",
+        dataCenterName:"Data center name:",
+        email:"Contact Email:",
+        org:'Supporting Institution:',
+        province:'Province / City:',
+        address:'Platform Website:',
+        desc:"Description:",
+        tel:'Contact Number:',
+        info:'Attachment:',
+        uploadImg:'Upload Image:',
+        save:"Save",
+        department:'Administration:'
+    },
 }

@@ -117,13 +117,13 @@ header {
     }
   }
 }
-/deep/ .ivu-icon-md-menu {
+::v-deep .ivu-icon-md-menu {
   transition: all 0.3s;
   cursor: pointer;
   font-size: 24px;
   padding: 5px 20px;
 }
-/deep/ .rotate-icon {
+::v-deep .rotate-icon {
   transform: rotate(-90deg);
 }
 </style>

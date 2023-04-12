@@ -115,7 +115,7 @@ footer {
   padding: 8px 0;
   display: flex;
   justify-content: center;
-  /deep/ .ivu-breadcrumb a,
+  ::v-deep .ivu-breadcrumb a,
   .ivu-breadcrumb > span:last-child {
     color: #fff;
   }

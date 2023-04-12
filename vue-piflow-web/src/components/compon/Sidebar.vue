@@ -280,7 +280,7 @@ export default {
     margin: 0 20px;
   }
   .item-par,
-  /deep/ .ivu-menu-submenu-title {
+  ::v-deep .ivu-menu-submenu-title {
     margin-top: 1px;
     color: #333333;
     font-size: 12px;
@@ -296,14 +296,14 @@ export default {
   }
 
   .item-par:hover,
-  /deep/ .ivu-menu-submenu-title:hover {
+  ::v-deep .ivu-menu-submenu-title:hover {
     filter: progid:DXImageTransform.Microsoft.gradient(enabled = false);
     background: #fcfcfc;
     border-color: #ccc;
     color: #497b95;
   }
 
-  /deep/ .ivu-menu-item-selected {
+  ::v-deep .ivu-menu-item-selected {
     color: #fff !important;
     vertical-align: middle;
     background: #3da375 !important;
@@ -312,7 +312,7 @@ export default {
   }
 }
 
-/deep/ .ivu-menu {
+::v-deep .ivu-menu {
   .ivu-menu-item {
     border: 1px solid #ddd;
     border-top: 0;

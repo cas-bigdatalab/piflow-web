@@ -13,7 +13,7 @@ section {
       font-weight: bold;
     }
   }
-  /deep/ .ivu-input-wrapper {
+  ::v-deep .ivu-input-wrapper {
     margin: 6px 0;
     .ivu-input {
       padding: 8px 10px;
@@ -68,10 +68,10 @@ section {
     }
   }
 }
-/deep/ .ivu-card{
+::v-deep .ivu-card{
   border-radius:0;
 }
-/deep/ .ivu-card-body{
+::v-deep .ivu-card-body{
   padding: 5px;
 }
 .card-list{

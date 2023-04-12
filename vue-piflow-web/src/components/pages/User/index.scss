@@ -13,7 +13,7 @@ section {
       font-weight: bold;
     }
   }
-  /deep/ .ivu-input-wrapper {
+  ::v-deep .ivu-input-wrapper {
     margin: 6px 0;
     .ivu-input {
       padding: 8px 10px;

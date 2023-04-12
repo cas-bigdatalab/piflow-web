@@ -465,7 +465,7 @@ export default {
 .leftTop20{
   float: left;
   .cardStyle{
-    /deep/ .ivu-card-body{
+    ::v-deep .ivu-card-body{
       float:left;
       background: rgba(241, 241, 246, 0.6);
       margin: 10px;
@@ -513,16 +513,16 @@ export default {
         color: #3f414d;
     }
 }
-/deep/ .ivu-col-span-6{
+::v-deep .ivu-col-span-6{
   text-align: center;
   .alignLeft{
     text-align: left
   }
 }
-/deep/ .ivu-tabs-ink-bar {
+::v-deep .ivu-tabs-ink-bar {
      background-color: #3da375;
  }
-/deep/ .ivu-tabs-nav .ivu-tabs-tab-active {
+::v-deep .ivu-tabs-nav .ivu-tabs-tab-active {
     color: #515a6e;
     font-size: 16px;
     font-weight: 600;

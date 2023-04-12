@@ -105,7 +105,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    /deep/ .ivu-progress-inner-text{
+    ::v-deep .ivu-progress-inner-text{
         font-size: 14px;
     }
     .center{
