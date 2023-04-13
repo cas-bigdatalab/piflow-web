@@ -148,7 +148,7 @@
         width="180"
       >
         <template #default="{ row }">
-          <Tooltip
+          <!-- <Tooltip
             content="Mount"
             placement="left-start"
             v-if="row.status.text === 'UNMOUNT'"
@@ -164,6 +164,48 @@
           </Tooltip>
           <Tooltip content="Delete" placement="left-start">
             <span class="button-warp" @click="handleButtonSelect(row, 2)">
+              <Icon type="ios-trash" />
+            </span>
+          </Tooltip> -->
+          <Tooltip
+            content="Mount"
+            placement="top-start"
+            :transfer="true"
+            v-if="row.status.text === 'UNMOUNT'"
+          >
+            <span class="button-warp" @click="handleButtonSelect(row, 1)">
+              <Icon type="ios-aperture" />
+            </span>
+          </Tooltip>
+          <Tooltip
+            v-else
+            content="Unmount"
+            placement="top-start"
+            :transfer="true"
+          >
+            <span class="button-warp" @click="handleButtonSelect(row, 1)">
+              <Icon type="md-aperture" />
+            </span>
+          </Tooltip>
+          <Tooltip content="Publish" placement="top-start" :transfer="true">
+            <span
+              class="button-warp"
+              :class="
+                (row.status.text === 'MOUNT') & (row.isPublishing === false)
+                  ? ''
+                  : 'gray_btn'
+              "
+              @click="
+                (row.status.text === 'MOUNT') & (row.isPublishing === false)
+                  ? handleButtonSelect(row, 2)
+                  : ''
+              "
+            >
+              <Icon type="md-paper-plane" />
+            </span>
+          </Tooltip>
+          <Tooltip content="Delete" placement="top-start" :transfer="true">
+            <span class="button-warp" @click="handleButtonSelect(row, 3)">
               <Icon type="ios-trash" />
             </span>
           </Tooltip>
@@ -436,7 +478,7 @@
                           :placeholder="$t('modal.placeholder')"
                         ></vxe-input>
                       </Col>
-                      <Col :span="2" >
+                      <Col :span="2">
                         <div>
                           <Icon
                             type="ios-add-circle-outline"
@@ -566,7 +608,7 @@
                       </template>
                     </div>
                     <Upload
-                      :action="$url + '/stopsHubInfo/updateStopsHubInfo'"
+                      :action="$url + '/stops/updateComponentInfo'"
                       :headers="{ Authorization: token }"
                       ref="uploadImg"
                       :data="formData"
@@ -598,7 +640,7 @@
                   <vxe-button type="submit">{{
                     $t("basicInfo.save")
                   }}</vxe-button>
-                  <vxe-button type="reset" @click="showEdit = false">{{
+                  <vxe-button type="reset" @click="handleCancel">{{
                     $t("modal.cancel_text")
                   }}</vxe-button>
                 </template>
@@ -628,7 +670,7 @@
                   ></vxe-input>
                 </template>
               </vxe-form-item>
-             
+
               <vxe-form-item
                 field="groups"
                 title="groups"
@@ -672,11 +714,7 @@
                 </template>
               </vxe-form-item>
 
-              <vxe-form-item
-                title="inports"
-                :span="12"
-                :item-render="{}"
-              >
+              <vxe-form-item title="inports" :span="12" :item-render="{}">
                 <template #default="{ data }">
                   <vxe-input
                     v-model="data.inports"
@@ -685,11 +723,7 @@
                   ></vxe-input>
                 </template>
               </vxe-form-item>
-              <vxe-form-item
-                title="outports"
-                :span="12"
-                :item-render="{}"
-              >
+              <vxe-form-item title="outports" :span="12" :item-render="{}">
                 <template #default="{ data }">
                   <vxe-input
                     v-model="data.outports"
@@ -778,7 +812,7 @@
                 :title="$t('python.team')"
                 :span="12"
                 :item-render="{}"
-                v-if=" formData.isShared"
+                v-if="formData.isShared"
               >
                 <template #default="{ data }">
                   <vxe-input
@@ -808,7 +842,7 @@
                 :title="$t('python.Instructions')"
                 :span="12"
                 :item-render="{}"
-                v-if=" formData.isShared"
+                v-if="formData.isShared"
               >
                 <template #default="{ data }">
                   <vxe-input
@@ -837,7 +871,7 @@
                 :title="$t('python.author')"
                 :span="12"
                 :item-render="{}"
-                v-if=" formData.isShared"
+                v-if="formData.isShared"
               >
                 <template #default="{ data }">
                   <vxe-input
@@ -852,7 +886,7 @@
                 :title="$t('python.email')"
                 :span="12"
                 :item-render="{}"
-                v-if=" formData.isShared"
+                v-if="formData.isShared"
               >
                 <template #default="{ data }">
                   <vxe-input
@@ -920,7 +954,7 @@
                   <vxe-button type="submit">{{
                     $t("basicInfo.save")
                   }}</vxe-button>
-                  <vxe-button type="reset" @click="showEdit = false">{{
+                  <vxe-button type="reset" @click="handleCancel">{{
                     $t("modal.cancel_text")
                   }}</vxe-button>
                 </template>
@@ -947,7 +981,6 @@ export default {
       total: 0,
       tableData: [],
       param: "",
-
       file: null,
       JarIsShow: null,
       token: "",
@@ -1054,6 +1087,26 @@ export default {
       this.page = 1;
       this.limit = 10;
       this.getTableData();
+    },
+    "formData.isHaveParams": {
+      handler(val, oldVal) {
+        if (val) {
+          if (!this.formData.hasOwnProperty("properties")) {
+            let arr = [
+              {
+                name: "",
+                example: "",
+                description: "",
+                propertySort: 0,
+                fkPythonStopsId: "",
+                id: "",
+              },
+            ];
+            this.$set(this.formData, "properties", arr);
+          }
+        }
+      },
+      immediate: true,
     },
   },
   // computed: {
@@ -1271,8 +1324,8 @@ export default {
               .post("/stops/delStopsHub", this.$qs.stringify(data))
               .then((res) => {
                 if (res.data.code === 200) {
-                  this.$Modal.success({
-                    title: this.$t("tip.title"),
+                  this.$Message.success({
+                    duration: 3,
                     content:
                       `${row.jarName} ` + this.$t("tip.delete_success_content"),
                   });
@@ -1575,6 +1628,11 @@ export default {
       } else this.file = file;
 
       return false;
+    },
+    //取消更新组件
+    handleCancel() {
+      this.showEdit = false;
+      this.file = null;
     },
   },
 };
