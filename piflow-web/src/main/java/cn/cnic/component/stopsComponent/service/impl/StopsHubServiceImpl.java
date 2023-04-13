@@ -282,9 +282,14 @@ public class StopsHubServiceImpl implements IStopsHubService {
                             dockerFileSb.append("    && unzip /usr/local/" + jarName + " -d /pythonDir/ \\" + System.lineSeparator());
                             String line;
                             while ((line = br.readLine()) != null) {
-                                if (line.endsWith(".whl")) {
+                                if(line.trim().startsWith("#") || line.trim()==null || line.trim() .equals("")){
+                                    continue;
+                                }else if (line.endsWith(".whl")) {
                                     dockerFileSb.append("    && pip install " + line + " \\"+System.lineSeparator());
                                 } else {
+                                    if(line.contains("#")){
+                                        line = line.substring(0,line.indexOf("#")).trim();
+                                    }
                                     dockerFileSb.append("    && pip install -i https://mirrors.aliyun.com/pypi/simple/ " + line + " \\"+ System.lineSeparator());
                                 }
                             }
@@ -346,9 +351,18 @@ public class StopsHubServiceImpl implements IStopsHubService {
 
     public void excImageAsync(DockerClient dockerClient, File dockerFile, String tagsName) throws InterruptedException {
         //TODO 很慢 制作镜像很慢 目前是同步
-        Map<String, String> imageInfo = DockerUtils.buildImage(dockerClient, dockerFile, tagsName);
-        Boolean pushInfo = DockerUtils.pushImage(dockerClient, tagsName);
-        //TODO delete dockerfile
+        try {
+            Map<String, String> imageInfo = DockerUtils.buildImage(dockerClient, dockerFile, tagsName);
+            Boolean pushInfo = DockerUtils.pushImage(dockerClient, tagsName);
+        } catch (InterruptedException e) {
+            logger.error("====build and push image error! message:{}",e.getMessage());
+            throw new RuntimeException(e);
+        } finally {
+            //TODO delete dockerfile
+            if(dockerFile.exists()){
+                dockerFile.delete();
+            }
+        }
     }
 
     @Override

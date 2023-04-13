@@ -225,7 +225,7 @@ public class DockerUtils {
             }
         };
         Map<String, String> result = new HashMap<>();
-        String imageId = buildImageCmd.exec(buildImageResultCallback).awaitImageId(30, TimeUnit.MINUTES);
+        String imageId = buildImageCmd.exec(buildImageResultCallback).awaitImageId(50, TimeUnit.MINUTES);
         result.put("imageId", imageId);
         result.put("imageName", tagsName);
         logger.info("docker image create:" + JSON.toJSONString(result));

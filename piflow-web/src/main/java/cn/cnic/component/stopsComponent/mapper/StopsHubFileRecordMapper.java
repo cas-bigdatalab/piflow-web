@@ -20,9 +20,10 @@ public interface StopsHubFileRecordMapper {
     public int addStopsHubFileRecord(StopsHubFileRecord record);
 
     @Select("select * from stops_hub_file_record where stops_hub_id = #{hubId}")
-    @Results(
+    @Results({
+            @Result(column = "file_path", property = "filePath"),
             @Result(column = "file_path", property = "stopsComponent", one = @One(select = "cn.cnic.component.stopsComponent.mapper.StopsComponentMapper.getOnlyStopsComponentByBundle", fetchType = FetchType.LAZY))
-    )
+    })
     public List<StopsHubFileRecord> getStopsHubFileRecordByHubId(@Param("hubId") String hubId);
 
     /**
