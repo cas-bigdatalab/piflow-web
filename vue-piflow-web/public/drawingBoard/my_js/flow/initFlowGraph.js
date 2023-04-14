@@ -670,7 +670,8 @@ function queryStopsProperty(stopPageId, loadId) {
                             var propertyVo_name = propertyVo.name;
                             var propertyVo_description = propertyVo.description;
                             var propertyVo_displayName = propertyVo.displayName;
-                            var propertyVo_customValue = (!propertyVo.customValue || customValue == 'null') ? '' : propertyVo.customValue;
+                            // var propertyVo_customValue = (!propertyVo.customValue || customValue == null  ) ? '' : propertyVo.customValue;
+                            var propertyVo_customValue = (!propertyVo.customValue || propertyVo.customValue == null || propertyVo.customValue =='' ) ? propertyVo.example : propertyVo.customValue;
                             var propertyVo_allowableValues = propertyVo.allowableValues;
                             var propertyVo_isSelect = propertyVo.isSelect;
                             var propertyVo_required = propertyVo.required;
