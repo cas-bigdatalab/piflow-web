@@ -148,25 +148,7 @@
         width="180"
       >
         <template #default="{ row }">
-          <!-- <Tooltip
-            content="Mount"
-            placement="left-start"
-            v-if="row.status.text === 'UNMOUNT'"
-          >
-            <span class="button-warp" @click="handleButtonSelect(row, 1)">
-              <Icon type="ios-aperture" />
-            </span>
-          </Tooltip>
-          <Tooltip v-else content="Unmount" placement="left-start">
-            <span class="button-warp" @click="handleButtonSelect(row, 1)">
-              <Icon type="md-aperture" />
-            </span>
-          </Tooltip>
-          <Tooltip content="Delete" placement="left-start">
-            <span class="button-warp" @click="handleButtonSelect(row, 2)">
-              <Icon type="ios-trash" />
-            </span>
-          </Tooltip> -->
+        
           <Tooltip
             content="Mount"
             placement="top-start"
