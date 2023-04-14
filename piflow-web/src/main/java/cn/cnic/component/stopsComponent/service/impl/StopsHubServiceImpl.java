@@ -796,6 +796,8 @@ public class StopsHubServiceImpl implements IStopsHubService {
                         stopsComponentProperty.setPropertySort(property.getPropertySort());
                         stopsComponentProperty.setExample(property.getExample());
                         stopsComponentProperty.setStopsTemplate(stopsComponent.getId());
+                        //TODO
+                        stopsComponentProperty.setAllowableValues("[\"\"]");
                         propertyList.add(stopsComponentProperty);
                     }
                     stopsComponent.setProperties(propertyList);

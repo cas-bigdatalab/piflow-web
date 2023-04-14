@@ -410,7 +410,7 @@ public class MxGraphModelServiceImpl implements IMxGraphModelService {
                 property.setStops(stops);
                 property.setCustomValue(stopsComponentProperty.getDefaultValue());
                 // Indicates "select"
-                if (stopsComponentProperty.getAllowableValues().contains(",") && stopsComponentProperty.getAllowableValues().length() > 4) {
+                if (stopsComponentProperty.getAllowableValues() != null && stopsComponentProperty.getAllowableValues().contains(",") && stopsComponentProperty.getAllowableValues().length() > 4) {
                     property.setIsSelect(true);
                     // Determine if there is a default value in "select"
                     if (!stopsComponentProperty.getAllowableValues().contains(stopsComponentProperty.getDefaultValue())) {
