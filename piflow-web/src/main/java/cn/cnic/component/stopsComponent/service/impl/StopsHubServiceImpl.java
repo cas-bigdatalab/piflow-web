@@ -551,7 +551,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 }
                 publishComponentVo.setName(thirdStopsComponentVo.getName());
                 //base64
-                publishComponentVo.setLogo(FileUtils.encryptToBase64(thirdStopsComponentVo.getIcon().replace("/images", "/storage/image")));
+                publishComponentVo.setLogo(thirdStopsComponentVo.getIcon());
                 publishComponentVo.setDescription(thirdStopsComponentVo.getDescription());
                 publishComponentVo.setCategory(thirdStopsComponentVo.getGroups());
                 publishComponentVo.setBundle(thirdStopsComponentVo.getBundle());
@@ -574,7 +574,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 }
                 publishComponentVo.setName(stopsComponentByBundle.getName());
                 //base64
-                publishComponentVo.setLogo(FileUtils.encryptToBase64(stopsComponentByBundle.getImageUrl().replace("/images", "/storage/image")));
+                publishComponentVo.setLogo(FileUtils.encryptToBase64(stopsComponentByBundle.getImageUrl().replace("/images", "").replace(SysParamsCache.SYS_CONTEXT_PATH,SysParamsCache.IMAGES_PATH)));
                 publishComponentVo.setDescription(stopsComponentByBundle.getDescription());
                 publishComponentVo.setCategory(stopsComponentByBundle.getGroups());
                 publishComponentVo.setBundle(stopsComponentByBundle.getBundel());
@@ -741,9 +741,9 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 if (500 == code) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("failed to upload file");
                 }
-                String path = (String) uploadRtnMap.get("path");
-                String replacePath = path.replace("/storage/image", "/images");
-                stopsHubInfoVo.setImageUrl(replacePath);
+                String path = (String) uploadRtnMap.get("saveFileName");
+                String imageUrl =  SysParamsCache.SYS_CONTEXT_PATH + "/images/" + path;
+                stopsHubInfoVo.setImageUrl(imageUrl);
             }
 
             StopsHubFileRecord stopsHubFileRecord = stopsHubFileRecordDomain.getStopsHubFileRecordByBundle(stopsHubInfoVo.getStopBundle());
