@@ -1,0 +1,21 @@
+-----------------------------------
+--Table structure for stops_hub_file_record
+-----------------------------------
+
+CREATE TABLE IF NOT EXISTS STOPS_HUB_FILE_RECORD
+(
+    ID                  VARCHAR(40) PRIMARY KEY NOT NULL COMMENT 'UUID',
+    FILE_NAME          VARCHAR(255) NULL DEFAULT NULL COMMENT 'file name',
+    FILE_PATH          VARCHAR(255) NULL DEFAULT NULL COMMENT 'file path',
+    STOPS_HUB_ID       VARCHAR(255) NULL DEFAULT NULL COMMENT 'stops_hub id',
+    DOCKER_IMAGES_NAME VARCHAR(255) NULL DEFAULT NULL COMMENT 'docker image name',
+    CRT_DTTM           DATETIME    NOT NULL COMMENT 'creat time'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci COMMENT='all file info of zip mount';
+
+
+ALTER TABLE `STOPS_HUB` ADD COLUMN `TYPE` VARCHAR(40) NULL COMMENT 'component type';
+ALTER TABLE `STOPS_HUB` ADD COLUMN `LANGUAGE_VERSION` VARCHAR(40) NULL COMMENT 'the language version that the component depends on';
+
+ALTER TABLE `FLOW_STOPS_TEMPLATE` ADD COLUMN `COMPONENT_TYPE` VARCHAR(40) NULL COMMENT 'component type';
+ALTER TABLE `FLOW_STOPS_TEMPLATE` ADD COLUMN `DOCKER_IMAGES_NAME` VARCHAR(255) NULL COMMENT 'docker image name';
+ALTER TABLE `FLOW_STOPS_TEMPLATE` ADD COLUMN `STOPS_HUB_ID` VARCHAR(40) NULL COMMENT 'stops_hub id';
