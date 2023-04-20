@@ -285,7 +285,10 @@ public class StopsHubServiceImpl implements IStopsHubService {
                                 if(line.trim().startsWith("#") || line.trim()==null || line.trim() .equals("")){
                                     continue;
                                 }else if (line.endsWith(".whl")) {
-                                    dockerFileSb.append("    && pip install " + line + " \\"+System.lineSeparator());
+                                    if(line.contains("#")){
+                                        line = line.substring(0,line.indexOf("#")).trim();
+                                    }
+                                    dockerFileSb.append("    && pip install /pythonDir/" + line + " \\"+System.lineSeparator());
                                 } else {
                                     if(line.contains("#")){
                                         line = line.substring(0,line.indexOf("#")).trim();
@@ -297,13 +300,13 @@ public class StopsHubServiceImpl implements IStopsHubService {
                             dockerFileSb.append("    && rm -rf /usr/local/" + jarName + System.lineSeparator());
                             //write dockerfile
                             String stopsHubPath = stopImpl.getStopsHubPath();
-                            String dockerFileSavePath = stopsHubPath + "/DockerFile-" + stopsHub.getId();
+                            String dockerFileSavePath = stopsHubPath + "DockerFile-" + stopsHub.getId();
                             logger.info("dockerfile:{}",dockerFileSavePath);
                             FileUtils.writeData(dockerFileSavePath, dockerFileSb.toString());
                             DockerClient dockerClient = DockerClientUtils.getDockerClient();
                             logger.info("=====build docker image==dockerClient:{}",JSON.toJSONString(dockerClient));
                             File dockerFile = new File(dockerFileSavePath);
-                            dockerImagesName = buildImageAndPush(dockerClient, dockerFile,jarName,"latest");
+                            dockerImagesName = buildImageAndPush(dockerClient, dockerFile,jarName.toLowerCase(),"latest");
                         }
                     }
                 }
@@ -331,7 +334,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         } else {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Mount failed, please try again later");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("Mounting!! It takes about 10-20 minutes!!");
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("Mount success!!");
     }
 
     private String buildImageAndPush(DockerClient dockerClient, File dockerFile,String imageName,String tags) throws InterruptedException {
@@ -359,9 +362,9 @@ public class StopsHubServiceImpl implements IStopsHubService {
             throw new RuntimeException(e);
         } finally {
             //TODO delete dockerfile
-            if(dockerFile.exists()){
-                dockerFile.delete();
-            }
+//            if(dockerFile.exists()){
+//                dockerFile.delete();
+//            }
         }
     }
 
