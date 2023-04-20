@@ -77,11 +77,11 @@ public class FlowImpl implements IFlow {
                 }
             }
         }
-        logger.info("==========startFlow::process::"+ JSON.toJSONString(process));
+//        logger.info("==========startFlow::process::"+ JSON.toJSONString(process));
         String formatJson = ProcessUtils.processToJson(process, checkpoint, runModeType, process.getFlowGlobalParamsList());
-        logger.info("====startFlow::formatJson::\n" + formatJson);
+//        logger.info("====startFlow::formatJson::\n" + formatJson);
         String doPost = HttpUtils.doPost(ApiConfig.getFlowStartUrl(), formatJson, null);
-        logger.info("Return information：" + doPost);
+//        logger.info("Return information：" + doPost);
         if (StringUtils.isBlank(doPost)) {
             return ReturnMapUtils.setFailedMsg("Error : " + MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }

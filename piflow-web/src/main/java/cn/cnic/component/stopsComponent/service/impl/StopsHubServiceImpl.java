@@ -362,9 +362,9 @@ public class StopsHubServiceImpl implements IStopsHubService {
             throw new RuntimeException(e);
         } finally {
             //TODO delete dockerfile
-//            if(dockerFile.exists()){
-//                dockerFile.delete();
-//            }
+            if(dockerFile.exists()){
+                dockerFile.delete();
+            }
         }
     }
 

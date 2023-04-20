@@ -316,6 +316,7 @@ public class FlowServiceImpl implements IFlowService {
 
     @Override
     public String runFlow(String username, boolean isAdmin, String flowId, String runMode) throws Exception {
+        logger.info("=======run flow start===============");
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
         }
@@ -369,6 +370,7 @@ public class FlowServiceImpl implements IFlowService {
         process.setLastUpdateUser(username);
         process.setLastUpdateDttm(new Date());
         processDomain.updateProcess(process);
+        logger.info("========run flow finish==================");
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processId", process.getId());
     }
 
