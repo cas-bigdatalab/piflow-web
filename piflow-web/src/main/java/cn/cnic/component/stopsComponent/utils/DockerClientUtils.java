@@ -5,6 +5,7 @@ import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -147,7 +148,29 @@ public class DockerClientUtils {
         return DockerClientImpl.getInstance(dockerClientConfig, httpClient);
     }
 
-    public static DockerClient getDockerClient() {
-        return getDockerClient(getDockerHost(), getDockerTlsVerify(), getDockerCertPath(), getRegistryUserName(), getRegistryPassword(), getRegistryUrl());
+    public static DockerClient getDockerClient(String dockerHost,boolean tlsVerify){
+        DefaultDockerClientConfig dockerClientConfig = DefaultDockerClientConfig.createDefaultConfigBuilder()
+                .withDockerHost(dockerHost)
+                .withDockerTlsVerify(tlsVerify)
+                .build();
+        DockerHttpClient httpClient = new ApacheDockerHttpClient.Builder()
+                .dockerHost(dockerClientConfig.getDockerHost())
+                .sslConfig(dockerClientConfig.getSSLConfig())
+                .maxConnections(100)
+                .build();
+
+        return DockerClientImpl.getInstance(dockerClientConfig, httpClient);
     }
+
+    public static DockerClient getDockerClient() {
+        String registryUrl = getRegistryUrl();
+        if(StringUtils.isNotBlank(registryUrl)){
+            return getDockerClient(getDockerHost(), getDockerTlsVerify(), getDockerCertPath(), getRegistryUserName(), getRegistryPassword(), getRegistryUrl());
+
+        }else {
+            return getDockerClient(getDockerHost(),getDockerTlsVerify());
+        }
+}
+
+
 }
