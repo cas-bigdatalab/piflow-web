@@ -44,7 +44,7 @@ To Build: mvn clean package -U -DskipTests -P prod -e
 To Run Piflow Web：
 - Note: 
   - 1.The piflow server must be running before running piflow-web
-  - 2.This version can choose any of "H2DB" and "MySQL" database
+  - 2.This version can only choose "MySQL" database
 - run piflow web on intellij:
 
   - edit config.properties
@@ -52,7 +52,7 @@ To Run Piflow Web：
 
 - run piflow web by release version:
 
-  - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/v1.3
+  - download piflow_release: https://github.com/cas-bigdatalab/piflow-web/releases/tag/v1.5
   - edit config.properties
   - sh start.sh
 - how to configure config.properties
@@ -84,36 +84,20 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
 
 spring.flyway.locations=classpath:db/flyway-mysql/
 
-#If you want to use H2DB database, please open the note here
-## data source
-#sysParam.datasource.type=h2
-## h2 Configuration
-##Configure the connection address of H2DB
-#spring.datasource.url=jdbc:h2:file:/PiFlow_DB/piflow_web
-##Configure database user name
-#spring.datasource.username=Admin
-##Configuration database password
-#spring.datasource.password=Admin
-##Configure JDBC Driver
-## Can not be configured, according to the URL automatic identification, recommended configuration
-#spring.datasource.driver-class-name=org.h2.Driver
-###H2DB web console settings
-#spring.datasource.platform=h2
-##After this configuration, h2 web consloe can be accessed remotely. Otherwise it can only be accessed locally.
-#spring.h2.console.settings.web-allow-others=true
-##With this configuration, you can access h2 web consloe through YOUR_URL / h2. YOUR_URL is the access URL of your program.
-#spring.h2.console.path=/h2
-##With this configuration, h2 web consloe will start when the program starts. Of course this is the default. If you don't want to start h2 web consloe when you start the program, then set it to false.
-#spring.h2.console.enabled=true
-#
-#spring.flyway.locations=classpath:db/flyway-h2db/
-
-
 # Log Coordination Standard
 logging.level.root=info
 logging.level.org.flywaydb=info
 logging.level.org.springframework.security=info
 #logging.level.cn.cnic.component.testData.mapper.*=debug
+
+# if you need to upload python stop,please set docker.host
+#docker.host=tcp://localhost:2375
+#if you want to push docker images,please set these params
+#docker.tls.verify=false
+#docker.registry.url=http://localhost:7185
+#docker.project.name=piflow
+#docker.registry.user.name=admin
+#docker.registry.password=admin
 ```
 
 
