@@ -90,9 +90,9 @@ logging.level.org.flywaydb=info
 logging.level.org.springframework.security=info
 #logging.level.cn.cnic.component.testData.mapper.*=debug
 
-# if you need to upload python stop,please set docker.host
+# If you need to upload python stop,please set docker.host
 #docker.host=tcp://localhost:2375
-#if you want to push docker images,please set these params
+#If you want to push docker images,please set these params
 #docker.tls.verify=false
 #docker.registry.url=http://localhost:7185
 #docker.project.name=piflow
