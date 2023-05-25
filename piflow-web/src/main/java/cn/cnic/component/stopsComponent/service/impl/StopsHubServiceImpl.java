@@ -90,7 +90,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         if (CollectionUtils.isNotEmpty(existStopHub)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Stops hub exists!! Please confirm whether the upload is repeated!! If not,please change the file name!!  fileName: " + stopsHubName);
         }
-        //call piflow server api: plunin/path
+        //call piflow server api: plugin/path
         String stopsHubPath = stopImpl.getStopsHubPath();
         if (!stopsHubPath.endsWith("/")) {
             stopsHubPath = stopsHubPath + "/";

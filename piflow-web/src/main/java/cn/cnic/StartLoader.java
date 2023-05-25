@@ -15,6 +15,7 @@ import cn.cnic.component.system.entity.SysSchedule;
 import cn.cnic.component.system.mapper.SysScheduleMapper;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.slf4j.Logger;
@@ -97,6 +98,9 @@ public class StartLoader implements ApplicationRunner {
                 Set<String> unrepeatedBundles = new HashSet<>();
                 List<String> bundles = stopsHubs.stream().map(StopsHub::getBundles).collect(Collectors.toList());
                 for (String bundle : bundles) {
+                    if (StringUtils.isBlank(bundle)){
+                        continue;
+                    }
                     String[] split = bundle.split(",");
                     unrepeatedBundles.addAll(Arrays.asList(split));
                 }
