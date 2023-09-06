@@ -88,11 +88,12 @@ public class StopsComponentDomain {
         if (null == stopsComponent) {
             return 0;
         }
-        int affectedRows = 0;
-        List<StopsComponentProperty> properties = stopsComponent.getProperties();
-        if (null != properties && properties.size() > 0) {
-            affectedRows = stopsComponentPropertyMapper.deleteStopsComponentPropertyByStopId(stopsComponent.getId());
-        }
+//        int affectedRows = 0;
+//        List<StopsComponentProperty> properties = stopsComponent.getProperties();
+//        if (null != properties && properties.size() > 0) {
+//            affectedRows = stopsComponentPropertyMapper.deleteStopsComponentPropertyByStopId(stopsComponent.getId());
+//        }
+        int affectedRows = stopsComponentPropertyMapper.deleteStopsComponentPropertyByStopId(stopsComponent.getId());
 
         int deleteStopsComponentRows = stopsComponentMapper.deleteStopsComponentById(stopsComponent.getId());
         affectedRows += deleteStopsComponentRows;
