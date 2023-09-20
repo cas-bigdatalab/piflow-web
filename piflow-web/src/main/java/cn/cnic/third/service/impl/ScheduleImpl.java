@@ -49,29 +49,26 @@ public class ScheduleImpl implements ISchedule {
         if (null == schedule) {
             return ReturnMapUtils.setFailedMsg("failed, schedule is null");
         }
-        if (null == process) {
-            return ReturnMapUtils.setFailedMsg(MessageConfig.PARAM_ERROR_MSG());
-        }
-        //String json = ProcessUtil.processToJson(process, checkpoint, runModeType);
-        //String formatJson = JsonFormatTool.formatJson(json);
-        List<ProcessStop> processStopList = process.getProcessStopList();
-        if (processStopList == null || processStopList.size() == 0) {
-            return ReturnMapUtils.setFailedMsg(MessageConfig.PARAM_IS_NULL_MSG("Stop"));
-        }else {
-            for (ProcessStop processStop : processStopList) {
-                StopsComponent stops = stopsComponentDomain.getOnlyStopsComponentByBundle(processStop.getBundel());
-                if (stops == null) {
-                    return ReturnMapUtils.setFailedMsg(MessageConfig.DATA_ERROR_MSG());
-                }
-                processStop.setComponentType(stops.getComponentType());
-                if (ComponentFileType.PYTHON == processStop.getComponentType()) {
-                    processStop.setDockerImagesName(stops.getDockerImagesName());
-                }
-            }
-        }
         String type = schedule.getType();
         Map<String, Object> scheduleContentMap = new HashMap<>();
         if ("FLOW".equals(type) && null != process) {
+            //String json = ProcessUtil.processToJson(process, checkpoint, runModeType);
+            //String formatJson = JsonFormatTool.formatJson(json);
+            List<ProcessStop> processStopList = process.getProcessStopList();
+            if (processStopList == null || processStopList.size() == 0) {
+                return ReturnMapUtils.setFailedMsg(MessageConfig.PARAM_IS_NULL_MSG("Stop"));
+            }else {
+                for (ProcessStop processStop : processStopList) {
+                    StopsComponent stops = stopsComponentDomain.getOnlyStopsComponentByBundle(processStop.getBundel());
+                    if (stops == null) {
+                        return ReturnMapUtils.setFailedMsg(MessageConfig.DATA_ERROR_MSG());
+                    }
+                    processStop.setComponentType(stops.getComponentType());
+                    if (ComponentFileType.PYTHON == processStop.getComponentType()) {
+                        processStop.setDockerImagesName(stops.getDockerImagesName());
+                    }
+                }
+            }
             scheduleContentMap = ProcessUtils.processToMap(process, "", RunModeType.RUN, process.getFlowGlobalParamsList());
         } else if ("FLOW_GROUP".equals(type) && null != processGroup) {
             scheduleContentMap = this.processGroupToMap(processGroup, RunModeType.RUN);
