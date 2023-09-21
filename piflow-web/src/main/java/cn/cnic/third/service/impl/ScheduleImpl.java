@@ -116,7 +116,8 @@ public class ScheduleImpl implements ISchedule {
 
                 List<ProcessStop> processStopList = process.getProcessStopList();
                 if (processStopList == null || processStopList.size() == 0) {
-                    return ReturnMapUtils.setFailedMsg(MessageConfig.PARAM_IS_NULL_MSG("Stop"));
+//                    continue;
+//                    return ReturnMapUtils.setFailedMsg(MessageConfig.PARAM_IS_NULL_MSG("Stop"));
                 }else {
                     for (ProcessStop processStop : processStopList) {
                         StopsComponent stops = stopsComponentDomain.getOnlyStopsComponentByBundle(processStop.getBundel());
