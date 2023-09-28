@@ -116,12 +116,12 @@ export default {
           router: "TestData",
           name: "TestData"
         },
-        {
-          btnName: this.$t("sidebar.code"),
-          icoName: "md-code",
-          router: "Code",
-          name: "Code"
-        },
+       // {
+          //btnName: this.$t("sidebar.code"),
+          //icoName: "md-code",
+         // router: "Code",
+         // name: "Code"
+        //},
         {
           btnName: this.$t("sidebar.publish"),
           icoName: "md-checkbox-outline",

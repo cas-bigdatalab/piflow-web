@@ -79,11 +79,11 @@ export default new Router({
               name: 'TestData',
               component: () => import('../components/pages/TestData')
             },
-            {
-              path: '/code',
-              name: 'Code',
-              component: () => import('../components/pages/Code')
-            },
+            //{
+             // path: '/code',
+           //   name: 'Code',
+            //  component: () => import('../components/pages/Code')
+           // },
             {
               path: '/publish',
               name: 'publish',
@@ -94,11 +94,11 @@ export default new Router({
               name: 'stopProperties',
               component: () => import('../components/pages/publish/properties')
             },
-            {
-              path: '/codeDetailed',
-              name: 'codeBlock',
-              component: () => import('../components/pages/Code/codeBlock')
-            },
+            //{
+            //  path: '/codeDetailed',
+            //  name: 'codeBlock',
+            //  component: () => import('../components/pages/Code/codeBlock')
+           // },
             {
               path: '/admin',
               name: 'admin',
