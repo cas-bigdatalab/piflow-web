@@ -111,8 +111,8 @@ module.exports = {
     },
     progress_columns: {
         progress: "进程",
-        endTime: "开始时间",
-        startTime: "结束时间",
+        endTime: "结束时间",
+        startTime: "开始时间",
         processType: "流程类型",
         description: "描述信息",
         id: "ProcessGroupId",
