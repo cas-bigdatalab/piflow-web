@@ -1,0 +1,10 @@
+:root{
+    /* 主题色  页面 header  和 footer  */
+    --primary-color: #2F7AE1;   
+    
+    /* 侧边栏的颜色  */
+    --sidebar-color: #2F7AE1;
+
+    /* 按钮的颜色  */
+    --button-color: #2F7AE1;
+}
