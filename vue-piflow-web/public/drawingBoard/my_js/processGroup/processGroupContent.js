@@ -188,7 +188,7 @@ function selectRunMode(runMode) {
         + '</div>';
     layer.open({
         type: 1,
-        title: '<span style="color: #269252;">Select Run Mode</span>',
+        title: '<span style="color: var(--button-color);">Select Run Mode</span>',
         shadeClose: true,
         closeBtn: 1,
         shift: 7,
@@ -300,7 +300,7 @@ function openLogWindow() {
         + '</div>';
     layer.open({
         type: 1,
-        title: '<span style="color: #269252;">Log Windows</span>',
+        title: '<span style="color: var(--button-color);">Log Windows</span>',
         shadeClose: true,
         closeBtn: 1,
         shift: 7,
@@ -495,7 +495,7 @@ function getDebugData(stopName, portName) {
             var open_window_height = (window_height > 400 ? 570 : window_height);
             layer.open({
                 type: 1,
-                title: '<span style="color: #269252;">Debug Data</span>',
+                title: '<span style="color: var(--button-color);">Debug Data</span>',
                 shadeClose: true,
                 closeBtn: 1,
                 shift: 7,

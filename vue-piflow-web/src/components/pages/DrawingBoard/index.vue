@@ -1,7 +1,7 @@
 <template>
   <div :style="{height}">
     <iframe :src="src" id="bariframe" style="width: 100%;height: 100%" frameborder="0"></iframe>
-    <img id="piflow-bgc" src="../../../assets/img/hbbj.jpg" />
+    <!-- <img id="piflow-bgc" src="" /> -->
 
     <!--The online programming-->
     <Modal
@@ -701,7 +701,7 @@ export default {
   border-color: #dcdee2!important;
 }
 ::v-deep .ivu-tabs-nav .ivu-tabs-tab:hover {
-  color: #009688;
+  color: var(--button-color);
 }
 /*滚动条整体部分*/
 .mytable-scrollbar ::-webkit-scrollbar {

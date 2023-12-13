@@ -520,7 +520,7 @@ export default {
   }
 }
 ::v-deep .ivu-tabs-ink-bar {
-     background-color: #3da375;
+     background-color: var(--sidebar-color);
  }
 ::v-deep .ivu-tabs-nav .ivu-tabs-tab-active {
     color: #515a6e;

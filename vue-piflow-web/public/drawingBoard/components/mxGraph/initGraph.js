@@ -496,7 +496,7 @@ function groupGraphAddCells(cells) {
                         $("#description1").val("");
                         layer.open({
                             type: 1,
-                            title: '<span style="color: #269252;">create flow group</span>',
+                            title: '<span style="color: var(--button-color);">create flow group</span>',
                             shadeClose: false,
                             shade: 0.3,
                             closeBtn: 1,
@@ -550,7 +550,7 @@ function groupGraphAddCells(cells) {
                         $("#executorCores").val('1');
                         layer.open({
                             type: 1,
-                            title: '<span style="color: #269252;">Create Flow</span>',
+                            title: '<span style="color: var(--button-color);">Create Flow</span>',
                             shadeClose: false,
                             shade: 0.3,
                             closeBtn: 1,
@@ -1573,7 +1573,7 @@ function saveXml(paths, operType) {
                     $("#description1").val("");
                     layer.open({
                         type: 1,
-                        title: '<span style="color: #269252;">create flow group</span>',
+                        title: '<span style="color: var(--button-color);">create flow group</span>',
                         shadeClose: false,
                         shade: 0.3,
                         closeBtn: 1,
@@ -1631,7 +1631,7 @@ function saveXml(paths, operType) {
                     $("#executorCores").val('1');
                     layer.open({
                         type: 1,
-                        title: '<span style="color: #269252;">create flow</span>',
+                        title: '<span style="color: var(--button-color);">create flow</span>',
                         shadeClose: false,
                         shade: 0.3,
                         closeBtn: 1,
@@ -2798,7 +2798,7 @@ function openTemplateList() {
                 showSelectDivHtml += (showSelectHtml + loadTemplateBtn + '</div>');
                 layer.open({
                     type: 1,
-                    title: '<span style="color: #269252;">Please choose</span>',
+                    title: '<span style="color: var(--button-color);">Please choose</span>',
                     shadeClose: false,
                     resize: false,
                     closeBtn: 1,
@@ -2997,7 +2997,7 @@ function removeRouterStopCustomProperty(customPropertyId) {
 function layuiOpenWindowDivFunc(title, contentHtml) {
     layer.open({
         type: 1,
-        title: '<span style="color: #269252;">' + title + '</span>',
+        title: '<span style="color: var(--button-color);">' + title + '</span>',
         shadeClose: false,
         closeBtn: 0,
         shift: 7,
@@ -3024,7 +3024,7 @@ function openDatasourceList() {
         success: function (data) {//Operation after request successful
             layer.open({
                 type: 1,
-                title: '<span style="color: #269252;">DatasourceList</span>',
+                title: '<span style="color: var(--button-color);">DatasourceList</span>',
                 shadeClose: false,
                 closeBtn: 1,
                 shift: 7,
@@ -3048,7 +3048,7 @@ function getFlowList() {
         success: function (data) {//Operation after request successful
             layer.open({
                 type: 1,
-                title: '<span style="color: #269252;">Flows</span>',
+                title: '<span style="color: var(--button-color);">Flows</span>',
                 shade: 0,
                 shadeClose: false,
                 closeBtn: 1,

@@ -145,7 +145,7 @@ function imageAjax() {
                     for (var i = 0; i < imgwrap1.length; i++) {
                         imgwrap1[i].style.backgroundColor = "#fff"
                     }
-                    e.srcElement.style = "background-color:#009688;width:100%;height:100%"
+                    e.srcElement.style = "background-color:var(--button-color);width:100%;height:100%"
                     imagSrc = e.srcElement.src
                 }
             })
@@ -196,7 +196,7 @@ function updateMxGraphCellImage(cellEditor, selState, newValue, fn) {
     });
     layer.open({
         type: 1,
-        title: '<span style="color: #269252;">已有现存可选择更改的图片</span>',
+        title: '<span style="color: var(--button-color);">已有现存可选择更改的图片</span>',
         shadeClose: true,
         shade: 0.3,
         closeBtn: 1,
@@ -1341,7 +1341,7 @@ function getStopsPortNew(paths) {
                     } else {
                         layer.open({
                             type: 1,
-                            title: '<span style="color: #269252;">CreatePort</span>',
+                            title: '<span style="color: var(--button-color);">CreatePort</span>',
                             shadeClose: false,
                             closeBtn: 0,
                             shift: 7,
@@ -2177,7 +2177,7 @@ function openTemplateList() {
                 showSelectDivHtml += (showSelectHtml + loadTemplateBtn + '</div>');
                 layer.open({
                     type: 1,
-                    title: '<span style="color: #269252;">Please choose</span>',
+                    title: '<span style="color: var(--button-color);">Please choose</span>',
                     shadeClose: false,
                     resize: false,
                     closeBtn: 1,

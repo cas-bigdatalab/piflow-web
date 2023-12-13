@@ -25,12 +25,12 @@ section {
   }
   .button-warp {
     text-align: center;
-    color: #1a7444;
+    color: var(--button-color);
     font-weight: bold;
     display: inline-block;
     margin: 2px 5px;
     padding: 2px 10px;
-    border: 1px solid #1a7444;
+    border: 1px solid var(--button-color);
     background-color: #fafafa;
     cursor: pointer;
     background-image: linear-gradient(to bottom, #fefefe, #f2f2f2);

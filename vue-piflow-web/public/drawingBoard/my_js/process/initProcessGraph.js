@@ -599,7 +599,7 @@ function getChart(e,softData,isSoft, ifTheFirst) {
                 if (ifFirst){
                     layer.open({
                         type: 1,
-                        title: '<span style="color: #269252;">View Charts</span>',
+                        title: '<span style="color: var(--button-color);">View Charts</span>',
                         shadeClose: true,
                         closeBtn: 1,
                         shift: 7,

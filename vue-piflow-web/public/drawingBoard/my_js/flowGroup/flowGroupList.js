@@ -6,7 +6,7 @@ function newFlowGroup() {
     $("#description").val("");
     layer.open({
         type: 1,
-        title: '<span style="color: #269252;">create flow group</span>',
+        title: '<span style="color: var(--button-color);">create flow group</span>',
         shadeClose: true,
         closeBtn: 1,
         shift: 7,
@@ -123,7 +123,7 @@ function openFlowBaseInfo(id) {
                 $("#description").val(flowGroupVo.description);
                 layer.open({
                     type: 1,
-                    title: '<span style="color: #269252;">update flow group</span>',
+                    title: '<span style="color: var(--button-color);">update flow group</span>',
                     shadeClose: true,
                     closeBtn: false,
                     shift: 7,

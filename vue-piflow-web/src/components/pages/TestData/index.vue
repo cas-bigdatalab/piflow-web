@@ -156,7 +156,7 @@
             type="drag">
           <div style="padding: 20px 0; height: 120px">
             <div>
-              <Icon type="ios-cloud-upload" size="52" style="color: #20784b"></Icon>
+              <Icon type="ios-cloud-upload" size="52" style="color: var(--primary-color)"></Icon>
               <p>{{$t("testData_columns.fileDescription")}}</p>
               <p style="font-size: 12px">{{$t("testData_columns.uploadPrompt")}}</p >
             </div>

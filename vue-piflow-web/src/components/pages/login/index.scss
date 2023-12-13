@@ -47,12 +47,12 @@
       // justify-content: center;
       align-items: center;
       padding: 5px 30px;
-      background: #37714b;
+      background: var(--primary-color);
     }
     .header .logo {
       width: 30px;
       height: 30px;
-      background: url("../../../assets/img/logo.png") center center no-repeat;
+      background: url("/img/logo.png") center center no-repeat;
       background-size: 100%;
     }
     .header .title h1 {
@@ -107,6 +107,6 @@
     }
   }
   .ivu-btn-primary {
-    background-color: #2f7600;
-    border-color: #2f7600;
+    background-color: var(--button-color);
+    border-color: var(--button-color);
   }

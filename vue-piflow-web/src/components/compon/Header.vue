@@ -2,7 +2,7 @@
   <header>
     <div class="left" @click="handleClick">
       <div class="warp">
-        <img class="logo" src="../../assets/img/logo.png" alt="logo" />
+        <img class="logo" src="/img/logo.png" alt="logo" />
         <span>{{$t("title")}}</span>
       </div>
     </div>
@@ -10,7 +10,7 @@
       <li>
         <Dropdown trigger="click" style="margin-left: 20px">
           <div class="author">
-            <img src="../../assets/img/logo.png" alt="logo" />
+            <img src="/img/logo.png" alt="logo" />
             <span>{{user.username?user.username:'游客'}}</span>
             <Icon type="md-arrow-dropdown" size="22" />
           </div>
@@ -74,7 +74,7 @@ header {
   justify-content: space-between;
   // color: #fff;
   // box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  background: #37714b;
+  background: var(--primary-color);
   color: #fff;
   padding: 6px 20px;
   border-bottom: 4px solid gainsboro;

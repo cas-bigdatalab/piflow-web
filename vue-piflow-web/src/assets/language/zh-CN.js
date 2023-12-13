@@ -1,5 +1,5 @@
 module.exports = {
-    title:"πFlow大数据流水线管理系统",
+    title:window.$SYSTEM_TITLE_ZH,
     logOut: '退出',
     sidebar: {
         dashboard: "首页",
@@ -255,7 +255,7 @@ module.exports = {
         HDFS_Disk: 'HDFS磁盘使用率',
         totalCapacity: '总容量',
         Used: '已使用',
-        introduction_Info: "πFlow是一款基于分布式计算引擎Spark开发的大数据流水线系统，以所见即所得的方式，实现大数据采集、处理、存储与分析流程化配置、运行与智能监控，提供了100+的标准化组件， 包括Hadoop 、Spark、MLlib、Hive、Solr、ElasticSearch、Redis等，更支持面向领域、灵活的二次组件开发，性能优越。",
+        introduction_Info:window.$SYSTEM_INTRODUCTION_INFO_ZH,
         flowStatistics: "流水线统计信息，包括流水线Flow数量、运行态流水线Processor数量，以及各运行状态下Processor数量。",
         scheduleStatistics: "调度统计信息，包括调度流水线/流水线组数量，以及各个状态下Schedule数量。",
         groupStatistics: "流水线组统计信息，包括流水线组Group数量、运行态流水线组Processor数量，以及各运行状态下Processor数量。",

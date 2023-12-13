@@ -261,7 +261,7 @@ export default {
 
 ::v-deep .keyword-lighten {
   color: #f8f5f1;
-  background-color: #009688;
+  background-color: var(--button-color);
 }
 .vxe-toolbar{
   background-color: rgba(255, 255, 255, 0);

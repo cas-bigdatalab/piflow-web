@@ -798,13 +798,13 @@ html td.mxWindowTitle {
     padding: 3px;
 }
 .imgwrap > img:hover,.imgwrap > img:active,.imgwrap > img:focus {
-    background-color: #009688 !important;
+    background-color: var(--button-color) !important;
 
 }
 
 .layui-layer-btn .layui-layer-btn0 {
-    border-color: #009688 !important;
-    background-color: #009688 !important;
+    border-color: var(--button-color) !important;
+    background-color: var(--button-color) !important;
 }
 
 .ExpandSidebar{

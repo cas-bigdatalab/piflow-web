@@ -258,7 +258,7 @@
                 <Icon
                   type="ios-cloud-upload"
                   size="52"
-                  style="color: #20784b"
+                  style="color: var(--primary-color)"
                 ></Icon>
                 <p>{{ $t("StopHub_columns.jarDescription") }}</p>
               </div>
@@ -1629,7 +1629,7 @@ export default {
   }
 }
 ::v-deep .ivu-upload-drag:hover {
-  border: 1px dashed #20784b;
+  border: 1px dashed var(--primary-color);
 }
 .gray_btn {
   cursor: not-allowed !important;
@@ -1691,7 +1691,7 @@ export default {
     //background: #243c9c;
     background: linear-gradient(
       135deg,
-      #3da375 0%,
+      var(--sidebar-color) 0%,
       rgba(61, 163, 117, 0.3) 100%
     );
     position: absolute;
@@ -1705,7 +1705,7 @@ export default {
   .edit {
     display: none;
     cursor: pointer;
-    color: #20784b;
+    color: var(--primary-color);
     padding-left: 20px;
     position: absolute;
     right: 20px;
@@ -1719,7 +1719,7 @@ export default {
   }
 }
 .img_warp {
-  border: 1px solid #20784b99;
+  border: 1px solid var(--primary-color)99;
   padding: 10px;
   border-radius: 18px;
   margin-right: 3%;

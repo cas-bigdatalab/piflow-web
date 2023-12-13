@@ -10,7 +10,7 @@ function newPath() {
     $("#executorCores").val('1');
     layer.open({
         type: 1,
-        title: '<span style="color: #269252;">create flow</span>',
+        title: '<span style="color: var(--button-color);">create flow</span>',
         shadeClose: true,
         closeBtn: 1,
         shift: 7,
@@ -139,7 +139,7 @@ function openFlowBaseInfo(id) {
                 $("#executorCores").val(flowVo.executorCores);
                 layer.open({
                     type: 1,
-                    title: '<span style="color: #269252;">update flow</span>',
+                    title: '<span style="color: var(--button-color);">update flow</span>',
                     shadeClose: true,
                     closeBtn: false,
                     shift: 7,

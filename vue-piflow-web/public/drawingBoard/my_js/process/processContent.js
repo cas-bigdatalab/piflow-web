@@ -252,7 +252,7 @@ function getLogUrl() {
         success: function (data) {//Operation after request successful
             layer.open({
                 type: 1,
-                title: '<span style="color: #269252;">Log Windows</span>',
+                title: '<span style="color: var(--button-color);">Log Windows</span>',
                 shadeClose: true,
                 closeBtn: 1,
                 shift: 7,

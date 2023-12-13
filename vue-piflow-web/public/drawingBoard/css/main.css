@@ -467,14 +467,14 @@ span.green { background-color: #41CA83; }
 /*===== Top =====*/
 
 #top { height: 48px; display: block; }
-.fixed { position: fixed; height: 48px; width: 100%; z-index: 1039; background: #37714b; padding: 0 20px; border-bottom: 4px solid gainsboro; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }
+.fixed { position: fixed; height: 48px; width: 100%; z-index: 1039; background: var(--primary-color); padding: 0 20px; border-bottom: 4px solid gainsboro; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -ms-box-sizing: border-box; box-sizing: border-box; }
 #top:after { content: ""; display: block; clear: both; }
 .logo { display: block; padding: 11px 0; float: left; }
 
-.top-menu { border-left: 1px solid #37714b; border-right: 1px solid #37714b; float: right; margin-right: -1px; }
-.top-menu > li { list-style: none; float: left; border-right: 1px solid #37714b; position: relative; }
-.top-menu > li:first-child { border-left: 1px solid #37714b; }
-.top-menu > li > a { cursor: pointer; display: block; border-left: 1px solid #37714b; border-right: 1px solid #37714b;
+.top-menu { border-left: 1px solid var(--primary-color); border-right: 1px solid var(--primary-color); float: right; margin-right: -1px; }
+.top-menu > li { list-style: none; float: left; border-right: 1px solid var(--primary-color); position: relative; }
+.top-menu > li:first-child { border-left: 1px solid var(--primary-color); }
+.top-menu > li > a { cursor: pointer; display: block; border-left: 1px solid var(--primary-color); border-right: 1px solid var(--primary-color);
   -webkit-transition: all 0.2s ease-in-out;
      -moz-transition: all 0.2s ease-in-out;
        -o-transition: all 0.2s ease-in-out;
@@ -735,7 +735,7 @@ span.green { background-color: #41CA83; }
   background: linear-gradient(to bottom,  #ffffff 0%,#f5f5f5 100%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f5f5f5',GradientType=0 );
 }
-.navigation > li.active > a, .navigation > li.active > a:hover, .navigation > li.active > a:active, .navigation > li > a.subOpened, .navigation > li > a.subOpened:hover { color: #fff; vertical-align: middle; background: #3da375; border-color: #47869E;
+.navigation > li.active > a, .navigation > li.active > a:hover, .navigation > li.active > a:active, .navigation > li > a.subOpened, .navigation > li > a.subOpened:hover { color: #fff; vertical-align: middle; background: var(--sidebar-color); border-color: #47869E;
 
   box-shadow: 0 1px 1px rgba(255,255,255,0.3) inset; 
   -webkit-box-shadow: 0 1px 1px rgba(255,255,255,0.3) inset; 
@@ -792,7 +792,7 @@ span.green { background-color: #41CA83; }
 
 .navigation li ul li a.subOpened:before { float: left; width: 5px; height: 1px; background: url(../img/elements/interface/minus.png) no-repeat; margin-right: 10px; margin-top: 9px; }
 .navigation li ul li a.subOpened, 
-.navigation > li > ul > li > a.current { color: #3da375; background-color: #fafafa;
+.navigation > li > ul > li > a.current { color: var(--sidebar-color); background-color: #fafafa;
   box-shadow: -1px 0 0 #3DA375, 2px 0 0 #3DA375 inset;
   -webkit-box-shadow: -1px 0 0 #3DA375, 2px 0 0 #3DA375 inset;
   -moz-box-shadow: -1px 0 0 #3DA375, 2px 0 0 #3DA375 inset;
@@ -1736,7 +1736,7 @@ a.label:hover, a.badge:hover { color: #ffffff; text-decoration: none; cursor: po
 
 /*===== Buttons =====*/
 
-.btn { font-size: 11px; text-align: center; color: #1a7444; font-weight: bold; display: inline-block; margin: 2px 0; padding: 8px 12px 7px 12px; line-height: 13px; border: 1px solid #1a7444;
+.btn { font-size: 11px; text-align: center; color: var(--button-color); font-weight: bold; display: inline-block; margin: 2px 0; padding: 8px 12px 7px 12px; line-height: 13px; border: 1px solid var(--button-color);
   background-color: #fafafa;
   background-image: -moz-linear-gradient(top, #fefefe, #f2f2f2);
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#fefefe), to(#f2f2f2));

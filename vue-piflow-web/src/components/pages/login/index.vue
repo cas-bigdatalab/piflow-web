@@ -3,7 +3,7 @@
     <div class="header">
       <div class="logo"></div>
       <div class="title">
-        <h1>πFlow Big Data Pipeline System</h1>
+        <h1>{{title }}</h1>
       </div>
     </div>
 
@@ -144,7 +144,8 @@ export default {
       post: "",
       status:"",
       isLogin: true,
-      isExist: false
+      isExist: false,
+      title:window.$SYSTEM_TITLE_EN
     };
   },
   watch: {

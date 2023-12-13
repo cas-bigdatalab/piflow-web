@@ -12,7 +12,7 @@
       <li v-for="(item,m) in EditorList" :key="'ve'+m">
         <div :class="highlighted.index === m+1? 'prefix-identification': ''"></div>
         <div style="margin: 10px 0">
-          <div class="InputArea-prompt" :style="highlighted.isFocus && highlighted.index === m+1? 'color: #20784b': ''">
+          <div class="InputArea-prompt" :style="highlighted.isFocus && highlighted.index === m+1? 'color: var(--primary-color)': ''">
             <span style="letter-spacing: 2px;">
               [{{ item.codeSnippetSort }}]:
             </span>

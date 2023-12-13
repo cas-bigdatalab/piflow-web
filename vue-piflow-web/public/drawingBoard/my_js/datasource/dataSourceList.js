@@ -97,7 +97,7 @@ function dataSourceOpen(dataSourceId) {
     openDatasourceId = dataSourceId;
     newDatasourceWindow = layer.open({
         type: 2,
-        title: '<span style="color: #269252;">data source</span>',
+        title: '<span style="color: var(--button-color);">data source</span>',
         shadeClose: true,
         closeBtn: 1,
         shift: 7,
@@ -119,7 +119,7 @@ function dataSourceOpen(dataSourceId) {
     //     success: function (data) {//Operation after request successful
     //         newDatasourceWindow = layer.open({
     //             type: 1,
-    //             title: '<span style="color: #269252;">data source</span>',
+    //             title: '<span style="color: var(--button-color);">data source</span>',
     //             shadeClose: true,
     //             closeBtn: 1,
     //             shift: 7,

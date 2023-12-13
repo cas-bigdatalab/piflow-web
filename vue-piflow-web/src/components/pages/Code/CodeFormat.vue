@@ -263,7 +263,7 @@ export default {
 
 }
 .Focus{
-  box-shadow: #009688 0px 0px 3px 1px;
+  box-shadow: var(--button-color) 0px 0px 3px 1px;
 }
 .blur{
   background: #F5F5F5;

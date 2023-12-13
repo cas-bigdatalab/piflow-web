@@ -75,7 +75,7 @@
               type="drag">
             <div style="padding: 80px 0; height: 240px">
               <div>
-                <Icon type="ios-cloud-upload" size="52" style="color: #20784b"></Icon>
+                <Icon type="ios-cloud-upload" size="52" style="color: var(--primary-color)"></Icon>
                 <p>{{$t("StopHub_columns.jarDescription")}}</p>
               </div>
             </div>
@@ -378,6 +378,6 @@ export default {
   }
 }
 ::v-deep .ivu-upload-drag:hover{
-  border: 1px dashed #20784b;
+  border: 1px dashed var(--primary-color);
 }
 </style>

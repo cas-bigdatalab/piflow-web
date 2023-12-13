@@ -306,7 +306,7 @@ export default {
   ::v-deep .ivu-menu-item-selected {
     color: #fff !important;
     vertical-align: middle;
-    background: #3da375 !important;
+    background: var(--sidebar-color) !important;
     border-color: #47869e;
     box-shadow: 0 1px 1px rgba(255, 255, 255, 0.3) inset;
   }
