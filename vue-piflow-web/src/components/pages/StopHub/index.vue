@@ -285,6 +285,7 @@
       resize
       destroy-on-close
       :position="{ top: 100 }"
+      class="vxeMoadl"
     >
       <template #default>
         <div class="form-box">
@@ -1455,6 +1456,9 @@ export default {
           if (res.data.code === 200) {
             // console.log(res);
             //此处代码不可删除,如果formData没有properties这个属性则添加，否则报错阻断弹框更新
+           if(res.data.data && res.data.data.properties){
+              res.data.data.properties.sort((a,b)=>a.propertySort - b.propertySort)
+            }
             this.formData = res.data.data;
             this.tableLoading = true;
             if (res.data.data.imageUrl)
