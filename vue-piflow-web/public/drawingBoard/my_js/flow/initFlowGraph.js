@@ -698,7 +698,7 @@ function queryStopsProperty(stopPageId, loadId) {
                             // property value
                             var property_value_obj;
                             //If it is greater than 4 and isSelect is true, there is a drop-down box
-                            if (propertyVo_allowableValues.length > 4 && propertyVo_isSelect) {
+                            if (propertyVo_allowableValues && propertyVo_allowableValues.length > 4 && propertyVo_isSelect) {
                                 propertyVo_allowableValues = propertyVo_allowableValues;
                                 var selectValue = JSON.parse(propertyVo_allowableValues);
                                 var selectInfo = JSON.stringify(selectValue);

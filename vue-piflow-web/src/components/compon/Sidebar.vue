@@ -276,6 +276,7 @@ export default {
   // border-right: 1px solid #ddd;
   background: transparent;
   overflow: auto;
+  z-index: 10;
   > div {
     margin: 0 20px;
   }

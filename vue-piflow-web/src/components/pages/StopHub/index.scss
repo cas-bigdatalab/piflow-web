@@ -57,3 +57,9 @@ section {
       }
     }
   }
+
+::v-deep  .vxeMoadl{
+  .vxe-modal--box{
+    max-height: 80%;
+  }
+ } 
