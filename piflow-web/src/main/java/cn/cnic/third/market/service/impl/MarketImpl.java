@@ -7,11 +7,15 @@ import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.common.constant.SysParamsCache;
+import cn.cnic.component.dashboard.service.IStatisticService;
 import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.stopsComponent.vo.PublishComponentVo;
 import cn.cnic.third.market.service.IMarket;
+import cn.cnic.third.service.IResource;
 import cn.cnic.third.vo.flow.ThirdProgressVo;
+import com.alibaba.fastjson2.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import io.swagger.models.auth.In;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -32,10 +36,14 @@ public class MarketImpl implements IMarket {
     private Logger logger = LoggerUtil.getLogger();
 
     private final ProcessDomain processDomain;
+    private final IResource resourceImpl;
+    private final IStatisticService statisticServiceImpl;
 
     @Autowired
-    public MarketImpl(ProcessDomain processDomain) {
+    public MarketImpl(ProcessDomain processDomain, IResource resourceImpl, IStatisticService statisticServiceImpl) {
         this.processDomain = processDomain;
+        this.resourceImpl = resourceImpl;
+        this.statisticServiceImpl = statisticServiceImpl;
     }
 
     /**
@@ -239,6 +247,57 @@ public class MarketImpl implements IMarket {
             }
         }
         return doGet;
+    }
+
+    @Override
+    public void sendStatisticToFairMan() {
+        Map<String, Object> param = new HashMap<>();
+        String dataCenterName = SysParamsCache.DATA_CENTER_NAME;
+        logger.info("datacenterEnglishName is {}",dataCenterName);
+        switch (dataCenterName){
+            case "aiicaas":
+//                logger.warn("国家农业科学数据中心推送统计信息---------------------------------------------");
+                param.put("userName", "aiicaas");
+                break;
+            case "casdc-noda":
+                param.put("userName", "casdc-noda");
+                break;
+            case "casdc-crensed":
+                param.put("userName", "casdc-crensed");
+                break;
+            case "casdc-cma":
+                param.put("userName", "casdc-cma");
+                break;
+            default:
+                param.put("userName", "πFlow");
+                break;
+        }
+        param.put("softwareId", "621f4987583197d50685102b");
+        param.put("softwareName", "πFlow");
+        param.put("softwareVersion", "V1.6");
+        Map<String, Object> softwareData = new HashMap<>();
+        //get statistics
+        String resourceInfo = resourceImpl.getResourceInfo();
+        Map<String, String> flowStatisticInfo = statisticServiceImpl.getFlowStatisticInfo();
+        Map<String, String> stopStatisticInfo = statisticServiceImpl.getStopStatisticInfo();
+        softwareData.put("components",Integer.parseInt(stopStatisticInfo.get("STOP_COUNT")));
+        softwareData.put("pipelines",Integer.parseInt(flowStatisticInfo.get("PROCESSOR_COUNT")));
+        softwareData.put("process",Integer.parseInt(flowStatisticInfo.get("FLOW_COUNT")));
+        JSONObject resourceObject = JSONObject.fromObject(resourceInfo);
+        JSONObject resource = JSONObject.fromObject(resourceObject.get("resource"));
+        JSONObject cpu = resource.getJSONObject("cpu");
+        double cpuTotalVirtualCores = cpu.getDouble("totalVirtualCores");
+        softwareData.put("CPU",cpuTotalVirtualCores);
+        JSONObject memory = resource.getJSONObject("memory");
+        double memoryTotalVirtualCores = memory.getDouble("totalMemoryGB");
+        softwareData.put("memory",memoryTotalVirtualCores);
+        JSONObject hdfs = resource.getJSONObject("hdfs");
+        double hdfsTotalVirtualCores = hdfs.getDouble("TotalCapacityGB");
+        softwareData.put("storage",hdfsTotalVirtualCores);
+        param.put("softwareData", softwareData);
+        logger.info(JSON.toJSONString(param));
+        HttpUtils.doPost(ApiConfig.getSendStatisticsToFairManUrl(), JSON.toJSONString(param), 30 * 1000);
+//        logger.info("推送成功！！！！！");
     }
 
 }
