@@ -281,8 +281,8 @@ public class MarketImpl implements IMarket {
         Map<String, String> flowStatisticInfo = statisticServiceImpl.getFlowStatisticInfo();
         Map<String, String> stopStatisticInfo = statisticServiceImpl.getStopStatisticInfo();
         softwareData.put("components",Integer.parseInt(stopStatisticInfo.get("STOP_COUNT")));
-        softwareData.put("pipelines",Integer.parseInt(flowStatisticInfo.get("PROCESSOR_COUNT")));
-        softwareData.put("process",Integer.parseInt(flowStatisticInfo.get("FLOW_COUNT")));
+        softwareData.put("pipelines",Integer.parseInt(flowStatisticInfo.get("FLOW_COUNT")));
+        softwareData.put("process",Integer.parseInt(flowStatisticInfo.get("PROCESSOR_COUNT")));
         JSONObject resourceObject = JSONObject.fromObject(resourceInfo);
         JSONObject resource = JSONObject.fromObject(resourceObject.get("resource"));
         JSONObject cpu = resource.getJSONObject("cpu");
