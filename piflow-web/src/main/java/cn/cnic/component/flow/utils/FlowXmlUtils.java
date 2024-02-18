@@ -772,105 +772,105 @@ public class FlowXmlUtils {
 
     /**
      * String type xml to "stop"
-     *
+     * 弃用
      * @param xmlData xml string data
      * @return Stops
      */
-    public static Stops xmlToStops(String xmlData, int maxPageId, String username) {
-        if (StringUtils.isBlank(xmlData)) {
-            return null;
-        }
-        try {
-            Element rootElt = xmlStrToElement(xmlData, true);
-            if (null == rootElt) {
-                return null;
-            }
-            Element stopElement = rootElt.element("stop");
-            Stops stops = new Stops();
-            //String id = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("id"));
-            String bundel = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("bundel"));
-            String description = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("description"));
-            String name = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("name"));
-            String pageId = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("pageId"));
-            String inPortType = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("inPortType"));
-            String inports = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("inports"));
-            String outPortType = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("outPortType"));
-            String outports = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("outports"));
-            String isCheckpoint = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("isCheckpoint"));
-            String owner = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("owner"));
-            String groups = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("groups"));
-            //stops.setId(id);
-            stops.setCrtDttm(new Date());
-            stops.setCrtUser(username);
-            stops.setLastUpdateDttm(new Date());
-            stops.setLastUpdateUser(username);
-            stops.setPageId((Integer.parseInt(pageId) + maxPageId) + "");
-            stops.setName(name);
-            stops.setDescription(description);
-            stops.setBundel(bundel);
-            stops.setInports(inports);
-            stops.setOutports(outports);
-            stops.setOutPortType(PortType.selectGender(outPortType));
-            stops.setInPortType(PortType.selectGenderByValue(inPortType));
-            stops.setGroups(groups);
-            Boolean Checkpoint = "1".equals(isCheckpoint);
-            stops.setIsCheckpoint(Checkpoint);
-            stops.setOwner(owner);
-            Iterator propertyXmlIterator = stopElement.elementIterator("property");
-            if (null != propertyXmlIterator) {
-                List<Property> propertyList = new ArrayList<>();
-                while (propertyXmlIterator.hasNext()) {
-                    Element propertyValue = (Element) propertyXmlIterator.next();
-                    Property property = new Property();
-                    //String propertyId = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("id"));
-                    String allowableValues = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("allowableValues"));
-                    String customValue = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("customValue"));
-                    String propertyDescription = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("description"));
-                    String displayName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("displayName"));
-                    String propertyName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("name"));
-                    boolean required = "true".equals(propertyValue.attributeValue("required"));
-                    boolean sensitive = "true".equals(propertyValue.attributeValue("sensitive"));
-                    boolean isSelect = "true".equals(propertyValue.attributeValue("isSelect"));
-                    if (isSelect && null != allowableValues && allowableValues.length() > 1) {
-                        String temp = allowableValues.substring(1, allowableValues.length() - 1);
-                        String[] tempArray = temp.split(",");
-                        StringBuilder tempStringBuffer = new StringBuilder();
-                        tempStringBuffer.append("[");
-                        for (int i = 0; i < tempArray.length; i++) {
-                            tempStringBuffer.append("\"");
-                            tempStringBuffer.append(tempArray[i]);
-                            tempStringBuffer.append("\"");
-                            if (i + 1 != tempArray.length) {
-                                tempStringBuffer.append(",");
-                            }
-                        }
-                        tempStringBuffer.append("]");
-                        allowableValues = tempStringBuffer.toString();
-                    }
-                    property.setCrtDttm(new Date());
-                    //property.setId(propertyId);
-                    property.setCrtUser(username);
-                    property.setLastUpdateDttm(new Date());
-                    property.setLastUpdateUser(username);
-                    property.setAllowableValues(allowableValues);
-                    property.setCustomValue(customValue);
-                    property.setDescription(propertyDescription);
-                    property.setDisplayName(displayName);
-                    property.setName(propertyName);
-                    property.setRequired(required);
-                    property.setSensitive(sensitive);
-                    property.setIsSelect(isSelect);
-                    property.setStops(stops);
-                    propertyList.add(property);
-                }
-                stops.setProperties(propertyList);
-            }
-            return stops;
-        } catch (Exception e) {
-            logger.error("Conversion failed", e);
-            return null;
-        }
-    }
+//    public static Stops xmlToStops(String xmlData, int maxPageId, String username) {
+//        if (StringUtils.isBlank(xmlData)) {
+//            return null;
+//        }
+//        try {
+//            Element rootElt = xmlStrToElement(xmlData, true);
+//            if (null == rootElt) {
+//                return null;
+//            }
+//            Element stopElement = rootElt.element("stop");
+//            Stops stops = new Stops();
+//            //String id = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("id"));
+//            String bundel = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("bundel"));
+//            String description = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("description"));
+//            String name = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("name"));
+//            String pageId = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("pageId"));
+//            String inPortType = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("inPortType"));
+//            String inports = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("inports"));
+//            String outPortType = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("outPortType"));
+//            String outports = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("outports"));
+//            String isCheckpoint = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("isCheckpoint"));
+//            String owner = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("owner"));
+//            String groups = StringCustomUtils.recoverSpecialSymbolsXml(stopElement.attributeValue("groups"));
+//            //stops.setId(id);
+//            stops.setCrtDttm(new Date());
+//            stops.setCrtUser(username);
+//            stops.setLastUpdateDttm(new Date());
+//            stops.setLastUpdateUser(username);
+//            stops.setPageId((Integer.parseInt(pageId) + maxPageId) + "");
+//            stops.setName(name);
+//            stops.setDescription(description);
+//            stops.setBundel(bundel);
+//            stops.setInports(inports);
+//            stops.setOutports(outports);
+//            stops.setOutPortType(PortType.selectGender(outPortType));
+//            stops.setInPortType(PortType.selectGenderByValue(inPortType));
+//            stops.setGroups(groups);
+//            Boolean Checkpoint = "1".equals(isCheckpoint);
+//            stops.setIsCheckpoint(Checkpoint);
+//            stops.setOwner(owner);
+//            Iterator propertyXmlIterator = stopElement.elementIterator("property");
+//            if (null != propertyXmlIterator) {
+//                List<Property> propertyList = new ArrayList<>();
+//                while (propertyXmlIterator.hasNext()) {
+//                    Element propertyValue = (Element) propertyXmlIterator.next();
+//                    Property property = new Property();
+//                    //String propertyId = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("id"));
+//                    String allowableValues = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("allowableValues"));
+//                    String customValue = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("customValue"));
+//                    String propertyDescription = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("description"));
+//                    String displayName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("displayName"));
+//                    String propertyName = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("name"));
+//                    boolean required = "true".equals(propertyValue.attributeValue("required"));
+//                    boolean sensitive = "true".equals(propertyValue.attributeValue("sensitive"));
+//                    boolean isSelect = "true".equals(propertyValue.attributeValue("isSelect"));
+//                    if (isSelect && null != allowableValues && allowableValues.length() > 1) {
+//                        String temp = allowableValues.substring(1, allowableValues.length() - 1);
+//                        String[] tempArray = temp.split(",");
+//                        StringBuilder tempStringBuffer = new StringBuilder();
+//                        tempStringBuffer.append("[");
+//                        for (int i = 0; i < tempArray.length; i++) {
+//                            tempStringBuffer.append("\"");
+//                            tempStringBuffer.append(tempArray[i]);
+//                            tempStringBuffer.append("\"");
+//                            if (i + 1 != tempArray.length) {
+//                                tempStringBuffer.append(",");
+//                            }
+//                        }
+//                        tempStringBuffer.append("]");
+//                        allowableValues = tempStringBuffer.toString();
+//                    }
+//                    property.setCrtDttm(new Date());
+//                    //property.setId(propertyId);
+//                    property.setCrtUser(username);
+//                    property.setLastUpdateDttm(new Date());
+//                    property.setLastUpdateUser(username);
+//                    property.setAllowableValues(allowableValues);
+//                    property.setCustomValue(customValue);
+//                    property.setDescription(propertyDescription);
+//                    property.setDisplayName(displayName);
+//                    property.setName(propertyName);
+//                    property.setRequired(required);
+//                    property.setSensitive(sensitive);
+//                    property.setIsSelect(isSelect);
+//                    property.setStops(stops);
+//                    propertyList.add(property);
+//                }
+//                stops.setProperties(propertyList);
+//            }
+//            return stops;
+//        } catch (Exception e) {
+//            logger.error("Conversion failed", e);
+//            return null;
+//        }
+//    }
 
     /**
      * String type xml to FlowGroupPaths
@@ -934,7 +934,7 @@ public class FlowXmlUtils {
             List<Stops> stopsList = new ArrayList<>();
             while (stopXmlIterator.hasNext()) {
                 Element recordEle = (Element) stopXmlIterator.next();
-                Stops stops = xmlToStops(recordEle.asXML(), maxPageId, username);
+                Stops stops = xmlToStopsNew(recordEle.asXML(), maxPageId, username);
                 if (null != stops) {
                     stops.setFlow(flow);
                     stopsList.add(stops);
