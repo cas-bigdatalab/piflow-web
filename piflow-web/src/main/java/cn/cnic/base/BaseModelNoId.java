@@ -28,6 +28,10 @@ public class BaseModelNoId implements Serializable {
     private Boolean enableFlag = Boolean.TRUE;
     private Long version;
 
+    private String crtDttmStr;
+    private String lastUpdateDttmStr;
+    private Integer enableFlagNum;
+
     /**
      * @return yyyy-MM-dd HH:mm:ss ,such as 2012-12-25 20:20:20
      */

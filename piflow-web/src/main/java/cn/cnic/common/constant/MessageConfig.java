@@ -14,6 +14,10 @@ public class MessageConfig {
 
     private static String ERROR_MSG;
     private static String ERROR_MSG_ZH;
+
+    public static final String NOT_LOGIN = "Not login!!";
+    public static final String DOWN_ERROR_MSG = "down failed!!";
+    public static final String DOWN_SUCCESS_MSG = "down success!!";
     @Value("${msg.base_error}")
     private void setErrorMsg(String errorMsg) {
         ERROR_MSG = errorMsg;

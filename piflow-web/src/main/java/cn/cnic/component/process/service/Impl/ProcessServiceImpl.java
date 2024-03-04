@@ -1,21 +1,30 @@
 package cn.cnic.component.process.service.Impl;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import cn.cnic.base.utils.*;
+import cn.cnic.common.Eunm.FileAssociateType;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.common.constant.SysParamsCache;
+import cn.cnic.component.dataProduct.domain.DataProductDomain;
+import cn.cnic.component.flow.domain.FlowPublishDomain;
+import cn.cnic.component.flow.entity.*;
+import cn.cnic.component.flow.vo.FlowPublishingVo;
+import cn.cnic.component.flow.vo.StopPublishingPropertyVo;
+import cn.cnic.component.flow.vo.StopPublishingVo;
 import cn.cnic.component.mxGraph.utils.MxGraphUtils;
+import cn.cnic.component.process.entity.ProcessStopProperty;
 import cn.cnic.component.process.vo.*;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
+import cn.cnic.component.system.domain.FileDomain;
+import cn.cnic.component.system.entity.File;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -25,18 +34,11 @@ import org.springframework.stereotype.Service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
-import cn.cnic.base.utils.DateUtils;
-import cn.cnic.base.utils.HdfsUtils;
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.PageHelperUtils;
-import cn.cnic.base.utils.ReturnMapUtils;
-import cn.cnic.base.utils.UUIDUtils;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.Eunm.StopState;
 import cn.cnic.component.flow.domain.FlowDomain;
-import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.vo.MxCellVo;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
@@ -64,16 +66,22 @@ public class ProcessServiceImpl implements IProcessService {
     private final StopsComponentDomain stopsComponentDomain;
     private final FlowDomain flowDomain;
     private final IFlow flowImpl;
+    private final DataProductDomain dataProductDomain;
+    private final FlowPublishDomain flowPublishDomain;
+    private final FileDomain fileDomain;
 
     @Autowired
     public ProcessServiceImpl(ProcessDomain processDomain,
                               StopsComponentDomain stopsComponentDomain,
                               FlowDomain flowDomain,
-                              IFlow flowImpl) {
+                              IFlow flowImpl, DataProductDomain dataProductDomain, FlowPublishDomain flowPublishDomain, FileDomain fileDomain) {
         this.processDomain = processDomain;
         this.stopsComponentDomain = stopsComponentDomain;
         this.flowDomain = flowDomain;
         this.flowImpl = flowImpl;
+        this.dataProductDomain = dataProductDomain;
+        this.flowPublishDomain = flowPublishDomain;
+        this.fileDomain = fileDomain;
     }
 
 
@@ -211,7 +219,7 @@ public class ProcessServiceImpl implements IProcessService {
      *
      * @param appID
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
     public ProcessVo getAppInfoByThirdAndSave(String appID) throws Exception {
@@ -336,7 +344,7 @@ public class ProcessServiceImpl implements IProcessService {
      *
      * @param appIDs
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
     public String getProgressByThirdAndSave(String[] appIDs) throws Exception {
@@ -444,7 +452,7 @@ public class ProcessServiceImpl implements IProcessService {
      *
      * @param processVo
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @Override
     public int updateProcess(String username, boolean isAdmin, ProcessVo processVo) throws Exception {
@@ -499,7 +507,7 @@ public class ProcessServiceImpl implements IProcessService {
         }
         process.setId(UUIDUtils.getUUID32());
         int addProcess = processDomain.addProcess(process);
-        if(addProcess<=0) {
+        if (addProcess <= 0) {
             logger.warn("Save failed, transform failed");
             return null;
         }
@@ -743,7 +751,7 @@ public class ProcessServiceImpl implements IProcessService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_CALL_ERROR_MSG());
         }
         if (isSoft) {
-        	visualizationData = visualizationDataSort(visualizationData,visualizationType);	
+            visualizationData = visualizationDataSort(visualizationData, visualizationType);
         }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("visualizationData", visualizationData);
     }
@@ -935,6 +943,253 @@ public class ProcessServiceImpl implements IProcessService {
             processStopVo.setVisualizationType(stopsComponentByBundle.getVisualizationType());
         }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processStopVo", processStopVo);
+    }
+
+    @Override
+    public String getErrorLogInfo(String appId) {
+        String amContainerLogs = flowImpl.getFlowLog(appId);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+        if (StringUtils.isNotBlank(amContainerLogs)) {
+            String stdoutLog = amContainerLogs + "/stdout/?start=0";
+            String stderrLog = amContainerLogs + "/stderr/?start=0";
+            String stdoutLogHtml = HttpUtils.getHtml(stdoutLog);
+            String stderrLogHtml = HttpUtils.getHtml(stderrLog);
+            //截取错误信息
+            String error1 = extractExceptionLines(stdoutLogHtml);
+            String error2 = extractExceptionLines(stderrLogHtml);
+            Map<String, String> errorMap = new HashMap<>();
+            errorMap.put("errorInfo", error1 + error2);
+            rtnMap.put("data", errorMap);
+        } else {
+            rtnMap.put("code", 200);
+            rtnMap.put("errorMsg", MessageConfig.INTERFACE_CALL_ERROR_MSG());
+        }
+        return ReturnMapUtils.toJson(rtnMap);
+    }
+
+    @Override
+    public String getProcessPageByPublishingId(ProcessVo requestVo) {
+        String username = SessionUserUtil.getCurrentUsername();
+        if (null == requestVo.getPage() || null == requestVo.getLimit()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        Page<Process> page = PageHelper.startPage(requestVo.getPage(), requestVo.getLimit(),"crt_dttm desc");
+        processDomain.getProcessListByPublishingIdAndUserName(Long.parseLong(requestVo.getPublishingId()), requestVo.getKeyword(), username);
+        //对result进行加工
+        List<Process> result = page.getResult();
+        result.forEach(process -> {
+            //封装FlowPublishingVo
+            boolean isNumeric = Pattern.matches("\\d+", process.getFlowId());
+            if (isNumeric) {
+                FlowPublishing flowPublishing = flowPublishDomain.getFullInfoById(process.getFlowId());
+                if (ObjectUtils.isNotEmpty(flowPublishing)) {
+                    FlowPublishingVo flowPublishingVo = new FlowPublishingVo();
+                    BeanUtils.copyProperties(flowPublishing, flowPublishingVo);
+                    flowPublishingVo.setId(flowPublishing.getId().toString());
+
+                    List<StopPublishingVo> stops = flowPublishing.getProperties().stream()
+                            .collect(Collectors.groupingBy(FlowStopsPublishingProperty::getStopId))
+                            .entrySet()
+                            .stream()
+                            .map(entry -> {
+                                StopPublishingVo vo = new StopPublishingVo();
+                                vo.setStopId(entry.getKey());
+                                vo.setStopName(entry.getValue().get(0).getStopName());
+                                vo.setStopPublishingPropertyVos(entry.getValue().stream()
+                                        .map(property -> {
+                                            StopPublishingPropertyVo propertyVo = new StopPublishingPropertyVo();
+                                            BeanUtils.copyProperties(property, propertyVo);
+                                            propertyVo.setId(property.getId().toString());
+                                            propertyVo.setPublishingId(property.getPublishingId().toString());
+                                            Long fileId = property.getFileId();
+                                            if (fileId != null) {
+                                                propertyVo.setFileId(fileId.toString());
+                                                propertyVo.setFileName(property.getFileName());
+                                            }
+                                            //封装customValue得用dataProduct中的datasetUrl了
+                                            if (StringUtils.isNotBlank(property.getStopBundle())) {
+                                                Optional<ProcessStop> first = process.getProcessStopList().stream().filter(processStop -> property.getStopBundle().equals(processStop.getBundel())).findFirst();
+                                                if (first.isPresent()) {
+                                                    String propertyName = property.getPropertyName();
+                                                    if (StringUtils.isNotBlank(propertyName)) {
+                                                        Optional<ProcessStopProperty> optionalProcessStopProperty = first.get().getProcessStopPropertyList().stream().filter(processStopProperty -> propertyName.equals(processStopProperty.getName())).findFirst();
+                                                        optionalProcessStopProperty.ifPresent(processStopProperty -> propertyVo.setCustomValue(processStopProperty.getCustomValue()));
+                                                    }
+                                                }
+                                            }
+                                            return propertyVo;
+                                        })
+                                        .collect(Collectors.toList()));
+                                return vo;
+                            })
+                            .collect(Collectors.toList());
+                    flowPublishingVo.setStops(stops);
+                    process.setFlowPublishing(flowPublishingVo);
+                }
+            }
+        });
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+        return PageHelperUtils.setLayTableParamWithChangeResultRtnStr(page, new ArrayList<Object>(result), rtnMap);
+    }
+
+    @Override
+    public String getProcessHistoryPageOfSelf(ProcessVo requestVo) {
+        String username = SessionUserUtil.getCurrentUsername();
+        if (null == requestVo.getPage() || null == requestVo.getLimit()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        Page<Process> page = PageHelper.startPage(requestVo.getPage(), requestVo.getLimit());
+        processDomain.getProcessHistoryPageOfSelf(requestVo.getKeyword(), username);
+        //对result进行加工
+        List<Process> result = page.getResult();
+        result.forEach(process -> {
+//            ProcessVo processVo = new ProcessVo();
+//            try {
+//                org.apache.commons.beanutils.BeanUtils.copyProperties(processVo, process);
+//            } catch (Exception e) {
+//                throw new RuntimeException(e);
+//            }
+            //封装FlowPublishingVo
+            boolean isNumeric = Pattern.matches("\\d+", process.getFlowId());
+            if (isNumeric) {
+                FlowPublishing flowPublishing = flowPublishDomain.getFullInfoById(process.getFlowId());
+                if (ObjectUtils.isNotEmpty(flowPublishing)) {
+                    FlowPublishingVo flowPublishingVo = new FlowPublishingVo();
+                    BeanUtils.copyProperties(flowPublishing, flowPublishingVo);
+                    flowPublishingVo.setId(flowPublishing.getId().toString());
+
+                    List<StopPublishingVo> stops = flowPublishing.getProperties().stream()
+                            .collect(Collectors.groupingBy(FlowStopsPublishingProperty::getStopId))
+                            .entrySet()
+                            .stream()
+                            .map(entry -> {
+                                StopPublishingVo vo = new StopPublishingVo();
+                                vo.setStopId(entry.getKey());
+                                vo.setStopName(entry.getValue().get(0).getStopName());
+                                vo.setStopPublishingPropertyVos(entry.getValue().stream()
+                                        .map(property -> {
+                                            StopPublishingPropertyVo propertyVo = new StopPublishingPropertyVo();
+                                            BeanUtils.copyProperties(property, propertyVo);
+                                            propertyVo.setId(property.getId().toString());
+                                            propertyVo.setPublishingId(property.getPublishingId().toString());
+                                            Long fileId = property.getFileId();
+                                            if (fileId != null) {
+                                                propertyVo.setFileId(fileId.toString());
+                                                propertyVo.setFileName(property.getFileName());
+                                            }
+                                            //封装customValue得用dataProduct中的datasetUrl了
+                                            if (StringUtils.isNotBlank(property.getStopBundle())) {
+                                                Optional<ProcessStop> first = process.getProcessStopList().stream().filter(processStop -> property.getStopBundle().equals(processStop.getBundel())).findFirst();
+                                                if (first.isPresent()) {
+                                                    String propertyName = property.getPropertyName();
+                                                    if (StringUtils.isNotBlank(propertyName)) {
+                                                        Optional<ProcessStopProperty> optionalProcessStopProperty = first.get().getProcessStopPropertyList().stream().filter(processStopProperty -> propertyName.equals(processStopProperty.getName())).findFirst();
+                                                        optionalProcessStopProperty.ifPresent(processStopProperty -> propertyVo.setCustomValue(processStopProperty.getCustomValue()));
+                                                    }
+                                                }
+                                            }
+                                            return propertyVo;
+                                        })
+                                        .collect(Collectors.toList()));
+                                return vo;
+                            })
+                            .collect(Collectors.toList());
+                    flowPublishingVo.setStops(stops);
+                    process.setFlowPublishing(flowPublishingVo);
+                }
+            }
+        });
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+        return PageHelperUtils.setLayTableParamWithChangeResultRtnStr(page, new ArrayList<Object>(result), rtnMap);
+    }
+
+    @Override
+    public String getByProcessId(String processId) throws InvocationTargetException, IllegalAccessException {
+        Process process = processDomain.getProcessWithFlowPublishingById(processId);
+//        ProcessVo processVo = new ProcessVo();
+//        org.apache.commons.beanutils.BeanUtils.copyProperties(processVo, process);
+        //封装FlowPublishingVo
+        boolean isNumeric = Pattern.matches("\\d+", process.getFlowId());
+        if (isNumeric) {
+            FlowPublishing flowPublishing = flowPublishDomain.getFullInfoById(process.getFlowId());
+            if (ObjectUtils.isNotEmpty(flowPublishing)) {
+                FlowPublishingVo flowPublishingVo = new FlowPublishingVo();
+                BeanUtils.copyProperties(flowPublishing, flowPublishingVo);
+                flowPublishingVo.setId(flowPublishing.getId().toString());
+                //获取封面
+                File flowPublishingCover = fileDomain.getByAssociateId(flowPublishing.getId().toString(), FileAssociateType.FLOW_PUBLISHING_COVER.getValue());
+                if (ObjectUtils.isNotEmpty(flowPublishingCover)) {
+                    flowPublishingVo.setCoverFileId(flowPublishingCover.getId().toString());
+                    flowPublishingVo.setCoverFileName(flowPublishingCover.getFileName());
+                }
+
+                List<StopPublishingVo> stops = flowPublishing.getProperties().stream()
+                        .collect(Collectors.groupingBy(FlowStopsPublishingProperty::getStopId))
+                        .entrySet()
+                        .stream()
+                        .map(entry -> {
+                            StopPublishingVo vo = new StopPublishingVo();
+                            vo.setStopId(entry.getKey());
+                            vo.setStopName(entry.getValue().get(0).getStopName());
+                            vo.setBak1(entry.getValue().get(0).getBak1());
+                            vo.setStopPublishingPropertyVos(entry.getValue().stream()
+                                    .map(property -> {
+                                        StopPublishingPropertyVo propertyVo = new StopPublishingPropertyVo();
+                                        BeanUtils.copyProperties(property, propertyVo);
+                                        propertyVo.setId(property.getId().toString());
+                                        propertyVo.setPublishingId(property.getPublishingId().toString());
+                                        Long fileId = property.getFileId();
+                                        if (fileId != null) {
+                                            propertyVo.setFileId(fileId.toString());
+                                            propertyVo.setFileName(property.getFileName());
+                                        }
+                                        //封装customValue得用dataProduct中的datasetUrl了
+                                        if (StringUtils.isNotBlank(property.getStopBundle())) {
+                                            Optional<ProcessStop> first = process.getProcessStopList().stream().filter(processStop -> property.getStopBundle().equals(processStop.getBundel())).findFirst();
+                                            if (first.isPresent()) {
+                                                String propertyName = property.getPropertyName();
+                                                if (StringUtils.isNotBlank(propertyName)) {
+                                                    Optional<ProcessStopProperty> optionalProcessStopProperty = first.get().getProcessStopPropertyList().stream().filter(processStopProperty -> propertyName.equals(processStopProperty.getName())).findFirst();
+                                                    optionalProcessStopProperty.ifPresent(processStopProperty -> propertyVo.setCustomValue(processStopProperty.getCustomValue()));
+                                                }
+                                            }
+                                        }
+                                        return propertyVo;
+                                    })
+                                    .collect(Collectors.toList()));
+                            return vo;
+                        })
+                        .sorted(Comparator.comparing(vo -> Integer.parseInt(vo.getBak1())))
+                        .collect(Collectors.toList());
+                flowPublishingVo.setStops(stops);
+                process.setFlowPublishing(flowPublishingVo);
+            }
+        }
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", process);
+    }
+
+    @Override
+    public String getAppIdByProcessId(String processId) {
+        String appId = SysParamsCache.STARTED_PROCESS.get(processId);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("appId", appId);
+    }
+
+    private String extractExceptionLines(String input) {
+        String[] lines = input.split("\n");
+        String regex = "(?i).*\\b(fail|error|exception)\\b.*"; // 使用正则表达式，忽略大小写匹配关键字
+        boolean capture = false;
+        StringBuilder result = new StringBuilder();
+        for (String line : lines) {
+            if (line.matches(regex)) {
+                capture = true;
+                result.append(line).append("\n");
+            } else if (capture && line.contains("<")) {
+                capture = false;
+            } else if (capture) {
+                result.append(line).append("\n");
+            }
+        }
+        return result.toString();
     }
 
     @SuppressWarnings("rawtypes")

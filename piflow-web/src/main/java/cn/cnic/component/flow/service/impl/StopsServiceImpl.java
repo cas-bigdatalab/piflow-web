@@ -1350,4 +1350,10 @@ public class StopsServiceImpl implements IStopsService {
         }
     }
 
+    @Override
+    public String getStopsInfoByFlowId(String flowId) {
+        Flow flowById = flowDomain.getFlowById(flowId);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data",flowById.getStopsList());
+    }
+
 }

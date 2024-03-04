@@ -92,4 +92,8 @@ public class SysUserDomain {
         }
         return sysUserMapper.checkUsername(username);
     }
+
+    public SysUser getSysUserByUserName(String username) {
+        return sysUserMapper.getSysUserByUserName(username);
+    }
 }

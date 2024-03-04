@@ -70,6 +70,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/auth", "/api/v1/signout", "/error/**", "/api/**").permitAll()
                 .antMatchers("/register", "/checkUserName", "/jwtLogin", "/error", "/login").permitAll()
                 .antMatchers("/process/showViewStopData/**").permitAll()
+                .antMatchers("/dataProductType/get").permitAll()
+                .antMatchers("/flowPublish/getFlowPublishingListPageByProductTypeId").permitAll()
+                .antMatchers("/file/getFileListByIds").permitAll()
+                .antMatchers("/dataProduct/getByPage").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers().permitAll()
                 // 除上面外的所有请求全部需要鉴权认证

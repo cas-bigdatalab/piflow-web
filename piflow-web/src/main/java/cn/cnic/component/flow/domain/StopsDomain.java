@@ -8,6 +8,7 @@ import cn.cnic.component.flow.mapper.CustomizedPropertyMapper;
 import cn.cnic.component.flow.mapper.PropertyMapper;
 import cn.cnic.component.flow.mapper.StopsMapper;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -311,4 +312,11 @@ public class StopsDomain {
     }
 
 
+    public List<Stops> getStopsPageByIds(List<String> ids) {
+        return stopsMapper.getStopsPageByIds(ids);
+    }
+
+    public List<Stops> getStopsPageByFlowId(String flowId) {
+        return stopsMapper.getStopsPageByFlowId(flowId);
+    }
 }

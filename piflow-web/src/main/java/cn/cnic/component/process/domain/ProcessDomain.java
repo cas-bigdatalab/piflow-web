@@ -1,9 +1,14 @@
 package cn.cnic.component.process.domain;
 
-import java.util.List;
-
-import cn.cnic.component.process.entity.*;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.common.Eunm.ProcessState;
+import cn.cnic.component.flow.domain.FlowPublishDomain;
+import cn.cnic.component.flow.utils.FlowGlobalParamsUtils;
+import cn.cnic.component.mxGraph.domain.MxGraphModelDomain;
+import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.process.entity.*;
 import cn.cnic.component.process.mapper.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -13,12 +18,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.UUIDUtils;
-import cn.cnic.common.Eunm.ProcessState;
-import cn.cnic.component.flow.utils.FlowGlobalParamsUtils;
-import cn.cnic.component.mxGraph.domain.MxGraphModelDomain;
-import cn.cnic.component.mxGraph.entity.MxGraphModel;
+import java.util.List;
 
 
 @Component
@@ -498,4 +498,15 @@ public class ProcessDomain {
         return processStopMapper.getProcessStopNameByStopId(stopsId);
     }
 
+    public List<Process> getProcessListByPublishingIdAndUserName(Long publishingId, String keywords, String username) {
+        return processMapper.getProcessListByPublishingIdAndUserName(publishingId,keywords,username);
+    }
+
+    public Process getProcessWithFlowPublishingById(String processId) {
+        return processMapper.getProcessWithFlowPublishingById(processId);
+    }
+
+    public List<Process> getProcessHistoryPageOfSelf(String keyword, String username) {
+        return processMapper.getProcessHistoryPageOfSelf(keyword,username);
+    }
 }

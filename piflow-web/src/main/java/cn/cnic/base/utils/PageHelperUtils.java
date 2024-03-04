@@ -1,5 +1,6 @@
 package cn.cnic.base.utils;
 
+import com.alibaba.fastjson2.JSON;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 
@@ -8,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class PageHelperUtils {
@@ -50,8 +52,28 @@ public class PageHelperUtils {
         return rtnMap;
     }
 
+    public static Map<String, Object> setLayTableParamWithChangeResult(Page page, List<Object> result, Map<String, Object> rtnMap) {
+        if (null == rtnMap) {
+            rtnMap = new HashMap<>();
+        }
+        if (null == page) {
+            return rtnMap;
+        }
+        PageInfo info = new PageInfo(page.getResult());
+        rtnMap.put("msg", "success");
+        rtnMap.put("count", info.getTotal());
+        //Data collection
+        rtnMap.put("data", result);
+        logger.debug("success");
+        return rtnMap;
+    }
+
     public static String setLayTableParamRtnStr(Page page, Map<String, Object> rtnMap) {
         return JsonUtils.toJsonNoException(setLayTableParam(page, rtnMap));
+    }
+
+    public static String setLayTableParamWithChangeResultRtnStr(Page page, List<Object> result, Map<String, Object> rtnMap) {
+        return JsonUtils.toJsonNoException(setLayTableParamWithChangeResult(page, result, rtnMap));
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

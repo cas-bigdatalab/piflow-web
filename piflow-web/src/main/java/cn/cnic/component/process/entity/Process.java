@@ -8,7 +8,11 @@ import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import cn.cnic.common.Eunm.ProcessParentType;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
+import cn.cnic.component.dataProduct.entity.DataProduct;
+import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.flow.entity.FlowGlobalParams;
+import cn.cnic.component.flow.entity.FlowPublishing;
+import cn.cnic.component.flow.vo.FlowPublishingVo;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.schedule.entity.Schedule;
 import lombok.Getter;
@@ -45,11 +49,15 @@ public class Process extends BaseModelUUIDNoCorpAgentId {
     private List<ProcessPath> processPathList = new ArrayList<ProcessPath>();
     List<FlowGlobalParams> flowGlobalParamsList;
 
-	public String getFlowId() {
-		return flowId;
-	}
-	public void setFlowId(String flowId) {
-		this.flowId = flowId;
-	}
+    private FlowPublishingVo flowPublishing;//详情信息
+    private List<DataProductVo> dataProductList;//关联的数据产品
+
+    public String getFlowId() {
+        return flowId;
+    }
+
+    public void setFlowId(String flowId) {
+        this.flowId = flowId;
+    }
 
 }

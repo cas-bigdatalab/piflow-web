@@ -3,6 +3,7 @@ package cn.cnic;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SpringContextUtil;
 
+import cn.hutool.core.lang.generator.SnowflakeGenerator;
 import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.springframework.boot.SpringApplication;
@@ -63,5 +64,10 @@ public class Application extends SpringBootServletInitializer {
         TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
         factory.addConnectorCustomizers((TomcatConnectorCustomizer) connector -> connector.setProperty("relaxedQueryChars", "|{}[]\\"));
         return factory;
+    }
+
+    @Bean
+    public SnowflakeGenerator snowflakeGenerator(){
+        return new SnowflakeGenerator();
     }
 }

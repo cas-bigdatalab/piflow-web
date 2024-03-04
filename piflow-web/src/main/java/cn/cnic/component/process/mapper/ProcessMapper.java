@@ -1,24 +1,13 @@
 package cn.cnic.component.process.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.DeleteProvider;
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.One;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
-import org.apache.ibatis.mapping.FetchType;
-
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.mapper.provider.ProcessMapperProvider;
+import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.mapping.FetchType;
+
+import java.util.List;
 
 @Mapper
 public interface ProcessMapper {
@@ -232,10 +221,10 @@ public interface ProcessMapper {
 
     @Select("select s.id from flow_process s where s.enable_flag=1 and s.fk_flow_process_group_id=#{fid} and s.page_id=#{pageId}")
     public String getProcessIdByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
-    
+
     @Select("select state from flow_process where enable_flag=1 and id=#{id} ")
     public ProcessState getProcessStateById(String id);
-    
+
     /**
      * get globalParams ids by process id
      *
@@ -266,5 +255,64 @@ public interface ProcessMapper {
     public int unlinkGlobalParams(@Param("processId") String processId, @Param("globalParamsIds") String[] globalParamsIds);
 
 
+    /**
+     * @param publishingId:
+     * @param keyword:
+     * @param username:
+     * @return List<Process>
+     * @author tianyao
+     * @description 根据publishingId获取发布流水线的历史记录，加上生成的数据产品
+     * @date 2024/2/23 9:41
+     */
+    @Select("<script>"
+            +"select fp.* from flow_process as fp"
+            +"<where>"
+            +" fp.crt_user = #{username} and fp.flow_id = #{publishingId} and fp.enable_flag = 1"
+            +"<if test=\"keyword != null and keyword != '' \">"
+            +" and `name` like CONCAT('%', #{keyword}, '%')"
+            +"</if>"
+            +"</where>"
+            +"order by fp.crt_dttm desc"
+            +"</script>")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
+//            @Result(column = "flow_id", property = "flowPublishing", one = @One(select = "cn.cnic.component.flow.mapper.FlowPublishingMapper.getFullInfoById", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "dataProductList", many = @Many(select = "cn.cnic.component.dataProduct.mapper.DataProductMapper.getListByProcessId", fetchType = FetchType.LAZY))
 
+    })
+    List<Process> getProcessListByPublishingIdAndUserName(@Param("publishingId") Long publishingId, @Param("keyword") String keyword, @Param("username") String username);
+
+    @Select("<script>"
+            +"select fp.* from flow_process as fp"
+            +"<where>"
+            +" fp.id = #{processId} and fp.enable_flag = 1"
+            +"</where>"
+            +"</script>")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
+//            @Result(column = "flow_id", property = "flowPublishing", one = @One(select = "cn.cnic.component.flow.mapper.FlowPublishingMapper.getFullInfoById", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "dataProductList", many = @Many(select = "cn.cnic.component.dataProduct.mapper.DataProductMapper.getListByProcessId", fetchType = FetchType.LAZY))
+
+    })
+    Process getProcessWithFlowPublishingById(@Param("processId") String processId);
+    @Select("<script>"
+            +"select fp.* from flow_process as fp"
+            +"<where>"
+            +" fp.crt_user = #{username} and fp.enable_flag = 1 and fp.app_id is not null"
+            +"<if test=\"keyword != null and keyword != '' \">"
+            +" and `name` like CONCAT('%', #{keyword}, '%')"
+            +"</if>"
+            +"</where>"
+            +"order by fp.crt_dttm desc"
+            +"</script>")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
+//            @Result(column = "flow_id", property = "flowPublishing", one = @One(select = "cn.cnic.component.flow.mapper.FlowPublishingMapper.getFullInfoById", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "dataProductList", many = @Many(select = "cn.cnic.component.dataProduct.mapper.DataProductMapper.getListByProcessId", fetchType = FetchType.LAZY))
+
+    })
+    List<Process> getProcessHistoryPageOfSelf(@Param("keyword") String keyword, @Param("username") String username);
 }
