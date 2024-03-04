@@ -1,15 +1,13 @@
 package cn.cnic.controller.api.process;
 
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.process.vo.ProcessVo;
 import cn.cnic.component.system.service.ILogHelperService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.SessionUserUtil;
@@ -56,12 +54,12 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/processListPage", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value="processListPage", notes="Process list page")
-	@ApiImplicitParams({ 
-		@ApiImplicitParam(name = "page", value = "page", required = true, paramType = "query"),
-		@ApiImplicitParam(name = "limit", value = "limit", required = true, paramType = "query"),
-		@ApiImplicitParam(name = "param", value = "param", required = false, paramType = "query")
-	})
+    @ApiOperation(value = "processListPage", notes = "Process list page")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "page", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "limit", value = "limit", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "param", value = "param", required = false, paramType = "query")
+    })
     public String processAndProcessGroupListPage(Integer page, Integer limit, String param) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -77,11 +75,11 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/drawingBoardData", method = RequestMethod.GET)
     @ResponseBody
-    @ApiOperation(value="drawingBoardData", notes="drawingBoard data")
-	@ApiImplicitParams({ 
-		@ApiImplicitParam(name = "loadId", value = "loadId", required = true, paramType = "query"),
-		@ApiImplicitParam(name = "parentAccessPath", value = "parentAccessPath", required = false, paramType = "query")
-	})
+    @ApiOperation(value = "drawingBoardData", notes = "drawingBoard data")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "loadId", value = "loadId", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "parentAccessPath", value = "parentAccessPath", required = false, paramType = "query")
+    })
     public String drawingBoardData(String loadId, String parentAccessPath) {
         String currentUsername = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
@@ -96,7 +94,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/queryProcessData", method = RequestMethod.GET)
     @ResponseBody
-    @ApiOperation(value="queryProcessData", notes="query Process data")
+    @ApiOperation(value = "queryProcessData", notes = "query Process data")
     @ApiImplicitParam(name = "processId", value = "processId", required = true, paramType = "query")
     public String queryProcessData(String processId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -113,11 +111,11 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/queryProcessStopData", method = RequestMethod.GET)
     @ResponseBody
-    @ApiOperation(value="queryProcessStopData", notes="query ProcessStop data")
-	@ApiImplicitParams({ 
-		@ApiImplicitParam(name = "processId", value = "processId", required = true, paramType = "query"),
-		@ApiImplicitParam(name = "pageId", value = "pageId", required = true, paramType = "query")
-	})
+    @ApiOperation(value = "queryProcessStopData", notes = "query ProcessStop data")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "processId", value = "processId", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "pageId", value = "pageId", required = true, paramType = "query")
+    })
     public String queryProcessStopData(String processId, String pageId) {
         return processStopServiceImpl.getProcessStopVoByPageId(processId, pageId);
     }
@@ -131,11 +129,11 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/queryProcessPathData", method = RequestMethod.GET)
     @ResponseBody
-    @ApiOperation(value="queryProcessPathData", notes="query ProcessPath data")
-	@ApiImplicitParams({ 
-		@ApiImplicitParam(name = "processId", value = "processId", required = true, paramType = "query"),
-		@ApiImplicitParam(name = "pageId", value = "pageId", required = true, paramType = "query")
-	})
+    @ApiOperation(value = "queryProcessPathData", notes = "query ProcessPath data")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "processId", value = "processId", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "pageId", value = "pageId", required = true, paramType = "query")
+    })
     public String queryProcessPathData(String processId, String pageId) {
         return processPathServiceImpl.getProcessPathVoByPageId(processId, pageId);
     }
@@ -151,16 +149,16 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/runProcess", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value="runProcess", notes="Run Process")
-	@ApiImplicitParams({ 
-		@ApiImplicitParam(name = "id", value = "id", required = true, paramType = "query"),
-		@ApiImplicitParam(name = "checkpointStr", value = "checkpointStr", required = false, paramType = "query"),
-		@ApiImplicitParam(name = "runMode", value = "runMode", required = false, paramType = "query")
-	})
+    @ApiOperation(value = "runProcess", notes = "Run Process")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "id", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "checkpointStr", value = "checkpointStr", required = false, paramType = "query"),
+            @ApiImplicitParam(name = "runMode", value = "runMode", required = false, paramType = "query")
+    })
     public String runProcess(String id, String checkpointStr, String runMode) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelperServiceImpl.logAuthSucceed("runProcess" + id,username);
+        logHelperServiceImpl.logAuthSucceed("runProcess" + id, username);
         return processServiceImpl.startProcess(isAdmin, username, id, checkpointStr, runMode);
     }
 
@@ -172,12 +170,12 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/stopProcess", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value="stopProcess", notes="stop Process")
+    @ApiOperation(value = "stopProcess", notes = "stop Process")
     @ApiImplicitParam(name = "processId", value = "processId", required = true, paramType = "query")
     public String stopProcess(String processId) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelperServiceImpl.logAuthSucceed("stopProcess" + processId,username);
+        logHelperServiceImpl.logAuthSucceed("stopProcess" + processId, username);
         return processServiceImpl.stopProcess(username, isAdmin, processId);
     }
 
@@ -189,12 +187,12 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/delProcess", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value="delProcess", notes="delete Process")
+    @ApiOperation(value = "delProcess", notes = "delete Process")
     @ApiImplicitParam(name = "processID", value = "processID", required = true, paramType = "query")
     public String delProcess(String processID) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelperServiceImpl.logAuthSucceed("delProcess" + processID,username);
+        logHelperServiceImpl.logAuthSucceed("delProcess" + processID, username);
         return processServiceImpl.delProcess(isAdmin, username, processID);
     }
 
@@ -206,7 +204,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/getLogUrl", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value="getLogUrl", notes="get log data")
+    @ApiOperation(value = "getLogUrl", notes = "get log data")
     @ApiImplicitParam(name = "appId", value = "appId", required = true, paramType = "query")
     public String getLogUrl(String appId) {
         return processServiceImpl.getLogUrl(appId);
@@ -220,7 +218,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/getLog", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value="getLog", notes="get log data")
+    @ApiOperation(value = "getLog", notes = "get log data")
     @ApiImplicitParam(name = "url", value = "url", required = true, paramType = "query")
     public String getLog(String url) {
         if (StringUtils.isBlank(url)) {
@@ -240,7 +238,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/getAppInfo", method = RequestMethod.GET)
     @ResponseBody
-    @ApiOperation(value="getAppInfo", notes="get app info")
+    @ApiOperation(value = "getAppInfo", notes = "get app info")
     @ApiImplicitParam(name = "appid", value = "appid", required = true, paramType = "query")
     public String getAppInfo(String appid) {
         return processServiceImpl.getAppInfoByAppId(appid);
@@ -254,7 +252,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/getAppInfoList", method = RequestMethod.GET)
     @ResponseBody
-    @ApiOperation(value="getAppInfoList", notes="get app info list")
+    @ApiOperation(value = "getAppInfoList", notes = "get app info list")
     @ApiImplicitParam(name = "arrayObj", value = "arrayObj", required = true, paramType = "query", allowMultiple = true)
     public String getAppInfoList(String[] arrayObj) {
         return processServiceImpl.getProgressByAppIds(arrayObj);
@@ -269,25 +267,25 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/getCheckpointData", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value="getCheckpointData", notes="get checkpoint data")
-	@ApiImplicitParams({ 
-		@ApiImplicitParam(name = "pID", value = "pID", required = true, paramType = "query"),
-		@ApiImplicitParam(name = "parentProcessId", value = "parentProcessId", required = true, paramType = "query")
-	})
+    @ApiOperation(value = "getCheckpointData", notes = "get checkpoint data")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pID", value = "pID", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "parentProcessId", value = "parentProcessId", required = true, paramType = "query")
+    })
     public String getCheckpoint(String pID, String parentProcessId) {
         return processServiceImpl.getCheckpoints(parentProcessId, pID);
     }
 
     @RequestMapping(value = "/getDebugData", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value="getDebugData", notes="get debug data")
-    @ApiImplicitParams({ 
-		@ApiImplicitParam(name = "appId", value = "appId", required = true, paramType = "query"),
-		@ApiImplicitParam(name = "stopName", value = "stopName", required = true, paramType = "query"),
-		@ApiImplicitParam(name = "portName", value = "portName", required = true, paramType = "query"),
-		@ApiImplicitParam(name = "startFileName", value = "startFileName", required = false, paramType = "query"),
-		@ApiImplicitParam(name = "startLine", value = "startLine", example = "0", dataType = "long",  required = true, paramType = "query")
-	})
+    @ApiOperation(value = "getDebugData", notes = "get debug data")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "appId", value = "appId", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "stopName", value = "stopName", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "portName", value = "portName", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "startFileName", value = "startFileName", required = false, paramType = "query"),
+            @ApiImplicitParam(name = "startLine", value = "startLine", example = "0", dataType = "long", required = true, paramType = "query")
+    })
     public String getDebugData(String appId, String stopName, String portName, String startFileName, int startLine) {
         if ("Default".equals(portName)) {
             portName = portName.toLowerCase();
@@ -297,13 +295,13 @@ public class ProcessCtrl {
 
     @RequestMapping(value = "/getVisualizationData", method = RequestMethod.GET)
     @ResponseBody
-    @ApiOperation(value="getVisualizationData", notes="get visualization data")
-    @ApiImplicitParams({ 
-    	@ApiImplicitParam(name = "appId", value = "appId", required = true, paramType = "query"),
-    	@ApiImplicitParam(name = "stopName", value = "stopName", required = true, paramType = "query"),
-    	@ApiImplicitParam(name = "visualizationType", value = "visualizationType", required = true, paramType = "query"),
-    	@ApiImplicitParam(name = "isSoft", value = "isSoft", required = true, example = "false", paramType = "query")
- 	})
+    @ApiOperation(value = "getVisualizationData", notes = "get visualization data")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "appId", value = "appId", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "stopName", value = "stopName", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "visualizationType", value = "visualizationType", required = true, paramType = "query"),
+            @ApiImplicitParam(name = "isSoft", value = "isSoft", required = true, example = "false", paramType = "query")
+    })
     public String getVisualizationData(String appId, String stopName, String visualizationType, boolean isSoft) {
         return processServiceImpl.getVisualizationData(appId, stopName, visualizationType, isSoft);
     }
@@ -316,7 +314,7 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/getRunningProcessList", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value="getRunningProcessList", notes="get running Process list")
+    @ApiOperation(value = "getRunningProcessList", notes = "get running Process list")
     @ApiImplicitParam(name = "flowId", value = "flowId", required = true, paramType = "query")
     public String getRunningProcessList(String flowId) {
         return processServiceImpl.getRunningProcessVoList(flowId);
@@ -330,9 +328,73 @@ public class ProcessCtrl {
      */
     @RequestMapping(value = "/showViewStopData/{id}", method = RequestMethod.GET)
     @ResponseBody
-    @ApiOperation(value="showViewStopData", notes="show view Stop data")
+    @ApiOperation(value = "showViewStopData", notes = "show view Stop data")
     public void showViewData(HttpServletResponse response, @PathVariable String id) throws Exception {
         processStopServiceImpl.showViewData(response, id);
     }
+
+    /**
+     * @param appId:
+     * @return String
+     * @author tianyao
+     * @description 获取报错信息提示
+     * @date 2024/2/21 17:45
+     */
+    @RequestMapping(value = "/getErrorLogInfo", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "getErrorLogInfo", notes = "获取报错信息提示")
+    public String getErrorLogInfo(String appId) {
+        return processServiceImpl.getErrorLogInfo(appId);
+    }
+
+    /**
+     * @param processVo:
+     * @return String
+     * @author tianyao
+     * @description 根据发布流水线Id分页获取运行历史列表
+     * @date 2024/2/21 17:49
+     */
+    @RequestMapping(value = "/getProcessPageByPublishingId", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "getProcessPageByPublishingId", notes = "根据发布流水线Id分页获取运行历史列表")
+    public String getProcessPageByPublishingId(@RequestBody ProcessVo processVo) {
+        return processServiceImpl.getProcessPageByPublishingId(processVo);
+    }
+
+    /**
+     * @param processVo:
+     * @return String
+     * @author tianyao
+     * @description 获取自己的运行历史, 运行发布流水线的记录
+     * @date 2024/2/29 9:40
+     */
+    @RequestMapping(value = "/getProcessHistoryPageOfSelf", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "getProcessHistoryPageOfSelf", notes = "获取自己的运行历史")
+    public String getProcessHistoryPageOfSelf(@RequestBody ProcessVo processVo) {
+        return processServiceImpl.getProcessHistoryPageOfSelf(processVo);
+    }
+
+    /**
+     * @param processId:
+     * @return String
+     * @author tianyao
+     * @description 根据processId获取进程详情，发布流水线运行的进程
+     * @date 2024/3/1 10:56
+     */
+    @RequestMapping(value = "/getByProcessId", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "getByProcessId", notes = "获取自己的运行历史")
+    public String getByProcessId(String processId) throws Exception {
+        return processServiceImpl.getByProcessId(processId);
+    }
+
+    @RequestMapping(value = "/getAppIdByProcessId", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "getAppIdByProcessId", notes = "获取自己的运行历史")
+    public String getAppIdByProcessId(String processId) throws Exception {
+        return processServiceImpl.getAppIdByProcessId(processId);
+    }
+
 
 }

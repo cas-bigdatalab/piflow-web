@@ -249,4 +249,11 @@ public class StopsCtrl {
         return stopsServiceImpl.getStopsInfoById(id,type);
     }
 
+    @RequestMapping(value = "/getStopsInfoByFlowId", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value="getStopsInfoByFlowId", notes="Get stop name by flow id")
+    public String getStopsInfoByFlowId(String flowId) {
+        return stopsServiceImpl.getStopsInfoByFlowId(flowId);
+    }
+
 }

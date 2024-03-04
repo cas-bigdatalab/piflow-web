@@ -1,26 +1,31 @@
 package cn.cnic.third.service.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import cn.cnic.common.Eunm.ComponentFileType;
+import cn.cnic.base.utils.*;
+import cn.cnic.common.Eunm.*;
 import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.common.constant.SysParamsCache;
+import cn.cnic.component.dataProduct.domain.DataProductDomain;
+import cn.cnic.component.dataProduct.entity.DataProduct;
+import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.process.entity.ProcessStop;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
-import com.alibaba.fastjson2.JSON;
+import cn.cnic.component.system.domain.FileDomain;
+import cn.cnic.component.system.entity.File;
+import cn.hutool.core.lang.generator.SnowflakeGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import cn.cnic.base.utils.HttpUtils;
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.ReturnMapUtils;
-import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.utils.ProcessUtils;
@@ -35,18 +40,24 @@ import net.sf.json.JSONObject;
 @Component
 public class FlowImpl implements IFlow {
 
-	/**
+    /**
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */
     private Logger logger = LoggerUtil.getLogger();
 
     private final ProcessDomain processDomain;
     private final StopsComponentDomain stopsComponentDomain;
+    private final DataProductDomain dataProductDomain;
+    private final FileDomain fileDomain;
+    private final SnowflakeGenerator snowflakeGenerator;
 
     @Autowired
-    public FlowImpl(ProcessDomain processDomain, StopsComponentDomain stopsComponentDomain) {
+    public FlowImpl(ProcessDomain processDomain, StopsComponentDomain stopsComponentDomain, DataProductDomain dataProductDomain, FileDomain fileDomain, SnowflakeGenerator snowflakeGenerator) {
         this.processDomain = processDomain;
         this.stopsComponentDomain = stopsComponentDomain;
+        this.dataProductDomain = dataProductDomain;
+        this.fileDomain = fileDomain;
+        this.snowflakeGenerator = snowflakeGenerator;
     }
 
     /**
@@ -65,7 +76,7 @@ public class FlowImpl implements IFlow {
         List<ProcessStop> processStopList = process.getProcessStopList();
         if (processStopList == null || processStopList.size() == 0) {
             return ReturnMapUtils.setFailedMsg(MessageConfig.PARAM_IS_NULL_MSG("Stop"));
-        }else {
+        } else {
             for (ProcessStop processStop : processStopList) {
                 StopsComponent stops = stopsComponentDomain.getOnlyStopsComponentByBundle(processStop.getBundel());
                 if (stops == null) {
@@ -255,7 +266,7 @@ public class FlowImpl implements IFlow {
             logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG() + " return is null ");
             return null;
         }
-		if (doGet.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doGet.contains("Exception")) {
+        if (doGet.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG()) || doGet.contains("Exception")) {
             logger.warn(MessageConfig.INTERFACE_CALL_ERROR_MSG() + ": " + doGet);
             return null;
         }
@@ -314,6 +325,43 @@ public class FlowImpl implements IFlow {
             for (Process process : processList) {
                 process = ThirdFlowInfoVoUtils.setProcess(process, thirdFlowInfoVo);
                 if (null != process) {
+                    ProcessState state = process.getState();
+                    String processId = process.getId();
+                    //如果进程完成，更新数据产品记录状态为待发布，如果进程失败，更新数据产品记录状态为生成失败
+                    if (ProcessState.COMPLETED.equals(state)) {
+//                        SysParamsCache.STARTED_PROCESS.remove(processId);
+                        //为每一个数据产品生成一条file记录
+                        List<DataProductVo> dataProducts = dataProductDomain.getListByProcessId(processId);
+                        if (CollectionUtils.isNotEmpty(dataProducts)) {
+                            Date now = new Date();
+                            List<File> files = dataProducts.stream().map(dataProduct -> {
+                                String filePath = dataProduct.getDatasetUrl();
+                                //TODO 未判断file是否为空
+                                Map<String, String> fileInfo = FileUtils.getFileTypeFromHdfs(filePath, FileUtils.getDefaultFs());
+                                File insertFile = new File();
+                                insertFile.setId(snowflakeGenerator.next());
+                                insertFile.setFileName(fileInfo.get("fileName"));
+                                insertFile.setFileType(fileInfo.get("fileType"));
+                                insertFile.setFilePath(filePath);
+                                insertFile.setAssociateId(dataProduct.getId());
+                                insertFile.setAssociateType(FileAssociateType.DATA_PRODUCT.getValue());
+                                insertFile.setCrtDttm(now);
+                                insertFile.setCrtUser(dataProduct.getCrtUser());
+                                insertFile.setEnableFlag(true);
+                                insertFile.setLastUpdateDttm(now);
+                                insertFile.setLastUpdateUser(dataProduct.getCrtUser());
+                                insertFile.setCrtDttmStr(DateUtils.dateTimesToStr(now));
+                                insertFile.setLastUpdateDttmStr(DateUtils.dateTimesToStr(now));
+                                insertFile.setEnableFlagNum(1);
+                                return insertFile;
+                            }).collect(Collectors.toList());
+                            int i = fileDomain.saveBatch(files);
+                            dataProductDomain.updateStateByProcessIdWithNoChangeUser(processId, DataProductState.TO_PUBLISH.getValue());
+                        }
+                    }
+                    if (ProcessState.FAILED.equals(state) || ProcessState.KILLED.equals(state) || ProcessState.ABORTED.equals(state)) {
+                        dataProductDomain.updateStateByProcessIdWithNoChangeUser(processId, DataProductState.CREATE_FAILED.getValue());
+                    }
                     processDomain.saveOrUpdate(process);
                 }
             }
@@ -330,7 +378,7 @@ public class FlowImpl implements IFlow {
         for (String appId : runningProcess) {
             getProcessInfoAndSave(appId);
         }
-        
+
     }
 
     @Override

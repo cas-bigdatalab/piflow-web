@@ -1,6 +1,7 @@
 package cn.cnic.component.flow.mapper;
 
 import cn.cnic.component.flow.entity.Paths;
+import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.flow.mapper.provider.PathsMapperProvider;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
@@ -125,4 +126,7 @@ public interface PathsMapper {
      */
     @UpdateProvider(type = PathsMapperProvider.class, method = "updateEnableFlagByFlowId")
     public int updateEnableFlagByFlowId(String username, String flowId);
+
+    @Select("select fp.line_from as `from`, fp.line_to as `to`, fp.page_id from flow_path as fp where fp.fk_flow_id = #{flowId}")
+    List<Paths> getPathsByFlowId(@Param("flowId") String flowId);
 }

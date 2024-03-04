@@ -166,4 +166,6 @@ public interface IStopsService {
      * @return
      */
     String getStopsInfoById(String id,String type);
+
+    String getStopsInfoByFlowId(String flowId);
 }

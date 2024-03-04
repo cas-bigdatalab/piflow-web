@@ -49,5 +49,6 @@ public interface SysUserMapper {
 
     @Select("select username from sys_user where username=#{username}")
     public String checkUsername (String username);
-
+    @Select("select * from sys_user where username=#{username}")
+    SysUser getSysUserByUserName(String username);
 }

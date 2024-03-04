@@ -1,13 +1,20 @@
 package cn.cnic.base.utils;
 
+import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.common.constant.MessageConfig;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.util.Progressable;
 import org.slf4j.Logger;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -28,24 +35,31 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 
 public class FileUtils {
 
-	/**
+    /**
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */
     private static Logger logger = LoggerUtil.getLogger();
 
     public static String CSV_TITLE_KEY = "CSV_TITLE";
     public static String CSV_DATA_KEY = "CSV_DATA";
+
+    public static FileSystem fs;
+
     /**
      * String to "xml" file and save the specified path
      *
@@ -389,7 +403,7 @@ public class FileUtils {
         }
         return result;
     }
-    
+
     /**
      * file conversion string
      *
@@ -397,7 +411,7 @@ public class FileUtils {
      * @param delimiter
      * @param header
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     public static Map<String, Object> ParseCsvFile(String url, String delimiter, String header) throws Exception {
         if (StringUtils.isBlank(url) || StringUtils.isBlank(delimiter)) {
@@ -407,7 +421,7 @@ public class FileUtils {
         if (StringUtils.isNotBlank(header)) {
             headerArr = header.split(",");
         }
-        Map<String,Object> rtnMap = new HashMap<>();
+        Map<String, Object> rtnMap = new HashMap<>();
         File csv = new File(url);
         BufferedReader br = null;
         try {
@@ -421,7 +435,7 @@ public class FileUtils {
             List<String[]> dataList = new ArrayList<>();
             while ((line = br.readLine()) != null) {
                 everyLine = line;
-                if(StringUtils.isBlank(everyLine)) {
+                if (StringUtils.isBlank(everyLine)) {
                     continue;
                 }
                 String[] split = everyLine.split(delimiter);
@@ -443,7 +457,7 @@ public class FileUtils {
         }
         return rtnMap;
     }
-    
+
     /**
      * file conversion string
      *
@@ -451,7 +465,7 @@ public class FileUtils {
      * @param delimiter
      * @param header
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @SuppressWarnings("unchecked")
     public static LinkedHashMap<String, List<String>> ParseCsvFileRtnColumnData(String url, String delimiter, String header) throws Exception {
@@ -464,17 +478,17 @@ public class FileUtils {
         if (null == csv_title || null == csv_data) {
             return null;
         }
-        String[] csvTitleArray = (String[])csv_title;
-        List<String[]> csvDataList = (List<String[]>)csv_data;
-        LinkedHashMap <String, List<String>> csvDataMap = new LinkedHashMap<>();
-        Map <Integer, String> csvDataNumber = new HashMap<>();
+        String[] csvTitleArray = (String[]) csv_title;
+        List<String[]> csvDataList = (List<String[]>) csv_data;
+        LinkedHashMap<String, List<String>> csvDataMap = new LinkedHashMap<>();
+        Map<Integer, String> csvDataNumber = new HashMap<>();
         for (int i = 0; i < csvTitleArray.length; i++) {
             String string = csvTitleArray[i];
             csvDataMap.put(string, null);
             csvDataNumber.put(i, string);
         }
         for (String[] csvData : csvDataList) {
-            if (null == csvData || csvData.length <=0) {
+            if (null == csvData || csvData.length <= 0) {
                 continue;
             }
             for (int j = 0; j < csvData.length; j++) {
@@ -496,7 +510,7 @@ public class FileUtils {
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
-        if(!file.exists()){
+        if (!file.exists()) {
             file.createNewFile();
         }
         FileOutputStream out = new FileOutputStream(url);
@@ -514,7 +528,7 @@ public class FileUtils {
             byte[] b = Files.readAllBytes(Paths.get(filePath));
             return Base64.getEncoder().encodeToString(b);
         } catch (IOException e) {
-            logger.error("Encrypt to base64 error!! message:{}",e.getMessage());
+            logger.error("Encrypt to base64 error!! message:{}", e.getMessage());
         }
         return null;
     }
@@ -529,5 +543,269 @@ public class FileUtils {
             e.printStackTrace();
         }
         return "Create success!!";
+    }
+
+    /**
+     * @param originalFilename:
+     * @return String
+     * @author tianyao
+     * @description 获取不包含路径的文件名  文件名和扩展名
+     * @date 2024/2/20 14:59
+     */
+    public static String getFileName(String originalFilename) {
+//        String directory = "";
+        String filename = originalFilename;
+        filename = filename.replaceAll("\\\\", "/");
+        int lastSeparatorIndex = filename.lastIndexOf("/");
+        if (lastSeparatorIndex != -1) {
+//            directory = originalFilename.substring(0, lastSeparatorIndex);
+            filename = originalFilename.substring(lastSeparatorIndex + 1);
+        }
+        return filename;
+    }
+
+    /**
+     * @param file:
+     * @param fileName:
+     * @param fileDirectory:
+     * @param defaultFs:
+     * @return void
+     * @author tianyao
+     * @description 将multifile保存至hdfs
+     * @date 2024/2/20 15:02
+     */
+    public static void saveFileToHdfs(MultipartFile file, String fileName, String fileDirectory, String defaultFs) {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", defaultFs);
+
+        try {
+            if (ObjectUtils.isEmpty(fs)) {
+                fs = FileSystem.get(conf);
+            }
+
+            Path hdfsPath = new Path(fileDirectory + fileName);
+
+            // 检查目录是否存在，不存在则创建
+            if (!fs.exists(hdfsPath.getParent())) {
+                fs.mkdirs(hdfsPath.getParent());
+            }
+            try (InputStream in = file.getInputStream()) {
+                // 使用 Apache Commons IO 工具类来复制文件内容到 HDFS
+                FSDataOutputStream outputStream = fs.create(hdfsPath);
+                org.apache.commons.io.IOUtils.copy(in, outputStream);
+                outputStream.close(); // 关闭输出流
+                System.out.println("File saved to HDFS successfully: " + fileName);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void deleteHdfsFile(String filePath, String defaultFs) {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", defaultFs);
+
+        try {
+            if (ObjectUtils.isEmpty(fs)) {
+                fs = FileSystem.get(conf);
+            }
+            Path hdfsPath = new Path(filePath);
+
+            // 删除文件，第二个参数表示是否递归删除，如果是目录需要设置为true
+            boolean isDeleted = fs.delete(hdfsPath, false);
+//            if (isDeleted) {
+//                System.out.println("File deleted from HDFS successfully: " + hdfsFilePath);
+//            } else {
+//                System.out.println("File not found or could not be deleted: " + hdfsFilePath);
+//            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String getDefaultFs() {
+        return HttpUtils.doGet(ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
+    }
+
+    public static void downloadFileFromHdfs(HttpServletResponse response, String filePath, String fileName, String defaultFs) {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", defaultFs);
+        try {
+            if (ObjectUtils.isEmpty(fs)) {
+                fs = FileSystem.get(conf);
+            }
+            Path hdfsPath = new Path(filePath);
+            InputStream inputStream = fs.open(hdfsPath);
+            response.reset();
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            response.setContentType("application/octet-stream");
+            response.addHeader("Content-Disposition", "attachment; filename=\"" + hdfsPath.getName() + "\"");
+            response.setContentLength(inputStream.available());
+            OutputStream outputStream = response.getOutputStream();
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Resource loadFileFromHdfs(String fileName, String filePath, String defaultFs) {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", defaultFs);
+
+        try {
+            if (ObjectUtils.isEmpty(fs)) {
+                fs = FileSystem.get(conf);
+            }
+            Path hdfsPath = new Path(filePath);
+            if (fs.exists(hdfsPath)) {
+                return new InputStreamResource(fs.open(hdfsPath));
+            } else {
+                // 处理文件不存在的情况
+                return null;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static Map<String, String> getFileTypeFromHdfs(String filePath, String defaultFs) {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", defaultFs);
+        Map<String, String> fileInfo = new HashMap<>();
+
+        try {
+            if (ObjectUtils.isEmpty(fs)) {
+                fs = FileSystem.get(conf);
+            }
+
+            Path hdfsPath = new Path(filePath);
+            if (fs.exists(hdfsPath)) {
+                if (filePath.contains(".")) {
+                    //文件
+                    String mimeType = getMimeTypeByExtension(filePath.split("\\.")[1]);
+                    fileInfo.put("fileType", mimeType);
+                    fileInfo.put("fileName", hdfsPath.getName());
+                } else {
+                    String mimeType = getMimeTypeByExtension("");
+                    fileInfo.put("fileType", mimeType);
+                    fileInfo.put("fileName", filePath);
+                }
+            } else {
+                // 处理文件不存在的情况
+                return null;
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return fileInfo;
+    }
+
+    public static void downloadFilesFromHdfs(HttpServletResponse response, List<cn.cnic.component.system.entity.File> fileList, String zipName, String defaultFs) {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", defaultFs);
+
+        response.setContentType("multipart/form-data");//1.设置文件ContentType类型，这样设置，会自动判断下载文件类型
+        response.setHeader("Content-Disposition", "attachment;fileName=" + zipName);
+        FSDataInputStream instream = null;
+        int contentLength = 0;
+        try {
+            ZipOutputStream zipstream = new ZipOutputStream(response.getOutputStream());
+            for (cn.cnic.component.system.entity.File file : fileList) {
+                String filePath = file.getFilePath();
+                String fileName = file.getFileName();
+                try {
+                    if (ObjectUtils.isEmpty(fs)) {
+                        fs = FileSystem.get(conf);
+                    }
+
+                    Path hdfsPath = new Path(filePath);
+                    if (fs.exists(hdfsPath)) {
+                        instream = fs.open(hdfsPath);
+                        contentLength += instream.available();
+                        ZipEntry entry = new ZipEntry(fileName);
+                        zipstream.putNextEntry(entry);
+                        byte[] buffer = new byte[1024];
+                        int len = 0;
+                        while ((len = instream.read(buffer)) != -1) {
+                            zipstream.write(buffer, 0, len);
+                        }
+                        instream.close();
+                        zipstream.closeEntry();
+                        zipstream.flush();
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            zipstream.finish();
+            response.setContentLength(contentLength);
+            zipstream.close();
+        } catch (IOException e) {
+            new RuntimeException(e.getMessage());
+        }
+    }
+
+    private static String getMimeTypeByExtension(String extension) {
+        switch (extension.toLowerCase()) {
+            case "":
+                return "dir";
+            case "txt":
+            case "text":
+                return "text/plain";
+            case "csv":
+                return "text/csv";
+            case "xlsx":
+                return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            case "xls":
+                return "application/vnd.ms-excel";
+            case "doc":
+                return "application/msword";
+            case "docx":
+                return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            case "ppt":
+                return "application/vnd.ms-powerpoint";
+            case "pptx":
+                return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+            case "pdf":
+                return "application/pdf";
+            case "xml":
+                return "application/xml";
+            case "html":
+            case "htm":
+                return "text/html";
+            case "jpeg":
+            case "jpg":
+                return "image/jpeg";
+            case "png":
+                return "image/png";
+            case "gif":
+                return "image/gif";
+            case "bmp":
+                return "image/bmp";
+            case "mp3":
+                return "audio/mpeg";
+            case "wav":
+                return "audio/vnd.wave";
+            case "mp4":
+                return "video/mp4";
+            case "avi":
+                return "video/x-msvideo";
+            case "mov":
+                return "video/quicktime";
+            case "zip":
+                return "application/zip";
+            case "rar":
+                return "application/x-rar-compressed";
+            case "7z":
+                return "application/x-7z-compressed";
+            // 添加更多文件扩展名和对应的MIME类型
+            default:
+                return "application/octet-stream";
+        }
     }
 }

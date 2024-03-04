@@ -4,6 +4,7 @@ import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.flow.mapper.provider.StopsMapperProvider;
 import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -228,4 +229,14 @@ public interface StopsMapper {
     @Select("SELECT COUNT(fs.id) AS num FROM flow_stops fs WHERE fs.enable_flag=1 AND fs.fk_flow_id=#{flowId};")
     public int getStopsCountsByFlowId(@Param(value = "flowId") String flowId);
 
+    @Select("<script>"
+            + "select id, page_id from flow_stops where id in "
+            + "<foreach collection='list' item='item' index='index' open='(' close=')' separator=','>"
+            + "#{item}"
+            + "</foreach>"
+            + "</script>")
+    List<Stops> getStopsPageByIds(List<String> ids);
+
+    @Select("select id, page_id from flow_stops where fk_flow_id = #{flowId}")
+    List<Stops> getStopsPageByFlowId(@Param("flowId") String flowId);
 }

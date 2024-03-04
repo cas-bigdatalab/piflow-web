@@ -1,5 +1,6 @@
 package cn.cnic.component.process.service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import cn.cnic.component.process.vo.DebugDataRequest;
@@ -226,4 +227,14 @@ public interface IProcessService {
      * @return
      */
     public String getProcessStopVoByPageId(String processId, String pageId);
+
+    String getErrorLogInfo(String appId);
+
+    String getProcessPageByPublishingId(ProcessVo processVo);
+
+    String getProcessHistoryPageOfSelf(ProcessVo processVo);
+
+    String getByProcessId(String processId) throws InvocationTargetException, IllegalAccessException;
+
+    String getAppIdByProcessId(String processId);
 }
