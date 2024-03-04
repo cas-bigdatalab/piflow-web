@@ -386,107 +386,107 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         }
         String processId = process.getId();
         //改成异步获取appid
-//        CompletableFuture<Map<String, Object>> starFlowFuture = null; //定义future结构
-//        starFlowFuture = CompletableFuture.supplyAsync(() ->
-//                flowImpl.startFlow(process, checkpoint.toString(), runModeType));
-//        // 当 CompletableFuture 完成时清理dockerFile和zip
-//        starFlowFuture.whenComplete((result, throwable) -> {
-//            // 检查是否有异常抛出
-//            if (throwable != null) {
-//                logger.error("start flow failed: " + throwable.getMessage());
-//            } else {
-//                if (null == result || 200 != ((Integer) result.get("code"))) {
-//                    processDomain.updateProcessEnableFlag(username, true, processId);
-//                } else {
-//                    Process process1 = processDomain.getProcessById(username, true, processId);
-//                    process1.setLastUpdateDttm(new Date());
-//                    process1.setLastUpdateUser(username);
-//                    process1.setAppId((String) result.get("appId"));
-//                    process1.setProcessId((String) result.get("appId"));
-//                    process1.setState(ProcessState.STARTED);
-//                    process1.setLastUpdateUser(username);
-//                    process1.setLastUpdateDttm(new Date());
-//                    try {
-//                        processDomain.updateProcess(process1);
-//                        SysParamsCache.STARTED_PROCESS.put(process1.getId(),(String) result.get("appId"));
-//                    } catch (Exception e) {
-//                        throw new RuntimeException(e);
-//                    }
-//                    //为所有发布的输出参数都创建一个数据产品记录
-//                    Date now = new Date();
-//                    List<DataProduct> dataProducts = new ArrayList<>();
-//                    flowPublishingVo.getStops().stream()
-//                            .flatMap(stop -> stop.getStopPublishingPropertyVos().stream())
-//                            .filter(property -> FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(property.getType()))
-//                            .forEach(property -> {
-//                                DataProduct dataProduct = new DataProduct();
-//                                dataProduct.setId(snowflakeGenerator.next());
-//                                dataProduct.setProcessId(processId);
-//                                dataProduct.setPropertyId(Long.parseLong(property.getId()));
-//                                dataProduct.setPropertyName(property.getName());
-//                                dataProduct.setDatasetUrl(property.getCustomValue());
-//                                dataProduct.setPermission(DataProductPermission.OPEN.getValue());
-//                                dataProduct.setState(DataProductState.CREATING.getValue());
-//                                dataProduct.setCrtDttm(now);
-//                                dataProduct.setCrtDttmStr(DateUtils.dateTimesToStr(now));
-//                                dataProduct.setCrtUser(username);
-//                                dataProduct.setLastUpdateDttm(now);
-//                                dataProduct.setLastUpdateDttmStr(DateUtils.dateTimeToStr(now));
-//                                dataProduct.setLastUpdateUser(username);
-//                                dataProduct.setEnableFlag(true);
-//                                dataProduct.setEnableFlagNum(1);
-//                                dataProduct.setVersion(0L);
-//                                dataProducts.add(dataProduct);
-//                            });
-//                    dataProductDomain.addBatch(dataProducts);
-//                }
-//            }
-//        });
-        Map<String, Object> stringObjectMap = flowImpl.startFlow(process, checkpoint.toString(), runModeType);
-        if (null == stringObjectMap || 200 != ((Integer) stringObjectMap.get("code"))) {
-            processDomain.updateProcessEnableFlag(username, true, processId);
-            return ReturnMapUtils.setFailedMsgRtnJsonStr((String) stringObjectMap.get("errorMsg"));
-        }
-        Process process2 = processDomain.getProcessById(username, true, processId);
-        process2.setLastUpdateDttm(new Date());
-        process2.setLastUpdateUser(username);
-        process.setAppId((String) stringObjectMap.get("appId"));
-        process.setProcessId((String) stringObjectMap.get("appId"));
-        process2.setState(ProcessState.INIT);
-        process2.setLastUpdateUser(username);
-        process2.setLastUpdateDttm(new Date());
-        processDomain.updateProcess(process);
-        //为所有发布的输出参数都创建一个数据产品记录
-        Date now = new Date();
-        List<DataProduct> dataProducts = new ArrayList<>();
-        flowPublishingVo.getStops().stream()
-                .flatMap(stop -> stop.getStopPublishingPropertyVos().stream())
-                .filter(property -> FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(property.getType()))
-                .forEach(property -> {
-                    DataProduct dataProduct = new DataProduct();
-                    dataProduct.setId(snowflakeGenerator.next());
-                    dataProduct.setProcessId(processId);
-                    dataProduct.setPropertyId(Long.parseLong(property.getId()));
-                    dataProduct.setPropertyName(property.getName());
-                    dataProduct.setDatasetUrl(property.getCustomValue());
-                    dataProduct.setPermission(DataProductPermission.OPEN.getValue());
-                    dataProduct.setState(DataProductState.CREATING.getValue());
-                    dataProduct.setCrtDttm(now);
-                    dataProduct.setCrtDttmStr(DateUtils.dateTimesToStr(now));
-                    dataProduct.setCrtUser(username);
-                    dataProduct.setLastUpdateDttm(now);
-                    dataProduct.setLastUpdateDttmStr(DateUtils.dateTimeToStr(now));
-                    dataProduct.setLastUpdateUser(username);
-                    dataProduct.setEnableFlag(true);
-                    dataProduct.setEnableFlagNum(1);
-                    dataProduct.setVersion(0L);
-                    dataProducts.add(dataProduct);
-                });
-
-        dataProductDomain.addBatch(dataProducts);
+        CompletableFuture<Map<String, Object>> starFlowFuture = null; //定义future结构
+        starFlowFuture = CompletableFuture.supplyAsync(() ->
+                flowImpl.startFlow(process, checkpoint.toString(), runModeType));
+        // 当 CompletableFuture 完成时更新appID，生成数据产品记录
+        starFlowFuture.whenComplete((result, throwable) -> {
+            // 检查是否有异常抛出
+            if (throwable != null) {
+                logger.error("start flow failed: " + throwable.getMessage());
+            } else {
+                if (null == result || 200 != ((Integer) result.get("code"))) {
+                    processDomain.updateProcessEnableFlag(username, true, processId);
+                } else {
+                    SysParamsCache.STARTED_PROCESS.put(processId,(String) result.get("appId"));
+                    Process process1 = processDomain.getProcessById(username, true, processId);
+                    process1.setLastUpdateDttm(new Date());
+                    process1.setLastUpdateUser(username);
+                    process1.setAppId((String) result.get("appId"));
+                    process1.setProcessId((String) result.get("appId"));
+                    process1.setState(ProcessState.STARTED);
+                    process1.setLastUpdateUser(username);
+                    process1.setLastUpdateDttm(new Date());
+                    try {
+                        processDomain.updateProcess(process1);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                    //为所有发布的输出参数都创建一个数据产品记录
+                    Date now = new Date();
+                    List<DataProduct> dataProducts = new ArrayList<>();
+                    flowPublishingVo.getStops().stream()
+                            .flatMap(stop -> stop.getStopPublishingPropertyVos().stream())
+                            .filter(property -> FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(property.getType()))
+                            .forEach(property -> {
+                                DataProduct dataProduct = new DataProduct();
+                                dataProduct.setId(snowflakeGenerator.next());
+                                dataProduct.setProcessId(processId);
+                                dataProduct.setPropertyId(Long.parseLong(property.getId()));
+                                dataProduct.setPropertyName(property.getName());
+                                dataProduct.setDatasetUrl(property.getCustomValue());
+                                dataProduct.setPermission(DataProductPermission.OPEN.getValue());
+                                dataProduct.setState(DataProductState.CREATING.getValue());
+                                dataProduct.setCrtDttm(now);
+                                dataProduct.setCrtDttmStr(DateUtils.dateTimesToStr(now));
+                                dataProduct.setCrtUser(username);
+                                dataProduct.setLastUpdateDttm(now);
+                                dataProduct.setLastUpdateDttmStr(DateUtils.dateTimeToStr(now));
+                                dataProduct.setLastUpdateUser(username);
+                                dataProduct.setEnableFlag(true);
+                                dataProduct.setEnableFlagNum(1);
+                                dataProduct.setVersion(0L);
+                                dataProducts.add(dataProduct);
+                            });
+                    dataProductDomain.addBatch(dataProducts);
+                }
+            }
+        });
+//        Map<String, Object> stringObjectMap = flowImpl.startFlow(process, checkpoint.toString(), runModeType);
+//        if (null == stringObjectMap || 200 != ((Integer) stringObjectMap.get("code"))) {
+//            processDomain.updateProcessEnableFlag(username, true, processId);
+//            return ReturnMapUtils.setFailedMsgRtnJsonStr((String) stringObjectMap.get("errorMsg"));
+//        }
+//        Process process2 = processDomain.getProcessById(username, true, processId);
+//        process2.setLastUpdateDttm(new Date());
+//        process2.setLastUpdateUser(username);
+////        process.setAppId((String) stringObjectMap.get("appId"));
+////        process.setProcessId((String) stringObjectMap.get("appId"));
+//        process2.setState(ProcessState.INIT);
+//        process2.setLastUpdateUser(username);
+//        process2.setLastUpdateDttm(new Date());
+//        processDomain.updateProcess(process);
+//        //为所有发布的输出参数都创建一个数据产品记录
+//        Date now = new Date();
+//        List<DataProduct> dataProducts = new ArrayList<>();
+//        flowPublishingVo.getStops().stream()
+//                .flatMap(stop -> stop.getStopPublishingPropertyVos().stream())
+//                .filter(property -> FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(property.getType()))
+//                .forEach(property -> {
+//                    DataProduct dataProduct = new DataProduct();
+//                    dataProduct.setId(snowflakeGenerator.next());
+//                    dataProduct.setProcessId(processId);
+//                    dataProduct.setPropertyId(Long.parseLong(property.getId()));
+//                    dataProduct.setPropertyName(property.getName());
+//                    dataProduct.setDatasetUrl(property.getCustomValue());
+//                    dataProduct.setPermission(DataProductPermission.OPEN.getValue());
+//                    dataProduct.setState(DataProductState.CREATING.getValue());
+//                    dataProduct.setCrtDttm(now);
+//                    dataProduct.setCrtDttmStr(DateUtils.dateTimesToStr(now));
+//                    dataProduct.setCrtUser(username);
+//                    dataProduct.setLastUpdateDttm(now);
+//                    dataProduct.setLastUpdateDttmStr(DateUtils.dateTimeToStr(now));
+//                    dataProduct.setLastUpdateUser(username);
+//                    dataProduct.setEnableFlag(true);
+//                    dataProduct.setEnableFlagNum(1);
+//                    dataProduct.setVersion(0L);
+//                    dataProducts.add(dataProduct);
+//                });
+//
+//        dataProductDomain.addBatch(dataProducts);
         logger.info("========run flow finish==================");
         Map<String, String> result = new HashMap<>();
-        result.put("processId", process.getId());
+        result.put("processId", processId);
 //        result.put("appId", process.getAppId());
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", result);
     }
