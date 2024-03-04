@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `product_type_associate`
 (
     `id` bigint(20) NOT NULL COMMENT '主键ID',
     `product_type_id` bigint(20) NOT NULL COMMENT '数据产品类型ID',
+    `product_type_name` varchar(255) NOT NULL COMMENT '数据产品名称',
     `associate_id` varchar(50) NOT NULL COMMENT '关联ID',
     `associate_type` tinyint(1) NOT NULL COMMENT '关联类型 0-流水线 1-数据产品 2-用户',
     `state` tinyint(1) NOT NULL COMMENT '状态 0-已删除 1-感兴趣 2-不感兴趣 3-可用',
