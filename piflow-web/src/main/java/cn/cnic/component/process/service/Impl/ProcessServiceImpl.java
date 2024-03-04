@@ -1171,6 +1171,9 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String getAppIdByProcessId(String processId) {
         String appId = SysParamsCache.STARTED_PROCESS.get(processId);
+        if(StringUtils.isNotBlank(appId)){
+            SysParamsCache.STARTED_PROCESS.remove(processId);
+        }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("appId", appId);
     }
 

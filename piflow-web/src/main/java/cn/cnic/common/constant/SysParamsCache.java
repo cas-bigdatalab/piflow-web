@@ -4,6 +4,7 @@ import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -100,6 +101,6 @@ public class SysParamsCache {
 
     public static String FILE_STORAGE_PATH = "/user/piflow/files/";
 
-    public static Map<String,String> STARTED_PROCESS;
+    public static Map<String,String> STARTED_PROCESS = new HashMap<>();
 
 }

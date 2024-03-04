@@ -329,7 +329,6 @@ public class FlowImpl implements IFlow {
                     String processId = process.getId();
                     //如果进程完成，更新数据产品记录状态为待发布，如果进程失败，更新数据产品记录状态为生成失败
                     if (ProcessState.COMPLETED.equals(state)) {
-//                        SysParamsCache.STARTED_PROCESS.remove(processId);
                         //为每一个数据产品生成一条file记录
                         List<DataProductVo> dataProducts = dataProductDomain.getListByProcessId(processId);
                         if (CollectionUtils.isNotEmpty(dataProducts)) {
