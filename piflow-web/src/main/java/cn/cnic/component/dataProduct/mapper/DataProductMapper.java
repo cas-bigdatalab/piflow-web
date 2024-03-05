@@ -109,6 +109,51 @@ public interface DataProductMapper {
     })
     List<DataProductVo> getByPageForPublishing(DataProductVo dataProductVo);
 
+    //管理员 数据产品发布管理菜单列表，显示别人待审核的，以及自己已发布的,被拒绝发布的，已下架的
+    @Select("<script>"
+            + "select CAST(dp.id as CHAR) as id, dp.*, pt.product_type_id as productTypeId, pt.product_type_name as productTypeName from data_product as dp "
+            + "<if test=\"productTypeId != null \">"
+            + "inner join product_type_associate as pta on pta.associate_id = dp.id and pta.product_type_id = #{productTypeId} "
+            + "</if>"
+            + "left join product_type_associate as pt on pt.associate_id = CAST(dp.id AS CHAR) "
+            + "<where>"
+            + "<if test=\"sdPublisher != null and sdPublisher != '' \">"
+            + " and dp.sdPublisher = #{sdPublisher} "
+            + "</if>"
+            + "<if test=\"keyword != null and keyword != '' \">"
+            + " and dp.keyword like CONCAT('%', #{keyword}, '%') "
+            + "</if>"
+            + " and ((crt_user != #{crtUser} and dp.state = 4) or (crt_user = #{crtUser} and dp.state in (5, 6, 7)))and dp.enable_flag = 1 "
+            + "</where>"
+            + "</script>")
+    @Results({
+            @Result(column = "id", property = "id", javaType = String.class, jdbcType = JdbcType.BIGINT),
+            @Result(column = "id", property = "coverFile", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductCoverType", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
+    })
+    List<DataProductVo> getByPageForPublishingWithAdmin(DataProductVo dataProductVo);
+
+    //数据产品发布者 数据产品发布管理菜单列表，显示自己待审核的、已发布的,被拒绝发布的，已下架的
+    @Select("<script>"
+            + "select CAST(dp.id as CHAR) as id, dp.*, pt.product_type_id as productTypeId, pt.product_type_name as productTypeName from data_product as dp "
+            + "<if test=\"productTypeId != null \">"
+            + "inner join product_type_associate as pta on pta.associate_id = dp.id and pta.product_type_id = #{productTypeId} "
+            + "</if>"
+            + "left join product_type_associate as pt on pt.associate_id = CAST(dp.id AS CHAR) "
+            + "<where>"
+            + "<if test=\"keyword != null and keyword != '' \">"
+            + " and dp.keyword like CONCAT('%', #{keyword}, '%') "
+            + "</if>"
+            + " and crt_user = #{crtUser} and dp.state in (4, 5, 6, 7) and dp.enable_flag = 1 "
+            + "</where>"
+            + "</script>")
+    @Results({
+            @Result(column = "id", property = "id", javaType = String.class, jdbcType = JdbcType.BIGINT),
+            @Result(column = "id", property = "coverFile", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductCoverType", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
+    })
+    List<DataProductVo> getByPageForPublishingWithSdPublisher(DataProductVo dataProductVo);
+
     @Select("<script>"
             + "select CAST(du.id as CHAR) as id, CAST(du.product_id AS CHAR) as productId, du.* from product_user as du "
             + "inner join data_product as dp on dp.id = du.product_id and dp.crt_user = #{username}"

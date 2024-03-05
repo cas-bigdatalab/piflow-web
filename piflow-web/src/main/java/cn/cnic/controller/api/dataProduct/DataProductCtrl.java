@@ -45,7 +45,7 @@ public class DataProductCtrl {
      * @param dataProductVo:
      * @return String
      * @author tianyao
-     * @description 管理员发布管理菜单 除了已删除、生成中状态的所有   普通用户：授权管理界面
+     * @description 管理员发布管理菜单 获取待审核的，，，如果是普通用户，获取已发布的，可以做删除，或者待审核的，取消审核
      * @date 2024/2/28 22:21
      */
     @RequestMapping(value = "/getByPageForPublishing", method = RequestMethod.POST)

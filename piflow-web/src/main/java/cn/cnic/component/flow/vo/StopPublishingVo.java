@@ -20,6 +20,7 @@ public class StopPublishingVo implements Serializable {
     private String stopBundle;
     private String stopName;
     private String bak1; //排序
+    private String bak2; //组件分组
 
     private List<StopPublishingPropertyVo> stopPublishingPropertyVos;
 
