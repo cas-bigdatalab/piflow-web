@@ -123,6 +123,12 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                     if(null == property.getType()){
                         property.setType(FlowStopsPublishingPropertyType.COMMON.getValue());
                     }
+                    //设置排序
+                    if(StringUtils.isBlank(property.getBak1())){
+                        property.setBak1(stop.getBak1());
+                    }
+                    //设置分组名
+                    property.setBak2(stop.getBak2());
                     property.setCrtDttm(now);
                     property.setCrtUser(username);
                     property.setEnableFlag(true);
@@ -185,6 +191,12 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                         if(null == property.getType()){
                             property.setType(FlowStopsPublishingPropertyType.COMMON.getValue());
                         }
+                        //设置排序
+                        if(StringUtils.isBlank(property.getBak1())){
+                            property.setBak1(stop.getBak1());
+                        }
+                        //设置分组名
+                        property.setBak2(stop.getBak2());
                         property.setCrtDttm(now);
                         property.setCrtUser(username);
                         property.setEnableFlag(true);
@@ -206,6 +218,12 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                         if(null == property.getType()){
                             property.setType(FlowStopsPublishingPropertyType.COMMON.getValue());
                         }
+                        //设置排序
+                        if(StringUtils.isBlank(property.getBak1())){
+                            property.setBak1(stop.getBak1());
+                        }
+                        //设置分组名
+                        property.setBak2(stop.getBak2());
                         property.setLastUpdateDttm(now);
                         property.setLastUpdateUser(username);
                         property.setVersion(property.getVersion() + 1);
@@ -264,6 +282,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                     vo.setStopId(entry.getKey());
                     vo.setStopName(entry.getValue().get(0).getStopName());
                     vo.setBak1(entry.getValue().get(0).getBak1());
+                    vo.setBak2(entry.getValue().get(0).getBak2());
                     vo.setStopPublishingPropertyVos(entry.getValue().stream()
                             .map(property -> {
                                 StopPublishingPropertyVo propertyVo = new StopPublishingPropertyVo();
