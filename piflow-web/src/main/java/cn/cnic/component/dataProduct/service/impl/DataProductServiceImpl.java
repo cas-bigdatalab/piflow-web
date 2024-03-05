@@ -211,15 +211,25 @@ public class DataProductServiceImpl implements IDataProductService {
      * @param dataProductVo:
      * @return String
      * @author tianyao
-     * @description 管理员获取数据产品列表除了已删除、生成中状态的所有  搜索条件有分页的，数据产品类型的，以及一个关键字,状态，发布者
+     * @description 管理员发布管理菜单 获取待审核的以及自己已发布的,被拒绝发布的，已下架的，，，如果是普通用户，获取自己已发布的，被拒绝发布的，已下架的
      * @date 2024/2/28 22:25
      */
     @Override
     public String getByPageForPublishing(DataProductVo dataProductVo) {
-        Page<DataProduct> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
-        dataProductDomain.getByPageForPublishing(dataProductVo);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
+        String username = SessionUserUtil.getCurrentUsername();
+        dataProductVo.setCrtUser(username);
+        boolean admin = SessionUserUtil.isAdmin();
+        if(admin){
+            Page<DataProduct> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
+            dataProductDomain.getByPageForPublishingWithAdmin(dataProductVo);
+            Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+            return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
+        }else {
+            Page<DataProduct> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
+            dataProductDomain.getByPageForPublishingWithSdPublisher(dataProductVo);
+            Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+            return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
+        }
     }
 
     @Override

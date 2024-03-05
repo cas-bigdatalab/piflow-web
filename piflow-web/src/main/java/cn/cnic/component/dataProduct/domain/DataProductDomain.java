@@ -73,6 +73,12 @@ public class DataProductDomain {
     public List<DataProductVo> getByPageForPublishing(DataProductVo dataProductVo) {
         return dataProductMapper.getByPageForPublishing(dataProductVo);
     }
+    public List<DataProductVo> getByPageForPublishingWithAdmin(DataProductVo dataProductVo) {
+        return dataProductMapper.getByPageForPublishingWithAdmin(dataProductVo);
+    }
+    public List<DataProductVo> getByPageForPublishingWithSdPublisher(DataProductVo dataProductVo) {
+        return dataProductMapper.getByPageForPublishingWithSdPublisher(dataProductVo);
+    }
 
     public List<ProductUserVo> getByPageForPermission(ProductUserVo productUserVo, String username) {
         return dataProductMapper.getByPageForPermission(productUserVo,username);

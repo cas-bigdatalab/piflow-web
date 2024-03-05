@@ -120,6 +120,9 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                     property.setStopId(stopId);
                     property.setStopName(stop.getStopName());
                     property.setStopBundle(stop.getStopBundle());
+                    if(null == property.getType()){
+                        property.setType(FlowStopsPublishingPropertyType.COMMON.getValue());
+                    }
                     property.setCrtDttm(now);
                     property.setCrtUser(username);
                     property.setEnableFlag(true);
@@ -179,6 +182,9 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                         property.setStopId(stopId);
                         property.setStopName(stop.getStopName());
                         property.setStopBundle(stop.getStopBundle());
+                        if(null == property.getType()){
+                            property.setType(FlowStopsPublishingPropertyType.COMMON.getValue());
+                        }
                         property.setCrtDttm(now);
                         property.setCrtUser(username);
                         property.setEnableFlag(true);
@@ -197,6 +203,9 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                         //更新参数
                         property.setId(Long.parseLong(stopPublishingPropertyVo.getId()));
                         property.setPublishingId(Long.parseLong(stopPublishingPropertyVo.getPublishingId()));
+                        if(null == property.getType()){
+                            property.setType(FlowStopsPublishingPropertyType.COMMON.getValue());
+                        }
                         property.setLastUpdateDttm(now);
                         property.setLastUpdateUser(username);
                         property.setVersion(property.getVersion() + 1);
