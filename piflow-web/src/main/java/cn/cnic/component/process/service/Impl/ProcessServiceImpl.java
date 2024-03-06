@@ -1122,6 +1122,12 @@ public class ProcessServiceImpl implements IProcessService {
                     flowPublishingVo.setCoverFileId(flowPublishingCover.getId().toString());
                     flowPublishingVo.setCoverFileName(flowPublishingCover.getFileName());
                 }
+                //获取说明书
+                File flowPublishingInstruction = fileDomain.getByAssociateId(flowPublishing.getId().toString(), FileAssociateType.FLOW_PUBLISHING_INSTRUCTION.getValue());
+                if (ObjectUtils.isNotEmpty(flowPublishingInstruction)) {
+                    flowPublishingVo.setInstructionFileId(flowPublishingInstruction.getId().toString());
+                    flowPublishingVo.setInstructionFileName(flowPublishingInstruction.getFileName());
+                }
 
                 List<StopPublishingVo> stops = flowPublishing.getProperties().stream()
                         .collect(Collectors.groupingBy(FlowStopsPublishingProperty::getStopId))
