@@ -22,9 +22,9 @@ public class FlowPublishCtrl {
     }
 
     /**
-     * @param:
      * @param flowPublishingVo:
      * @return String
+     * @param:
      * @author tianyao
      * @description 流水线发布或重新编辑发布（新增，多文件多参数发布）
      * @date 2024/2/21 10:57
@@ -90,6 +90,21 @@ public class FlowPublishCtrl {
     @ApiOperation(value = "getFlowPublishingListPageByProductTypeId", notes = "根据数据产品分类分页查询发布流水线")
     public String getFlowPublishingListPageByProductTypeId(@RequestBody FlowPublishingVo flowPublishingVo) {
         return flowPublishServiceImpl.getFlowPublishingListPageByProductTypeId(flowPublishingVo);
+    }
+
+
+    /**
+     * @param flowPublishingVo:
+     * @return String
+     * @author tianyao
+     * @description 流水线配置页面暂存功能
+     * @date 2024/3/6 15:00
+     */
+    @RequestMapping(value = "/tempSave", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "tempSave", notes = "流水线配置页面暂存")
+    public String tempSave(@RequestBody FlowPublishingVo flowPublishingVo) throws Exception {
+        return flowPublishServiceImpl.tempSave(flowPublishingVo);
     }
 
     @RequestMapping(value = "/run", method = RequestMethod.POST)

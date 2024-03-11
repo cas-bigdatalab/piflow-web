@@ -72,6 +72,20 @@ public class FileCtrl {
     }
 
     /**
+     * @param filePath:
+     * @return String
+     * @author tianyao
+     * @description 根据filePath进行文件下载
+     * @date 2024/2/21 15:32
+     */
+    @RequestMapping(value = "/getFileByFilePath", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "getFileByFilePath", notes = "根据filePath进行文件下载")
+    public void getFileByFilePath(HttpServletResponse response, String filePath) {
+        fileServiceImpl.getFileByFilePath(response, filePath);
+    }
+
+    /**
      * @param response:
      * @param ids:
      * @return void

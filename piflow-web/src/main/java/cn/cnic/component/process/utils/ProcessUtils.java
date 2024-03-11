@@ -270,6 +270,7 @@ public class ProcessUtils {
         } else {
             processStop.setId(null);
         }
+        processStop.setFlowStopId(stops.getId());
         
         // Remove the properties of stops
         List<Property> properties = stops.getProperties();
@@ -701,5 +702,4 @@ public class ProcessUtils {
         ymlContentSb.append("    network_mode: bridge" + System.lineSeparator());
         return ymlContentSb.toString();
     }
-
 }

@@ -32,6 +32,7 @@ public class ProcessStopMapperProvider {
     private String pageId;
     private String processId;
     private int isDataSource;
+    private String flowStopId;
 
     private boolean preventSQLInjectionProcessStop(ProcessStop processStop) {
         if (null == processStop || StringUtils.isBlank(processStop.getLastUpdateUser())) {
@@ -73,6 +74,7 @@ public class ProcessStopMapperProvider {
         String processIdStr = (null != processStop.getProcess() ? processStop.getProcess().getId() : null);
         this.processId = (null != processIdStr ? SqlUtils.preventSQLInjection(processIdStr) : null);
         this.isDataSource = ((null != processStop.getIsDataSource() && processStop.getIsDataSource()) ? 1 : 0);
+        this.flowStopId = SqlUtils.preventSQLInjection(processStop.getFlowStopId());
         return true;
     }
 
@@ -97,6 +99,7 @@ public class ProcessStopMapperProvider {
         this.pageId = null;
         this.processId = null;
         this.isDataSource = 0;
+        this.flowStopId = null;
     }
 
     private StringBuffer splicingInsert() {
@@ -121,7 +124,8 @@ public class ProcessStopMapperProvider {
         strBuf.append("end_time, ");
         strBuf.append("page_id, ");
         strBuf.append("fk_flow_process_id, ");
-        strBuf.append("is_data_source ");
+        strBuf.append("is_data_source, ");
+        strBuf.append("flow_stop_id ");
         strBuf.append(") ");
         strBuf.append("VALUES ");
         return strBuf;
@@ -156,7 +160,8 @@ public class ProcessStopMapperProvider {
         strBuf.append(this.endTimeStr + ", ");
         strBuf.append(this.pageId + ", ");
         strBuf.append(this.processId + ", ");
-        strBuf.append(this.isDataSource + " ");
+        strBuf.append(this.isDataSource + ", ");
+        strBuf.append(this.flowStopId + " ");
         strBuf.append(") ");
         this.reset();
         return strBuf.toString();
@@ -204,7 +209,8 @@ public class ProcessStopMapperProvider {
             strBuf.append(this.endTimeStr + ", ");
             strBuf.append(this.pageId + ", ");
             strBuf.append(this.processId + ", ");
-            strBuf.append(this.isDataSource + " ");
+            strBuf.append(this.isDataSource + ", ");
+            strBuf.append(this.flowStopId + " ");
             strBuf.append(") ");
             this.reset();
         }

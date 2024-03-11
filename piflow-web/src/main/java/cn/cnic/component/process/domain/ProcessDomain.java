@@ -509,4 +509,8 @@ public class ProcessDomain {
     public List<Process> getProcessHistoryPageOfSelf(String keyword, String username) {
         return processMapper.getProcessHistoryPageOfSelf(keyword,username);
     }
+
+    public Process getByFlowIdAndCrtUserWithoutState(String flowId,String username) {
+        return processMapper.getByFlowIdAndCrtUserWithoutState(flowId,username);
+    }
 }

@@ -11,5 +11,7 @@ public interface IFileService {
 
     void getFileById(HttpServletResponse response, String id);
 
+    void getFileByFilePath(HttpServletResponse response, String filePath);
+
     void getFileListByIds(HttpServletResponse response, String ids);
 }
