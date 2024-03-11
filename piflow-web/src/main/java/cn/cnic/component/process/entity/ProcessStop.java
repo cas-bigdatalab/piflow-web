@@ -34,6 +34,7 @@ public class ProcessStop extends BaseModelUUIDNoCorpAgentId {
     private List<ProcessStopProperty> processStopPropertyList = new ArrayList<ProcessStopProperty>();
     private List<ProcessStopCustomizedProperty> processStopCustomizedPropertyList = new ArrayList<>();
     private Boolean isDataSource = false;
+    private String flowStopId;
 
     private String dockerImagesName;          //docker image name,not save in process_stop
     private ComponentFileType componentType;        //component type,not save in process_stop

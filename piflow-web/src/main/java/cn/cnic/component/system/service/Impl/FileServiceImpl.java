@@ -104,6 +104,11 @@ public class FileServiceImpl implements IFileService {
     }
 
     @Override
+    public void getFileByFilePath(HttpServletResponse response, String filePath) {
+        FileUtils.downloadFileFromHdfs(response, filePath, null, FileUtils.getDefaultFs());
+    }
+
+    @Override
     public void getFileListByIds(HttpServletResponse response, String ids) {
         //获取多个文件并返回
         List<File> fileList = fileDomain.getListByIds(ids);

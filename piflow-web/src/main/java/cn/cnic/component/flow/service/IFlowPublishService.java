@@ -21,5 +21,7 @@ public interface IFlowPublishService {
 
     String getFlowPublishingListPageByProductTypeId(FlowPublishingVo flowPublishingVo);
 
+    String tempSave(FlowPublishingVo flowPublishingVo) throws Exception;
+
     String run(FlowPublishingVo flowPublishingVo) throws Exception;
 }

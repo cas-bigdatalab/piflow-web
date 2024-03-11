@@ -267,7 +267,7 @@ public interface ProcessMapper {
     @Select("<script>"
             +"select fp.* from flow_process as fp"
             +"<where>"
-            +" fp.crt_user = #{username} and fp.flow_id = #{publishingId} and fp.enable_flag = 1"
+            +" fp.crt_user = #{username} and fp.flow_id = #{publishingId} and fp.enable_flag = 1 "
             +"<if test=\"keyword != null and keyword != '' \">"
             +" and `name` like CONCAT('%', #{keyword}, '%')"
             +"</if>"
@@ -286,7 +286,7 @@ public interface ProcessMapper {
     @Select("<script>"
             +"select fp.* from flow_process as fp"
             +"<where>"
-            +" fp.id = #{processId} and fp.enable_flag = 1"
+            +" fp.id = #{processId} and fp.enable_flag = 1 "
             +"</where>"
             +"</script>")
     @Results({
@@ -315,4 +315,15 @@ public interface ProcessMapper {
 
     })
     List<Process> getProcessHistoryPageOfSelf(@Param("keyword") String keyword, @Param("username") String username);
+
+    @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessByPageIds")
+    @Select("select * from flow_process where flow_id = #{flowId} and crt_user = #{username} and state is null ")
+    @Results({
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByProcessId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processStopList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessStopMapper.getProcessStopByProcessId", fetchType = FetchType.LAZY)),
+            @Result(column = "id", property = "processPathList", many = @Many(select = "cn.cnic.component.process.mapper.ProcessPathMapper.getProcessPathByProcessId", fetchType = FetchType.LAZY))
+
+    })
+    Process getByFlowIdAndCrtUserWithoutState(@Param("flowId") String flowId, @Param("username") String username);
 }
