@@ -445,6 +445,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                     }
                 }
             }
+            oldProcess.setLastUpdateDttm(new Date());
             int updateProcess =processDomain.updateProcess(oldProcess);
             if (updateProcess <= 0) {
                 return null;
