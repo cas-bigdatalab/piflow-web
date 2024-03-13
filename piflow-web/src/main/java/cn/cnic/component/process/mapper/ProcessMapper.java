@@ -316,7 +316,6 @@ public interface ProcessMapper {
     })
     List<Process> getProcessHistoryPageOfSelf(@Param("keyword") String keyword, @Param("username") String username);
 
-    @SelectProvider(type = ProcessMapperProvider.class, method = "getProcessByPageIds")
     @Select("select * from flow_process where flow_id = #{flowId} and crt_user = #{username} and state is null ")
     @Results({
             @Result(id = true, column = "id", property = "id"),
