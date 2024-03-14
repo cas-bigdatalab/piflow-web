@@ -316,7 +316,7 @@ public interface ProcessMapper {
     })
     List<Process> getProcessHistoryPageOfSelf(@Param("keyword") String keyword, @Param("username") String username);
 
-    @Select("select * from flow_process where flow_id = #{flowId} and crt_user = #{username} and state is null ")
+    @Select("select * from flow_process where flow_id = #{flowId} and crt_user = #{username} and state is null and enable_flag = 1")
     @Results({
             @Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "mxGraphModel", one = @One(select = "cn.cnic.component.mxGraph.mapper.MxGraphModelMapper.getMxGraphModelByProcessId", fetchType = FetchType.LAZY)),

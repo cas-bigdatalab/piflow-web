@@ -122,11 +122,11 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                     property.setStopId(stopId);
                     property.setStopName(stop.getStopName());
                     property.setStopBundle(stop.getStopBundle());
-                    if(null == property.getType()){
+                    if (null == property.getType()) {
                         property.setType(FlowStopsPublishingPropertyType.COMMON.getValue());
                     }
                     //设置排序
-                    if(StringUtils.isBlank(property.getBak1())){
+                    if (StringUtils.isBlank(property.getBak1())) {
                         property.setBak1(stop.getBak1());
                     }
                     //设置分组名
@@ -190,11 +190,11 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                         property.setStopId(stopId);
                         property.setStopName(stop.getStopName());
                         property.setStopBundle(stop.getStopBundle());
-                        if(null == property.getType()){
+                        if (null == property.getType()) {
                             property.setType(FlowStopsPublishingPropertyType.COMMON.getValue());
                         }
                         //设置排序
-                        if(StringUtils.isBlank(property.getBak1())){
+                        if (StringUtils.isBlank(property.getBak1())) {
                             property.setBak1(stop.getBak1());
                         }
                         //设置分组名
@@ -217,11 +217,11 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                         //更新参数
                         property.setId(Long.parseLong(stopPublishingPropertyVo.getId()));
                         property.setPublishingId(Long.parseLong(stopPublishingPropertyVo.getPublishingId()));
-                        if(null == property.getType()){
+                        if (null == property.getType()) {
                             property.setType(FlowStopsPublishingPropertyType.COMMON.getValue());
                         }
                         //设置排序
-                        if(StringUtils.isBlank(property.getBak1())){
+                        if (StringUtils.isBlank(property.getBak1())) {
                             property.setBak1(stop.getBak1());
                         }
                         //设置分组名
@@ -276,7 +276,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
             result.setInstructionFileName(flowPublishingInstruction.getFileName());
         }
         //根据username和flowId以及state为空，查看是否有暂存的数据，如果有暂存的数据，将暂存的customValue赋给property
-        Process process = processDomain.getByFlowIdAndCrtUserWithoutState(id,username);
+        Process process = processDomain.getByFlowIdAndCrtUserWithoutState(id, username);
 
         List<StopPublishingVo> stops = flowPublishing.getProperties().stream()
                 .collect(Collectors.groupingBy(FlowStopsPublishingProperty::getStopId))
@@ -288,9 +288,9 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                     vo.setStopName(entry.getValue().get(0).getStopName());
                     vo.setBak1(entry.getValue().get(0).getBak1());
                     vo.setBak2(entry.getValue().get(0).getBak2());
-                    Optional<ProcessStop> processStop = process.getProcessStopList().stream().filter(x -> vo.getStopId().equals(x.getFlowStopId())).findFirst();
+                    Optional<ProcessStop> processStop = ObjectUtils.isEmpty(process) ? Optional.empty() : process.getProcessStopList().stream().filter(x -> vo.getStopId().equals(x.getFlowStopId())).findFirst();
                     final Map<String, ProcessStopProperty> propertyMap = processStop.map(stop -> stop.getProcessStopPropertyList().stream()
-                            .collect(Collectors.toMap(ProcessStopProperty::getName, propertyVo -> propertyVo)))
+                                    .collect(Collectors.toMap(ProcessStopProperty::getName, propertyVo -> propertyVo)))
                             .orElseGet(HashMap::new);
                     vo.setStopPublishingPropertyVos(entry.getValue().stream()
                             .map(property -> {
@@ -304,7 +304,10 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                                     propertyVo.setFileName(property.getFileName());
                                 }
                                 //赋值customValue
-                                propertyVo.setCustomValue(propertyMap.get(propertyVo.getPropertyName()).getCustomValue());
+                                ProcessStopProperty processStopProperty = propertyMap.get(propertyVo.getPropertyName());
+                                if (ObjectUtils.isNotEmpty(processStopProperty)) {
+                                    propertyVo.setCustomValue(processStopProperty.getCustomValue());
+                                }
                                 return propertyVo;
                             })
                             .sorted(Comparator.comparing(StopPublishingPropertyVo::getPropertySort))
@@ -359,7 +362,8 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
     public String tempSave(FlowPublishingVo flowPublishingVo) throws Exception {
         //将数据暂存到flow_process以及flow_process_stop_property表中,  不设置状态，状态为空，用来判断是否有暂存，如果有，先更新一版暂存的，运行的时候复制一份这个暂存的运行
         logger.info("=======temp save flow start===============");
-        if (ObjectUtils.isEmpty(tempSaveProcess(flowPublishingVo))) return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
+        if (ObjectUtils.isEmpty(tempSaveProcess(flowPublishingVo)))
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         logger.info("=======temp save flow finish===============");
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
@@ -367,8 +371,8 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
     private Process tempSaveProcess(FlowPublishingVo flowPublishingVo) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         //根据username和flowId以及state为空，查看是否有暂存的数据，如果有，更新，如果没有，新增
-        Process oldProcess = processDomain.getByFlowIdAndCrtUserWithoutState(flowPublishingVo.getId(),username);
-        if(ObjectUtils.isEmpty(oldProcess)){
+        Process oldProcess = processDomain.getByFlowIdAndCrtUserWithoutState(flowPublishingVo.getId(), username);
+        if (ObjectUtils.isEmpty(oldProcess)) {
             //新增process
             Flow flowById = flowDomain.getFlowById(flowPublishingVo.getFlowId());
             //根据flowPublishingVo更改flow的id值和包含参数的customValue值
@@ -413,7 +417,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
             if (updateProcess <= 0) {
                 return null;
             }
-        }else {
+        } else {
             //更新process
             //将所有输出类型参数的customValue进行改造，重命名
             for (StopPublishingVo stop : flowPublishingVo.getStops()) {
@@ -446,7 +450,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                 }
             }
             oldProcess.setLastUpdateDttm(new Date());
-            int updateProcess =processDomain.updateProcess(oldProcess);
+            int updateProcess = processDomain.updateProcess(oldProcess);
             if (updateProcess <= 0) {
                 return null;
             }
@@ -460,9 +464,10 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         String username = SessionUserUtil.getCurrentUsername();
         //先更新暂存，运行的时候复制一份这个暂存的运行
         Process tempSaveProcess = tempSaveProcess(flowPublishingVo);
-        if(ObjectUtils.isEmpty(tempSaveProcess)) return ReturnMapUtils.setFailedMsgRtnJsonStr("process create failed!!");
+        if (ObjectUtils.isEmpty(tempSaveProcess))
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("process create failed!!");
 
-        final Process process = ProcessUtils.copyProcess(tempSaveProcess,username,RunModeType.RUN,true);
+        final Process process = ProcessUtils.copyProcess(tempSaveProcess, username, RunModeType.RUN, true);
         if (null == process) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
         }
@@ -484,7 +489,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                 if (null == result || 200 != ((Integer) result.get("code"))) {
                     processDomain.updateProcessEnableFlag(username, true, processId);
                 } else {
-                    SysParamsCache.STARTED_PROCESS.put(processId,(String) result.get("appId"));
+                    SysParamsCache.STARTED_PROCESS.put(processId, (String) result.get("appId"));
                     Process process1 = processDomain.getProcessById(username, true, processId);
                     process1.setLastUpdateDttm(new Date());
                     process1.setLastUpdateUser(username);
