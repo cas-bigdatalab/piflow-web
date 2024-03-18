@@ -40,6 +40,8 @@ public class StopPublishingPropertyVo implements Serializable {
     private String fileName;
 
     private Long Version;
+
+    private Boolean isTempSave = false;
 //    private String filePath;
 
 }
