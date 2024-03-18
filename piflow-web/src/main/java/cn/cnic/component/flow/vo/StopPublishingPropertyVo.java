@@ -34,6 +34,7 @@ public class StopPublishingPropertyVo implements Serializable {
     private String example;
     private String bak1;
     private String bak2;
+    private String bak3;
     //    @JsonSerialize(using = ToStringSerializer.class)
 //    @JsonDeserialize(using = ToLongDeserializer.class)
     private String fileId;
