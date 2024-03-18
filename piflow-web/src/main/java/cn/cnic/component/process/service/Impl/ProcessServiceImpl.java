@@ -1139,6 +1139,7 @@ public class ProcessServiceImpl implements IProcessService {
                             vo.setStopName(entry.getValue().get(0).getStopName());
                             vo.setBak1(entry.getValue().get(0).getBak1());
                             vo.setBak2(entry.getValue().get(0).getBak2());
+                            vo.setBak3(entry.getValue().get(0).getBak3());
                             vo.setStopPublishingPropertyVos(entry.getValue().stream()
                                     .map(property -> {
                                         StopPublishingPropertyVo propertyVo = new StopPublishingPropertyVo();

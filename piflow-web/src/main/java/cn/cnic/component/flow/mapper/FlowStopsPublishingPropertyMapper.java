@@ -70,6 +70,13 @@ public interface FlowStopsPublishingPropertyMapper {
             + "</if>"
             + "</foreach>"
             + "</trim>"
+            + "<trim prefix='bak3=case' suffix='end,'>"
+            + "<foreach collection='list' item='i' index='index'>"
+            + "<if test=\"i.bak3 != null and i.bak3 != '' \">"
+            + " when id=#{i.id} then #{i.bak3} "
+            + "</if>"
+            + "</foreach>"
+            + "</trim>"
             + "<trim prefix='last_update_dttm=case' suffix='end,'>"
             + "<foreach collection='list' item='i' index='index'>"
             + "<if test=\"i.lastUpdateDttmStr != null and i.lastUpdateDttmStr != '' \">"
@@ -108,7 +115,7 @@ public interface FlowStopsPublishingPropertyMapper {
      */
     @Select("select fp.*, file.id as fileId, file.file_name as fileName,file.file_path as filePath from flow_stops_publishing_property as fp " +
             "left join file as file on file.associate_id = CAST(fp.id AS CHAR) and file.associate_type =3 and file.enable_flag = 1 " +
-            "where fp.publishing_id = #{publishingId} and fp.enable_flag = 1 order by bak1, property_sort ASC")
+            "where fp.publishing_id = #{publishingId} and fp.enable_flag = 1 order by bak3, bak1, property_sort ASC")
     List<FlowStopsPublishingProperty> getStopsListByPublishingId(@Param("publishingId") Long publishingId);
 
     @Update("update flow_stops_publishing_property set enable_flag = 0 where publishing_id = #{publishingId}")

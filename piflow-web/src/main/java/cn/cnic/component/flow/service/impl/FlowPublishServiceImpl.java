@@ -131,6 +131,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                     }
                     //设置分组名
                     property.setBak2(stop.getBak2());
+                    property.setBak3(stop.getBak3());
                     property.setCrtDttm(now);
                     property.setCrtUser(username);
                     property.setEnableFlag(true);
@@ -199,6 +200,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                         }
                         //设置分组名
                         property.setBak2(stop.getBak2());
+                        property.setBak3(stop.getBak3());
                         property.setCrtDttm(now);
                         property.setCrtUser(username);
                         property.setEnableFlag(true);
@@ -226,6 +228,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                         }
                         //设置分组名
                         property.setBak2(stop.getBak2());
+                        property.setBak3(stop.getBak3());
                         property.setLastUpdateDttm(now);
                         property.setLastUpdateUser(username);
                         property.setVersion(property.getVersion() + 1);
@@ -288,6 +291,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                     vo.setStopName(entry.getValue().get(0).getStopName());
                     vo.setBak1(entry.getValue().get(0).getBak1());
                     vo.setBak2(entry.getValue().get(0).getBak2());
+                    vo.setBak3(entry.getValue().get(0).getBak3());
                     Optional<ProcessStop> processStop = ObjectUtils.isEmpty(process) ? Optional.empty() : process.getProcessStopList().stream().filter(x -> vo.getStopId().equals(x.getFlowStopId())).findFirst();
                     final Map<String, ProcessStopProperty> propertyMap = processStop.map(stop -> stop.getProcessStopPropertyList().stream()
                                     .collect(Collectors.toMap(ProcessStopProperty::getName, propertyVo -> propertyVo)))

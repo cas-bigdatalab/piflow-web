@@ -21,6 +21,7 @@ public class StopPublishingVo implements Serializable {
     private String stopName;
     private String bak1; //分组排序
     private String bak2; //组件分组
+    private String bak3; //组内组件排序
 
     private List<StopPublishingPropertyVo> stopPublishingPropertyVos;
 
