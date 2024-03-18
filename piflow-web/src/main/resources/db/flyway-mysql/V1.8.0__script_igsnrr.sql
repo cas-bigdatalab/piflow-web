@@ -175,9 +175,9 @@ CREATE TABLE IF NOT EXISTS `flow_publishing`
     `last_update_dttm` datetime NOT NULL COMMENT '最后更新时间',
     `last_update_user` varchar(255) NOT NULL COMMENT '最后更新人',
     `version` bigint(20) NULL DEFAULT NULL COMMENT '版本',
-    `bak1` varchar(255) NULL DEFAULT '1' COMMENT '保留字段1',
+    `bak1` varchar(255) NULL DEFAULT NULL COMMENT '保留字段1',
     `bak2` varchar(255) NULL DEFAULT NULL COMMENT '保留字段2',
-    `bak3` varchar(255) NULL DEFAULT '1' COMMENT '保留字段3',
+    `bak3` varchar(255) NULL DEFAULT NULL COMMENT '保留字段3',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci COMMENT='流水线发布表';
 
@@ -209,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `flow_stops_publishing_property`
     `version` bigint(20) NULL DEFAULT NULL COMMENT '版本',
     `bak1` varchar(255) NOT NULL DEFAULT '1' COMMENT '保留字段1',
     `bak2` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT '' COMMENT '保留字段2',
-    `bak3` varchar(255) NULL DEFAULT NULL COMMENT '保留字段3',
+    `bak3` varchar(255) NULL DEFAULT '1' COMMENT '保留字段3',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci COMMENT='流水线发布组件属性表';
 
