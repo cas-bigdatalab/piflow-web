@@ -306,6 +306,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                                 //赋值customValue
                                 ProcessStopProperty processStopProperty = propertyMap.get(propertyVo.getPropertyName());
                                 if (ObjectUtils.isNotEmpty(processStopProperty)) {
+                                    propertyVo.setIsTempSave(true);
                                     propertyVo.setCustomValue(processStopProperty.getCustomValue());
                                 }
                                 return propertyVo;
@@ -374,44 +375,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         Process oldProcess = processDomain.getByFlowIdAndCrtUserWithoutState(flowPublishingVo.getId(), username);
         if (ObjectUtils.isEmpty(oldProcess)) {
             //新增process
-            Flow flowById = flowDomain.getFlowById(flowPublishingVo.getFlowId());
-            //根据flowPublishingVo更改flow的id值和包含参数的customValue值
-            flowById.setId(flowPublishingVo.getId());
-
-            //校验文件类的参数是否有上传文件并将所有输出类型参数的customValue进行改造，重命名,,,校验文件类的参数是否有上传文件,如果没有上传，用样例文件，所以这里就不校验了
-            for (StopPublishingVo stop : flowPublishingVo.getStops()) {
-                for (StopPublishingPropertyVo propertyVo : stop.getStopPublishingPropertyVos()) {
-                    if (FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(propertyVo.getType())) {
-                        String customValue = propertyVo.getCustomValue();
-                        if (customValue.contains(".")) {
-                            //file
-                            String[] split = customValue.split("\\.");
-                            customValue = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
-                            propertyVo.setCustomValue(customValue);
-                        } else {
-                            //file dir /a/b/->/a/b/12345678902    /a/b->a/b12345678902
-                            customValue = customValue + snowflakeGenerator.next();
-                            propertyVo.setCustomValue(customValue);
-                        }
-                    }
-                }
-            }
-            //将customValue值赋值到flow的stop property中
-            Map<String, StopPublishingVo> stopPublishingVoMap = flowPublishingVo.getStops().stream().collect(Collectors.toMap(StopPublishingVo::getStopId, vo -> vo));
-            for (Stops stops : flowById.getStopsList()) {
-                if (stopPublishingVoMap.containsKey(stops.getId())) {
-                    Map<String, StopPublishingPropertyVo> publishingPropertyVoMap = stopPublishingVoMap.get(stops.getId()).getStopPublishingPropertyVos().stream().collect(Collectors.toMap(StopPublishingPropertyVo::getPropertyId, vo -> vo));
-                    for (Property property : stops.getProperties()) {
-                        if (publishingPropertyVoMap.containsKey(property.getId())) {
-                            property.setCustomValue(publishingPropertyVoMap.get(property.getId()).getCustomValue());
-                        }
-                    }
-                }
-            }
-            oldProcess = ProcessUtils.flowToProcess(flowById, username, false);
-            RunModeType runModeType = RunModeType.RUN;
-            oldProcess.setRunModeType(runModeType);
-            oldProcess.setId(UUIDUtils.getUUID32());
+            oldProcess = initProcess(flowPublishingVo, username);
             //不设置状态，状态为空，用来判断是否有暂存，如果有，先更新一版暂存的，运行的时候复制一份这个暂存的运行
             int updateProcess = processDomain.addProcess(oldProcess);
             if (updateProcess <= 0) {
@@ -458,16 +422,65 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         return oldProcess;
     }
 
+    private Process initProcess(FlowPublishingVo flowPublishingVo, String username) {
+        Process process;
+        Flow flowById = flowDomain.getFlowById(flowPublishingVo.getFlowId());
+        //根据flowPublishingVo更改flow的id值和包含参数的customValue值
+        flowById.setId(flowPublishingVo.getId());
+
+        //校验文件类的参数是否有上传文件并将所有输出类型参数的customValue进行改造，重命名,,,校验文件类的参数是否有上传文件,如果没有上传，用样例文件，所以这里就不校验了
+        for (StopPublishingVo stop : flowPublishingVo.getStops()) {
+            for (StopPublishingPropertyVo propertyVo : stop.getStopPublishingPropertyVos()) {
+                if (FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(propertyVo.getType())) {
+                    String customValue = propertyVo.getCustomValue();
+                    if (customValue.contains(".")) {
+                        //file
+                        String[] split = customValue.split("\\.");
+                        customValue = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
+                        propertyVo.setCustomValue(customValue);
+                    } else {
+                        //file dir /a/b/->/a/b/12345678902    /a/b->a/b12345678902
+                        customValue = customValue + snowflakeGenerator.next();
+                        propertyVo.setCustomValue(customValue);
+                    }
+                }
+            }
+        }
+        //将customValue值赋值到flow的stop property中
+        Map<String, StopPublishingVo> stopPublishingVoMap = flowPublishingVo.getStops().stream().collect(Collectors.toMap(StopPublishingVo::getStopId, vo -> vo));
+        for (Stops stops : flowById.getStopsList()) {
+            if (stopPublishingVoMap.containsKey(stops.getId())) {
+                Map<String, StopPublishingPropertyVo> publishingPropertyVoMap = stopPublishingVoMap.get(stops.getId()).getStopPublishingPropertyVos().stream().collect(Collectors.toMap(StopPublishingPropertyVo::getPropertyId, vo -> vo));
+                for (Property property : stops.getProperties()) {
+                    if (publishingPropertyVoMap.containsKey(property.getId())) {
+                        property.setCustomValue(publishingPropertyVoMap.get(property.getId()).getCustomValue());
+                    }
+                }
+            }
+        }
+        process = ProcessUtils.flowToProcess(flowById, username, false);
+        RunModeType runModeType = RunModeType.RUN;
+        process.setRunModeType(runModeType);
+        process.setId(UUIDUtils.getUUID32());
+        return process;
+    }
+
     @Override
     public String run(FlowPublishingVo flowPublishingVo) throws Exception {
         logger.info("=======run flow start===============");
         String username = SessionUserUtil.getCurrentUsername();
-        //先更新暂存，运行的时候复制一份这个暂存的运行
-        Process tempSaveProcess = tempSaveProcess(flowPublishingVo);
-        if (ObjectUtils.isEmpty(tempSaveProcess))
+        //先更新暂存，运行的时候复制一份这个暂存的运行,如果没有暂存，不新增暂存，如果有，更新
+        Process oldProcess = processDomain.getByFlowIdAndCrtUserWithoutState(flowPublishingVo.getId(), username);
+        if (ObjectUtils.isEmpty(oldProcess)) {
+            //新增process
+            oldProcess = initProcess(flowPublishingVo, username);
+        }else {
+            oldProcess = tempSaveProcess(flowPublishingVo);
+        }
+        if (ObjectUtils.isEmpty(oldProcess))
             return ReturnMapUtils.setFailedMsgRtnJsonStr("process create failed!!");
 
-        final Process process = ProcessUtils.copyProcess(tempSaveProcess, username, RunModeType.RUN, true);
+        final Process process = ProcessUtils.copyProcess(oldProcess, username, RunModeType.RUN, true);
         if (null == process) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
         }
