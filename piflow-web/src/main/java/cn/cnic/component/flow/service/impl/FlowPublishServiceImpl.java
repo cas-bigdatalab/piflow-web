@@ -434,6 +434,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         Flow flowById = flowDomain.getFlowById(flowPublishingVo.getFlowId());
         //根据flowPublishingVo更改flow的id值和包含参数的customValue值
         flowById.setId(flowPublishingVo.getId());
+        flowById.setName(flowPublishingVo.getName());
 
         //校验文件类的参数是否有上传文件并将所有输出类型参数的customValue进行改造，重命名,,,校验文件类的参数是否有上传文件,如果没有上传，用样例文件，所以这里就不校验了
         for (StopPublishingVo stop : flowPublishingVo.getStops()) {

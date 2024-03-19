@@ -665,7 +665,7 @@ public class ProcessServiceImpl implements IProcessService {
      * @return
      */
     @Override
-    public String stopProcess(String username, boolean isAdmin, String processId) {
+    public String stopProcess(String username, boolean isAdmin, String processId) throws Exception {
         if (StringUtils.isBlank(processId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("processId"));
         }
@@ -687,6 +687,11 @@ public class ProcessServiceImpl implements IProcessService {
             logger.warn("Interface return value is null." + stopFlow);
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Interface return value is " + stopFlow);
         }
+        //更新process状态
+        process.setState(ProcessState.KILLED);
+        process.setLastUpdateDttm(new Date());
+        process.setLastUpdateUser(username);
+        processDomain.updateProcess(process);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("Stop successful, return status is " + stopFlow);
     }
 

@@ -162,7 +162,7 @@ public interface IProcessService {
      * @param processId
      * @return
      */
-    public String stopProcess(String username, boolean isAdmin, String processId);
+    public String stopProcess(String username, boolean isAdmin, String processId) throws Exception;
 
     /**
      * get debug data
