@@ -281,7 +281,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
             result.setInstructionFileId(flowPublishingInstruction.getId().toString());
             result.setInstructionFileName(flowPublishingInstruction.getFileName());
         }
-        //根据username和flowId以及state为空，查看是否有暂存的数据，如果有暂存的数据，将暂存的customValue赋给property
+        //根据username和flowId以及state为空，查看是否有暂存的数据，如果有暂存的数据，将暂存的tempSaveValue赋给property
         Process process = processDomain.getByFlowIdAndCrtUserWithoutState(id, username);
 
         List<StopPublishingVo> stops = flowPublishing.getProperties().stream()
@@ -310,11 +310,11 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                                     propertyVo.setFileId(fileId.toString());
                                     propertyVo.setFileName(property.getFileName());
                                 }
-                                //赋值customValue
+                                //赋值tempSaveValue
                                 ProcessStopProperty processStopProperty = propertyMap.get(propertyVo.getPropertyName());
                                 if (ObjectUtils.isNotEmpty(processStopProperty)) {
-                                    propertyVo.setIsTempSave(true);
-                                    propertyVo.setCustomValue(processStopProperty.getCustomValue());
+                                    propertyVo.setTempSaveValue(processStopProperty.getDisplayName());
+//                                    propertyVo.setCustomValue(processStopProperty.getCustomValue());
                                 }
                                 return propertyVo;
                             })
@@ -408,13 +408,14 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                     }
                 }
             }
-            //将customValue值赋值到process的stop property中
+            //将tempSaveValue值赋值到flow的stop property中的displayName中
             Map<String, StopPublishingVo> stopPublishingVoMap = flowPublishingVo.getStops().stream().collect(Collectors.toMap(StopPublishingVo::getStopId, vo -> vo));
             for (ProcessStop stop : oldProcess.getProcessStopList()) {
                 if (stopPublishingVoMap.containsKey(stop.getFlowStopId())) {
                     Map<String, StopPublishingPropertyVo> publishingPropertyVoMap = stopPublishingVoMap.get(stop.getFlowStopId()).getStopPublishingPropertyVos().stream().collect(Collectors.toMap(StopPublishingPropertyVo::getPropertyName, vo -> vo));
                     for (ProcessStopProperty property : stop.getProcessStopPropertyList()) {
                         if (publishingPropertyVoMap.containsKey(property.getName())) {
+                            property.setDisplayName(publishingPropertyVoMap.get(property.getId()).getTempSaveValue());
                             property.setCustomValue(publishingPropertyVoMap.get(property.getName()).getCustomValue());
                         }
                     }
@@ -454,13 +455,14 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                 }
             }
         }
-        //将customValue值赋值到flow的stop property中
+        //将tempSaveValue值赋值到flow的stop property中的displayName中
         Map<String, StopPublishingVo> stopPublishingVoMap = flowPublishingVo.getStops().stream().collect(Collectors.toMap(StopPublishingVo::getStopId, vo -> vo));
         for (Stops stops : flowById.getStopsList()) {
             if (stopPublishingVoMap.containsKey(stops.getId())) {
                 Map<String, StopPublishingPropertyVo> publishingPropertyVoMap = stopPublishingVoMap.get(stops.getId()).getStopPublishingPropertyVos().stream().collect(Collectors.toMap(StopPublishingPropertyVo::getPropertyId, vo -> vo));
                 for (Property property : stops.getProperties()) {
                     if (publishingPropertyVoMap.containsKey(property.getId())) {
+                        property.setDisplayName(publishingPropertyVoMap.get(property.getId()).getTempSaveValue());
                         property.setCustomValue(publishingPropertyVoMap.get(property.getId()).getCustomValue());
                     }
                 }
