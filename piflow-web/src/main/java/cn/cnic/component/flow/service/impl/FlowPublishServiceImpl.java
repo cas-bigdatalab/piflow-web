@@ -126,9 +126,10 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                         property.setType(FlowStopsPublishingPropertyType.COMMON.getValue());
                     }
                     //设置排序
-                    if (StringUtils.isBlank(property.getBak1())) {
-                        property.setBak1(stop.getBak1());
-                    }
+                    property.setBak1(stop.getBak1());
+//                    if (StringUtils.isBlank(property.getBak1())) {
+//                        property.setBak1(stop.getBak1());
+//                    }
                     //设置分组名
                     property.setBak2(stop.getBak2());
                     property.setBak3(stop.getBak3());
@@ -195,9 +196,10 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                             property.setType(FlowStopsPublishingPropertyType.COMMON.getValue());
                         }
                         //设置排序
-                        if (StringUtils.isBlank(property.getBak1())) {
-                            property.setBak1(stop.getBak1());
-                        }
+                        property.setBak1(stop.getBak1());
+//                        if (StringUtils.isBlank(property.getBak1())) {
+//                            property.setBak1(stop.getBak1());
+//                        }
                         //设置分组名
                         property.setBak2(stop.getBak2());
                         property.setBak3(stop.getBak3());
@@ -223,9 +225,10 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                             property.setType(FlowStopsPublishingPropertyType.COMMON.getValue());
                         }
                         //设置排序
-                        if (StringUtils.isBlank(property.getBak1())) {
-                            property.setBak1(stop.getBak1());
-                        }
+                        property.setBak1(stop.getBak1());
+//                        if (StringUtils.isBlank(property.getBak1())) {
+//                            property.setBak1(stop.getBak1());
+//                        }
                         //设置分组名
                         property.setBak2(stop.getBak2());
                         property.setBak3(stop.getBak3());
