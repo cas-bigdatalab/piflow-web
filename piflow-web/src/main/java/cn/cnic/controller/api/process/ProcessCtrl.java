@@ -172,7 +172,7 @@ public class ProcessCtrl {
     @ResponseBody
     @ApiOperation(value = "stopProcess", notes = "stop Process")
     @ApiImplicitParam(name = "processId", value = "processId", required = true, paramType = "query")
-    public String stopProcess(String processId) {
+    public String stopProcess(String processId) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         logHelperServiceImpl.logAuthSucceed("stopProcess" + processId, username);

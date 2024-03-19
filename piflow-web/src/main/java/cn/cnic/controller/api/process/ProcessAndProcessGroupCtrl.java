@@ -87,7 +87,7 @@ public class ProcessAndProcessGroupCtrl {
     @RequestMapping(value = "/stopProcessOrProcessGroup", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="stopProcessOrProcessGroup", notes="stop Process or ProcessGroup")
-    public String stopProcessOrProcessGroup(String id,String processType) {
+    public String stopProcessOrProcessGroup(String id,String processType) throws Exception {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         if ("PROCESS".equals(processType)) {
