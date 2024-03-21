@@ -40,6 +40,9 @@ ALTER TABLE `flow_process` ADD COLUMN `fk_group_schedule_id` VARCHAR(40);
 ALTER TABLE `flow_stops_property` ADD COLUMN `example` TEXT(0) COMMENT 'property example';
 ALTER TABLE flow_stops_property_template ADD COLUMN `example` TEXT(0) COMMENT 'property example';
 
+-- add foreign key
+ALTER TABLE `flow_process` ADD CONSTRAINT `FK8sqeh2bcr2pylbf4b7owvokly` FOREIGN KEY (`fk_group_schedule_id`) REFERENCES `group_schedule` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
 -- sys_schedule
 INSERT INTO `sys_schedule`(`id`, `crt_dttm`, `crt_user`, `enable_flag`, `last_update_dttm`, `last_update_user`, `version`, `cron_expression`, `job_class`, `job_name`, `status`, `last_run_result`) VALUES ('b494d4fecea148709a0d81cbb39e7f54', '2020-08-14 18:58:22', 'admin', b'1', '2020-09-28 22:04:59', 'admin', 17, '0/59 * * * * ?', 'cn.cnic.schedule.RunningGroupScheduleSync', 'RunningGroupScheduleSync', 'RUNNING', 'SUCCEED');
 
