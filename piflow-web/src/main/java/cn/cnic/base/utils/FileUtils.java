@@ -530,4 +530,99 @@ public class FileUtils {
         }
         return "Create success!!";
     }
+
+    public static void deleteData(String url) throws IOException {
+
+        File file = new File(url);
+        if (file.exists()) {
+            // 删除文件
+            boolean success = file.delete();
+            if (!success) {
+                // 如果文件存在但无法删除，则抛出异常
+                throw new IOException("Failed to delete file: " + url);
+            }
+        } else {
+            // 如果文件不存在，也抛出异常
+            throw new IOException("File does not exist: " + url);
+        }
+    }
+
+    /**
+     * @param originalFilename:
+     * @return String
+     * @author tianyao
+     * @description 获取不包含路径的文件名  文件名和扩展名
+     * @date 2024/2/20 14:59
+     */
+    public static String getFileName(String originalFilename) {
+//        String directory = "";
+        String filename = originalFilename;
+        filename = filename.replaceAll("\\\\", "/");
+        int lastSeparatorIndex = filename.lastIndexOf("/");
+        if (lastSeparatorIndex != -1) {
+//            directory = originalFilename.substring(0, lastSeparatorIndex);
+            filename = originalFilename.substring(lastSeparatorIndex + 1);
+        }
+        return filename;
+    }
+
+
+    private static String getMimeTypeByExtension(String extension) {
+        switch (extension.toLowerCase()) {
+            case "":
+                return "dir";
+            case "txt":
+            case "text":
+                return "text/plain";
+            case "csv":
+                return "text/csv";
+            case "xlsx":
+                return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            case "xls":
+                return "application/vnd.ms-excel";
+            case "doc":
+                return "application/msword";
+            case "docx":
+                return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            case "ppt":
+                return "application/vnd.ms-powerpoint";
+            case "pptx":
+                return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+            case "pdf":
+                return "application/pdf";
+            case "xml":
+                return "application/xml";
+            case "html":
+            case "htm":
+                return "text/html";
+            case "jpeg":
+            case "jpg":
+                return "image/jpeg";
+            case "png":
+                return "image/png";
+            case "gif":
+                return "image/gif";
+            case "bmp":
+                return "image/bmp";
+            case "mp3":
+                return "audio/mpeg";
+            case "wav":
+                return "audio/vnd.wave";
+            case "mp4":
+                return "video/mp4";
+            case "avi":
+                return "video/x-msvideo";
+            case "mov":
+                return "video/quicktime";
+            case "zip":
+                return "application/zip";
+            case "rar":
+                return "application/x-rar-compressed";
+            case "7z":
+                return "application/x-7z-compressed";
+            // 添加更多文件扩展名和对应的MIME类型
+            default:
+                return "application/octet-stream";
+        }
+    }
 }

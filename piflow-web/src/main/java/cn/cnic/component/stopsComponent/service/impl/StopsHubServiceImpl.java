@@ -29,6 +29,10 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,8 +44,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.net.URI;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -245,97 +251,307 @@ public class StopsHubServiceImpl implements IStopsHubService {
      * @author leilei
      */
     private String mountPythonStopsZip(StopsHub stopsHub, String username) {
-        logger.info("=====mount python start====stopsHub:{}", JSON.toJSONString(stopsHub));
-        if (StringUtils.isNotEmpty(stopsHub.getJarUrl()) && StringUtils.isNotBlank(stopsHub.getJarName())) {
-            List<StopsHubFileRecord> insertList = new ArrayList<>();
+        /*
+         * 通过process直接用docker命令的方式打包
+         */
+        if (StringUtils.isNotEmpty(stopsHub.getJarUrl())) {
+            String stopsHubPath = SysParamsCache.STOP_HUB_PATH;
             String jarName = stopsHub.getJarName();
+            String dockerFileName = "DockerFile-" + stopsHub.getId();
+            List<StopsHubFileRecord> insertList = new ArrayList<>();
             try {
-                FileInputStream input = new FileInputStream(stopsHub.getJarUrl());
-                ZipInputStream zipInputStream = new ZipInputStream(new BufferedInputStream(input), Charset.forName("GBK"));
-
+                FileSystem fileSystem = FileSystem.get(URI.create(stopsHub.getJarUrl()), new Configuration());
+                FSDataInputStream inputStream = fileSystem.open(new Path(stopsHub.getJarUrl()));
+                ZipInputStream zipInputStream = new ZipInputStream(inputStream, Charset.forName("GBK"));
                 ZipEntry zipEntry = null;
-                String dockerImagesName = null;
+
+                //构造insertList
                 while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                    if (zipEntry.isDirectory()) {
-                        continue;
-                    } else {
+                    if (!zipEntry.isDirectory()) {
                         String zipEntryFileName = zipEntry.getName();
-                        if (zipEntryFileName.endsWith(".py")) {
+                        logger.info("zipEntry Name: " + zipEntryFileName);
+                        //没办法判断是python组件还是工具类,在页面让用户自己设置
+                        if (zipEntryFileName.endsWith(".py") && !"data_connect.py".equals(zipEntryFileName)) {  //如果是以.py结尾的,生成算法包的具体文件记录,生成记录去除掉基础类data_connect.py
+                            //初始化SparkJarFileRecord实体
                             StopsHubFileRecord stopsHubFileRecord = new StopsHubFileRecord();
                             stopsHubFileRecord.setId(UUIDUtils.getUUID32());
+                            //只要文件名,不要路径
                             String fileName = zipEntryFileName.contains("/") ? zipEntryFileName.substring(zipEntryFileName.lastIndexOf("/") + 1) : zipEntryFileName;
+                            //这里文件名是以 .py 结尾的,去掉 .py; 否则页面组件名后跟个.py不好看
                             String stopName = fileName.endsWith(".py") ? fileName.substring(0, fileName.length() - 3) : fileName;
+                            stopsHubFileRecord.setId(UUIDUtils.getUUID32());
                             stopsHubFileRecord.setFileName(stopName);
                             stopsHubFileRecord.setFilePath(zipEntryFileName);
                             stopsHubFileRecord.setStopsHubId(stopsHub.getId());
                             insertList.add(stopsHubFileRecord);
-                        } else if (zipEntryFileName.endsWith("requirements.txt")) {
-                            BufferedReader br = new BufferedReader(new InputStreamReader(zipInputStream));
-                            StringBuffer dockerFileSb = new StringBuffer();
-                            dockerFileSb.append("FROM python:" + stopsHub.getLanguageVersion() + System.lineSeparator());
-                            dockerFileSb.append("MAINTAINER " + jarName + System.lineSeparator());
-                            dockerFileSb.append("COPY ./" + stopsHub.getJarName() + " /usr/local" + System.lineSeparator());
-//                            dockerFileSb.append("RUN apt-get update --fix-missing -o Acquire::http::No-Cache=True \\" + System.lineSeparator());
-//                            dockerFileSb.append("    && apt-get install -y zip --fix-missing -o Acquire::http::No-Cache=True" + System.lineSeparator());
-                            dockerFileSb.append("RUN set -ex \\" + System.lineSeparator());
-                            dockerFileSb.append("    && mkdir -p /pythonDir \\" + System.lineSeparator());
-                            dockerFileSb.append("    && unzip /usr/local/" + jarName + " -d /pythonDir/ \\" + System.lineSeparator());
-                            String line;
-                            while ((line = br.readLine()) != null) {
-                                if (line.trim().startsWith("#") || line.trim() == null || line.trim().equals("")) {
-                                    continue;
-                                } else if (line.endsWith(".whl")) {
-                                    if (line.contains("#")) {
-                                        line = line.substring(0, line.indexOf("#")).trim();
-                                    }
-                                    dockerFileSb.append("    && pip install /pythonDir/" + line + " \\" + System.lineSeparator());
-                                } else {
-                                    if (line.contains("#")) {
-                                        line = line.substring(0, line.indexOf("#")).trim();
-                                    }
-                                    dockerFileSb.append("    && pip install -i https://mirrors.aliyun.com/pypi/simple/ " + line + " \\" + System.lineSeparator());
-                                }
-                            }
-                            dockerFileSb.append("    && rm -rf  ~/.cache/pip/* \\" + System.lineSeparator());
-                            dockerFileSb.append("    && rm -rf /usr/local/" + jarName + System.lineSeparator());
-                            //write dockerfile
-                            String stopsHubPath = stopImpl.getStopsHubPath();
-                            String dockerFileSavePath = stopsHubPath + "DockerFile-" + stopsHub.getId();
-                            logger.info("dockerfile:{}", dockerFileSavePath);
-                            FileUtils.writeData(dockerFileSavePath, dockerFileSb.toString());
-                            DockerClient dockerClient = DockerClientUtils.getDockerClient();
-                            logger.info("=====build docker image==dockerClient:{}", JSON.toJSONString(dockerClient));
-                            File dockerFile = new File(dockerFileSavePath);
-                            dockerImagesName = buildImageAndPush(dockerClient, dockerFile, jarName.toLowerCase(), "latest");
                         }
                     }
                 }
-                //add records
-                if (insertList.size() > 0) {
-                    for (StopsHubFileRecord stopsHubFileRecord : insertList) {
-                        stopsHubFileRecord.setDockerImagesName(dockerImagesName);
-                        stopsHubFileRecordDomain.addStopsHubFileRecord(stopsHubFileRecord);
-                    }
-                }
 
-                stopsHub.setStatus(StopsHubState.MOUNT);
+//                stopsHub.setMountId();       //不用server端做处理，所以没有mountId
+                //状态设置为挂载中
+                stopsHub.setStatus(StopsHubState.MOUNTING);
                 stopsHub.setLastUpdateUser(username);
                 stopsHub.setLastUpdateDttm(new Date());
-                stopsHub.setBundles(insertList.stream().map(StopsHubFileRecord::getFilePath).collect(Collectors.joining(",")));
                 stopsHubDomain.updateStopHub(stopsHub);
 
-                //close stream
-                input.close();
-                zipInputStream.close();
+                //把下载的zip包放在/storage/stopHub/下
+                String dstPath = stopsHubPath + "/" + jarName;
+                //把dockerFile放在/storage/stopHub/下
+                //stopsHubPath：存放算法包路径，跟下载的zip包放在一起
+                String dockerFileSavePath = stopsHubPath + "/" + dockerFileName;
+                if(!generateDockerfile(stopsHub, dstPath, dockerFileSavePath)) {
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr("Create Dockerfile failed, please try again later");
+                }
+
+                CompletableFuture<Integer> buildFuture = null; //定义future结构
+                String dockerImagesName = generateTagsName(jarName).toLowerCase();   //确定镜像名称
+                // 异步执行镜像构建
+                buildFuture = CompletableFuture.supplyAsync(() ->
+                        buildAndPushDockerImage("/", dockerFileSavePath, dockerImagesName));
+                // 当 CompletableFuture 完成时清理dockerFile和zip
+                buildFuture.whenComplete((result, throwable) -> {
+                    try {
+                        // 不管结果如何，首先执行清理文件
+                        FileUtils.deleteData(dstPath);
+                        FileUtils.deleteData(dockerFileSavePath);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    // 检查是否有异常抛出
+                    if (throwable != null) {
+                        logger.error("Build Docker image failed: " + throwable.getMessage());
+                    } else {
+                        //stopsHub前面由Unmount更新为Mounting状态时version已加1，故此处也应加1，否则再次更新状态会因version不匹配失败
+                        stopsHub.setVersion(stopsHub.getVersion()+1);
+                        // 根据 buildPythonImages 方法的返回值判断操作是否成功
+                        if (result == 0) {
+                            logger.info("算子镜像构建&推送成功");
+                            //向算法包的具体文件记录表中插入数据
+                            if (insertList.size() > 0) {
+                                for (StopsHubFileRecord stopsHubFileRecord : insertList) {
+                                    stopsHubFileRecord.setDockerImagesName(dockerImagesName);
+                                    stopsHubFileRecordDomain.addStopsHubFileRecord(stopsHubFileRecord);
+                                }
+                            }
+                            //stopsHub更新为Mount状态
+                            stopsHub.setStatus(StopsHubState.MOUNT);
+                            stopsHub.setLastUpdateUser(username);
+                            stopsHub.setLastUpdateDttm(new Date());
+                            stopsHubDomain.updateStopHub(stopsHub);
+                        } else {
+                            logger.info("python算子镜像构建&推送失败，error code: " + result);
+                            //stopsHub更新为UnMount状态
+                            stopsHub.setStatus(StopsHubState.UNMOUNT);
+                            stopsHub.setLastUpdateUser(username);
+                            stopsHub.setLastUpdateDttm(new Date());
+                            stopsHubDomain.updateStopHub(stopsHub);
+                        }
+                    }
+                });
             } catch (Exception e) {
                 logger.error("init PythonStopsComponent error,error message:" + e.getMessage(), e);
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("Mount failed, please try again later");
             }
         } else {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Mount failed, please try again later");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Mount failed with empty url, please try again later");
         }
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("Mount success!!");
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("挂载成功，等待后台自动构建镜像...");
     }
+
+
+    private Boolean generateDockerfile(StopsHub stopsHub, String dstPath, String dockerFileSavePath){
+        String jarName = stopsHub.getJarName();
+
+        try {
+            //zip包下载到本地
+            String jarUrl = stopsHub.getJarUrl();
+            int index = jarUrl.indexOf('/', 7); // 找到第一个斜杠("/")的位置，从索引7开始搜索
+            String hdfsDefaultFS = jarUrl.substring(0, index);  // 获取"hdfs://master:9000"
+            String sourcePath = jarUrl.substring(index);// 获取"/user/piflow/plugin/RUSLE.zip"
+            try {
+                HdfsUtils.downloadFile(hdfsDefaultFS, sourcePath, dstPath);
+            } catch (Exception e) {
+                logger.error("download zip from hdfs failed, error message:" + e.getMessage(), e);
+                return false;
+            }
+
+            FileSystem fileSystem = FileSystem.newInstance(URI.create(stopsHub.getJarUrl()), new Configuration());
+            FSDataInputStream inputStream1 = fileSystem.open(new Path(stopsHub.getJarUrl()));
+            ZipInputStream  zipInputStream1 = new ZipInputStream(inputStream1, Charset.forName("GBK"));
+            ZipEntry zipEntry = null;
+
+            while ((zipEntry = zipInputStream1.getNextEntry()) != null) {
+                //如果是python的依赖文件(requirements.txt结尾),把内容读出来,生成dockerFile并打镜像
+                if (!zipEntry.isDirectory() && zipEntry.getName().endsWith("requirements.txt")) {
+                    System.out.println("find requirements.txt");
+                    StringBuffer dockerFileSb = new StringBuffer();
+                    dockerFileSb.append("FROM python:" + stopsHub.getLanguageVersion() + System.lineSeparator());
+                    //dockerFileSb.append("MAINTAINER " + LocalDatacenterInfo.LOCAL_DATACENTER_ID + System.lineSeparator());
+//                      dockerFileSb.append("RUN apt update" + System.lineSeparator());
+//                      dockerFileSb.append("RUN apt-get install -y zip" + System.lineSeparator());
+                    //下面代码需要拉取算法包并解压到docker容器的pythonDir目录下；
+                    //把dockerFile放在/storage/stopHub/下，放在hdfs上的Python zip 包也下载到这个目录下"hdfs://master:9000/user/piflow/plugin/RUSLE.zip"
+
+                    dockerFileSb.append("COPY " + dstPath + " /usr/local" + System.lineSeparator());
+                    dockerFileSb.append("RUN set -ex \\" + System.lineSeparator());
+                    dockerFileSb.append("    && mkdir -p /pythonDir \\" + System.lineSeparator());
+                    dockerFileSb.append("    && unzip /usr/local/" + jarName + " -d /pythonDir/ \\" + System.lineSeparator());
+
+                    String line;
+                    BufferedReader br = new BufferedReader(new InputStreamReader(zipInputStream1));
+                    while ((line = br.readLine()) != null) {
+                        if (line.trim().startsWith("#") || line.trim() == null || line.trim().equals("")) {
+                            continue;
+                        } else if (line.endsWith(".whl")) {
+                            if (line.contains("#")) {
+                                line = line.substring(0, line.indexOf("#")).trim();
+                            }
+                            dockerFileSb.append("    && pip install /pythonDir/" + line + " \\" + System.lineSeparator());
+                        } else {
+                            if (line.contains("#")) {
+                                line = line.substring(0, line.indexOf("#")).trim();
+                            }
+                            dockerFileSb.append("    && pip install -i https://mirrors.aliyun.com/pypi/simple/ " + line + " \\" + System.lineSeparator());
+                        }
+                    }
+
+                    dockerFileSb.append("    && rm -rf  ~/.cache/pip/* \\" + System.lineSeparator());
+                    dockerFileSb.append("    && rm -rf /usr/local/" + jarName + System.lineSeparator());
+                    FileUtils.writeData(dockerFileSavePath, dockerFileSb.toString());
+                }
+            }
+        } catch (IOException e) {
+            logger.error("write dockerFile failed, error message:" + e.getMessage(), e);
+            return false;
+        }
+        return true;
+    }
+
+    private Integer buildAndPushDockerImage(String mountPath, String dockerFileSavePath, String dockerImagesName){
+        //通过运行dockerFile的方式以及使用java.lang.Process process = new ProcessBuilder(command).start();来执行docker build  以及docker push
+        logger.info("start build python docker image");
+        try {
+            // 构建 docker commit 命令
+            String[] command = {"docker", "-H", "unix:///var/run/docker.sock", "build", mountPath, "-f", dockerFileSavePath,
+                    "-t", dockerImagesName};
+            System.out.println(joinToString(command, " "));
+            // 执行命令
+            java.lang.Process process = new ProcessBuilder(command).start();
+
+            // 创建线程读取标准输出
+            Thread outputThread = new Thread(() -> {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        System.out.println(line);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            // 创建线程读取错误输出
+            Thread errorThread = new Thread(() -> {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        System.err.println(line);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            // 启动线程
+            outputThread.start();
+            errorThread.start();
+            // 等待线程完成
+            outputThread.join();
+            errorThread.join();
+            // 等待命令执行完成
+            int exitCode = process.waitFor();
+            if (exitCode != 0) {
+                System.out.println("Docker image build failed, please check the command output.");
+                return exitCode;
+            } else {
+                System.out.println("Docker image built successfully.");
+            }
+
+            // 构建docker push 命令
+            String[] command1 = {"docker", "-H", "unix:///var/run/docker.sock", "push", dockerImagesName};
+            System.out.println(joinToString(command1, " "));
+            // 执行命令
+            java.lang.Process process1 = new ProcessBuilder(command1).start();
+            // 创建线程读取标准输出
+            Thread outputThread1 = new Thread(() -> {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process1.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        System.out.println(line);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            // 创建线程读取错误输出
+            Thread errorThread1 = new Thread(() -> {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(process1.getErrorStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        System.err.println(line);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            // 启动线程
+            outputThread1.start();
+            errorThread1.start();
+            // 等待线程完成
+            outputThread1.join();
+            errorThread1.join();
+            // 等待命令执行完成
+            int exitCode1 = process1.waitFor();
+            if (exitCode1 != 0) {
+                System.out.println("python算子镜像推送至远程仓库失败，请检查命令输出");
+                return exitCode1;
+            } else {
+                System.out.println("Push docker image to repo successfully.");
+            }
+        } catch (Exception e) {
+            System.out.println("An error occurred: " + e.getMessage());
+            return -1;
+        }
+        return 0;
+    }
+
+    public static String generateTagsName(String stopsHubName) {
+        //拼成 name-时间戳:tag 格式   registryUrl/projectName/imageName-currentTimeMillis:tags
+        String registryUrl = System.getenv("docker_central_warehouse");
+        String registryProjectName = "bigflow";
+        String originProjectPath;
+        if (StringUtils.isBlank(registryUrl)) {
+            originProjectPath = "";
+        } else if (registryUrl.endsWith("/")) {
+            originProjectPath = registryUrl + registryProjectName + "/";
+        } else {
+            originProjectPath = registryUrl + "/" + registryProjectName + "/";
+        }
+        String tagsName = (originProjectPath + stopsHubName + "-" + System.currentTimeMillis() + ":" + "latest").replace("http://", "");
+        return tagsName;
+    }
+
+    public static String joinToString(String[] input, String seperator) {
+        String output = "";
+        for (int i = 0; i < input.length; i++) {
+            output += input[i];
+            if (i < input.length - 1) {
+                output += seperator;
+            }
+        }
+        return output;
+    }
+
 
     private String buildImageAndPush(DockerClient dockerClient, File dockerFile, String imageName, String tags) throws InterruptedException {
         //拼成 name-时间戳:tag 格式   registryUrl/projectName/imageName-currentTimeMillis:tags
