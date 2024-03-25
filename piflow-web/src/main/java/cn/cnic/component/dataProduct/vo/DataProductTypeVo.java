@@ -29,6 +29,7 @@ public class DataProductTypeVo implements Serializable {
     private Integer state; //0-已删除 1-感兴趣 2-不感兴趣
     private String fileId;
     private String fileName;
+    private String filePath;
     private List<DataProductTypeVo> children;
 
 }

@@ -68,15 +68,22 @@ public class FileServiceImpl implements IFileService {
             String[] split = originalFilename.split("\\.");
             fileName = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
         }
-        //上传文件到hdfs
-        FileUtils.saveFileToHdfs(file, fileName, SysParamsCache.FILE_STORAGE_PATH, FileUtils.getDefaultFs());
+        //上传文件到hdfs，数据产品分类封面和数据产品封面放在服务器上
+        String path = "";
+        if(associateType.equals(FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue()) || associateType.equals(FileAssociateType.DATA_PRODUCT_COVER)){
+            path = SysParamsCache.FILE_PATH;
+            FileUtils.uploadRtnMap(file,path,fileName);
+        }else {
+            path = SysParamsCache.FILE_STORAGE_PATH;
+            FileUtils.saveFileToHdfs(file, fileName, path, FileUtils.getDefaultFs());
+        }
         //新增file记录
         File insertFile = new File();
         Date now = new Date();
         insertFile.setId(snowflakeGenerator.next());
         insertFile.setFileName(fileName);
         insertFile.setFileType(file.getContentType());
-        insertFile.setFilePath(SysParamsCache.FILE_STORAGE_PATH + fileName);
+        insertFile.setFilePath(path + fileName);
         insertFile.setAssociateId(associateId);
         insertFile.setAssociateType(associateType);
         insertFile.setCrtDttm(now);

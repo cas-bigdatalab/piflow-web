@@ -43,13 +43,15 @@ public class WebAppConfig implements WebMvcConfigurer {
         SysParamsCache.setVideosPath(storagePathHead + "/../../storage/video/");
         SysParamsCache.setXmlPath(storagePathHead + "/../../storage/xml/");
         SysParamsCache.setCsvPath(storagePathHead + "/../../storage/csv/");
+        SysParamsCache.setFilePath(storagePathHead + "/../../storage/files/");
         String imagesPath = ("file:" + SysParamsCache.IMAGES_PATH);
         String videosPath = ("file:" + SysParamsCache.VIDEOS_PATH);
         String xmlPath = ("file:" + SysParamsCache.XML_PATH);
+        String filePath = ("file:" + SysParamsCache.FILE_PATH);
         logger.info("imagesPath=" + imagesPath);
         logger.info("videosPath=" + videosPath);
         logger.info("xmlPath=" + xmlPath);
-        registry.addResourceHandler("/images/**", "/videos/**", "/xml/**").addResourceLocations(imagesPath, videosPath, xmlPath);
+        registry.addResourceHandler("/images/**", "/videos/**", "/xml/**", "/files/**").addResourceLocations(imagesPath, videosPath, xmlPath,filePath);
         
         // Swagger2Config
         registry.addResourceHandler("/**")

@@ -63,6 +63,13 @@ public class SysParamsCache {
         CSV_PATH = csvPath;
     }
 
+    //服务器文件地址
+    public static String FILE_PATH;
+
+    public static void setFilePath(String filePath) {
+        FILE_PATH = filePath;
+    }
+
     public static String SYS_CONTEXT_PATH;
 
     @Value("${server.servlet.context-path}")
@@ -99,6 +106,7 @@ public class SysParamsCache {
         MARKET_SOFTWARE_FLAG = marketSoftwareFlag;
     }
 
+    //hdfs文件地址
     public static String FILE_STORAGE_PATH = "/user/piflow/files/";
 
     public static Map<String,String> STARTED_PROCESS = new HashMap<>();

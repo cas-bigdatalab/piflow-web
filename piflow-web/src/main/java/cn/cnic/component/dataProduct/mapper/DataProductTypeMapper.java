@@ -46,12 +46,12 @@ public interface DataProductTypeMapper {
     @Update("update data_product_type set enable_flag = 0 where id = #{id}")
     int deleteById(@Param("id") Long id);
 
-    @Select("select dpt.*, CAST(file.id AS CHAR) as fileId, file.file_name as fileName from data_product_type as dpt " +
+    @Select("select dpt.*, CAST(file.id AS CHAR) as fileId, file.file_name as fileName, file.file_path as filePath from data_product_type as dpt " +
             "left join file on file.associate_id = CAST(dpt.id AS CHAR) and file.associate_type = 0 and file.enable_flag = 1 " +
             "where dpt.enable_flag = 1 order by dpt.last_update_dttm desc")
     List<DataProductType> getAllWithNoLogin();
 
-    @Select("select pt.*, pta.state as state, CAST(file.id AS CHAR) as fileId, file.file_name as fileName from data_product_type as pt "
+    @Select("select pt.*, pta.state as state, CAST(file.id AS CHAR) as fileId, file.file_name as fileName, file.file_path as filePath from data_product_type as pt "
             + "left join file on file.associate_id = CAST(pt.id AS CHAR) and file.associate_type = 0 and file.enable_flag = 1 "
             + "left join product_type_associate as pta on pt.id = pta.product_type_id and pta.associate_type = 2 and pta.associate_id = #{username} "
             + "where pt.enable_flag = 1 order by pt.last_update_dttm desc"
