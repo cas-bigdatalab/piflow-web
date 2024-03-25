@@ -6,7 +6,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize(using = TextureEnumSerializer.class)
 public enum StopsHubState {
     MOUNT("MOUNT", "MOUNT"),
-    UNMOUNT("UNMOUNT", "UNMOUNT");
+    UNMOUNT("UNMOUNT", "UNMOUNT"),
+    MOUNTING("MOUNTING", "MOUNTING");
 
     private final String value;
     private final String text;

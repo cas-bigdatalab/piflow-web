@@ -29,6 +29,14 @@ public class SysParamsCache {
 
     public static ThreadPoolExecutor MONITOR_THREAD_POOL_EXECUTOR;
 
+
+    // stop hub file path (read in configuration file)
+    public static String STOP_HUB_PATH;
+
+    public static void setStopHubPath(String stopHubPath) {
+        STOP_HUB_PATH = stopHubPath;
+    }
+
     public static Boolean IS_BOOT_COMPLETE = false;
 
     public static void setIsBootComplete(boolean isBootComplete) {
