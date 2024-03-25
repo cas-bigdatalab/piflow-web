@@ -73,6 +73,7 @@ public class FileServiceImpl implements IFileService {
         if(associateType.equals(FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue()) || associateType.equals(FileAssociateType.DATA_PRODUCT_COVER)){
             path = SysParamsCache.FILE_PATH;
             FileUtils.uploadRtnMap(file,path,fileName);
+            path = SysParamsCache.SYS_CONTEXT_PATH+"/files/";
         }else {
             path = SysParamsCache.FILE_STORAGE_PATH;
             FileUtils.saveFileToHdfs(file, fileName, path, FileUtils.getDefaultFs());

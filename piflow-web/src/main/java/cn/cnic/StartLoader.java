@@ -64,6 +64,7 @@ public class StartLoader implements ApplicationRunner {
         CheckPathUtils.isChartPathExist(SysParamsCache.VIDEOS_PATH);
         CheckPathUtils.isChartPathExist(SysParamsCache.XML_PATH);
         CheckPathUtils.isChartPathExist(SysParamsCache.CSV_PATH);
+        CheckPathUtils.isChartPathExist(SysParamsCache.FILE_PATH);
     }
 
     private void startStatusRunning() {
