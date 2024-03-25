@@ -172,4 +172,21 @@ public class HdfsUtils {
         IOUtils.copyBytes(in, out, 4096, true);
     }
 
+    public static void downloadFile(String defaultFs, String sourcePath, String targetPath) {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", defaultFs); // 设置HDFS的URL
+        try (FileSystem fs = FileSystem.get(conf)) {
+            // 构造HDFS文件路径对象
+            Path hdfsPath = new Path(sourcePath);
+
+            // 构造本地文件路径对象
+            Path localPath = new Path(targetPath);
+
+            // 将HDFS文件复制到本地
+            fs.copyToLocalFile(false, hdfsPath, localPath, true);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
