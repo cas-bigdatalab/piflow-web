@@ -30,7 +30,7 @@ public class FileCtrl {
      * @param associateId:
      * @return String
      * @author tianyao
-     * @description 上传文件
+     * @description 上传文件，分两类文件来上传，数据产品分类封面图和数据产品封面图放到服务器上，其他放在hdfs上
      * @date 2024/2/21 14:35
      */
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)

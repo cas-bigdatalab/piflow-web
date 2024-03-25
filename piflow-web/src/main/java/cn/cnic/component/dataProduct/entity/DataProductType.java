@@ -20,4 +20,5 @@ public class DataProductType extends BaseModelIDNoCorpAgentId {
 
     private String fileId;
     private String fileName;
+    private String filePath;
 }
