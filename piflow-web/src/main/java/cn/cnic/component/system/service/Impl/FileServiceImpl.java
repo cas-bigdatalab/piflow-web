@@ -59,22 +59,22 @@ public class FileServiceImpl implements IFileService {
         if (!Objects.equals(FileAssociateType.FLOW_PUBLISHING_PROPERTY.getValue(), associateType)) {
             fileDomain.deleteByAssociateId(associateId, associateType);
         }
-        //上传文件
+        //上传文件,不管有没有同名文件，通通重命名
         String originalFilename = file.getOriginalFilename();
         originalFilename = FileUtils.getFileName(originalFilename);
-        String fileName = originalFilename;
-        File isExist = fileDomain.getByName(originalFilename);
-        if (ObjectUtils.isNotEmpty(isExist)) {
-            String[] split = originalFilename.split("\\.");
-            fileName = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
-        }
+//        String fileName = originalFilename;
+//        File isExist = fileDomain.getByName(originalFilename);
+//        if (ObjectUtils.isNotEmpty(isExist)) {
+        String[] split = originalFilename.split("\\.");
+        String fileName = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
+//        }
         //上传文件到hdfs，数据产品分类封面和数据产品封面放在服务器上
         String path = "";
-        if(associateType.equals(FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue()) || associateType.equals(FileAssociateType.DATA_PRODUCT_COVER)){
+        if (associateType.equals(FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue()) || associateType.equals(FileAssociateType.DATA_PRODUCT_COVER)) {
             path = SysParamsCache.FILE_PATH;
-            FileUtils.uploadRtnMap(file,path,fileName);
-            path = SysParamsCache.SYS_CONTEXT_PATH+"/files/";
-        }else {
+            FileUtils.uploadRtnMap(file, path, fileName);
+            path = SysParamsCache.SYS_CONTEXT_PATH + "/files/";
+        } else {
             path = SysParamsCache.FILE_STORAGE_PATH;
             FileUtils.saveFileToHdfs(file, fileName, path, FileUtils.getDefaultFs());
         }
@@ -120,9 +120,9 @@ public class FileServiceImpl implements IFileService {
     public void getFileListByIds(HttpServletResponse response, String ids) {
         //获取多个文件并返回
         List<File> fileList = fileDomain.getListByIds(ids);
-        if(CollectionUtils.isNotEmpty(fileList)){
-            FileUtils.downloadFilesFromHdfs(response,fileList,"a.zip",FileUtils.getDefaultFs());
-        }else {
+        if (CollectionUtils.isNotEmpty(fileList)) {
+            FileUtils.downloadFilesFromHdfs(response, fileList, "a.zip", FileUtils.getDefaultFs());
+        } else {
             throw new RuntimeException("file not be found!!");
         }
     }
