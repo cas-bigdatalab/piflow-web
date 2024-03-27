@@ -545,6 +545,22 @@ public class FileUtils {
         return "Create success!!";
     }
 
+    public static void deleteData(String url) throws IOException {
+
+        File file = new File(url);
+        if (file.exists()) {
+            // 删除文件
+            boolean success = file.delete();
+            if (!success) {
+                // 如果文件存在但无法删除，则抛出异常
+                throw new IOException("Failed to delete file: " + url);
+            }
+        } else {
+            // 如果文件不存在，也抛出异常
+            throw new IOException("File does not exist: " + url);
+        }
+    }
+
     /**
      * @param originalFilename:
      * @return String
