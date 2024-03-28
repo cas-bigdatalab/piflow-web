@@ -1,13 +1,8 @@
 package cn.cnic.component.flow.utils;
 
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
@@ -230,6 +225,7 @@ public class FlowXmlUtils {
                         boolean sensitive = property.getSensitive();
                         boolean isSelect = property.getIsSelect();
                         String propertyVocrtUser = StringCustomUtils.replaceSpecialSymbolsXml(property.getCrtUser());
+                        String propertySort = StringCustomUtils.replaceSpecialSymbolsXml(Long.toString(property.getPropertySort()));
                         if (StringUtils.isNotBlank(propertyId)) {
                             xmlStrSb.append(spliceStr("id", id));
                         }
@@ -254,6 +250,8 @@ public class FlowXmlUtils {
                         xmlStrSb.append(spliceStr("required", required));
                         xmlStrSb.append(spliceStr("sensitive", sensitive));
                         xmlStrSb.append(spliceStr("isSelect", isSelect));
+                        //python算子保存参数顺序,load时顺序要保持
+                        xmlStrSb.append(spliceStr("propertySort", propertySort));
                         xmlStrSb.append("/> \n");
                     }
                 }
@@ -1192,6 +1190,8 @@ public class FlowXmlUtils {
                     boolean required = "true".equals(propertyValue.attributeValue("required"));
                     boolean sensitive = "true".equals(propertyValue.attributeValue("sensitive"));
                     boolean isSelect = "true".equals(propertyValue.attributeValue("isSelect"));
+                    //python算子参数需要排序
+                    long propertySort = Long.parseLong(StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("propertySort")));
                     if (isSelect && null != allowableValues && allowableValues.length() > 1) {
                         String temp = allowableValues.substring(1, allowableValues.length() - 1);
                         String[] tempArray = temp.split(",");
@@ -1223,8 +1223,13 @@ public class FlowXmlUtils {
                     property.setSensitive(sensitive);
                     property.setIsSelect(isSelect);
                     property.setStops(stops);
+                    property.setPropertySort(propertySort);
                     propertyList.add(property);
                 }
+                //python算子按propertySort字段进行排序
+                propertyList = propertyList.stream()
+                        .sorted(Comparator.comparing(Property::getPropertySort))
+                        .collect(Collectors.toList());
                 stops.setProperties(propertyList);
             }
             Iterator customizedPropertyXmlIterator = stopElement.elementIterator("customizedProperty");
