@@ -577,43 +577,43 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
      * @description TODO
      * @date 2024/2/20 15:31
      */
-    private void uploadPropertyFiles(MultipartFile[] file, Long propertyId, StopPublishingPropertyVo
-            stopPublishingPropertyVo, Date now, String username, List<File> files, String defaultFs) {
-        if (file != null && file.length > 0) {
-            String originFileName = stopPublishingPropertyVo.getFileName();
-            if (StringUtils.isNotBlank(originFileName)) {
-                String fileName = originFileName;
-                File isExist = fileDomain.getByName(originFileName);
-                if (ObjectUtils.isNotEmpty(isExist)) {
-                    String[] split = originFileName.split("\\.");
-                    fileName = split[0] + snowflakeGenerator.next() + "." + split[1];
-                }
-                for (MultipartFile multipartFile : file) {
-                    String originalFilename = multipartFile.getOriginalFilename();
-                    originalFilename = FileUtils.getFileName(originalFilename);
-                    if (originFileName.equals(originalFilename)) {
-                        File insertFile = new File();
-                        insertFile.setId(snowflakeGenerator.next());
-                        insertFile.setFileName(fileName);
-                        insertFile.setFileType(multipartFile.getContentType());
-                        insertFile.setFilePath(SysParamsCache.FILE_STORAGE_PATH + fileName);
-                        insertFile.setAssociateId(propertyId.toString());
-                        insertFile.setAssociateType(FileAssociateType.FLOW_PUBLISHING_PROPERTY_TEMPLATE.getValue());
-                        insertFile.setCrtDttm(now);
-                        insertFile.setCrtUser(username);
-                        insertFile.setEnableFlag(true);
-                        insertFile.setLastUpdateDttm(now);
-                        insertFile.setLastUpdateUser(username);
-                        insertFile.setCrtDttmStr(DateUtils.dateTimesToStr(now));
-                        insertFile.setLastUpdateDttmStr(DateUtils.dateTimesToStr(now));
-                        insertFile.setEnableFlagNum(1);
-                        files.add(insertFile);
-                        //上传文件至hdfs
-                        FileUtils.saveFileToHdfs(multipartFile, fileName, SysParamsCache.FILE_STORAGE_PATH, defaultFs);
-                        break;
-                    }
-                }
-            }
-        }
-    }
+//    private void uploadPropertyFiles(MultipartFile[] file, Long propertyId, StopPublishingPropertyVo
+//            stopPublishingPropertyVo, Date now, String username, List<File> files, String defaultFs) {
+//        if (file != null && file.length > 0) {
+//            String originFileName = stopPublishingPropertyVo.getFileName();
+//            if (StringUtils.isNotBlank(originFileName)) {
+//                String fileName = originFileName;
+//                File isExist = fileDomain.getByName(originFileName);
+//                if (ObjectUtils.isNotEmpty(isExist)) {
+//                    String[] split = originFileName.split("\\.");
+//                    fileName = split[0] + snowflakeGenerator.next() + "." + split[1];
+//                }
+//                for (MultipartFile multipartFile : file) {
+//                    String originalFilename = multipartFile.getOriginalFilename();
+//                    originalFilename = FileUtils.getFileName(originalFilename);
+//                    if (originFileName.equals(originalFilename)) {
+//                        File insertFile = new File();
+//                        insertFile.setId(snowflakeGenerator.next());
+//                        insertFile.setFileName(fileName);
+//                        insertFile.setFileType(multipartFile.getContentType());
+//                        insertFile.setFilePath(SysParamsCache.FILE_STORAGE_PATH + fileName);
+//                        insertFile.setAssociateId(propertyId.toString());
+//                        insertFile.setAssociateType(FileAssociateType.FLOW_PUBLISHING_PROPERTY_TEMPLATE.getValue());
+//                        insertFile.setCrtDttm(now);
+//                        insertFile.setCrtUser(username);
+//                        insertFile.setEnableFlag(true);
+//                        insertFile.setLastUpdateDttm(now);
+//                        insertFile.setLastUpdateUser(username);
+//                        insertFile.setCrtDttmStr(DateUtils.dateTimesToStr(now));
+//                        insertFile.setLastUpdateDttmStr(DateUtils.dateTimesToStr(now));
+//                        insertFile.setEnableFlagNum(1);
+//                        files.add(insertFile);
+//                        //上传文件至hdfs
+//                        FileUtils.saveFileToHdfs(multipartFile, fileName, SysParamsCache.FILE_STORAGE_PATH, defaultFs);
+//                        break;
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
