@@ -225,7 +225,12 @@ public class FlowXmlUtils {
                         boolean sensitive = property.getSensitive();
                         boolean isSelect = property.getIsSelect();
                         String propertyVocrtUser = StringCustomUtils.replaceSpecialSymbolsXml(property.getCrtUser());
-                        String propertySort = StringCustomUtils.replaceSpecialSymbolsXml(Long.toString(property.getPropertySort()));
+                        String propertySort = "";
+                        Long sort = property.getPropertySort();
+                        if (sort != null) {
+                            propertySort = StringCustomUtils.replaceSpecialSymbolsXml(Long.toString(sort));
+                        }
+
                         if (StringUtils.isNotBlank(propertyId)) {
                             xmlStrSb.append(spliceStr("id", id));
                         }
@@ -1191,7 +1196,11 @@ public class FlowXmlUtils {
                     boolean sensitive = "true".equals(propertyValue.attributeValue("sensitive"));
                     boolean isSelect = "true".equals(propertyValue.attributeValue("isSelect"));
                     //python算子参数需要排序
-                    long propertySort = Long.parseLong(StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("propertySort")));
+                    long propertySort = 0;
+                    String sort = StringCustomUtils.recoverSpecialSymbolsXml(propertyValue.attributeValue("propertySort"));
+                    if (StringUtils.isNotEmpty(sort)) {
+                        propertySort = Long.parseLong(sort);
+                    }
                     if (isSelect && null != allowableValues && allowableValues.length() > 1) {
                         String temp = allowableValues.substring(1, allowableValues.length() - 1);
                         String[] tempArray = temp.split(",");
