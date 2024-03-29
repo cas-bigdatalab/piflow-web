@@ -258,8 +258,6 @@ public class FlowXmlUtils {
                         xmlStrSb.append(spliceStr("required", required));
                         xmlStrSb.append(spliceStr("sensitive", sensitive));
                         xmlStrSb.append(spliceStr("isSelect", isSelect));
-                        //python算子保存参数顺序,load时顺序要保持
-                        xmlStrSb.append(spliceStr("propertySort", propertySort));
                         xmlStrSb.append("/> \n");
                     }
                 }
