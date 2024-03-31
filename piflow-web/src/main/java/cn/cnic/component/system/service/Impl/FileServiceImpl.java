@@ -70,7 +70,7 @@ public class FileServiceImpl implements IFileService {
 //        }
         //上传文件到hdfs，数据产品分类封面和数据产品封面放在服务器上
         String path = "";
-        if (associateType.equals(FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue()) || associateType.equals(FileAssociateType.DATA_PRODUCT_COVER)) {
+        if (associateType.equals(FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue()) || associateType.equals(FileAssociateType.DATA_PRODUCT_COVER.getValue())) {
             path = SysParamsCache.FILE_PATH;
             FileUtils.uploadRtnMap(file, path, fileName);
             path = SysParamsCache.SYS_CONTEXT_PATH + "/files/";
