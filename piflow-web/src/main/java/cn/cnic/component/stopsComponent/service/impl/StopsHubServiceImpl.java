@@ -995,7 +995,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                     stopsComponent.setOutports("DefaultPort");
                     stopsComponent.setOutPortType(PortType.DEFAULT);
                 } else {
-                    stopsComponent.setOutports(stopsHubInfoVo.getInports());
+                    stopsComponent.setOutports(stopsHubInfoVo.getOutports());
                     stopsComponent.setOutPortType(PortType.USER_DEFAULT);
                 }
                 stopsComponent.setLastUpdateUser(username);
