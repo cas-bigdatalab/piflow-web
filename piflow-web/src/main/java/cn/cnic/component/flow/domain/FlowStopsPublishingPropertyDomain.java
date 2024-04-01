@@ -2,6 +2,7 @@ package cn.cnic.component.flow.domain;
 
 import cn.cnic.base.utils.FileUtils;
 import cn.cnic.base.utils.HttpUtils;
+import cn.cnic.common.Eunm.FileAssociateType;
 import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.component.dataProduct.mapper.DataProductTypeMapper;
 import cn.cnic.component.flow.entity.FlowPublishing;
@@ -63,5 +64,21 @@ public class FlowStopsPublishingPropertyDomain {
             }
         }
         return i;
+    }
+
+    public List<Long> getToDeteleList(Long flowPublishingId, List<Long> updateIds) {
+        return flowStopsPublishingPropertyMapper.getToDeteleList(flowPublishingId,updateIds);
+    }
+
+    public int deleteByIds(List<Long> toDeletePropertyIds) {
+        int result = flowStopsPublishingPropertyMapper.deleteByIds(toDeletePropertyIds);
+        List<File> files = fileMapper.getByAssociateIds(toDeletePropertyIds, FileAssociateType.FLOW_PUBLISHING_PROPERTY_TEMPLATE.getValue());
+        if (CollectionUtils.isNotEmpty(files)) {
+            String defaultFs = FileUtils.getDefaultFs();
+            //物理删除
+            fileMapper.deleteBatchById(files.stream().map(File::getId).collect(Collectors.toList()));
+            files.forEach(file -> FileUtils.deleteHdfsFile(file.getFilePath(),defaultFs));
+        }
+        return result;
     }
 }

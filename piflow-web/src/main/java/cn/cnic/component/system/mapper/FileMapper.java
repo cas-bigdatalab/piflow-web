@@ -1,5 +1,6 @@
 package cn.cnic.component.system.mapper;
 
+import cn.cnic.common.Eunm.FileAssociateType;
 import cn.cnic.component.dataProduct.entity.ProductTypeAssociate;
 import cn.cnic.component.system.entity.File;
 import cn.cnic.component.system.entity.SysUser;
@@ -62,6 +63,15 @@ public interface FileMapper {
     })
     FileVo getByAssociateIdAndDataProductType(String associateId);
 
+    @Select("<script>"
+            + "select id, file_name, file_path from file where associate_type = #{type} and file.enable_flag = 1"
+            + " and id in "
+            + "<foreach collection='list' item='item' index='index' open='(' close=')' separator=','>"
+            + "#{item}"
+            + "</foreach>"
+            + "</script>")
+    List<File> getByAssociateIds(@Param("list") List<Long> toDeletePropertyIds, @Param("type") Integer fileAssociateType);
+
     @Delete("delete from file where id = #{id}")
     int deleteById(@Param("id") Long id);
 
@@ -75,5 +85,4 @@ public interface FileMapper {
 
     @Update("update file set enable_flag = 0, last_update_dttm = #{date}, last_update_user = #{username} where associate_id = #{associateId}")
     int fakeDeleteByAssociateId(@Param("associateId") String associateId, @Param("username") String username, @Param("date") String date);
-
 }
