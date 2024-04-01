@@ -34,9 +34,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -655,8 +653,8 @@ public class FileUtils {
             response.reset();
             response.addHeader("Access-Control-Allow-Origin", "*");
             response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-            response.setContentType("application/octet-stream");
-            response.addHeader("Content-Disposition", "attachment; filename=\"" + hdfsPath.getName() + "\"");
+            response.setContentType("application/octet-stream;charset=utf-8");
+            response.addHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(hdfsPath.getName(), StandardCharsets.UTF_8.toString()) + "\"");
             response.setContentLength(inputStream.available());
             OutputStream outputStream = response.getOutputStream();
             byte[] buffer = new byte[4096];
@@ -725,7 +723,7 @@ public class FileUtils {
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", defaultFs);
 
-        response.setContentType("multipart/form-data");//1.设置文件ContentType类型，这样设置，会自动判断下载文件类型
+        response.setContentType("multipart/form-data;charset=utf-8");//1.设置文件ContentType类型，这样设置，会自动判断下载文件类型
         response.setHeader("Content-Disposition", "attachment;fileName=" + zipName);
         FSDataInputStream instream = null;
         int contentLength = 0;
