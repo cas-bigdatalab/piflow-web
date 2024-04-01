@@ -120,4 +120,20 @@ public interface FlowStopsPublishingPropertyMapper {
 
     @Update("update flow_stops_publishing_property set enable_flag = 0 where publishing_id = #{publishingId}")
     int deleteByPublishingId(@Param("publishingId") long flowPublishingId);
+
+    @Select("<script>"
+            + "select id from flow_stops_publishing_property where publishing_id = #{publishingId}"
+            + " and id not in "
+            + "<foreach collection='list' item='item' index='index' open='(' close=')' separator=','>"
+            + "#{item}"
+            + "</foreach>"
+            + "</script>")
+    List<Long> getToDeteleList(@Param("publishingId") Long flowPublishingId, @Param("list") List<Long> updateIds);
+    @Delete("<script>"
+            + "delete from flow_stops_publishing_property where id in "
+            + "<foreach collection='list' item='item' index='index' open='(' close=')' separator=','>"
+            + "#{item}"
+            + "</foreach>"
+            + "</script>")
+    int deleteByIds(List<Long> toDeletePropertyIds);
 }

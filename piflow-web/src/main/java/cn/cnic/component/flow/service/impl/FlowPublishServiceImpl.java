@@ -247,11 +247,16 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
             associate.setProductTypeName(vo.getProductTypeName());
 
             flowPublishDomain.update(flowPublishing);
+            if (CollectionUtils.isNotEmpty(updateProperties)) {
+                //先删除所有被取消发布的参数以及关联文件,后更新
+                List<Long> toDeletePropertyIds = flowStopsPublishingPropertyDomain.getToDeteleList(flowPublishing.getId(),updateProperties.stream().map(FlowStopsPublishingProperty::getId).collect(Collectors.toList()));
+                if(CollectionUtils.isNotEmpty(toDeletePropertyIds)){
+                    flowStopsPublishingPropertyDomain.deleteByIds(toDeletePropertyIds);
+                }
+                flowStopsPublishingPropertyDomain.updateBatch(updateProperties);
+            }
             if (CollectionUtils.isNotEmpty(insertProperties)) {
                 flowStopsPublishingPropertyDomain.saveBatch(insertProperties);
-            }
-            if (CollectionUtils.isNotEmpty(updateProperties)) {
-                flowStopsPublishingPropertyDomain.updateBatch(updateProperties);
             }
 
             dataProductTypeDomain.updateAssociate(associate);
