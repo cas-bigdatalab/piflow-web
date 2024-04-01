@@ -335,7 +335,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
 
     @Override
     public String getListByPage(FlowPublishingVo flowPublishingVo) {
-        Page<FlowPublishingVo> page = PageHelper.startPage(flowPublishingVo.getPage(), flowPublishingVo.getLimit(), "last_update_dttm desc");
+        Page<FlowPublishingVo> page = PageHelper.startPage(flowPublishingVo.getPage(), flowPublishingVo.getLimit(), "crt_dttm DESC");
         flowPublishDomain.getListByPage(flowPublishingVo.getKeyword());
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
@@ -353,7 +353,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
     @Override
     public String getFlowPublishingListPageByProductTypeId(FlowPublishingVo flowPublishingVo) {
         List<DataProductType> dataProductTypeList = dataProductTypeDomain.getDataProductTypeAndAllChildById(flowPublishingVo.getProductTypeId());
-        Page<FlowPublishingVo> page = PageHelper.startPage(flowPublishingVo.getPage(), flowPublishingVo.getLimit(), "product_type_id, last_update_dttm desc");
+        Page<FlowPublishingVo> page = PageHelper.startPage(flowPublishingVo.getPage(), flowPublishingVo.getLimit(), "product_type_id ASC, crt_dttm DESC");
         flowPublishDomain.getListByProductTypeIds(flowPublishingVo.getKeyword(), dataProductTypeList.stream().map(DataProductType::getId).collect(Collectors.toList()));
 
         List<FlowPublishingVo> result = page.getResult();
