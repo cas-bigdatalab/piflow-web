@@ -26,6 +26,7 @@ public class FileCtrl {
 
     /**
      * @param file:
+     * @param unzip:是否解压缩, 上传文件、上传文件夹不解压缩，为false，上传文件夹并解压缩，为true
      * @param associateType:
      * @param associateId:
      * @return String
@@ -36,25 +37,25 @@ public class FileCtrl {
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "uploadFile", notes = "上传文件")
-    public String uploadFile(MultipartFile file, Integer associateType, String associateId) {
-        return fileServiceImpl.uploadFile(file, associateType, associateId);
+    public String uploadFile(MultipartFile file, Boolean unzip, Integer associateType, String associateId) {
+        return fileServiceImpl.uploadFile(file, unzip, associateType, associateId);
     }
 
     /**
-     * @param file:
-     * @param associateType:
-     * @param associateId:
+     * @param file:压缩包
+     * @param unzip:是否解压缩
+     * @param associateType:关联类型
+     * @param associateId:关联id
      * @return String
      * @author tianyao
-     * @description TODO
+     * @description 允许上传压缩包，并告知是否需要解压缩 弃用，与上面的接口合二为一
      * @date 2024/2/28 11:05
      */
     @RequestMapping(value = "/uploadFilesZip", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "uploadFilesZip", notes = "上传文件夹压缩包")
-    public String uploadFilesZip(MultipartFile file, Integer associateType, String associateId) {
-//        return fileServiceImpl.uploadFilesZip(file, associateType, associateId);
-        return "";
+    public String uploadFilesZip(MultipartFile file, Boolean unzip, Integer associateType, String associateId) {
+        return fileServiceImpl.uploadFilesZip(file, unzip, associateType, associateId);
     }
 
     /**

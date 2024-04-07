@@ -2,22 +2,18 @@ package cn.cnic.component.system.service.Impl;
 
 import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.FileAssociateType;
-import cn.cnic.common.Eunm.ProductTypeAssociateState;
-import cn.cnic.common.Eunm.ProductTypeAssociateType;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.entity.DataProductType;
-import cn.cnic.component.dataProduct.entity.ProductTypeAssociate;
 import cn.cnic.component.dataProduct.vo.DataProductTypeVo;
 import cn.cnic.component.system.domain.FileDomain;
 import cn.cnic.component.system.entity.File;
 import cn.cnic.component.system.service.IFileService;
 import cn.cnic.component.system.vo.FileVo;
-import cn.cnic.component.template.entity.FlowTemplate;
 import cn.hutool.core.lang.generator.SnowflakeGenerator;
 import com.alibaba.fastjson2.JSON;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -26,8 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.xml.crypto.Data;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -50,7 +44,7 @@ public class FileServiceImpl implements IFileService {
     }
 
     @Override
-    public String uploadFile(MultipartFile file, Integer associateType, String associateId) {
+    public String uploadFile(MultipartFile file, Boolean unzip, Integer associateType, String associateId) {
         String username = SessionUserUtil.getCurrentUsername();
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NOT_LOGIN);
@@ -62,21 +56,25 @@ public class FileServiceImpl implements IFileService {
         //上传文件,不管有没有同名文件，通通重命名
         String originalFilename = file.getOriginalFilename();
         originalFilename = FileUtils.getFileName(originalFilename);
-//        String fileName = originalFilename;
-//        File isExist = fileDomain.getByName(originalFilename);
-//        if (ObjectUtils.isNotEmpty(isExist)) {
         String[] split = originalFilename.split("\\.");
         String fileName = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
-//        }
         //上传文件到hdfs，数据产品分类封面和数据产品封面放在服务器上
         String path = "";
-        if (associateType.equals(FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue()) || associateType.equals(FileAssociateType.DATA_PRODUCT_COVER.getValue())) {
-            path = SysParamsCache.FILE_PATH;
-            FileUtils.uploadRtnMap(file, path, fileName);
-            path = SysParamsCache.SYS_CONTEXT_PATH + "/files/";
+        String filePath = "";
+        if (!unzip) {
+            if (associateType.equals(FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue()) || associateType.equals(FileAssociateType.DATA_PRODUCT_COVER.getValue())) {
+                path = SysParamsCache.FILE_PATH;
+                FileUtils.uploadRtnMap(file, path, fileName);
+                path = SysParamsCache.SYS_CONTEXT_PATH + "/files/";
+            } else {
+                path = SysParamsCache.FILE_STORAGE_PATH;
+                FileUtils.saveFileToHdfs(file, fileName, path, FileUtils.getDefaultFs());
+            }
+            filePath = path + fileName;
         } else {
             path = SysParamsCache.FILE_STORAGE_PATH;
-            FileUtils.saveFileToHdfs(file, fileName, path, FileUtils.getDefaultFs());
+            FileUtils.saveAndUnzipToHdfs(file, fileName, path, FileUtils.getDefaultFs());
+            filePath = path + fileName.split("\\.")[0] + "/";
         }
         //新增file记录
         File insertFile = new File();
@@ -84,7 +82,59 @@ public class FileServiceImpl implements IFileService {
         insertFile.setId(snowflakeGenerator.next());
         insertFile.setFileName(fileName);
         insertFile.setFileType(file.getContentType());
-        insertFile.setFilePath(path + fileName);
+        insertFile.setFilePath(filePath);
+        insertFile.setAssociateId(associateId);
+        insertFile.setAssociateType(associateType);
+        insertFile.setCrtDttm(now);
+        insertFile.setCrtUser(username);
+        insertFile.setEnableFlag(true);
+        insertFile.setLastUpdateDttm(now);
+        insertFile.setLastUpdateUser(username);
+        insertFile.setCrtDttmStr(DateUtils.dateTimesToStr(now));
+        insertFile.setLastUpdateDttmStr(DateUtils.dateTimesToStr(now));
+        insertFile.setEnableFlagNum(1);
+        int i = fileDomain.save(insertFile);
+        if (i > 0) {
+            FileVo vo = new FileVo();
+            BeanUtils.copyProperties(insertFile, vo);
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", vo);
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ADD_ERROR_MSG());
+        }
+    }
+
+    @Override
+    public String uploadFilesZip(MultipartFile file, Boolean unzip, Integer associateType, String associateId) {
+        String username = SessionUserUtil.getCurrentUsername();
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NOT_LOGIN);
+        }
+        //先删除原有的绑定文件，同一个type和id只能绑定一个文件,除了流水线发布参数（也就是运行时上传文件）
+        if (!Objects.equals(FileAssociateType.FLOW_PUBLISHING_PROPERTY.getValue(), associateType)) {
+            fileDomain.deleteByAssociateId(associateId, associateType);
+        }
+        //上传文件,不管有没有同名文件，通通重命名
+        String originalFilename = file.getOriginalFilename();
+        originalFilename = FileUtils.getFileName(originalFilename);
+        String[] split = originalFilename.split("\\.");
+        String fileName = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
+        String filePath = "";
+        //上传文件到hdfs
+        String path = SysParamsCache.FILE_STORAGE_PATH;
+        if (!unzip) {
+            FileUtils.saveFileToHdfs(file, fileName, path, FileUtils.getDefaultFs());
+            filePath = path + fileName;
+        } else {
+            FileUtils.saveAndUnzipToHdfs(file, fileName, path, FileUtils.getDefaultFs());
+            filePath = path + fileName.split("\\.")[0] + "/";
+        }
+        //新增file记录
+        File insertFile = new File();
+        Date now = new Date();
+        insertFile.setId(snowflakeGenerator.next());
+        insertFile.setFileName(fileName);
+        insertFile.setFileType(file.getContentType());
+        insertFile.setFilePath(filePath);
         insertFile.setAssociateId(associateId);
         insertFile.setAssociateType(associateType);
         insertFile.setCrtDttm(now);
