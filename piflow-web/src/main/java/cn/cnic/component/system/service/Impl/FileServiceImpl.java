@@ -170,9 +170,14 @@ public class FileServiceImpl implements IFileService {
     public void getFileListByIds(HttpServletResponse response, String ids) {
         //获取多个文件并返回
         List<File> fileList = fileDomain.getListByIds(ids);
+        String time = DateUtils.dateTimesToStrNew(new Date());
         if (CollectionUtils.isNotEmpty(fileList)) {
-            DateUtils.dateTimesToStr(new Date());
-            FileUtils.downloadFilesFromHdfs(response, fileList, "a.zip", FileUtils.getDefaultFs());
+            if (fileList.size() == 1) {
+                File file = fileList.get(0);
+                FileUtils.downloadFileFromHdfs(response, file.getFilePath(), file.getFileName(), FileUtils.getDefaultFs());
+            } else {
+                FileUtils.downloadFilesFromHdfs(response, fileList, "Download_" + time + ".zip", FileUtils.getDefaultFs());
+            }
         } else {
             throw new RuntimeException("file not be found!!");
         }

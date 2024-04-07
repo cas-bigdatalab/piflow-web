@@ -237,4 +237,6 @@ public interface IProcessService {
     String getByProcessId(String processId) throws InvocationTargetException, IllegalAccessException;
 
     String getAppIdByProcessId(String processId);
+
+    String deleteForPublishing(String processId);
 }
