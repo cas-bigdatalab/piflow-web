@@ -724,7 +724,7 @@ public class FileUtils {
         conf.set("fs.defaultFS", defaultFs);
 
         response.setContentType("multipart/form-data;charset=utf-8");//1.设置文件ContentType类型，这样设置，会自动判断下载文件类型
-        response.setHeader("Content-Disposition", "attachment;fileName=" + zipName);
+        response.setHeader("Content-Disposition", "attachment;filename=" + zipName);
         FSDataInputStream instream = null;
         int contentLength = 0;
         try {
