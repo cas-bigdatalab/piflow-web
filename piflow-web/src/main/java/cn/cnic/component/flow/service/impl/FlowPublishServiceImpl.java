@@ -253,6 +253,16 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                 if(CollectionUtils.isNotEmpty(toDeletePropertyIds)){
                     flowStopsPublishingPropertyDomain.deleteByIds(toDeletePropertyIds);
                 }
+                //检查参数的发布类型是否有从输入变成其他的类型的参数
+                List<FlowStopsPublishingProperty> fileTypeProperties = flowStopsPublishingPropertyDomain.getByPublishingIdAndType(id,FlowStopsPublishingPropertyType.FILE.getValue());
+                Map<Long, Integer> updateTypeMap = updateProperties.stream().collect(Collectors.toMap(FlowStopsPublishingProperty::getId, FlowStopsPublishingProperty::getType));
+                for (FlowStopsPublishingProperty fileTypeProperty : fileTypeProperties) {
+                    Integer type = updateTypeMap.get(fileTypeProperty.getId());
+                    if(!FlowStopsPublishingPropertyType.FILE.getValue().equals(type)) {
+                        fileDomain.deleteByAssociateId(fileTypeProperty.getId().toString(),FileAssociateType.FLOW_PUBLISHING_PROPERTY_TEMPLATE.getValue());
+                    }
+                }
+                
                 flowStopsPublishingPropertyDomain.updateBatch(updateProperties);
             }
             if (CollectionUtils.isNotEmpty(insertProperties)) {
@@ -440,7 +450,8 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         Flow flowById = flowDomain.getFlowById(flowPublishingVo.getFlowId());
         //根据flowPublishingVo更改flow的id值和包含参数的customValue值
         flowById.setId(flowPublishingVo.getId());
-        flowById.setName(flowPublishingVo.getName());
+        flowById.setName(flowPublishingVo.getName());//用来接收自定义的进程名称
+        flowById.setPageId(flowPublishingVo.getBak1());//用来接收运行进程时的备注信息
 
         //校验文件类的参数是否有上传文件并将所有输出类型参数的customValue进行改造，重命名,,,校验文件类的参数是否有上传文件,如果没有上传，用样例文件，所以这里就不校验了
         for (StopPublishingVo stop : flowPublishingVo.getStops()) {
