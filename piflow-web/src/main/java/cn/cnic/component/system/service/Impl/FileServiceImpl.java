@@ -172,7 +172,12 @@ public class FileServiceImpl implements IFileService {
         List<File> fileList = fileDomain.getListByIds(ids);
         String time = DateUtils.dateTimesToStrNew(new Date());
         if (CollectionUtils.isNotEmpty(fileList)) {
-            FileUtils.downloadFilesFromHdfs(response, fileList, "Download_" + time + ".zip", FileUtils.getDefaultFs());
+            if (fileList.size() == 1) {
+                File file = fileList.get(0);
+                FileUtils.downloadFileFromHdfs(response, file.getFilePath(), file.getFileName(), FileUtils.getDefaultFs());
+            } else {
+                FileUtils.downloadFilesFromHdfs(response, fileList, "Download_" + time + ".zip", FileUtils.getDefaultFs());
+            }
         } else {
             throw new RuntimeException("file not be found!!");
         }

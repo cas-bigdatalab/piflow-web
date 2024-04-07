@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -73,15 +72,17 @@ public class DataProductDomain {
     public List<DataProductVo> getByPageForPublishing(DataProductVo dataProductVo) {
         return dataProductMapper.getByPageForPublishing(dataProductVo);
     }
+
     public List<DataProductVo> getByPageForPublishingWithAdmin(DataProductVo dataProductVo) {
         return dataProductMapper.getByPageForPublishingWithAdmin(dataProductVo);
     }
+
     public List<DataProductVo> getByPageForPublishingWithSdPublisher(DataProductVo dataProductVo) {
         return dataProductMapper.getByPageForPublishingWithSdPublisher(dataProductVo);
     }
 
     public List<ProductUserVo> getByPageForPermission(ProductUserVo productUserVo, String username) {
-        return dataProductMapper.getByPageForPermission(productUserVo,username);
+        return dataProductMapper.getByPageForPermission(productUserVo, username);
     }
 
     public DataProductVo getFullInfoById(Long id) {
@@ -103,4 +104,5 @@ public class DataProductDomain {
     public ProductUser getPermissionById(Long id) {
         return productUserMapper.getById(id);
     }
+
 }

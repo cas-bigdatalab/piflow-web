@@ -7,10 +7,12 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import cn.cnic.base.utils.*;
-import cn.cnic.common.Eunm.FileAssociateType;
+import cn.cnic.common.Eunm.*;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
+import cn.cnic.component.dataProduct.entity.DataProduct;
+import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.flow.domain.FlowPublishDomain;
 import cn.cnic.component.flow.entity.*;
 import cn.cnic.component.flow.vo.FlowPublishingVo;
@@ -35,9 +37,6 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
 import cn.cnic.base.vo.UserVo;
-import cn.cnic.common.Eunm.ProcessState;
-import cn.cnic.common.Eunm.RunModeType;
-import cn.cnic.common.Eunm.StopState;
 import cn.cnic.component.flow.domain.FlowDomain;
 import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.vo.MxCellVo;
@@ -1188,6 +1187,41 @@ public class ProcessServiceImpl implements IProcessService {
             SysParamsCache.STARTED_PROCESS.remove(processId);
         }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("appId", appId);
+    }
+
+    @Override
+    public String deleteForPublishing(String processId) {
+        String username = SessionUserUtil.getCurrentUsername();
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        //同时删除数据和流水线，发布了就不可删除，必须下架发布的数据之后才能删除
+        ProcessState processStateById = processDomain.getProcessStateById(processId);
+        if (processStateById == ProcessState.STARTED || processStateById == ProcessState.INIT) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("The process is running, cannot be deleted");
+        }
+        //校验是否有已发布的数据产品
+        List<DataProductVo> dataProductVos = dataProductDomain.getListByProcessId(processId);
+        if(CollectionUtils.isNotEmpty(dataProductVos)){
+            List<DataProductVo> publishedDataProducts = dataProductVos.stream().filter(x -> x.getState().equals(DataProductState.PUBLISHED.getValue())).collect(Collectors.toList());
+            if(CollectionUtils.isNotEmpty(publishedDataProducts)) return ReturnMapUtils.setFailedMsgRtnJsonStr("The associated data products have been published. Please remove them before deleting the process");
+        }
+        boolean updateProcessEnableFlag = processDomain.updateProcessEnableFlag(username, isAdmin, processId);
+        //删除数据产品及相关file记录
+        Date now = new Date();
+        for (DataProductVo dataProductVo : dataProductVos) {
+            DataProduct dataProduct = new DataProduct();
+            dataProduct.setId(Long.parseLong(dataProductVo.getId()));
+            dataProduct.setState(DataProductState.DELETED.getValue());
+            dataProduct.setLastUpdateDttm(now);
+            dataProduct.setLastUpdateDttmStr(DateUtils.dateTimeSecToStr(now));
+            dataProduct.setEnableFlag(false);
+            dataProduct.setEnableFlagNum(0);
+            int i = dataProductDomain.delete(dataProduct);
+            fileDomain.fakeDeleteByAssociateId(dataProduct.getId().toString(), username);
+        }
+        if (updateProcessEnableFlag) {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Successfully Deleted");
+        }
+        return ReturnMapUtils.setFailedMsgRtnJsonStr("Failed Deleted");
     }
 
     private String extractExceptionLines(String input) {

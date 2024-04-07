@@ -396,5 +396,19 @@ public class ProcessCtrl {
         return processServiceImpl.getAppIdByProcessId(processId);
     }
 
+    /**
+     * @param processId:
+      * @return String
+     * @author tianyao
+     * @description 删除发布流水线的运行历史
+     * @date 2024/4/7 14:40
+     */
+    @RequestMapping(value = "/deleteForPublishing", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "deleteForPublishing", notes = "删除发布流水线的运行历史")
+    public String deleteForPublishing(String processId) {
+        return processServiceImpl.deleteForPublishing(processId);
+    }
+
 
 }

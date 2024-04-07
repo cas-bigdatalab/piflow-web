@@ -64,7 +64,7 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
             //编辑更新
             //删除并新增数据产品类型封面
             if(ObjectUtils.isNotEmpty(file)){
-                fileServiceImpl.uploadFile(file, FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue(), dataProductTypeVo.getId().toString());
+                fileServiceImpl.uploadFile(file, false, FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue(), dataProductTypeVo.getId().toString());
             }
 
             //更新数据产品类型
@@ -111,7 +111,7 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
             if (null != typeId && ObjectUtils.isNotEmpty(file)) {
                 try {
                     //上传封面
-                    fileServiceImpl.uploadFile(file, FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue(), typeId.toString());
+                    fileServiceImpl.uploadFile(file, false, FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue(), typeId.toString());
                 } catch (Exception e) {
                     logger.error("upload cover error!! e:====={}", e.getMessage());
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("upload cover error!!");
