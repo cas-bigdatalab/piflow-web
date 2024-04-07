@@ -2,6 +2,8 @@ package cn.cnic.base.utils;
 
 import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.common.constant.MessageConfig;
+import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -609,6 +611,56 @@ public class FileUtils {
                 org.apache.commons.io.IOUtils.copy(in, outputStream);
                 outputStream.close(); // 关闭输出流
                 System.out.println("File saved to HDFS successfully: " + fileName);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void saveAndUnzipToHdfs(MultipartFile file, String fileName, String fileDirectory, String defaultFs) {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", defaultFs);
+
+        try {
+            if (ObjectUtils.isEmpty(fs)) {
+                fs = FileSystem.get(conf);
+            }
+            String[] split = fileName.split("\\.");
+
+            Path hdfsPath = new Path(fileDirectory + fileName.split("\\.")[0] + "/");
+
+            // 检查目录是否存在，不存在则创建
+            if (!fs.exists(hdfsPath)) {
+                fs.mkdirs(hdfsPath);
+            }
+            //将压缩流解压缩并将压缩包中的所有文件放到hdfsPath目录下
+            try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(file.getInputStream()))) {
+                ZipEntry zipEntry = zis.getNextEntry();
+                while (zipEntry != null) {
+                    Path filePath = new Path(hdfsPath + zipEntry.getName());
+
+                    if (zipEntry.isDirectory()) {
+                        // 如果是目录，创建目录
+                        if (!fs.exists(filePath)) {
+                            fs.mkdirs(filePath);
+                        }
+                    } else {
+                        // 如果是文件，创建父目录并写入文件
+                        Path parentPath = hdfsPath.getParent();
+                        if (!fs.exists(parentPath)) {
+                            fs.mkdirs(parentPath);
+                        }
+                        try (OutputStream outputStream = fs.create(hdfsPath)) {
+                            byte[] buffer = new byte[1024];
+                            int len;
+                            while ((len = zis.read(buffer)) > 0) {
+                                outputStream.write(buffer, 0, len);
+                            }
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
