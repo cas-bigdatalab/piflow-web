@@ -118,6 +118,9 @@ public interface FlowStopsPublishingPropertyMapper {
             "where fp.publishing_id = #{publishingId} and fp.enable_flag = 1 order by bak1, bak3, property_sort ASC")
     List<FlowStopsPublishingProperty> getStopsListByPublishingId(@Param("publishingId") Long publishingId);
 
+    @Select("select * from flow_stops_publishing_property where publishing_id = #{publishingId} and type = #{propertyType} and enable_flag = 1")
+    List<FlowStopsPublishingProperty> getByPublishingIdAndType(@Param("publishingId")Long publishingId, @Param("propertyType")Integer propertyType);
+
     @Update("update flow_stops_publishing_property set enable_flag = 0 where publishing_id = #{publishingId}")
     int deleteByPublishingId(@Param("publishingId") long flowPublishingId);
 

@@ -24,7 +24,7 @@ public class FlowPublishingVo extends BasePageVo implements Serializable {
 //    @JsonSerialize(using = ToStringSerializer.class)
 //    @JsonDeserialize(using = ToLongDeserializer.class)
     private String id;
-    private String name;
+    private String name;  //运行时，允许自定义进程名称和备注
     private String flowId;
     private String description;
 //    @JsonSerialize(using = ToStringSerializer.class)
@@ -48,6 +48,8 @@ public class FlowPublishingVo extends BasePageVo implements Serializable {
     private String coverFileName;
     private String instructionFileId;
     private String instructionFileName;
+
+    private String bak1; //用来接收运行进程时的备注
 
 
 }

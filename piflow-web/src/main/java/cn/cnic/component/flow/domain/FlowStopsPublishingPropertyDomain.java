@@ -54,20 +54,20 @@ public class FlowStopsPublishingPropertyDomain {
                         file.setFileName(property.getFileName());
                         return file;
                     })
-                    .filter(file -> file.getId()!=null)
+                    .filter(file -> file.getId() != null)
                     .collect(Collectors.toList());
             if (CollectionUtils.isNotEmpty(files)) {
                 String defaultFs = FileUtils.getDefaultFs();
                 //物理删除
                 fileMapper.deleteBatchById(files.stream().map(File::getId).collect(Collectors.toList()));
-                files.forEach(file -> FileUtils.deleteHdfsFile(file.getFilePath(),defaultFs));
+                files.forEach(file -> FileUtils.deleteHdfsFile(file.getFilePath(), defaultFs));
             }
         }
         return i;
     }
 
     public List<Long> getToDeteleList(Long flowPublishingId, List<Long> updateIds) {
-        return flowStopsPublishingPropertyMapper.getToDeteleList(flowPublishingId,updateIds);
+        return flowStopsPublishingPropertyMapper.getToDeteleList(flowPublishingId, updateIds);
     }
 
     public int deleteByIds(List<Long> toDeletePropertyIds) {
@@ -77,8 +77,12 @@ public class FlowStopsPublishingPropertyDomain {
             String defaultFs = FileUtils.getDefaultFs();
             //物理删除
             fileMapper.deleteBatchById(files.stream().map(File::getId).collect(Collectors.toList()));
-            files.forEach(file -> FileUtils.deleteHdfsFile(file.getFilePath(),defaultFs));
+            files.forEach(file -> FileUtils.deleteHdfsFile(file.getFilePath(), defaultFs));
         }
         return result;
+    }
+
+    public List<FlowStopsPublishingProperty> getByPublishingIdAndType(Long publishingId, Integer propertyType) {
+        return flowStopsPublishingPropertyMapper.getByPublishingIdAndType(publishingId, propertyType);
     }
 }
