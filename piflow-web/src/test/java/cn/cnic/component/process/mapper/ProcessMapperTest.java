@@ -32,7 +32,7 @@ public class ProcessMapperTest extends ApplicationTests {
     
     @Test
     public void getProcessStateById() {
-        ProcessState processStateById = processMapper.getProcessStateById("8a80d82b72a20ae50172a21425a00002");
+        String processStateById = processMapper.getProcessStateById("8a80d82b72a20ae50172a21425a00002");
         logger.info("size = " + processStateById);
     }
 }

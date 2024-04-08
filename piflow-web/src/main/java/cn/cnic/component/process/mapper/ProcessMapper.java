@@ -223,7 +223,7 @@ public interface ProcessMapper {
     public String getProcessIdByPageId(@Param("fid") String fid, @Param("pageId") String pageId);
 
     @Select("select state from flow_process where enable_flag=1 and id=#{id} ")
-    public ProcessState getProcessStateById(String id);
+    public String getProcessStateById(String id);
 
     /**
      * get globalParams ids by process id

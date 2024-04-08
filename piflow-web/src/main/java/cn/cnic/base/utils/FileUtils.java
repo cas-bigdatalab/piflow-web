@@ -667,6 +667,7 @@ public class FileUtils {
         }
     }
 
+    //删除hdfs中的文件或目录
     public static void deleteHdfsFile(String filePath, String defaultFs) {
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", defaultFs);
@@ -678,7 +679,7 @@ public class FileUtils {
             Path hdfsPath = new Path(filePath);
 
             // 删除文件，第二个参数表示是否递归删除，如果是目录需要设置为true
-            boolean isDeleted = fs.delete(hdfsPath, false);
+            boolean isDeleted = fs.delete(hdfsPath, true);
 //            if (isDeleted) {
 //                System.out.println("File deleted from HDFS successfully: " + hdfsFilePath);
 //            } else {
