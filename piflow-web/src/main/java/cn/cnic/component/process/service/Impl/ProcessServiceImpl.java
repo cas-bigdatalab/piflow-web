@@ -530,8 +530,8 @@ public class ProcessServiceImpl implements IProcessService {
         if (StringUtils.isBlank(processId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("processID is null");
         }
-        ProcessState processStateById = processDomain.getProcessStateById(processId);
-        if (processStateById == ProcessState.STARTED) {
+        String processStateById = processDomain.getProcessStateById(processId);
+        if (processStateById == ProcessState.STARTED.getText()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Status is STARTED, cannot be deleted");
         }
         boolean updateProcessEnableFlag = processDomain.updateProcessEnableFlag(username, isAdmin, processId);
@@ -1194,8 +1194,8 @@ public class ProcessServiceImpl implements IProcessService {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         //同时删除数据和流水线，发布了就不可删除，必须下架发布的数据之后才能删除
-        ProcessState processStateById = processDomain.getProcessStateById(processId);
-        if (processStateById == ProcessState.STARTED || processStateById == ProcessState.INIT) {
+        String processStateById = processDomain.getProcessStateById(processId);
+        if (ProcessState.STARTED.getText().equals(processStateById) || ProcessState.INIT.getText().equals(processStateById)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The process is running, cannot be deleted");
         }
         //校验是否有已发布的数据产品
@@ -1213,6 +1213,7 @@ public class ProcessServiceImpl implements IProcessService {
             dataProduct.setState(DataProductState.DELETED.getValue());
             dataProduct.setLastUpdateDttm(now);
             dataProduct.setLastUpdateDttmStr(DateUtils.dateTimeSecToStr(now));
+            dataProduct.setLastUpdateUser(username);
             dataProduct.setEnableFlag(false);
             dataProduct.setEnableFlagNum(0);
             int i = dataProductDomain.delete(dataProduct);

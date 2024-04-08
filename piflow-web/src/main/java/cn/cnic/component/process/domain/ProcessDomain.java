@@ -441,7 +441,7 @@ public class ProcessDomain {
         return processMapper.getRunningProcessAppId();
     }
 
-    public ProcessState getProcessStateById(String id) {
+    public String getProcessStateById(String id) {
         return processMapper.getProcessStateById(id);
 
     }

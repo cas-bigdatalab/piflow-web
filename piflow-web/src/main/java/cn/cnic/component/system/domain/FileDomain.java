@@ -4,6 +4,8 @@ import cn.cnic.base.utils.DateUtils;
 import cn.cnic.base.utils.FileUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.common.Eunm.FileAssociateType;
+import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.entity.ProductTypeAssociate;
 import cn.cnic.component.dataProduct.mapper.DataProductTypeMapper;
 import cn.cnic.component.flow.domain.StopsDomain;
@@ -56,7 +58,13 @@ public class FileDomain {
         File oldFile = this.getByAssociateId(associateId, associateType);
         if (ObjectUtils.isNotEmpty(oldFile)) {
             try {
-                FileUtils.deleteHdfsFile(oldFile.getFilePath(), FileUtils.getDefaultFs());
+                String fileName = oldFile.getFileName();
+                String filePath = oldFile.getFilePath();
+                if (associateType.equals(FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue()) || associateType.equals(FileAssociateType.DATA_PRODUCT_COVER.getValue())) {
+                    FileUtils.deleteFile(SysParamsCache.FILE_PATH + fileName);
+                } else {
+                    FileUtils.deleteHdfsFile(filePath,FileUtils.getDefaultFs());
+                }
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());
             }
