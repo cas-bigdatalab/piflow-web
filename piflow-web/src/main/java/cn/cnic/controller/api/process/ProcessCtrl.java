@@ -397,7 +397,7 @@ public class ProcessCtrl {
     }
 
     /**
-     * @param processId:
+     * @param id:
       * @return String
      * @author tianyao
      * @description 删除发布流水线的运行历史
@@ -406,8 +406,8 @@ public class ProcessCtrl {
     @RequestMapping(value = "/deleteForPublishing", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "deleteForPublishing", notes = "删除发布流水线的运行历史")
-    public String deleteForPublishing(String processId) {
-        return processServiceImpl.deleteForPublishing(processId);
+    public String deleteForPublishing(String id) {
+        return processServiceImpl.deleteForPublishing(id);
     }
 
 
