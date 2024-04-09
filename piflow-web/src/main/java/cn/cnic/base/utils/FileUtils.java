@@ -716,14 +716,15 @@ public class FileUtils {
                 response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
                 response.setContentType("application/octet-stream;charset=utf-8");
                 response.addHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(hdfsPath.getName(), StandardCharsets.UTF_8.toString()) + "\"");
-                try (FSDataInputStream in = fs.open(hdfsPath);
-                     ServletOutputStream out = response.getOutputStream()) {
+                try (ServletOutputStream out = response.getOutputStream()) {
+                    FSDataInputStream in = fs.open(hdfsPath);
                     response.setContentLength(in.available());
                     byte[] buffer = new byte[4096];
                     int bytesRead;
                     while ((bytesRead = in.read(buffer)) != -1) {
                         out.write(buffer, 0, bytesRead);
                     }
+                    in.close();
                 }
             }
         } catch (IOException e) {
@@ -767,20 +768,21 @@ public class FileUtils {
 
     private static int addFileToZip(FileSystem fs, Path filePath, ZipOutputStream zipOut) throws IOException {
         int contentLength = 0;
-        try (FSDataInputStream in = fs.open(filePath)) {
-            contentLength += in.available();
-            ZipEntry entry = new ZipEntry(filePath.getName());
-            zipOut.putNextEntry(entry);
+        FSDataInputStream in = fs.open(filePath);
+        contentLength += in.available();
+        ZipEntry entry = new ZipEntry(filePath.getName());
+        zipOut.putNextEntry(entry);
 
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = in.read(buffer)) != -1) {
-                zipOut.write(buffer, 0, bytesRead);
-            }
-            zipOut.closeEntry();
+        byte[] buffer = new byte[4096];
+        int bytesRead;
+        while ((bytesRead = in.read(buffer)) != -1) {
+            zipOut.write(buffer, 0, bytesRead);
         }
+        in.close();
+        zipOut.closeEntry();
         return contentLength;
     }
+
     private static int addDirectoryToZip(ZipOutputStream zipOut, FileSystem fs, Path dir, String base) throws IOException {
         FileStatus[] fileStatuses = fs.listStatus(dir);
         int contentLength = 0;
@@ -794,14 +796,14 @@ public class FileUtils {
                 contentLength += addDirectoryToZip(zipOut, fs, path, zipFilePath + "/");
             } else {
                 zipOut.putNextEntry(new ZipEntry(zipFilePath));
-                try (FSDataInputStream in = fs.open(path)) {
-                    contentLength += in.available();
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    while ((bytesRead = in.read(buffer)) != -1) {
-                        zipOut.write(buffer, 0, bytesRead);
-                    }
+                FSDataInputStream in = fs.open(path);
+                contentLength += in.available();
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    zipOut.write(buffer, 0, bytesRead);
                 }
+                in.close();
                 zipOut.closeEntry();
             }
         }
