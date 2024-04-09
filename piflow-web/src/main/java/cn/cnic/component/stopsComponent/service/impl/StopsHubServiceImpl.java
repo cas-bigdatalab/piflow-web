@@ -379,7 +379,13 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 if (!zipEntry.isDirectory() && zipEntry.getName().endsWith("requirements.txt")) {
                     System.out.println("find requirements.txt");
                     StringBuffer dockerFileSb = new StringBuffer();
-                    dockerFileSb.append("FROM python:" + stopsHub.getLanguageVersion() + System.lineSeparator());
+                    String python_base_image = System.getenv("python_base_image");
+                    //指定python算子基础镜像，或下载官方python镜像
+                    if (python_base_image != null) {
+                        dockerFileSb.append("FROM " + python_base_image + System.lineSeparator());
+                    } else {
+                        dockerFileSb.append("FROM python:" + stopsHub.getLanguageVersion() + System.lineSeparator());
+                    }
                     //dockerFileSb.append("MAINTAINER " + LocalDatacenterInfo.LOCAL_DATACENTER_ID + System.lineSeparator());
 //                      dockerFileSb.append("RUN apt update" + System.lineSeparator());
 //                      dockerFileSb.append("RUN apt-get install -y zip" + System.lineSeparator());
@@ -520,7 +526,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
     public static String generateTagsName(String stopsHubName) {
         //拼成 name-时间戳:tag 格式   registryUrl/projectName/imageName-currentTimeMillis:tags
         String registryUrl = System.getenv("docker_central_warehouse");
-        String registryProjectName = "bigflow";
+        String registryProjectName = "piflow";
         String originProjectPath;
         if (StringUtils.isBlank(registryUrl)) {
             originProjectPath = "";
