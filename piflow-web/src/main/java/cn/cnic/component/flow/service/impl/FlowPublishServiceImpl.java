@@ -249,20 +249,20 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
             flowPublishDomain.update(flowPublishing);
             if (CollectionUtils.isNotEmpty(updateProperties)) {
                 //先删除所有被取消发布的参数以及关联文件,后更新
-                List<Long> toDeletePropertyIds = flowStopsPublishingPropertyDomain.getToDeteleList(flowPublishing.getId(),updateProperties.stream().map(FlowStopsPublishingProperty::getId).collect(Collectors.toList()));
-                if(CollectionUtils.isNotEmpty(toDeletePropertyIds)){
+                List<Long> toDeletePropertyIds = flowStopsPublishingPropertyDomain.getToDeteleList(flowPublishing.getId(), updateProperties.stream().map(FlowStopsPublishingProperty::getId).collect(Collectors.toList()));
+                if (CollectionUtils.isNotEmpty(toDeletePropertyIds)) {
                     flowStopsPublishingPropertyDomain.deleteByIds(toDeletePropertyIds);
                 }
                 //检查参数的发布类型是否有从输入变成其他的类型的参数
-                List<FlowStopsPublishingProperty> fileTypeProperties = flowStopsPublishingPropertyDomain.getByPublishingIdAndType(id,FlowStopsPublishingPropertyType.FILE.getValue());
+                List<FlowStopsPublishingProperty> fileTypeProperties = flowStopsPublishingPropertyDomain.getByPublishingIdAndType(id, FlowStopsPublishingPropertyType.FILE.getValue());
                 Map<Long, Integer> updateTypeMap = updateProperties.stream().collect(Collectors.toMap(FlowStopsPublishingProperty::getId, FlowStopsPublishingProperty::getType));
                 for (FlowStopsPublishingProperty fileTypeProperty : fileTypeProperties) {
                     Integer type = updateTypeMap.get(fileTypeProperty.getId());
-                    if(!FlowStopsPublishingPropertyType.FILE.getValue().equals(type)) {
-                        fileDomain.deleteByAssociateId(fileTypeProperty.getId().toString(),FileAssociateType.FLOW_PUBLISHING_PROPERTY_TEMPLATE.getValue());
+                    if (!FlowStopsPublishingPropertyType.FILE.getValue().equals(type)) {
+                        fileDomain.deleteByAssociateId(fileTypeProperty.getId().toString(), FileAssociateType.FLOW_PUBLISHING_PROPERTY_TEMPLATE.getValue());
                     }
                 }
-                
+
                 flowStopsPublishingPropertyDomain.updateBatch(updateProperties);
             }
             if (CollectionUtils.isNotEmpty(insertProperties)) {
@@ -465,7 +465,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                         propertyVo.setCustomValue(customValue);
                     } else {
                         //file dir /a/b/->/a/b/12345678902    /a/b->a/b12345678902
-                        customValue = customValue + snowflakeGenerator.next();
+                        customValue = customValue + snowflakeGenerator.next() + "/";
                         propertyVo.setCustomValue(customValue);
                     }
                 }
@@ -508,7 +508,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
 //            return ReturnMapUtils.setFailedMsgRtnJsonStr("process create failed!!");
 //
 //        final Process process = ProcessUtils.copyProcess(oldProcess, username, RunModeType.RUN, true);
-        final Process process  = initProcess(flowPublishingVo, username);
+        final Process process = initProcess(flowPublishingVo, username);
         process.setState(ProcessState.INIT);
         if (null == process) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
