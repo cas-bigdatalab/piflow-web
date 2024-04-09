@@ -45,6 +45,7 @@ public class FileServiceImpl implements IFileService {
 
     @Override
     public String uploadFile(MultipartFile file, Boolean unzip, Integer associateType, String associateId) {
+        if (unzip == null) unzip = false;
         String username = SessionUserUtil.getCurrentUsername();
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NOT_LOGIN);
@@ -67,11 +68,14 @@ public class FileServiceImpl implements IFileService {
                 FileUtils.uploadRtnMap(file, path, fileName);
                 path = SysParamsCache.SYS_CONTEXT_PATH + "/files/";
             } else {
+                if (split[1].equals("rar") || split[1].equals("tar") || split[1].equals("tar.gz"))
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr("please unload .zip");
                 path = SysParamsCache.FILE_STORAGE_PATH;
                 FileUtils.saveFileToHdfs(file, fileName, path, FileUtils.getDefaultFs());
             }
             filePath = path + fileName;
         } else {
+            if (!split[1].equals("zip")) return ReturnMapUtils.setFailedMsgRtnJsonStr("please unload .zip");
             path = SysParamsCache.FILE_STORAGE_PATH;
             FileUtils.saveAndUnzipToHdfs(file, fileName, path, FileUtils.getDefaultFs());
             filePath = path + fileName.split("\\.")[0] + "/";
