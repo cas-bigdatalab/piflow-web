@@ -85,4 +85,8 @@ public class FlowStopsPublishingPropertyDomain {
     public List<FlowStopsPublishingProperty> getByPublishingIdAndType(Long publishingId, Integer propertyType) {
         return flowStopsPublishingPropertyMapper.getByPublishingIdAndType(publishingId, propertyType);
     }
+
+    public int updateCustomValue(String id, String customValue) {
+        return flowStopsPublishingPropertyMapper.updateCustomValue(id,customValue);
+    }
 }
