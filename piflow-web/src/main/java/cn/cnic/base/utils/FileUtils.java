@@ -7,10 +7,7 @@ import org.apache.commons.compress.archivers.zip.ZipFile;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FSDataOutputStream;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
 import org.apache.hadoop.util.Progressable;
 import org.slf4j.Logger;
@@ -25,6 +22,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
@@ -698,22 +696,116 @@ public class FileUtils {
                 fs = FileSystem.get(conf);
             }
             Path hdfsPath = new Path(filePath);
-            InputStream inputStream = fs.open(hdfsPath);
-            response.reset();
-            response.addHeader("Access-Control-Allow-Origin", "*");
-            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-            response.setContentType("application/octet-stream;charset=utf-8");
-            response.addHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(hdfsPath.getName(), StandardCharsets.UTF_8.toString()) + "\"");
-            response.setContentLength(inputStream.available());
-            OutputStream outputStream = response.getOutputStream();
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
+            FileStatus fileStatus = fs.getFileStatus(hdfsPath);
+            if (fileStatus.isDirectory()) {
+                int contentLength = 0;
+                // 如果是目录，下载为ZIP文件
+                String zipFileName = hdfsPath.getName() + ".zip";
+                response.reset();
+                response.addHeader("Access-Control-Allow-Origin", "*");
+                response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+                response.setContentType("application/octet-stream;charset=utf-8");
+                response.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(zipFileName, StandardCharsets.UTF_8.toString()) + "\"");
+                try (ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream())) {
+                    contentLength += addDirectoryToZip(zipOut, fs, hdfsPath, "");
+                }
+                response.setContentLength(contentLength);
+            } else {
+                response.reset();
+                response.addHeader("Access-Control-Allow-Origin", "*");
+                response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+                response.setContentType("application/octet-stream;charset=utf-8");
+                response.addHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(hdfsPath.getName(), StandardCharsets.UTF_8.toString()) + "\"");
+                try (FSDataInputStream in = fs.open(hdfsPath);
+                     ServletOutputStream out = response.getOutputStream()) {
+                    response.setContentLength(in.available());
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, bytesRead);
+                    }
+                }
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void downloadFilesFromHdfs(HttpServletResponse response, List<cn.cnic.component.system.entity.File> fileList, String zipName, String defaultFs) {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", defaultFs);
+        response.reset();
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        response.setContentType("application/zip");
+        response.setHeader("Content-Disposition", "attachment;filename=" + zipName);
+        int contentLength = 0;
+        try (FileSystem fs = FileSystem.get(conf);
+             ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream())) {
+
+            for (cn.cnic.component.system.entity.File file : fileList) {
+                String filePath = file.getFilePath();
+                Path hdfsPath = new Path(filePath);
+
+                if (fs.isFile(hdfsPath)) {
+                    // 如果是文件，直接添加到ZIP输出流
+                    contentLength += addFileToZip(fs, hdfsPath, zipOut);
+                    response.setContentLength(contentLength);
+                } else if (fs.isDirectory(hdfsPath)) {
+                    // 如果是目录，递归添加目录内容到ZIP输出流
+                    contentLength += addDirectoryToZip(zipOut, fs, hdfsPath, "");
+
+                }
+            }
+
+            zipOut.finish();
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error while downloading files from HDFS", e);
+        }
+    }
+
+    private static int addFileToZip(FileSystem fs, Path filePath, ZipOutputStream zipOut) throws IOException {
+        int contentLength = 0;
+        try (FSDataInputStream in = fs.open(filePath)) {
+            contentLength += in.available();
+            ZipEntry entry = new ZipEntry(filePath.getName());
+            zipOut.putNextEntry(entry);
+
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                zipOut.write(buffer, 0, bytesRead);
+            }
+            zipOut.closeEntry();
+        }
+        return contentLength;
+    }
+    private static int addDirectoryToZip(ZipOutputStream zipOut, FileSystem fs, Path dir, String base) throws IOException {
+        FileStatus[] fileStatuses = fs.listStatus(dir);
+        int contentLength = 0;
+        for (FileStatus fileStatus : fileStatuses) {
+            Path path = fileStatus.getPath();
+            String zipFilePath = base + path.getName();
+
+            if (fileStatus.isDirectory()) {
+                zipOut.putNextEntry(new ZipEntry(zipFilePath + "/"));
+                zipOut.closeEntry();
+                contentLength += addDirectoryToZip(zipOut, fs, path, zipFilePath + "/");
+            } else {
+                zipOut.putNextEntry(new ZipEntry(zipFilePath));
+                try (FSDataInputStream in = fs.open(path)) {
+                    contentLength += in.available();
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = in.read(buffer)) != -1) {
+                        zipOut.write(buffer, 0, bytesRead);
+                    }
+                }
+                zipOut.closeEntry();
+            }
+        }
+        return contentLength;
     }
 
     public static Resource loadFileFromHdfs(String fileName, String filePath, String defaultFs) {
@@ -768,50 +860,51 @@ public class FileUtils {
         return fileInfo;
     }
 
-    public static void downloadFilesFromHdfs(HttpServletResponse response, List<cn.cnic.component.system.entity.File> fileList, String zipName, String defaultFs) {
-        Configuration conf = new Configuration();
-        conf.set("fs.defaultFS", defaultFs);
+//    public static void downloadFilesFromHdfs(HttpServletResponse response, List<cn.cnic.component.system.entity.File> fileList, String zipName, String defaultFs) {
+//        Configuration conf = new Configuration();
+//        conf.set("fs.defaultFS", defaultFs);
+//
+//        response.setContentType("multipart/form-data;charset=utf-8");//1.设置文件ContentType类型，这样设置，会自动判断下载文件类型
+//        response.setHeader("Content-Disposition", "attachment;filename=" + zipName);
+//        FSDataInputStream instream = null;
+//        int contentLength = 0;
+//        try {
+//            ZipOutputStream zipstream = new ZipOutputStream(response.getOutputStream());
+//            for (cn.cnic.component.system.entity.File file : fileList) {
+//                String filePath = file.getFilePath();
+//                String fileName = file.getFileName();
+//                try {
+//                    if (ObjectUtils.isEmpty(fs)) {
+//                        fs = FileSystem.get(conf);
+//                    }
+//
+//                    Path hdfsPath = new Path(filePath);
+//                    if (fs.exists(hdfsPath)) {
+//                        instream = fs.open(hdfsPath);
+//                        contentLength += instream.available();
+//                        ZipEntry entry = new ZipEntry(fileName);
+//                        zipstream.putNextEntry(entry);
+//                        byte[] buffer = new byte[1024];
+//                        int len = 0;
+//                        while ((len = instream.read(buffer)) != -1) {
+//                            zipstream.write(buffer, 0, len);
+//                        }
+//                        instream.close();
+//                        zipstream.closeEntry();
+//                        zipstream.flush();
+//                    }
+//                } catch (IOException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//            zipstream.finish();
+//            response.setContentLength(contentLength);
+//            zipstream.close();
+//        } catch (IOException e) {
+//            new RuntimeException(e.getMessage());
+//        }
+//    }
 
-        response.setContentType("multipart/form-data;charset=utf-8");//1.设置文件ContentType类型，这样设置，会自动判断下载文件类型
-        response.setHeader("Content-Disposition", "attachment;filename=" + zipName);
-        FSDataInputStream instream = null;
-        int contentLength = 0;
-        try {
-            ZipOutputStream zipstream = new ZipOutputStream(response.getOutputStream());
-            for (cn.cnic.component.system.entity.File file : fileList) {
-                String filePath = file.getFilePath();
-                String fileName = file.getFileName();
-                try {
-                    if (ObjectUtils.isEmpty(fs)) {
-                        fs = FileSystem.get(conf);
-                    }
-
-                    Path hdfsPath = new Path(filePath);
-                    if (fs.exists(hdfsPath)) {
-                        instream = fs.open(hdfsPath);
-                        contentLength += instream.available();
-                        ZipEntry entry = new ZipEntry(fileName);
-                        zipstream.putNextEntry(entry);
-                        byte[] buffer = new byte[1024];
-                        int len = 0;
-                        while ((len = instream.read(buffer)) != -1) {
-                            zipstream.write(buffer, 0, len);
-                        }
-                        instream.close();
-                        zipstream.closeEntry();
-                        zipstream.flush();
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-            zipstream.finish();
-            response.setContentLength(contentLength);
-            zipstream.close();
-        } catch (IOException e) {
-            new RuntimeException(e.getMessage());
-        }
-    }
 
     private static String getMimeTypeByExtension(String extension) {
         switch (extension.toLowerCase()) {
