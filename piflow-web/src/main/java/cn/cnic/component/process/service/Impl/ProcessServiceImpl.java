@@ -1156,8 +1156,8 @@ public class ProcessServiceImpl implements IProcessService {
                                             propertyVo.setFileName(property.getFileName());
                                         }
                                         //封装customValue得用dataProduct中的datasetUrl了
-                                        if (StringUtils.isNotBlank(property.getStopBundle())) {
-                                            Optional<ProcessStop> first = process.getProcessStopList().stream().filter(processStop -> property.getStopBundle().equals(processStop.getBundel())).findFirst();
+                                        if (StringUtils.isNotBlank(property.getStopId())) {
+                                            Optional<ProcessStop> first = process.getProcessStopList().stream().filter(processStop -> property.getStopId().equals(processStop.getFlowStopId())).findFirst();
                                             if (first.isPresent()) {
                                                 String propertyName = property.getPropertyName();
                                                 if (StringUtils.isNotBlank(propertyName)) {

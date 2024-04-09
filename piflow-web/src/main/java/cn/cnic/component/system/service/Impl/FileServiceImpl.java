@@ -6,13 +6,13 @@ import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.entity.DataProductType;
 import cn.cnic.component.dataProduct.vo.DataProductTypeVo;
+import cn.cnic.component.flow.domain.FlowStopsPublishingPropertyDomain;
 import cn.cnic.component.system.domain.FileDomain;
 import cn.cnic.component.system.entity.File;
 import cn.cnic.component.system.service.IFileService;
 import cn.cnic.component.system.vo.FileVo;
 import cn.hutool.core.lang.generator.SnowflakeGenerator;
 import com.alibaba.fastjson2.JSON;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -37,10 +37,13 @@ public class FileServiceImpl implements IFileService {
 
     private final SnowflakeGenerator snowflakeGenerator;
 
+    private final FlowStopsPublishingPropertyDomain flowStopsPublishingPropertyDomain;
+
     @Autowired
-    public FileServiceImpl(FileDomain fileDomain, SnowflakeGenerator snowflakeGenerator) {
+    public FileServiceImpl(FileDomain fileDomain, SnowflakeGenerator snowflakeGenerator, FlowStopsPublishingPropertyDomain flowStopsPublishingPropertyDomain) {
         this.fileDomain = fileDomain;
         this.snowflakeGenerator = snowflakeGenerator;
+        this.flowStopsPublishingPropertyDomain = flowStopsPublishingPropertyDomain;
     }
 
     @Override
@@ -74,6 +77,10 @@ public class FileServiceImpl implements IFileService {
                 FileUtils.saveFileToHdfs(file, fileName, path, FileUtils.getDefaultFs());
             }
             filePath = path + fileName;
+            //如果是参数的样例文件，修改它的customValue为filePath
+            if(FileAssociateType.FLOW_PUBLISHING_PROPERTY_TEMPLATE.getValue().equals(associateType)){
+                flowStopsPublishingPropertyDomain.updateCustomValue(associateId,filePath);
+            }
         } else {
             if (!split[1].equals("zip")) return ReturnMapUtils.setFailedMsgRtnJsonStr("please unload .zip");
             path = SysParamsCache.FILE_STORAGE_PATH;

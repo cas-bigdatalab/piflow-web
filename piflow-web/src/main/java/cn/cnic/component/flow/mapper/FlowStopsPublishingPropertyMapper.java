@@ -139,4 +139,7 @@ public interface FlowStopsPublishingPropertyMapper {
             + "</foreach>"
             + "</script>")
     int deleteByIds(List<Long> toDeletePropertyIds);
+
+    @Update("update flow_stops_publishing_property set custom_value = #{customValue} where id = #{id}")
+    int updateCustomValue(@Param("id") String id, @Param("customValue") String customValue);
 }
