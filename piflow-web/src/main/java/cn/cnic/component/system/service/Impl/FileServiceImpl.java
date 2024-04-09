@@ -77,10 +77,6 @@ public class FileServiceImpl implements IFileService {
                 FileUtils.saveFileToHdfs(file, fileName, path, FileUtils.getDefaultFs());
             }
             filePath = path + fileName;
-            //如果是参数的样例文件，修改它的customValue为filePath
-            if(FileAssociateType.FLOW_PUBLISHING_PROPERTY_TEMPLATE.getValue().equals(associateType)){
-                flowStopsPublishingPropertyDomain.updateCustomValue(associateId,filePath);
-            }
         } else {
             if (!split[1].equals("zip")) return ReturnMapUtils.setFailedMsgRtnJsonStr("please unload .zip");
             path = SysParamsCache.FILE_STORAGE_PATH;
