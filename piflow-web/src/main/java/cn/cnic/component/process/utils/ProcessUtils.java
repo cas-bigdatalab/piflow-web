@@ -305,6 +305,9 @@ public class ProcessUtils {
                         processStopProperty.setCustomValue(value);
                     }
                 }
+                if(StringUtils.isBlank(processStopProperty.getCustomValue())){
+                    processStopProperty.setCustomValue(property.getExample());
+                }
                 // Associated foreign key
                 processStopProperty.setProcessStop(processStop);
                 processStopPropertyList.add(processStopProperty);
