@@ -241,6 +241,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
     }
 
 
+
     /**
      * mount python.zip
      *
@@ -255,7 +256,10 @@ public class StopsHubServiceImpl implements IStopsHubService {
          * 通过process直接用docker命令的方式打包
          */
         if (StringUtils.isNotEmpty(stopsHub.getJarUrl())) {
-            String stopsHubPath = SysParamsCache.STOP_HUB_PATH;
+            String stopsHubPath = stopImpl.getStopsHubPath();
+            if (!stopsHubPath.endsWith("/")) {
+                stopsHubPath = stopsHubPath + "/";
+            }
             String jarName = stopsHub.getJarName();
             String dockerFileName = "DockerFile-" + stopsHub.getId();
             List<StopsHubFileRecord> insertList = new ArrayList<>();
@@ -365,18 +369,6 @@ public class StopsHubServiceImpl implements IStopsHubService {
         String jarName = stopsHub.getJarName();
 
         try {
-            //zip包下载到本地
-            String jarUrl = stopsHub.getJarUrl();
-            int index = jarUrl.indexOf('/', 7); // 找到第一个斜杠("/")的位置，从索引7开始搜索
-            String hdfsDefaultFS = jarUrl.substring(0, index);  // 获取"hdfs://master:9000"
-            String sourcePath = jarUrl.substring(index);// 获取"/user/piflow/plugin/RUSLE.zip"
-            try {
-                HdfsUtils.downloadFile(hdfsDefaultFS, sourcePath, dstPath);
-            } catch (Exception e) {
-                logger.error("download zip from hdfs failed, error message:" + e.getMessage(), e);
-                return false;
-            }
-
             FileSystem fileSystem = FileSystem.newInstance(URI.create(stopsHub.getJarUrl()), new Configuration());
             FSDataInputStream inputStream1 = fileSystem.open(new Path(stopsHub.getJarUrl()));
             ZipInputStream  zipInputStream1 = new ZipInputStream(inputStream1, Charset.forName("GBK"));
@@ -387,7 +379,13 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 if (!zipEntry.isDirectory() && zipEntry.getName().endsWith("requirements.txt")) {
                     System.out.println("find requirements.txt");
                     StringBuffer dockerFileSb = new StringBuffer();
-                    dockerFileSb.append("FROM python:" + stopsHub.getLanguageVersion() + System.lineSeparator());
+                    String python_base_image = System.getenv("python_base_image");
+                    //指定python算子基础镜像，或下载官方python镜像
+                    if (python_base_image != null) {
+                        dockerFileSb.append("FROM " + python_base_image + System.lineSeparator());
+                    } else {
+                        dockerFileSb.append("FROM python:" + stopsHub.getLanguageVersion() + System.lineSeparator());
+                    }
                     //dockerFileSb.append("MAINTAINER " + LocalDatacenterInfo.LOCAL_DATACENTER_ID + System.lineSeparator());
 //                      dockerFileSb.append("RUN apt update" + System.lineSeparator());
 //                      dockerFileSb.append("RUN apt-get install -y zip" + System.lineSeparator());
@@ -528,7 +526,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
     public static String generateTagsName(String stopsHubName) {
         //拼成 name-时间戳:tag 格式   registryUrl/projectName/imageName-currentTimeMillis:tags
         String registryUrl = System.getenv("docker_central_warehouse");
-        String registryProjectName = "bigflow";
+        String registryProjectName = "piflow";
         String originProjectPath;
         if (StringUtils.isBlank(registryUrl)) {
             originProjectPath = "";
@@ -1003,7 +1001,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                     stopsComponent.setOutports("DefaultPort");
                     stopsComponent.setOutPortType(PortType.DEFAULT);
                 } else {
-                    stopsComponent.setOutports(stopsHubInfoVo.getInports());
+                    stopsComponent.setOutports(stopsHubInfoVo.getOutports());
                     stopsComponent.setOutPortType(PortType.USER_DEFAULT);
                 }
                 stopsComponent.setLastUpdateUser(username);
