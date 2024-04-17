@@ -706,8 +706,13 @@ public class FileUtils {
                 response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
                 response.setContentType("application/octet-stream;charset=utf-8");
                 response.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(zipFileName, StandardCharsets.UTF_8.toString()) + "\"");
-                try (ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream())) {
+                try {
+                    ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream());
                     contentLength += addDirectoryToZip(zipOut, fs, hdfsPath, "");
+                    zipOut.finish();
+                    zipOut.close();
+                } catch (IOException e) {
+                    throw new RuntimeException("Error while downloading files from HDFS", e);
                 }
                 response.setContentLength(contentLength);
             } else {
@@ -716,16 +721,17 @@ public class FileUtils {
                 response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
                 response.setContentType("application/octet-stream;charset=utf-8");
                 response.addHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(hdfsPath.getName(), StandardCharsets.UTF_8.toString()) + "\"");
-                try (ServletOutputStream out = response.getOutputStream()) {
-                    FSDataInputStream in = fs.open(hdfsPath);
-                    response.setContentLength(in.available());
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    while ((bytesRead = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, bytesRead);
-                    }
-                    in.close();
+                ServletOutputStream out = response.getOutputStream();
+                FSDataInputStream in = fs.open(hdfsPath);
+                response.setContentLength(in.available());
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
                 }
+                in.close();
+                out.flush();
+                out.close();
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -741,7 +747,8 @@ public class FileUtils {
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "attachment;filename=" + zipName);
         int contentLength = 0;
-        try (ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream())) {
+        try {
+            ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream());
 //            FileSystem fs = FileSystem.get(conf);
             if (ObjectUtils.isEmpty(fs)) {
                 fs = FileSystem.get(conf);
@@ -753,15 +760,14 @@ public class FileUtils {
                 if (fs.isFile(hdfsPath)) {
                     // 如果是文件，直接添加到ZIP输出流
                     contentLength += addFileToZip(fs, hdfsPath, zipOut);
-                    response.setContentLength(contentLength);
                 } else if (fs.isDirectory(hdfsPath)) {
                     // 如果是目录，递归添加目录内容到ZIP输出流
                     contentLength += addDirectoryToZip(zipOut, fs, hdfsPath, "");
-
                 }
             }
-
+            response.setContentLength(contentLength);
             zipOut.finish();
+            zipOut.close();
 
         } catch (IOException e) {
             throw new RuntimeException("Error while downloading files from HDFS", e);
@@ -782,6 +788,7 @@ public class FileUtils {
         }
         in.close();
         zipOut.closeEntry();
+        zipOut.flush();
         return contentLength;
     }
 
