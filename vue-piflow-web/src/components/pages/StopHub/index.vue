@@ -1354,12 +1354,16 @@ export default {
           if (res.data.code === 200) {
             this.tableData = res.data.data;
             this.total = res.data.count;
-            if(this.tableData.some(v=>v.status.text === 'MOUNTING') && !this.timer){
-              this.timer = setInterval(()=>{
-                this.getTableData()
-              },60000)
+            if(this.tableData.some(v=>v.status.text === 'MOUNTING')){
+              if(!this.timer){
+                this.timer = setInterval(()=>{
+                  this.getTableData()
+                },60000)
+              }
             }else{
-              clearInterval(this.timer)
+              if(this.timer){
+                clearInterval(this.timer)
+              }
             }
           } else {
             this.$Message.error({
