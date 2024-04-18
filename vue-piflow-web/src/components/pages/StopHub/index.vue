@@ -155,7 +155,7 @@
             :transfer="true"
             v-if="row.status.text === 'UNMOUNT'"
           >
-            <span class="button-warp" @click="handleButtonSelect(row, 1)">
+            <span :class="`button-warp ${row.status.text === 'MOUNTING'?'gray_btn':''}`" @click="handleButtonSelect(row, 1)">
               <Icon type="ios-aperture" />
             </span>
           </Tooltip>
@@ -165,7 +165,7 @@
             placement="top-start"
             :transfer="true"
           >
-            <span class="button-warp" @click="handleButtonSelect(row, 1)">
+            <span :class="`button-warp ${row.status.text === 'MOUNTING'?'gray_btn':''}`" @click="handleButtonSelect(row, 1)">
               <Icon type="md-aperture" />
             </span>
           </Tooltip>
@@ -187,7 +187,7 @@
             </span>
           </Tooltip>
           <Tooltip content="Delete" placement="top-start" :transfer="true">
-            <span class="button-warp" @click="handleButtonSelect(row, 3)">
+            <span :class="`button-warp ${row.status.text === 'MOUNTING'?'gray_btn':''}`" @click="handleButtonSelect(row, 3)">
               <Icon type="ios-trash" />
             </span>
           </Tooltip>
@@ -1146,6 +1146,7 @@ export default {
   },
   methods: {
     handleButtonSelect(row, key) {
+      if(row.status.text === 'MOUNTING')  return
       switch (key) {
         case 1:
           this.handleMount(row);
@@ -1353,6 +1354,13 @@ export default {
           if (res.data.code === 200) {
             this.tableData = res.data.data;
             this.total = res.data.count;
+            if(this.tableData.some(v=>v.status.text === 'MOUNTING') && !this.timer){
+              this.timer = setInterval(()=>{
+                this.getTableData()
+              },60000)
+            }else{
+              clearInterval(this.timer)
+            }
           } else {
             this.$Message.error({
               content: this.$t("tip.request_fail_content"),
@@ -1620,6 +1628,9 @@ export default {
       this.showEdit = false;
       this.file = null;
     },
+  },
+  beforeDestroy() {
+   if(this.timer) clearInterval(this.timer)
   },
 };
 </script>
