@@ -972,6 +972,44 @@ public class ProcessServiceImpl implements IProcessService {
     }
 
     @Override
+    public String getErrorLogInStop(String appId) {
+        String amContainerLogs = flowImpl.getFlowLog(appId);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+        if (StringUtils.isNotBlank(amContainerLogs)) {
+            String stdoutLog = amContainerLogs + "/stdout/?start=0";
+            String stdoutLogHtml = HttpUtils.getHtml(stdoutLog);
+            //截取错误信息
+            String error1 = extractExceptionLines(stdoutLogHtml);
+            Map<String, String> errorMap = new HashMap<>();
+            errorMap.put("errorInfo", error1);
+            rtnMap.put("data", errorMap);
+        } else {
+            rtnMap.put("code", 200);
+            rtnMap.put("errorMsg", MessageConfig.INTERFACE_CALL_ERROR_MSG());
+        }
+        return ReturnMapUtils.toJson(rtnMap);
+    }
+
+    @Override
+    public String getErrorLogInSystem(String appId) {
+        String amContainerLogs = flowImpl.getFlowLog(appId);
+        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+        if (StringUtils.isNotBlank(amContainerLogs)) {
+            String stderrLog = amContainerLogs + "/stderr/?start=0";
+            String stderrLogHtml = HttpUtils.getHtml(stderrLog);
+            //截取错误信息
+            String error2 = extractExceptionLines(stderrLogHtml);
+            Map<String, String> errorMap = new HashMap<>();
+            errorMap.put("errorInfo", error2);
+            rtnMap.put("data", errorMap);
+        } else {
+            rtnMap.put("code", 200);
+            rtnMap.put("errorMsg", MessageConfig.INTERFACE_CALL_ERROR_MSG());
+        }
+        return ReturnMapUtils.toJson(rtnMap);
+    }
+
+    @Override
     public String getProcessPageByPublishingId(ProcessVo requestVo) {
         String username = SessionUserUtil.getCurrentUsername();
         if (null == requestVo.getPage() || null == requestVo.getLimit()) {
