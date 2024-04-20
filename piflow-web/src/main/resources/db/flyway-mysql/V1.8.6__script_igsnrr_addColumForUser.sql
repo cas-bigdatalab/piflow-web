@@ -23,6 +23,7 @@ ALTER TABLE data_product ADD associate_id bigint(20) NULL DEFAULT NUll COMMENT '
 -----------------------------------
 --alter Table structure for flow_publishing
 -----------------------------------
+
 ALTER TABLE flow_publishing ADD flow_sort int DEFAULT 0 NOT NULL COMMENT '排序';
 
 -----------------------------------
