@@ -1,9 +1,11 @@
 package cn.cnic.controller.api.dataProduct;
 
 import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.vo.BasePageVo;
 import cn.cnic.component.dataProduct.service.IDataProductService;
 import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.dataProduct.vo.ProductUserVo;
+import cn.cnic.component.visual.util.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -42,6 +44,21 @@ public class DataProductCtrl {
     public String getByPage(@RequestBody DataProductVo dataProductVo) {
         return dataProductServiceImpl.getByPage(dataProductVo);
     }
+
+    @RequestMapping(value = "/getDataSourceListFromProduct", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "getDataSourceListFromProduct", notes = "获取数据产品对应的excel列表")
+    public String getDataSourceListFromProduct(@RequestBody DataProductVo productUserVo) {
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("成功");
+    }
+
+    @RequestMapping(value = "/getDataSourceList", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "getDataSourceList", notes = "获取用户对应的excel列表")
+    public String getDataSourceList(@RequestBody BasePageVo BasePageVo) {
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("成功");
+    }
+
 
     /**
      * @param dataProductVo:

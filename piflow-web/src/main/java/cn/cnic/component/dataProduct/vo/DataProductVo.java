@@ -39,6 +39,7 @@ public class DataProductVo extends BasePageVo implements Serializable {
 //    @JsonDeserialize(using = ToLongDeserializer.class)
     private String propertyId;  //发布参数id
     private String propertyName;
+    //可能是单个/多个文件or目录的组合
     private String datasetUrl;
     private String name;
     private String description;
