@@ -14,6 +14,7 @@ import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.dataProduct.vo.ProductUserVo;
 import cn.cnic.component.system.domain.FileDomain;
 import cn.cnic.component.system.domain.SysUserDomain;
+import cn.cnic.component.system.entity.File;
 import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.system.service.IFileService;
 import cn.hutool.core.lang.generator.SnowflakeGenerator;
@@ -27,9 +28,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -57,16 +61,26 @@ public class DataProductServiceImpl implements IDataProductService {
     @Override
     public String save(MultipartFile file, DataProductVo dataProductVo) {
         //校验，原有的状态是否是待发布,是否有重名的数据产品
-        DataProduct isExist = dataProductDomain.getById(Long.parseLong(dataProductVo.getId()));
-        if(ObjectUtils.isEmpty(isExist)){
+        String selectedIds = dataProductVo.getId();
+        String[] ids = selectedIds.split(",");
+        DataProduct isExist = dataProductDomain.getById(Long.parseLong(ids[0]));
+        if (ObjectUtils.isEmpty(isExist)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Not find the data product!, please check your id where input");
         }
         if (!DataProductState.TO_PUBLISH.getValue().equals(isExist.getState())) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The publish is not allowed!! state is not TO_PUBLISH");
         }
         List<DataProduct> sameNameData = dataProductDomain.getListByName(dataProductVo.getName());
-        if(CollectionUtils.isNotEmpty(sameNameData)){
+        if (CollectionUtils.isNotEmpty(sameNameData)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Duplicate name!!");
+        }
+        if (ids.length > 1) {
+            //多选了数据产品
+            //将选择的数据产品enable_flag置为0，新建一个数据产品
+            List<DataProduct> oldDataProducts = dataProductDomain.getByIds(ids);
+            dataProductDomain.updateEnableFlagToFalse(ids);
+            dataProductVo.setId(snowflakeGenerator.next().toString());
+            dataProductVo.setDatasetUrl(oldDataProducts.stream().map(DataProduct::getDatasetUrl).collect(Collectors.joining(",")));
         }
         //数据产品记录是在进程运行完成后自动生成的，只能编辑数据产品
         //更新数据产品表，数据产品类型关联表，文件表
@@ -75,18 +89,27 @@ public class DataProductServiceImpl implements IDataProductService {
         DataProduct dataProduct = new DataProduct();
         BeanUtils.copyProperties(dataProductVo, dataProduct);
         dataProduct.setId(Long.parseLong(dataProductVo.getId()));
-        //查看发布者是不是管理员，如果是，直接发布，如果不是，状态改成待审核
-        boolean isAdmin = SessionUserUtil.isAdmin();
-        if(isAdmin){
-            dataProduct.setState(DataProductState.PUBLISHED.getValue());
-            dataProduct.setOpinion("sdPublisher is admin, no audit is required for the publishing operation.");
-        }else {
-            dataProduct.setState(DataProductState.TO_CHECK.getValue());
-        }
+        //查看发布者是不是管理员，如果是，直接发布，如果不是，状态改成待审核==>>>改成无需审核
+//        boolean isAdmin = SessionUserUtil.isAdmin();
+//        if (isAdmin) {
+//            dataProduct.setState(DataProductState.PUBLISHED.getValue());
+//            dataProduct.setOpinion("sdPublisher is admin, no audit is required for the publishing operation.");
+//        } else {
+//            dataProduct.setState(DataProductState.TO_CHECK.getValue());
+//        }
+        dataProduct.setState(DataProductState.PUBLISHED.getValue());
         dataProduct.setLastUpdateDttm(now);
         dataProduct.setLastUpdateUser(username);
         dataProduct.setVersion(dataProductVo.getVersion());
-        dataProductDomain.update(dataProduct);
+        if (ids.length > 1) {
+            dataProduct.setAssociateId(selectedIds);
+            dataProduct.setCrtUser(username);
+            dataProduct.setCrtDttm(now);
+            dataProduct.setCrtDttmStr(DateUtils.dateTimesToStr(now));
+            dataProductDomain.insert(dataProduct);
+        } else {
+            dataProductDomain.update(dataProduct);
+        }
 
         ProductTypeAssociate associate = dataProductTypeDomain.getAssociateByAssociateId(dataProduct.getId().toString());
         if (ObjectUtils.isEmpty(associate)) {
@@ -107,7 +130,7 @@ public class DataProductServiceImpl implements IDataProductService {
         //删除并新增数据产品类型封面
         if (ObjectUtils.isNotEmpty(file)) {
             try {
-                fileServiceImpl.uploadFile(file, false,FileAssociateType.DATA_PRODUCT_COVER.getValue(), dataProduct.getId().toString());
+                fileServiceImpl.uploadFile(file, false, FileAssociateType.DATA_PRODUCT_COVER.getValue(), dataProduct.getId().toString());
             } catch (Exception e) {
                 logger.error("upload data product cover error!! e:{}", e.getMessage());
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("upload data product cover error!!");
@@ -219,12 +242,12 @@ public class DataProductServiceImpl implements IDataProductService {
         String username = SessionUserUtil.getCurrentUsername();
         dataProductVo.setCrtUser(username);
         boolean admin = SessionUserUtil.isAdmin();
-        if(admin){
+        if (admin) {
             Page<DataProduct> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
             dataProductDomain.getByPageForPublishingWithAdmin(dataProductVo);
             Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
             return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
-        }else {
+        } else {
             Page<DataProduct> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
             dataProductDomain.getByPageForPublishingWithSdPublisher(dataProductVo);
             Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
@@ -245,12 +268,12 @@ public class DataProductServiceImpl implements IDataProductService {
             } else if (ProductUserState.CHECK_SUCCESS.getValue().equals(state)) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("You have already applied for this data product and your application has been rejected for the following reasons:\n" +
                         applyInfo.getOpinion() + "...\n Whether you need to reapply??");
-            }else {
+            } else {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("The application has been approved. You do not need to repeat operations.Download the data product directly");
             }
         }
         DataProduct dataProduct = dataProductDomain.getById(Long.parseLong(productUserVo.getProductId()));
-        if(ObjectUtils.isEmpty(dataProduct)){
+        if (ObjectUtils.isEmpty(dataProduct)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Not Find the data product directly");
         }
         //新增记录
@@ -267,10 +290,10 @@ public class DataProductServiceImpl implements IDataProductService {
         insertApply.setLastUpdateDttm(now);
         insertApply.setLastUpdateUser(currentUser.getUsername());
         int i = dataProductDomain.insertApplyInfo(insertApply);
-        if(i>0){
+        if (i > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.ADD_SUCCEEDED_MSG());
-        }else {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ADD_ERROR_MSG()+"insert database error");
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ADD_ERROR_MSG() + "insert database error");
         }
     }
 
@@ -278,10 +301,10 @@ public class DataProductServiceImpl implements IDataProductService {
     public String permissionForUse(ProductUserVo productUserVo) {
         //校验是否是待审核
         ProductUser isExists = dataProductDomain.getPermissionById(Long.parseLong(productUserVo.getId()));
-        if(ObjectUtils.isEmpty(isExists)){
+        if (ObjectUtils.isEmpty(isExists)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Not find this record, please check your id");
         }
-        if(!ProductUserState.TO_CHECK.getValue().equals(isExists.getState())){
+        if (!ProductUserState.TO_CHECK.getValue().equals(isExists.getState())) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("not allowed! the state is not TO_CHECK!");
         }
         String username = SessionUserUtil.getCurrentUsername();
@@ -309,6 +332,33 @@ public class DataProductServiceImpl implements IDataProductService {
     @Override
     public String getById(String id) {
         DataProductVo result = dataProductDomain.getFullInfoById(Long.parseLong(id));
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data",result);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", result);
+    }
+
+    @Override
+    public void downloadDataset(HttpServletResponse response, String dataProductId) {
+        //获取多个文件并返回
+        String[] split = dataProductId.split(",");
+        List<File> fileList = new ArrayList<>();
+        if (split.length > 1) {
+            for (String id : split) {
+                File dataset = fileDomain.getByAssociateId(id, FileAssociateType.DATA_PRODUCT.getValue());
+                fileList.add(dataset);
+            }
+        } else {
+            File dataset = fileDomain.getByAssociateId(dataProductId, FileAssociateType.DATA_PRODUCT.getValue());
+            fileList.add(dataset);
+        }
+        String time = DateUtils.dateTimesToStrNew(new Date());
+        if (CollectionUtils.isNotEmpty(fileList)) {
+            if (fileList.size() == 1) {
+                File file = fileList.get(0);
+                FileUtils.downloadFileFromHdfs(response, file.getFilePath(), file.getFileName(), FileUtils.getDefaultFs());
+            } else {
+                FileUtils.downloadFilesFromHdfs(response, fileList, "Download_" + time + ".zip", FileUtils.getDefaultFs());
+            }
+        } else {
+            throw new RuntimeException("file not be found!!");
+        }
     }
 }

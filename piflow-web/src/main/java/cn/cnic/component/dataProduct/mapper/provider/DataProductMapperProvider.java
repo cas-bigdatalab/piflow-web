@@ -29,6 +29,15 @@ public class DataProductMapperProvider {
     private Integer state;
     private String opinion;
     private String downReason;
+    private Integer isShare;
+    private String doiId;
+    private String cstrId;
+    private String subjectTypeId;
+    private String timeRange;
+    private String spacialRange;
+    private String datasetSize;
+    private Integer datasetType;
+    private String associateId;
 
     private boolean preventSQLInjectionDataProduct(DataProduct dataProduct) {
         if (null == dataProduct) {
@@ -58,6 +67,15 @@ public class DataProductMapperProvider {
         this.state = dataProduct.getState();
         this.opinion = SqlUtils.preventSQLInjection(dataProduct.getOpinion());
         this.downReason = SqlUtils.preventSQLInjection(dataProduct.getDownReason());
+        this.isShare = dataProduct.getIsShare();
+        this.doiId = SqlUtils.preventSQLInjection(dataProduct.getDoiId());
+        this.cstrId = SqlUtils.preventSQLInjection(dataProduct.getCstrId());
+        this.subjectTypeId = dataProduct.getSubjectTypeId();
+        this.timeRange = SqlUtils.preventSQLInjection(dataProduct.getTimeRange());
+        this.spacialRange = SqlUtils.preventSQLInjection(dataProduct.getSpacialRange());
+        this.datasetSize = dataProduct.getDatasetSize();
+        this.datasetType = dataProduct.getDatasetType();
+        this.associateId = SqlUtils.preventSQLInjection(dataProduct.getAssociateId());
         return true;
     }
 
@@ -80,6 +98,15 @@ public class DataProductMapperProvider {
         this.state = null;
         this.opinion = null;
         this.downReason = null;
+        this.isShare = null;
+        this.doiId = null;
+        this.cstrId = null;
+        this.subjectTypeId = null;
+        this.timeRange = null;
+        this.spacialRange = null;
+        this.datasetSize = null;
+        this.datasetType = null;
+        this.associateId = null;
     }
 
     /**
@@ -88,7 +115,7 @@ public class DataProductMapperProvider {
      * @param dataProduct
      * @return
      */
-    public String addDataProduct(DataProduct dataProduct) {
+    public String insert(DataProduct dataProduct) {
         String sqlStr = "";
         boolean flag = this.preventSQLInjectionDataProduct(dataProduct);
         if (flag) {
@@ -108,7 +135,16 @@ public class DataProductMapperProvider {
             stringBuffer.append("email, ");
             stringBuffer.append("state, ");
             stringBuffer.append("opinion, ");
-            stringBuffer.append("downReason ");
+            stringBuffer.append("downReason, ");
+            stringBuffer.append("isShare, ");
+            stringBuffer.append("doiId, ");
+            stringBuffer.append("cstrId, ");
+            stringBuffer.append("subjectTypeId, ");
+            stringBuffer.append("timeRange, ");
+            stringBuffer.append("spacialRange, ");
+            stringBuffer.append("datasetSize, ");
+            stringBuffer.append("datasetType, ");
+            stringBuffer.append("associateId ");
             stringBuffer.append(") ");
             stringBuffer.append("VALUES ");
             stringBuffer.append("( ");
@@ -126,7 +162,16 @@ public class DataProductMapperProvider {
             stringBuffer.append(this.email).append(", ");
             stringBuffer.append(this.state).append(", ");
             stringBuffer.append(this.opinion).append(", ");
-            stringBuffer.append(this.downReason);
+            stringBuffer.append(this.downReason).append(", ");
+            stringBuffer.append(this.isShare).append(", ");
+            stringBuffer.append(this.doiId).append(", ");
+            stringBuffer.append(this.cstrId).append(", ");
+            stringBuffer.append(this.subjectTypeId).append(", ");
+            stringBuffer.append(this.timeRange).append(", ");
+            stringBuffer.append(this.spacialRange).append(", ");
+            stringBuffer.append(this.datasetSize).append(", ");
+            stringBuffer.append(this.datasetType).append(", ");
+            stringBuffer.append(this.associateId);
             stringBuffer.append(" ) ");
             sqlStr = stringBuffer.toString();
             this.reset();
@@ -170,6 +215,33 @@ public class DataProductMapperProvider {
             }
             if (StringUtils.isNotBlank(dataProduct.getDownReason())) {
                 sql.SET("down_reason = " + downReason);
+            }
+            if (null != dataProduct.getIsShare()) {
+                sql.SET("is_share = " + isShare);
+            }
+            if (StringUtils.isNotBlank(dataProduct.getDoiId())) {
+                sql.SET("doi_id = " + doiId);
+            }
+            if (StringUtils.isNotBlank(dataProduct.getCstrId())) {
+                sql.SET("cstr_id = " + cstrId);
+            }
+            if (StringUtils.isNotBlank(dataProduct.getSubjectTypeId())) {
+                sql.SET("subject_type_id = " + subjectTypeId);
+            }
+            if (StringUtils.isNotBlank(dataProduct.getTimeRange())) {
+                sql.SET("time_range = " + timeRange);
+            }
+            if (StringUtils.isNotBlank(dataProduct.getSpacialRange())) {
+                sql.SET("spacial_range = " + spacialRange);
+            }
+            if (StringUtils.isNotBlank(dataProduct.getDatasetSize())) {
+                sql.SET("dataset_size = " + datasetSize);
+            }
+            if (null!=dataProduct.getDatasetType()) {
+                sql.SET("dataset_type = " + datasetType);
+            }
+            if (null!=dataProduct.getAssociateId()) {
+                sql.SET("associate_id = " + associateId);
             }
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();

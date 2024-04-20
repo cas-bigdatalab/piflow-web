@@ -13,13 +13,19 @@ import java.util.List;
 @Mapper
 public interface DataProductMapper {
 
+    @InsertProvider(type = DataProductMapperProvider.class, method = "insert")
+    int insert(DataProduct dataProduct);
+
     @Insert("<script>"
             + "insert into data_product (id, process_id, property_id, property_name, dataset_url, `name`, "
             + "description, permission, keyword, sdPublisher, email, `state`, opinion, down_reason, "
+            + "is_share, doi_id, cstr_id, subject_type_id, time_range, spacial_range, dataset_size, dataset_type, associate_id, "
             + "crt_dttm, crt_user, enable_flag, last_update_dttm, last_update_user, version, bak1, bak2, bak3) values "
             + "<foreach collection='list' item='item' index='index' separator=', '>"
             + "(#{item.id}, #{item.processId}, #{item.propertyId}, #{item.propertyName}, #{item.datasetUrl}, #{item.name}, "
             + "#{item.description}, #{item.permission}, #{item.keyword}, #{item.sdPublisher}, #{item.email}, #{item.state}, #{item.opinion}, #{item.downReason}, "
+            + "#{item.isShare}, #{item.doiId}, #{item.cstrId}, #{item.subjectTypeId}, #{item.timeRange}, #{item.spacialRange}, #{item.datasetSize}, #{item.datasetType}, "
+            + "#{item.associateId}, "
             + "#{item.crtDttmStr}, #{item.crtUser}, #{item.enableFlagNum}, #{item.lastUpdateDttmStr}, #{item.lastUpdateUser}, 0, #{item.bak1}, #{item.bak2}, #{item.bak3})"
             + "</foreach>"
             + "</script>")
@@ -77,7 +83,7 @@ public interface DataProductMapper {
             @Result(column = "id", property = "id", javaType = String.class, jdbcType = JdbcType.BIGINT),
 //            @Result(column = "id", property = "productTypeId", javaType= Long.class, jdbcType= JdbcType.BIGINT, typeHandler=cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.dataProduct.mapper.DataProductTypeMapper.getAssociateByAssociateId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "coverFile", javaType = String.class, jdbcType = JdbcType.BIGINT, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductCoverType", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
+//            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
     })
     List<DataProductVo> getByPageForHomePage(@Param("productTypeId") Long productTypeId, @Param("keyword") String keyword, @Param("username") String username);
 
@@ -105,7 +111,7 @@ public interface DataProductMapper {
 //            @Result(column = "id", property = "productTypeId", javaType= Long.class, jdbcType= JdbcType.BIGINT, typeHandler=cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.dataProduct.mapper.DataProductTypeMapper.getAssociateByAssociateId", fetchType = FetchType.LAZY)),
 //            @Result(column = "id", property = "productTypeName", javaType= Long.class, jdbcType= JdbcType.BIGINT, typeHandler=cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.dataProduct.mapper.DataProductTypeMapper.getAssociateTypeNameByAssociateId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "coverFile", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductCoverType", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
+//            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
     })
     List<DataProductVo> getByPageForPublishing(DataProductVo dataProductVo);
 
@@ -129,7 +135,7 @@ public interface DataProductMapper {
     @Results({
             @Result(column = "id", property = "id", javaType = String.class, jdbcType = JdbcType.BIGINT),
             @Result(column = "id", property = "coverFile", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductCoverType", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
+//            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
     })
     List<DataProductVo> getByPageForPublishingWithAdmin(DataProductVo dataProductVo);
 
@@ -150,7 +156,7 @@ public interface DataProductMapper {
     @Results({
             @Result(column = "id", property = "id", javaType = String.class, jdbcType = JdbcType.BIGINT),
             @Result(column = "id", property = "coverFile", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductCoverType", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
+//            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
     })
     List<DataProductVo> getByPageForPublishingWithSdPublisher(DataProductVo dataProductVo);
 
@@ -177,10 +183,32 @@ public interface DataProductMapper {
     @Results({
             @Result(column = "id", property = "id", javaType = String.class, jdbcType = JdbcType.BIGINT),
             @Result(column = "id", property = "coverFile", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductCoverType", fetchType = FetchType.LAZY)),
-            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
+//            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
     })
     DataProductVo getFullInfoById(@Param("productId") Long id);
 
     @Select("select id, name from data_product where name = #{name} and enable_flag = 1")
     List<DataProduct> getListByName(@Param("name") String name);
+
+    @Select("<script>"
+            + "select * from data_product "
+            + "<where>"
+            + " id in "
+            + "<foreach collection='ids' item='item' index='index' open='(' close=')' separator=','>"
+            + "#{item}"
+            + "</foreach>"
+            + "</where>"
+            + "</script>")
+    List<DataProduct> getByIds(@Param("ids") String[] ids);
+
+    @Update("<script>"
+            + "update data_product set enable_flag = 0 "
+            + "<where>"
+            + " id in "
+            + "<foreach collection='ids' item='item' index='index' open='(' close=')' separator=','>"
+            + "#{item}"
+            + "</foreach>"
+            + "</where>"
+            + "</script>")
+    int updateEnableFlagToFalse(@Param("ids") String[] ids);
 }

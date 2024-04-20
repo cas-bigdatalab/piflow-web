@@ -39,15 +39,15 @@ public class DataProductTypeCtrl {
     public String save(MultipartFile file, Long id, Long parentId, String name, String description, Integer level) {
         DataProductTypeVo dataProductTypeVo = new DataProductTypeVo();
         dataProductTypeVo.setId(id);
-        if(null == parentId){
+        if (null == parentId) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("parent id is blank!");
         }
         dataProductTypeVo.setParentId(parentId);
-        if(null == level){
+        if (null == level) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("level is blank!");
         }
         dataProductTypeVo.setLevel(level);
-        if(StringUtils.isBlank(name)){
+        if (StringUtils.isBlank(name)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("name is blank!");
         }
         dataProductTypeVo.setName(name);
@@ -74,7 +74,7 @@ public class DataProductTypeCtrl {
      * @param :
      * @return String
      * @author tianyao
-     * @description 查询数据产品分类,只包含非封面实体文件信息，封面实体用其他接口获取
+     * @description 查询数据产品分类, 只包含非封面实体文件信息，封面实体用其他接口获取
      * @date 2024/2/27 10:57
      */
     @RequestMapping(value = "/get", method = RequestMethod.GET)
@@ -82,6 +82,20 @@ public class DataProductTypeCtrl {
     @ApiOperation(value = "get", notes = "查询数据产品分类")
     public String get() {
         return dataProductTypeServiceImpl.get();
+    }
+
+    /**
+     * @param :
+     * @return String
+     * @author tianyao
+     * @description 门户登录用户
+     * @date 2024/4/20 18:13
+     */
+    @RequestMapping(value = "/getWithEcosystemType", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "getWithEcosystemType", notes = "查询数据产品分类,可见分类按用户所属生态系统类型筛选")
+    public String getWithEcosystemType() {
+        return dataProductTypeServiceImpl.getWithEcosystemType();
     }
 
     @RequestMapping(value = "/preference", method = RequestMethod.POST)

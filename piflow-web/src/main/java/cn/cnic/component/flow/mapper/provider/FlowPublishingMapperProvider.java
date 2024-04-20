@@ -23,6 +23,7 @@ public class FlowPublishingMapperProvider {
     private String productTypeName;
     private String productTypeDescription;
     private String description;
+    private Integer flowSort;
 
     private boolean preventSQLInjectionFlowPublishing(FlowPublishing flowPublishing) {
         if (null == flowPublishing) {
@@ -45,6 +46,7 @@ public class FlowPublishingMapperProvider {
         this.productTypeName = SqlUtils.preventSQLInjection(flowPublishing.getProductTypeName());
         this.productTypeDescription = SqlUtils.preventSQLInjection(flowPublishing.getProductTypeDescription());
         this.description = SqlUtils.preventSQLInjection(flowPublishing.getDescription());
+        this.flowSort = flowPublishing.getFlowSort();
         return true;
     }
 
@@ -60,6 +62,7 @@ public class FlowPublishingMapperProvider {
         this.productTypeName = null;
         this.productTypeDescription = null;
         this.description = null;
+        this.flowSort = null;
     }
 
     /**
@@ -81,7 +84,8 @@ public class FlowPublishingMapperProvider {
             stringBuffer.append("product_type_id, ");
             stringBuffer.append("product_type_name, ");
             stringBuffer.append("product_type_description, ");
-            stringBuffer.append("description ");
+            stringBuffer.append("description, ");
+            stringBuffer.append("flow_sort ");
             stringBuffer.append(") ");
             stringBuffer.append("VALUES ");
             stringBuffer.append("( ");
@@ -92,7 +96,8 @@ public class FlowPublishingMapperProvider {
             stringBuffer.append(this.productTypeId).append(", ");
             stringBuffer.append(this.productTypeName).append(", ");
             stringBuffer.append(this.productTypeDescription).append(", ");
-            stringBuffer.append(this.description);
+            stringBuffer.append(this.description).append(", ");
+            stringBuffer.append(this.flowSort);
             stringBuffer.append(" ) ");
             sqlStr = stringBuffer.toString();
             this.reset();
@@ -128,6 +133,7 @@ public class FlowPublishingMapperProvider {
             sql.SET("product_type_name = " + productTypeName);
             sql.SET("product_type_description = " + productTypeDescription);
             sql.SET("description = " + description);
+            sql.SET("flow_sort = " + flowSort);
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();
         }

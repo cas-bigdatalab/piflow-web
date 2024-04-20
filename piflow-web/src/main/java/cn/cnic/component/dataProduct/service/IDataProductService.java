@@ -4,6 +4,8 @@ import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.dataProduct.vo.ProductUserVo;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+
 public interface IDataProductService {
 
     String save(MultipartFile file, DataProductVo dataProductVo);
@@ -25,4 +27,6 @@ public interface IDataProductService {
     String permissionForUse(ProductUserVo productUserVo);
 
     String getById(String id);
+
+    void downloadDataset(HttpServletResponse response, String dataProductId);
 }

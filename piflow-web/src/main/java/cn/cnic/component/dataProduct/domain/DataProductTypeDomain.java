@@ -108,4 +108,8 @@ public class DataProductTypeDomain {
             }
         }
     }
+
+    public List<DataProductType> getByFlowPublishingIds(List<String> flowPublishingIds) {
+        return dataProductTypeMapper.getByFlowPublishingIds(flowPublishingIds);
+    }
 }

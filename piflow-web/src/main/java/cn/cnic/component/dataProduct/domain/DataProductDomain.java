@@ -25,6 +25,9 @@ public class DataProductDomain {
     @Autowired
     private ProductUserMapper productUserMapper;
 
+    public int insert(DataProduct dataProduct) {
+        return dataProductMapper.insert(dataProduct);
+    }
     public int addBatch(List<DataProduct> dataProducts) {
         return dataProductMapper.addBatch(dataProducts);
     }
@@ -105,4 +108,11 @@ public class DataProductDomain {
         return productUserMapper.getById(id);
     }
 
+    public List<DataProduct> getByIds(String[] ids) {
+        return dataProductMapper.getByIds(ids);
+    }
+
+    public int updateEnableFlagToFalse(String[] ids) {
+        return dataProductMapper.updateEnableFlagToFalse(ids);
+    }
 }

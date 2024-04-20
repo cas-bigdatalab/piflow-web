@@ -19,5 +19,8 @@ public interface IDataProductTypeService {
 
     String get();
 
+    String getWithEcosystemType();
+
     String preference(Long id, Integer preference);
+
 }

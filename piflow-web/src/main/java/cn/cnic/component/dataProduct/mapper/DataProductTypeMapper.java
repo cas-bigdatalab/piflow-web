@@ -61,6 +61,15 @@ public interface DataProductTypeMapper {
     @Select("select * from product_type_associate where product_type_id = #{typeId} and associate_type = 2 and associate_id = #{username}")
     ProductTypeAssociate getAssociateByTypeIdAndUserName(@Param("typeId") Long typeId, @Param("username") String username);
 
+    @Select("select pt.* from data_product_type as pt, product_type_associate as pta "
+            + "where pt.id = pta.product_type_id and pta.associate_type = 0 and file.enable_flag = 1 and pta.associate_id in ("
+            + "<foreach collection='flowPublishingIds' item='item' index='index' open='(' close=')' separator=','>"
+            + "#{item}"
+            + "</foreach>"
+            + "pt.enable_flag = 1"
+    )
+    List<DataProductType> getByFlowPublishingIds(@Param("flowPublishingIds") List<String> flowPublishingIds);
+
     @InsertProvider(type = DataProductTypeMapperProvider.class, method = "insertAssociate")
     int insertAssociate(ProductTypeAssociate associate);
 
@@ -83,5 +92,4 @@ public interface DataProductTypeMapper {
 
     @Delete("delete from product_type_associate where associate_id = #{associateId}")
     int deleteByAssociateId(@Param("associateId") String associateId);
-
 }

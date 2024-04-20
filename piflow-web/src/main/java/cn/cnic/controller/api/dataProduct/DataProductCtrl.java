@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+
 @Api(value = "data product api", tags = "data product api")
 @Controller
 @RequestMapping("/dataProduct")
@@ -85,7 +87,7 @@ public class DataProductCtrl {
 
     /**
      * @param file:
-     * @param id:
+     * @param id:          多个id用英文逗号隔开
      * @param name:
      * @param description:
      * @param permission:
@@ -108,7 +110,7 @@ public class DataProductCtrl {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is blank!!");
         }
         dataProductVo.setId(id);
-        if(StringUtils.isBlank(name)){
+        if (StringUtils.isBlank(name)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("name is blank, not allowed!!");
         }
         dataProductVo.setName(name);
@@ -176,6 +178,13 @@ public class DataProductCtrl {
     @ApiOperation(value = "down", notes = "已发布数据产品下架")
     public String down(@RequestBody DataProductVo dataProductVo) {
         return dataProductServiceImpl.down(dataProductVo);
+    }
+
+    @RequestMapping(value = "/downloadDataset", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "downloadDataset", notes = "数据产品下载")
+    public void downloadDataset(HttpServletResponse response, String dataProductId) {
+        dataProductServiceImpl.downloadDataset(response, dataProductId);
     }
 
     /**

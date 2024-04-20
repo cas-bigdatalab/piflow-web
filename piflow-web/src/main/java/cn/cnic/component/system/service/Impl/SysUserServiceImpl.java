@@ -5,19 +5,25 @@ import cn.cnic.base.config.jwt.common.ResultJson;
 import cn.cnic.base.config.jwt.exception.CustomException;
 import cn.cnic.base.utils.*;
 import cn.cnic.base.vo.UserVo;
+import cn.cnic.common.Eunm.EcosystemTypeAssociateType;
 import cn.cnic.common.Eunm.ResultCode;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.dataProduct.domain.EcosystemTypeDomain;
+import cn.cnic.component.dataProduct.entity.EcosystemType;
+import cn.cnic.component.dataProduct.entity.EcosystemTypeAssociate;
 import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.SysRole;
 import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.system.service.ISysUserService;
 import cn.cnic.component.system.vo.SysUserVo;
-
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,11 +36,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -44,7 +53,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
-	/**
+    /**
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */
     private Logger logger = LoggerUtil.getLogger();
@@ -54,19 +63,21 @@ public class SysUserServiceImpl implements ISysUserService {
     private final JwtUtils jwtTokenUtil;
     private final SysUserDomain sysUserDomain;
 
+    private final EcosystemTypeDomain ecosystemTypeDomain;
+
     @Autowired
     public SysUserServiceImpl(AuthenticationManager authenticationManager,
                               @Qualifier("customUserDetailsService") UserDetailsService userDetailsService,
                               JwtUtils jwtTokenUtil,
-                              SysUserDomain sysUserDomain) {
+                              SysUserDomain sysUserDomain, EcosystemTypeDomain ecosystemTypeDomain) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.sysUserDomain = sysUserDomain;
+        this.ecosystemTypeDomain = ecosystemTypeDomain;
     }
 
     /**
-     *
      * @param isAdmin  is admin
      * @param username username
      * @param offset   Number of pages
@@ -90,11 +101,30 @@ public class SysUserServiceImpl implements ISysUserService {
 
     @Override
     public String getUserById(boolean isAdmin, String username, String userId) {
-        SysUserVo sysUser = sysUserDomain.getSysUserVoById(isAdmin,username,userId);
+        SysUserVo sysUser = sysUserDomain.getSysUserVoById(isAdmin, username, userId);
         if (null == sysUser) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
         sysUser.setPassword("");
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("sysUserVo", sysUser);
+    }
+
+    @Override
+    public String getByUsername() {
+        String username = SessionUserUtil.getCurrentUsername();
+        SysUser sysUser = sysUserDomain.getSysUserByUserName(username);
+        if (null == sysUser) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
+        }
+        sysUser.setPassword("");
+        SysUserVo sysUserVo = new SysUserVo();
+        BeanUtils.copyProperties(sysUser, sysUserVo);
+        //获取用户所属生态系统类型
+        List<EcosystemTypeAssociate> associates = ecosystemTypeDomain.getAssociateByAssociateId(username);
+        if (CollectionUtils.isNotEmpty(associates)) {
+            List<EcosystemType> ecosystemTypes = ecosystemTypeDomain.getByIds(associates.stream().map(x -> String.valueOf(x.getEcosystemTypeId())).collect(Collectors.joining(",")));
+            sysUserVo.setEcosystemTypes(ecosystemTypes);
+        }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("sysUserVo", sysUser);
     }
 
@@ -118,7 +148,7 @@ public class SysUserServiceImpl implements ISysUserService {
             String name = sysUserVo.getUsername();
             String password = sysUserVo.getPassword();
             if (StringUtils.isNotBlank(password)) {
-            	PasswordUtils.updatePassword(name,password);
+                PasswordUtils.updatePassword(name, password);
                 password = new BCryptPasswordEncoder().encode(password);
                 sysUserById.setPassword(password);
             }
@@ -140,13 +170,13 @@ public class SysUserServiceImpl implements ISysUserService {
     /**
      * Update user
      *
-     * @param username   username
-     * @param oldPassword   old password
-     * @param password   new  password
+     * @param username    username
+     * @param oldPassword old password
+     * @param password    new  password
      * @return json
      */
-    public String updatePassword(String username, String oldPassword, String password){
-        if(StringUtils.isBlank(username) || StringUtils.isBlank(oldPassword) || StringUtils.isBlank(password)){
+    public String updatePassword(String username, String oldPassword, String password) {
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(oldPassword) || StringUtils.isBlank(password)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_OPERATION_MSG());
         }
         SysUser userByUserName = sysUserDomain.findUserByUserName(username);
@@ -175,7 +205,7 @@ public class SysUserServiceImpl implements ISysUserService {
         if (StringUtils.isBlank(sysUserId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("sysUserId"));
         }
-        SysUser sysUserById = sysUserDomain.getSysUserById(isAdmin,username,sysUserId);
+        SysUser sysUserById = sysUserDomain.getSysUserById(isAdmin, username, sysUserId);
         if (null == sysUserById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(sysUserId));
         }
@@ -237,7 +267,51 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     @Override
-    public String registerUser(SysUserVo sysUserVo) {
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public String updateInfo(SysUserVo sysUserVo) {
+        String username = SessionUserUtil.getCurrentUsername();
+        SysUser oldUser = sysUserDomain.getSysUserByUserName(username);
+        //校验username是否被其他人注册
+        String newUsername = sysUserVo.getUsername();
+        if (!username.equals(newUsername)) {
+            String sameUsername = sysUserDomain.getOtherSameUserName(newUsername);
+            if (StringUtils.isNotBlank(sameUsername))
+                throw new CustomException(ResultJson.failure(ResultCode.SERVER_ERROR, "账号名称已被他人使用，修改后更新！"));
+        }
+        //校验是否有所属生态系统类型
+        List<EcosystemType> ecosystemTypes = sysUserVo.getEcosystemTypes();
+        if (CollectionUtils.isEmpty(ecosystemTypes)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("所属生态系统类型为空，请填写后更新！");
+        }
+        //更新个人资料
+        SysUser sysUser = new SysUser();
+        BeanUtils.copyProperties(sysUserVo, sysUser);
+        sysUser.setEnableFlag(true);
+        sysUser.setLastUpdateUser(sysUserVo.getUsername());
+        try {
+            sysUserDomain.updateSysUser(sysUser);
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+            throw new CustomException(ResultJson.failure(ResultCode.SERVER_ERROR, "更新失败！"));
+        }
+        //更新所属生态系统类型
+        List<EcosystemType> ecosystemTypeList = sysUserVo.getEcosystemTypes();
+        List<EcosystemTypeAssociate> associates = ecosystemTypeList.stream().map(ecosystemType -> {
+            EcosystemTypeAssociate ecosystemTypeAssociate = new EcosystemTypeAssociate();
+            ecosystemTypeAssociate.setEcosystemTypeId(ecosystemType.getId());
+            ecosystemTypeAssociate.setEcosystemTypeName(ecosystemType.getName());
+            ecosystemTypeAssociate.setAssociateId(newUsername);
+            ecosystemTypeAssociate.setAssociateType(EcosystemTypeAssociateType.USER.getValue());
+            return ecosystemTypeAssociate;
+        }).collect(Collectors.toList());
+        ecosystemTypeDomain.deleteByAssociateId(username);
+        ecosystemTypeDomain.insertAssociateBatch(associates);
+
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.UPDATE_SUCCEEDED_MSG());
+    }
+
+    @Override
+    public String registerUser(SysUserVo sysUserVo, String ecosystemTypeIds) {
         if (null == sysUserVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Registration failed, username or password is empty");
         }
@@ -279,6 +353,20 @@ public class SysUserServiceImpl implements ISysUserService {
 
         try {
             sysUserDomain.addSysUser(sysUser);
+
+            //生态站逻辑：  保存用户所属生态系统类型
+            List<EcosystemType> ecosystemTypeList = ecosystemTypeDomain.getByIds(ecosystemTypeIds);
+            List<EcosystemTypeAssociate> associates = ecosystemTypeList.stream().map(ecosystemType -> {
+                EcosystemTypeAssociate ecosystemTypeAssociate = new EcosystemTypeAssociate();
+                ecosystemTypeAssociate.setEcosystemTypeId(ecosystemType.getId());
+                ecosystemTypeAssociate.setEcosystemTypeName(ecosystemType.getName());
+                ecosystemTypeAssociate.setAssociateId(username);
+                ecosystemTypeAssociate.setAssociateType(EcosystemTypeAssociateType.USER.getValue());
+                return ecosystemTypeAssociate;
+            }).collect(Collectors.toList());
+            ecosystemTypeDomain.deleteByAssociateId(username);
+            ecosystemTypeDomain.insertAssociateBatch(associates);
+
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Congratulations, registration is successful");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
