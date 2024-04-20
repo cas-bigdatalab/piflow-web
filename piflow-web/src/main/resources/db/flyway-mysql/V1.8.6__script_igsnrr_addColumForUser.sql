@@ -9,7 +9,7 @@ ALTER TABLE sys_user ADD email varchar(40) DEFAULT "" NOT NULL COMMENT '联系�
 -----------------------------------
 --alter Table structure for data_product
 -----------------------------------
-ALTER TABLE data_product ADD is_share bit(1) DEFAULT 0 NOT NULL COMMENT '是否发布到共享服务';
+
 ALTER TABLE data_product ADD is_share bit(1) DEFAULT 0 NOT NULL COMMENT '是否发布到共享服务';
 ALTER TABLE data_product ADD doi_id varchar(100) DEFAULT "" NOT NULL COMMENT 'DOI标识';
 ALTER TABLE data_product ADD cstr_id varchar(100) DEFAULT "" NOT NULL COMMENT 'CSTR标识';
