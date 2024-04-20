@@ -16,7 +16,7 @@ ALTER TABLE data_product ADD cstr_id varchar(100) DEFAULT "" NOT NULL COMMENT 'C
 ALTER TABLE data_product ADD subject_type_id varchar(40) DEFAULT "" NOT NULL COMMENT '学科分类id';
 ALTER TABLE data_product ADD time_range varchar(100) DEFAULT "" NOT NULL COMMENT '时间范围';
 ALTER TABLE data_product ADD spacial_range varchar(100) DEFAULT "" NOT NULL COMMENT '空间范围';
-ALTER TABLE data_product ADD dataset_size varchar(100) DEFAULT "" NOT NULL COMMENT '存储量' after dataset_url;
+ALTER TABLE data_product ADD dataset_size varchar(100) DEFAULT "" NOT NULL COMMENT '存储量' after `dataset_url`;
 ALTER TABLE data_product ADD dataset_type tinyint(1) DEFAULT 0 NOT NULL COMMENT '数据集类型 0-电子表格 1-数据库';
 ALTER TABLE data_product ADD associate_id bigint(20) NULL DEFAULT NUll COMMENT '关联的数据产品id，多个用英文分号隔开';
 
@@ -73,5 +73,4 @@ CREATE TABLE IF NOT EXISTS `ecosystem_type_associate`
     `bak1` varchar(255) NULL DEFAULT NULL COMMENT '保留字段1',
     `bak2` varchar(255) NULL DEFAULT NULL COMMENT '保留字段2',
     `bak3` varchar(255) NULL DEFAULT NULL COMMENT '保留字段3'
-    PRIMARY KEY (`id`) USING BTREE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci COMMENT='生态系统类型_关联表';
