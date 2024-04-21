@@ -183,27 +183,28 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
             //获取流水线相关的数据产品类型
             List<Long> ecosystemTypeIds = ecosystemTypeAssociates.stream().map(EcosystemTypeAssociate::getEcosystemTypeId).collect(Collectors.toList());
             List<String> flowPublishingIds = ecosystemTypeDomain.getAssociateByEcosystemTypeIdsAndAssociateType(ecosystemTypeIds, EcosystemTypeAssociateType.FLOW.getValue());
-            if(CollectionUtils.isNotEmpty(flowPublishingIds)){
+            if (CollectionUtils.isNotEmpty(flowPublishingIds)) {
+                flowPublishingIds = flowPublishingIds.stream().distinct().collect(Collectors.toList());
                 dataProductTypeList = dataProductTypeDomain.getByFlowPublishingIds(flowPublishingIds);
-            }else {
+            } else {
                 dataProductTypeList.clear();
             }
         }
         //构建树形结构返回
         List<DataProductTypeVo> result = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(dataProductTypeList)) {
-            List<DataProductType> parentList = dataProductTypeList.stream()
-                    .filter(type -> type.getParentId().equals(0L))
-                    .sorted(Comparator.comparing(DataProductType::getId))
-                    .collect(Collectors.toList());
-            if (CollectionUtils.isNotEmpty(parentList)) {
-                for (DataProductType dataProductType : parentList) {
+            //获取包含的二级分类
+            List<DataProductType> secondLevelCategories = getCategoriesByLevel(dataProductTypeList, 2);
+            List<DataProductType> firstLevelCategories = getCategoriesByLevel(secondLevelCategories, 1);
+            if (CollectionUtils.isNotEmpty(firstLevelCategories)) {
+                for (DataProductType dataProductType : firstLevelCategories) {
                     DataProductTypeVo vo = new DataProductTypeVo();
                     BeanUtils.copyProperties(dataProductType, vo);
                     result.add(vo);
                     addChildType(vo, dataProductTypeList);
                 }
             }
+
         }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", result);
     }
@@ -240,6 +241,7 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
         }
     }
 
+
     private void addChildType(DataProductTypeVo vo, List<DataProductType> dataProductTypeList) {
         List<DataProductType> tempList = dataProductTypeList.stream()
                 .filter(type -> vo.getId().equals(type.getParentId()))
@@ -248,6 +250,33 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
         List<DataProductTypeVo> dataProductTypeVos = JSON.parseArray(JSON.toJSONString(tempList), DataProductTypeVo.class);
         vo.setChildren(dataProductTypeVos);
         dataProductTypeVos.forEach(typeVo -> addChildType(typeVo, dataProductTypeList));
+    }
+
+    private List<DataProductType> getCategoriesByLevel(List<DataProductType> dataProductTypes, int level) {
+        List<DataProductType> result = new ArrayList<>();
+        for (DataProductType dataProductType : dataProductTypes) {
+            if (dataProductType.getLevel() == level) {
+                result.add(dataProductType);
+            } else {
+                // 递归寻找父级分类
+                findParentCategoryByLevel(dataProductType, result, level);
+            }
+        }
+        return result;
+    }
+
+    private void findParentCategoryByLevel(DataProductType dataProductType, List<DataProductType> result, int level) {
+        if (dataProductType.getLevel() < level) {
+            return;
+        }
+        Long parentId = dataProductType.getParentId();
+        DataProductType parent = dataProductTypeDomain.getById(parentId);
+        Integer parentLevel = parent.getLevel();
+        if (parentLevel == level) {
+            result.add(parent);
+        } else {
+            findParentCategoryByLevel(parent, result, level);
+        }
     }
 
 
