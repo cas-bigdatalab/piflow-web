@@ -135,16 +135,16 @@ public class DataProductMapperProvider {
             stringBuffer.append("email, ");
             stringBuffer.append("state, ");
             stringBuffer.append("opinion, ");
-            stringBuffer.append("downReason, ");
-            stringBuffer.append("isShare, ");
-            stringBuffer.append("doiId, ");
-            stringBuffer.append("cstrId, ");
-            stringBuffer.append("subjectTypeId, ");
-            stringBuffer.append("timeRange, ");
-            stringBuffer.append("spacialRange, ");
-            stringBuffer.append("datasetSize, ");
-            stringBuffer.append("datasetType, ");
-            stringBuffer.append("associateId ");
+            stringBuffer.append("down_reason, ");
+            stringBuffer.append("is_share, ");
+            stringBuffer.append("doi_id, ");
+            stringBuffer.append("cstr_id, ");
+            stringBuffer.append("subject_type_id, ");
+            stringBuffer.append("time_range, ");
+            stringBuffer.append("spacial_range, ");
+            stringBuffer.append("dataset_size, ");
+            stringBuffer.append("dataset_type, ");
+            stringBuffer.append("associate_id ");
             stringBuffer.append(") ");
             stringBuffer.append("VALUES ");
             stringBuffer.append("( ");
@@ -298,7 +298,7 @@ public class DataProductMapperProvider {
             // The first string in the SET is the name of the field corresponding to the table in the database
             sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(lastUpdateDttm)));
             sql.SET("last_update_user = " + lastUpdateUser);
-            sql.SET("enable_flag = " + 0);
+            sql.SET("enable_flag = " + this.enableFlag);
 
             // handle other fields
 //            sql.SET("enable_flag = " + enableFlag);

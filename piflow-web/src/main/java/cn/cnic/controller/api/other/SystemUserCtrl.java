@@ -58,7 +58,7 @@ public class SystemUserCtrl {
      * @description 更新个人基本信息
      * @date 2024/4/20 17:05
      */
-    @RequestMapping(value = "/update", method = RequestMethod.GET)
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "update", notes = "更新个人基本信息")
     public String update(@RequestBody SysUserVo sysUserVo) {

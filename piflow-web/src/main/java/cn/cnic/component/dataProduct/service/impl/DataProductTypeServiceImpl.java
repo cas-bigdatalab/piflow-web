@@ -1,6 +1,8 @@
 package cn.cnic.component.dataProduct.service.impl;
 
-import cn.cnic.base.utils.*;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.common.Eunm.EcosystemTypeAssociateType;
 import cn.cnic.common.Eunm.FileAssociateType;
 import cn.cnic.common.Eunm.ProductTypeAssociateType;
@@ -24,7 +26,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -172,15 +177,17 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
         //获取用户所属的生态系统类型
         List<EcosystemTypeAssociate> ecosystemTypeAssociates = ecosystemTypeDomain.getAssociateByAssociateId(username);
         //获取所属生态系统类型的流水线的所属数据产品类型
-        List<DataProductType> dataProductTypeList;
-        if (CollectionUtils.isEmpty(ecosystemTypeAssociates)) {
-            dataProductTypeList = dataProductTypeDomain.getAll(null);
-        } else {
+        List<DataProductType> dataProductTypeList = dataProductTypeDomain.getAll(null);
+        if (CollectionUtils.isNotEmpty(ecosystemTypeAssociates)) {
             //获取所属生态系统类型的流水线id
             //获取流水线相关的数据产品类型
             List<Long> ecosystemTypeIds = ecosystemTypeAssociates.stream().map(EcosystemTypeAssociate::getEcosystemTypeId).collect(Collectors.toList());
             List<String> flowPublishingIds = ecosystemTypeDomain.getAssociateByEcosystemTypeIdsAndAssociateType(ecosystemTypeIds, EcosystemTypeAssociateType.FLOW.getValue());
-            dataProductTypeList = dataProductTypeDomain.getByFlowPublishingIds(flowPublishingIds);
+            if(CollectionUtils.isNotEmpty(flowPublishingIds)){
+                dataProductTypeList = dataProductTypeDomain.getByFlowPublishingIds(flowPublishingIds);
+            }else {
+                dataProductTypeList.clear();
+            }
         }
         //构建树形结构返回
         List<DataProductTypeVo> result = new ArrayList<>();

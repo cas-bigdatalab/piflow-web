@@ -128,16 +128,16 @@ public class SysUserMapperProvider {
         sql.SET("enable_flag = " + enableFlag);
         sql.SET("username = " + this.username);
         sql.SET("name = " + this.name);
-        if (StringUtils.isNotBlank(this.password)) {
+        if (StringUtils.isNotBlank(this.password) && !"null".equals(password)) {
             sql.SET("password = " + this.password);
         }
         if (null != status) {
             sql.SET("status = " + this.status);
         }
-        if(StringUtils.isNotBlank(lastLoginIp)){
+        if(StringUtils.isNotBlank(lastLoginIp) && !"null".equals(lastLoginIp)){
             sql.SET("last_login_ip = " + this.lastLoginIp);
         }
-        if(StringUtils.isNotBlank(developerAccessKey)){
+        if(StringUtils.isNotBlank(developerAccessKey) && !"null".equals(developerAccessKey)){
             sql.SET("developer_access_key = " + this.developerAccessKey);
         }
         sql.SET("phone_number = " + this.phoneNumber);

@@ -22,10 +22,14 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.mortbay.util.StringUtil;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -59,6 +63,7 @@ public class DataProductServiceImpl implements IDataProductService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public String save(MultipartFile file, DataProductVo dataProductVo) {
         //校验，原有的状态是否是待发布,是否有重名的数据产品
         String selectedIds = dataProductVo.getId();
@@ -164,23 +169,28 @@ public class DataProductServiceImpl implements IDataProductService {
         String username = SessionUserUtil.getCurrentUsername();
         //校验，是否可以删除 生成中的状态不可删除
         DataProduct dataProduct = dataProductDomain.getBasicInfoById(Long.parseLong(id));
+        Integer state = dataProduct.getState();
         if (ObjectUtils.isEmpty(dataProduct)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG() + " data product has been deleted!!");
         }
-        if (DataProductState.CREATING.getValue().equals(dataProduct.getState())) {
+        if (DataProductState.CREATING.getValue().equals(state)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG() + " data product is creating, operation is not allowed!!");
         }
-        //逻辑删除数据产品记录，逻辑删除封面文件、资源文件记录
+        //对已发布、下架的数据产品删除，是转换给待发布，，如果是待发布、或者生成失败，则删除
         Date now = new Date();
-        dataProduct.setState(DataProductState.DELETED.getValue());
+        if (DataProductState.PUBLISHED.getValue().equals(state) || DataProductState.DOWN.getValue().equals(state)) {
+            dataProduct.setState(DataProductState.TO_PUBLISH.getValue());
+            dataProduct.setEnableFlag(true);
+
+        } else if (DataProductState.TO_PUBLISH.getValue().equals(state) || DataProductState.CREATE_FAILED.getValue().equals(state)) {
+            dataProduct.setState(DataProductState.DELETED.getValue());
+            dataProduct.setEnableFlag(false);
+            dataProduct.setEnableFlagNum(0);
+            fileDomain.fakeDeleteByAssociateId(id, username);
+        }
         dataProduct.setLastUpdateDttm(now);
         dataProduct.setLastUpdateDttmStr(DateUtils.dateTimeSecToStr(now));
-        dataProduct.setEnableFlag(false);
-        dataProduct.setEnableFlagNum(0);
         int i = dataProductDomain.delete(dataProduct);
-
-        fileDomain.fakeDeleteByAssociateId(dataProduct.getId().toString(), username);
-
         if (i > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.DELETE_SUCCEEDED_MSG());
         } else {
@@ -346,8 +356,16 @@ public class DataProductServiceImpl implements IDataProductService {
                 fileList.add(dataset);
             }
         } else {
-            File dataset = fileDomain.getByAssociateId(dataProductId, FileAssociateType.DATA_PRODUCT.getValue());
-            fileList.add(dataset);
+            DataProduct dataProduct = dataProductDomain.getById(Long.parseLong(dataProductId));
+            if (StringUtils.isNotBlank(dataProduct.getAssociateId())) {
+                for (String s : dataProduct.getAssociateId().split(",")) {
+                    File dataset = fileDomain.getByAssociateId(s, FileAssociateType.DATA_PRODUCT.getValue());
+                    fileList.add(dataset);
+                }
+            } else {
+                File dataset = fileDomain.getByAssociateId(dataProductId, FileAssociateType.DATA_PRODUCT.getValue());
+                fileList.add(dataset);
+            }
         }
         String time = DateUtils.dateTimesToStrNew(new Date());
         if (CollectionUtils.isNotEmpty(fileList)) {

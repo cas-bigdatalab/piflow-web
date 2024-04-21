@@ -125,7 +125,7 @@ public class SysUserServiceImpl implements ISysUserService {
             List<EcosystemType> ecosystemTypes = ecosystemTypeDomain.getByIds(associates.stream().map(x -> String.valueOf(x.getEcosystemTypeId())).collect(Collectors.joining(",")));
             sysUserVo.setEcosystemTypes(ecosystemTypes);
         }
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("sysUserVo", sysUser);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("sysUserVo", sysUserVo);
     }
 
     @Override
@@ -311,6 +311,7 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
     public String registerUser(SysUserVo sysUserVo, String ecosystemTypeIds) {
         if (null == sysUserVo) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Registration failed, username or password is empty");
@@ -340,6 +341,8 @@ public class SysUserServiceImpl implements ISysUserService {
         sysUser.setAge(sysUserVo.getAge());
         sysUser.setSex(sysUserVo.getSex());
         sysUser.setStatus(sysUserVo.getStatus());
+        sysUser.setPhoneNumber(sysUserVo.getPhoneNumber());
+        sysUser.setEmail(sysUserVo.getEmail());
 
         List<SysRole> sysRoleList = new ArrayList<>();
         SysRole sysRole = new SysRole();
@@ -370,7 +373,8 @@ public class SysUserServiceImpl implements ISysUserService {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Congratulations, registration is successful");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
+            throw new CustomException(ResultJson.failure(ResultCode.SERVER_ERROR,e.getMessage()));
+//            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ADD_ERROR_MSG());
         }
     }
 

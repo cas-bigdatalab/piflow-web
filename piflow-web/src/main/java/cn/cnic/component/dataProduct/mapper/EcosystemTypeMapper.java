@@ -27,7 +27,7 @@ public interface EcosystemTypeMapper {
             + "select * from ecosystem_type "
             + "<where>"
             + " id in "
-            + "<foreach collection='ecosystemTypeIds' item='item' index='index' open='(' close=')' separator=','>"
+            + "<foreach collection='ecosystemTypeIds.split(\",\")' item='item' index='index' open='(' close=')' separator=','>"
             + "#{item}"
             + "</foreach>"
             + " and enable_flag = 1"
@@ -55,7 +55,7 @@ public interface EcosystemTypeMapper {
     @Update("update ecosystem_type set enable_flag = 0 where id = #{id}")
     int deleteById(@Param("id") Long id);
 
-    @Select("select * from ecosystem_type_associate where product_type_id = #{typeId} and associate_type = 2 and associate_id = #{username}")
+    @Select("select * from ecosystem_type_associate where associate_id = #{associateId}")
     List<EcosystemTypeAssociate> getAssociateByAssociateId(@Param("associateId") String associateId);
 
     @Select("<script>"
