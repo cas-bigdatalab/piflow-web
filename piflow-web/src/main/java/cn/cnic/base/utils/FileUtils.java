@@ -685,7 +685,7 @@ public class FileUtils {
     }
 
     public static String getDefaultFs() {
-        return HttpUtils.doGet(ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
+        return HttpUtils.doGet("http://"+ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
     }
 
     public static void downloadFileFromHdfs(HttpServletResponse response, String filePath, String fileName, String defaultFs) {

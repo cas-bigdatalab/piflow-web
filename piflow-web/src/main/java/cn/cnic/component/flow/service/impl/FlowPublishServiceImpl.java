@@ -636,6 +636,14 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                                     dataProduct.setEnableFlag(true);
                                     dataProduct.setEnableFlagNum(1);
                                     dataProduct.setVersion(0L);
+                                    dataProduct.setIsShare(0);
+                                    dataProduct.setDoiId("");
+                                    dataProduct.setCstrId("");
+                                    dataProduct.setSubjectTypeId("");
+                                    dataProduct.setTimeRange("");
+                                    dataProduct.setSpacialRange("");
+                                    dataProduct.setDatasetSize("");
+                                    dataProduct.setDatasetType(DatasetType.EXCEL.getValue());
                                     dataProducts.add(dataProduct);
                                 });
                         dataProductDomain.addBatch(dataProducts);
