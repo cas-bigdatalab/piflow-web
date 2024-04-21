@@ -9,6 +9,7 @@ import cn.cnic.common.Eunm.ProductTypeAssociateType;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.dataProduct.domain.DataProductTypeDomain;
 import cn.cnic.component.dataProduct.domain.EcosystemTypeDomain;
+import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.entity.DataProductType;
 import cn.cnic.component.dataProduct.entity.EcosystemTypeAssociate;
 import cn.cnic.component.dataProduct.entity.ProductTypeAssociate;
@@ -192,16 +193,29 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
         }
         //构建树形结构返回
         List<DataProductTypeVo> result = new ArrayList<>();
+        List<DataProductTypeVo> secondResult = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(dataProductTypeList)) {
             //获取包含的二级分类
             List<DataProductType> secondLevelCategories = getCategoriesByLevel(dataProductTypeList, 2);
             List<DataProductType> firstLevelCategories = getCategoriesByLevel(secondLevelCategories, 1);
+            if (CollectionUtils.isNotEmpty(secondLevelCategories)) {
+                for (DataProductType dataProductType : secondLevelCategories) {
+                    DataProductTypeVo vo = new DataProductTypeVo();
+                    BeanUtils.copyProperties(dataProductType, vo);
+                    secondResult.add(vo);
+                    addChildType(vo, dataProductTypeList);
+                }
+            }
             if (CollectionUtils.isNotEmpty(firstLevelCategories)) {
                 for (DataProductType dataProductType : firstLevelCategories) {
                     DataProductTypeVo vo = new DataProductTypeVo();
                     BeanUtils.copyProperties(dataProductType, vo);
                     result.add(vo);
-                    addChildType(vo, dataProductTypeList);
+                    addChildType(vo, secondResult.stream().map(x->{
+                        DataProductType dataProduct = new DataProductType();
+                        BeanUtils.copyProperties(x,dataProduct);
+                        return dataProduct;
+                    }).collect(Collectors.toList()));
                 }
             }
 
