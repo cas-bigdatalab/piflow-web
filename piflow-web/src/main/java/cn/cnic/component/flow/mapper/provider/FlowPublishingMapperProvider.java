@@ -46,7 +46,7 @@ public class FlowPublishingMapperProvider {
         this.productTypeName = SqlUtils.preventSQLInjection(flowPublishing.getProductTypeName());
         this.productTypeDescription = SqlUtils.preventSQLInjection(flowPublishing.getProductTypeDescription());
         this.description = SqlUtils.preventSQLInjection(flowPublishing.getDescription());
-        this.flowSort = flowPublishing.getFlowSort();
+        this.flowSort = (null != flowPublishing.getFlowSort()) ? flowPublishing.getFlowSort() : 0;
         return true;
     }
 
@@ -151,7 +151,7 @@ public class FlowPublishingMapperProvider {
         SQL sql = new SQL();
         sql.SELECT("*");
         sql.FROM("flow_publishing");
-        sql.WHERE("id = "+id);
+        sql.WHERE("id = " + id);
         sql.WHERE("enable_flag = 1");
         sql.ORDER_BY(" last_update_dttm desc  ");
         sqlStr = sql.toString();

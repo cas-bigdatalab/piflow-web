@@ -86,6 +86,10 @@ public class DataProductServiceImpl implements IDataProductService {
             dataProductDomain.updateEnableFlagToFalse(ids);
             dataProductVo.setId(snowflakeGenerator.next().toString());
             dataProductVo.setDatasetUrl(oldDataProducts.stream().map(DataProduct::getDatasetUrl).collect(Collectors.joining(",")));
+            DataProduct oneDataProduct = oldDataProducts.get(0);
+            dataProductVo.setProcessId(oneDataProduct.getProcessId());
+            dataProductVo.setPropertyId(oneDataProduct.getPropertyId().toString());
+            dataProductVo.setPropertyName(oneDataProduct.getPropertyName());
         }
         //数据产品记录是在进程运行完成后自动生成的，只能编辑数据产品
         //更新数据产品表，数据产品类型关联表，文件表
@@ -111,6 +115,7 @@ public class DataProductServiceImpl implements IDataProductService {
             dataProduct.setCrtUser(username);
             dataProduct.setCrtDttm(now);
             dataProduct.setCrtDttmStr(DateUtils.dateTimesToStr(now));
+            dataProduct.setPropertyId(Long.parseLong(dataProductVo.getPropertyId()));
             dataProductDomain.insert(dataProduct);
         } else {
             dataProductDomain.update(dataProduct);

@@ -168,14 +168,15 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
             }
             dataProductTypeDomain.insertAssociate(associate);
             //新增生态系统类型
-            //生态站逻辑：  保存用户所属生态系统类型
+            //生态站逻辑：  保存所属生态系统类型
+            String idstr = id.toString();
             List<EcosystemType> ecosystemTypeList = ecosystemTypeDomain.getByIds(vo.getEcosystemTypeIds());
             List<EcosystemTypeAssociate> associates = ecosystemTypeList.stream().map(ecosystemType -> {
                 EcosystemTypeAssociate ecosystemTypeAssociate = new EcosystemTypeAssociate();
                 ecosystemTypeAssociate.setEcosystemTypeId(ecosystemType.getId());
                 ecosystemTypeAssociate.setEcosystemTypeName(ecosystemType.getName());
-                ecosystemTypeAssociate.setAssociateId(username);
-                ecosystemTypeAssociate.setAssociateType(EcosystemTypeAssociateType.USER.getValue());
+                ecosystemTypeAssociate.setAssociateId(idstr);
+                ecosystemTypeAssociate.setAssociateType(EcosystemTypeAssociateType.FLOW.getValue());
                 return ecosystemTypeAssociate;
             }).collect(Collectors.toList());
             ecosystemTypeDomain.deleteByAssociateId(username);
@@ -286,14 +287,14 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
 
             dataProductTypeDomain.updateAssociate(associate);
 
-            //生态站逻辑：  保存用户所属生态系统类型
+            //生态站逻辑：  保存流水线所属生态系统类型
             List<EcosystemType> ecosystemTypeList = ecosystemTypeDomain.getByIds(vo.getEcosystemTypeIds());
             List<EcosystemTypeAssociate> associates = ecosystemTypeList.stream().map(ecosystemType -> {
                 EcosystemTypeAssociate ecosystemTypeAssociate = new EcosystemTypeAssociate();
                 ecosystemTypeAssociate.setEcosystemTypeId(ecosystemType.getId());
                 ecosystemTypeAssociate.setEcosystemTypeName(ecosystemType.getName());
-                ecosystemTypeAssociate.setAssociateId(username);
-                ecosystemTypeAssociate.setAssociateType(EcosystemTypeAssociateType.USER.getValue());
+                ecosystemTypeAssociate.setAssociateId(idStr);
+                ecosystemTypeAssociate.setAssociateType(EcosystemTypeAssociateType.FLOW.getValue());
                 return ecosystemTypeAssociate;
             }).collect(Collectors.toList());
             ecosystemTypeDomain.deleteByAssociateId(username);
