@@ -1,11 +1,17 @@
 package cn.cnic.controller.api.dataProduct;
 
 import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.base.vo.BasePageVo;
+import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.dataProduct.service.IDataProductService;
 import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.dataProduct.vo.ProductUserVo;
-import cn.cnic.component.visual.util.ResponseResult;
+import cn.cnic.component.visual.entity.GraphTemplate;
+import cn.cnic.component.visual.entity.ProductTemplateGraphAssoDto;
+import cn.cnic.component.visual.entity.UserProductVisualView;
+import cn.cnic.component.visual.service.GraphTemplateService;
+import cn.cnic.component.visual.service.ProductTemplateGraphAssoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +25,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Api(value = "data product api", tags = "data product api")
 @Controller
 @RequestMapping("/dataProduct")
@@ -26,10 +36,20 @@ public class DataProductCtrl {
 
     private final IDataProductService dataProductServiceImpl;
 
+    private final ProductTemplateGraphAssoService productTemplateGraphAssoService;
+
+    private final GraphTemplateService graphTemplateService;
+
     @Autowired
-    public DataProductCtrl(IDataProductService dataProductServiceImpl) {
+    public DataProductCtrl(IDataProductService dataProductServiceImpl,
+                           ProductTemplateGraphAssoService productTemplateGraphAssoService,
+                           GraphTemplateService graphTemplateService) {
         this.dataProductServiceImpl = dataProductServiceImpl;
+        this.productTemplateGraphAssoService = productTemplateGraphAssoService;
+        this.graphTemplateService = graphTemplateService;
     }
+
+
 
     /**
      * @param dataProductVo:
@@ -45,18 +65,46 @@ public class DataProductCtrl {
         return dataProductServiceImpl.getByPage(dataProductVo);
     }
 
+    /**
+     * 根据数据产品获取可配置的数据源列表
+     * @param
+     * @return
+     */
     @RequestMapping(value = "/getDataSourceListFromProduct", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "getDataSourceListFromProduct", notes = "获取数据产品对应的excel列表")
-    public String getDataSourceListFromProduct(@RequestBody DataProductVo productUserVo) {
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("成功");
+    public String getDataSourceListFromProduct(String id,  String datasetUrl) {
+        //参数校验
+        if(StringUtils.isAnyBlank(id, datasetUrl)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
+        }
+        Set<String> excels = dataProductServiceImpl.getDataSourceListFromProduct(id, datasetUrl);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", excels);
     }
 
-    @RequestMapping(value = "/getDataSourceList", method = RequestMethod.POST)
+    @RequestMapping(value = "/getUserProductList", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value = "getDataSourceList", notes = "获取用户对应的excel列表")
-    public String getDataSourceList(@RequestBody BasePageVo BasePageVo) {
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("成功");
+    @ApiOperation(value = "getUserProductList", notes = "获取用户对应的可视化列表")
+    public String getDataSourceList(@RequestBody BasePageVo basePageVo) {
+        List<ProductTemplateGraphAssoDto> assoDtos = productTemplateGraphAssoService.selectByUsername(basePageVo);
+        List<UserProductVisualView> userProductVisualViews = assoDtos.stream()
+                .map(this::toUserProductView
+                ).collect(Collectors.toList());
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", userProductVisualViews);
+    }
+
+    private UserProductVisualView toUserProductView(ProductTemplateGraphAssoDto dto) {
+        GraphTemplate graphTemplate = graphTemplateService.selectById(dto.getGraphTemplateId());
+        UserProductVisualView view = new UserProductVisualView();
+        view.setId(dto.getId());
+        view.setProductId(dto.getProductId());
+        view.setOwner(dto.getOwner());
+        view.setType(dto.getType());
+        view.setPath(dto.getPath());
+        view.setCreateTime(dto.getCreateTime());
+        view.setName(graphTemplate.getName());
+        view.setDescription(graphTemplate.getDescription());
+        return view;
     }
 
 

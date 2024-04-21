@@ -10,6 +10,7 @@ import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.entity.ProductTypeAssociate;
 import cn.cnic.component.dataProduct.entity.ProductUser;
 import cn.cnic.component.dataProduct.service.IDataProductService;
+import cn.cnic.component.dataProduct.util.DataProductUtil;
 import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.dataProduct.vo.ProductUserVo;
 import cn.cnic.component.system.domain.FileDomain;
@@ -37,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -383,5 +385,12 @@ public class DataProductServiceImpl implements IDataProductService {
         } else {
             throw new RuntimeException("file not be found!!");
         }
+    }
+
+    @Override
+    public Set<String> getDataSourceListFromProduct(String id, String datasetUrl) {
+        String[] parts = datasetUrl.split(";");
+        Set<String> stringSet = DataProductUtil.findExcelFiles(parts);
+        return stringSet;
     }
 }

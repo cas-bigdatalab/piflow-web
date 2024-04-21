@@ -76,8 +76,9 @@ public class GraphConfServiceImpl implements GraphConfService {
         graphConf.setCreateTime(format);
         graphConf.setUpdateTime(format);
         int insert = graphConfMapper.insert(graphConf);
+        Integer id = graphConf.getId();
         if(insert == 1){
-            return ResponseResult.success();
+            return ResponseResult.success(id);
         }else {
             return ResponseResult.error("新增配置失败！");
         }

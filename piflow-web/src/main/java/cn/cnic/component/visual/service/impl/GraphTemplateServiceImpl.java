@@ -167,18 +167,17 @@ public class GraphTemplateServiceImpl implements GraphTemplateService {
         LocalDateTime now = LocalDateTime.now();
         String format = now.format(formatter);
         graphTemplate.setUpdateTime(format);
-        //判断图表模板中是否有使用该连接
-        Long count = getGraphConfCunt(graphTemplate.getId());
-        if(count  ==  0){
-            int num = graphTemplateMapper.updateById(graphTemplate);
-            if(num == 1){
-                return ResponseResult.success();
-            }else {
-                return ResponseResult.error("修改图表模板失败！");
-            }
-        }else {
-            return ResponseResult.error("已经有图表使用该模板，无法修改！");
+        int num = graphTemplateMapper.updateById(graphTemplate);
+        if (num == 1) {
+            return ResponseResult.success();
+        } else {
+            return ResponseResult.error("修改图表模板失败！");
         }
+    }
+
+    @Override
+    public GraphTemplate selectById(Integer id) {
+        return graphTemplateMapper.selectById(id);
     }
 
     public long getGraphConfCunt(int id){

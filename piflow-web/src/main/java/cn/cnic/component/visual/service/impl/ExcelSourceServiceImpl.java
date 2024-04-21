@@ -1,32 +1,33 @@
 package cn.cnic.component.visual.service.impl;
 
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.visual.entity.ExcelNameAsso;
 import cn.cnic.component.visual.entity.GraphTemplate;
+import cn.cnic.component.visual.entity.ProductTemplateGraphAssoDto;
 import cn.cnic.component.visual.mapper.piflowdata.ExcelSourceMapper;
 import cn.cnic.component.visual.mapper.piflowdb.ExcelNameAssoMapper;
 import cn.cnic.component.visual.mapper.piflowdb.GraphConfMapper;
 import cn.cnic.component.visual.mapper.piflowdb.GraphTemplateMapper;
+import cn.cnic.component.visual.mapper.piflowdb.ProductTemplateGraphAssoMapper;
 import cn.cnic.component.visual.service.ExcelSourceService;
 import cn.cnic.component.visual.util.RequestData;
 import cn.cnic.component.visual.util.ResponseResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import org.apache.poi.ss.usermodel.*;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.InputStream;
+import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * TODO
@@ -36,6 +37,8 @@ import java.util.UUID;
 @Service
 public class ExcelSourceServiceImpl implements ExcelSourceService {
 
+    private static Logger logger = LoggerUtil.getLogger();
+
     @Autowired
     private ExcelSourceMapper excelSourceMapper;
     @Autowired
@@ -44,6 +47,140 @@ public class ExcelSourceServiceImpl implements ExcelSourceService {
     private GraphTemplateMapper graphTemplateMapper;
     @Autowired
     private ExcelNameAssoMapper excelNameAssoMapper;
+    @Autowired
+    private ProductTemplateGraphAssoMapper productTemplateGraphAssoMapper;
+
+
+    /**
+     *
+     * @param path 路径
+     * @param graphTemplate
+     * @return 上传成功后的graphTemplateId,即vis_graph_template表的id
+     */
+    @Override
+    public ResponseResult uploadExcelFromPath(String path, GraphTemplate graphTemplate) {
+        //接excel数据
+        InputStream inputStream = null;
+        Workbook workbook = null;
+        String newName = null;
+        int createTable = 0; //建表成功标记
+        int graphTemplateId = 0;
+        try {
+            //校验模板名
+            String templateName = graphTemplate.getName();
+            if((null == templateName) || ("".equals(templateName))){
+                return ResponseResult.error("从路径上传失败!" + "该模板名称不能为空！");
+            }else{
+                //判断模板名是否已存在
+                if(checkTemplateName(templateName)){
+                    return ResponseResult.error("从路径上传失败!" + "该模板名称已存在！");
+                }
+            }
+
+            File file = new File(path);
+            // 创建FileInputStream对象，以便从文件读取数据
+            FileInputStream fis = new FileInputStream(file);
+            // 创建BufferedInputStream对象，用于提高读取效率
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            // 通过BufferedInputStream获取InputStream对象
+           inputStream = new DataInputStream(bis);
+
+            String originalFilename = file.getName();
+
+            workbook = WorkbookFactory.create(inputStream);
+            Sheet sheet = null;
+            //判断是否填写sheetName
+            if((null != graphTemplate.getSheetName()) && (!"".equals(graphTemplate.getSheetName()))){
+                //根据sheet名称取获取表格内容
+                sheet = workbook.getSheet(graphTemplate.getSheetName());
+                if(null == sheet){
+                    return ResponseResult.error("从路径上传失败!" + "输入的sheet页名在表格中不存在，请核对表格！");
+                }
+            }else{
+                //未填写，则默认取第一个sheet
+                sheet = workbook.getSheetAt(0);
+                //保存sheet名称
+                graphTemplate.setSheetName(workbook.getSheetName(0));
+            }
+            Row row1 = sheet.getRow(0);
+            Iterator<Cell> iterator = row1.iterator();
+            StringBuffer columnContentB = new StringBuffer("");
+            while (iterator.hasNext()){
+                String column = iterator.next().toString();
+                column = column.trim();
+                if(column.lastIndexOf("（") != -1){
+                    column = column.substring(0,column.lastIndexOf("（"));
+                }
+                columnContentB.append(column).append(" TEXT, ");
+            }
+            String columnContent = columnContentB.toString();
+            //定义表名
+            newName = "vs_table_" + System.nanoTime();
+            //取表头，新建表
+            createTable = excelSourceMapper.createDataTable(newName,columnContent);
+            //存execl数据
+            excelSourceMapper.insertDataTable(newName,sheet);
+            //存储excel表名关联数据
+            ExcelNameAsso excelNameAssoNew = new ExcelNameAsso();
+            excelNameAssoNew.setExcelName(originalFilename);
+            excelNameAssoNew.setAssoName(newName);
+            excelNameAssoNew.setCreateTime(getNowTime());
+            excelNameAssoNew.setUpdateTime(getNowTime());
+            excelNameAssoMapper.insert(excelNameAssoNew);
+            //保存图表模板，上传excel表格，默认传到自己库
+            QueryWrapper<ExcelNameAsso> wrapper = new QueryWrapper<>();
+            wrapper.eq("asso_name",newName);
+            ExcelNameAsso excelNameAsso = excelNameAssoMapper.selectOne(wrapper);
+            graphTemplate.setDataBaseId(0);//写为固定值
+            graphTemplate.setTableName(originalFilename);//excel原名作为表名
+            graphTemplate.setExcelAssoId(excelNameAsso.getId());//设置新增的excel名称关联表id
+            graphTemplate.setCreateTime(getNowTime());
+            graphTemplate.setUpdateTime(getNowTime());
+            graphTemplateMapper.insert(graphTemplate);
+            //插入成功之后会修改pojo,设置Id属性的值
+            graphTemplateId = graphTemplate.getId();
+        } catch (Exception e) {
+//            throw new RuntimeException();
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            e.printStackTrace();
+            //删除创建的表
+            if((newName != null) && createTable > 0){
+                excelSourceMapper.delDataTable(newName);
+            }
+            return ResponseResult.error("从路径上传失败!" + "上传失败！");
+        }finally {
+            try{
+                if(null != inputStream){
+                    inputStream.close();
+
+                }
+                if(null != workbook){
+                    workbook.close();
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+                return ResponseResult.error("从路径上传失败!" + "未知失败！");
+            }
+        }
+        return ResponseResult.success(graphTemplateId);
+    }
+
+    @Override
+    public ResponseResult checkProductExist(String productId, String path, String username) {
+        QueryWrapper<ProductTemplateGraphAssoDto> wrapper = new QueryWrapper<>();
+        wrapper.eq("product_id", productId);
+        wrapper.eq("owner", username);
+        wrapper.eq("path", path);
+        Map<String, Object> resMap = new HashMap<>();
+        ProductTemplateGraphAssoDto res = productTemplateGraphAssoMapper.selectOne(wrapper);
+        if (res == null || res.getId() <= 0) {
+            resMap.put("hasAdded", false);
+        } else {
+            resMap.put("hasAdded", true);
+            resMap.put("recordId", res.getId());
+        }
+        return ResponseResult.success(resMap);
+    }
 
     @Override
     @Transactional
