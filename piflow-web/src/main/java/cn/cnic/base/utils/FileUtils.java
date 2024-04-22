@@ -665,7 +665,7 @@ public class FileUtils {
     public static void deleteHdfsFile(String filePath, String defaultFs) {
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", defaultFs);
-
+        logger.error("deleteHdfsFile,filePath:{}",filePath);
         try {
             if (ObjectUtils.isEmpty(fs)) {
                 fs = FileSystem.get(conf);

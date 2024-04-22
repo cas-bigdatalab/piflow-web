@@ -81,6 +81,7 @@ public interface DataProductMapper {
     @Results({
 //            @Result(id = true, column = "id", property = "id"),
             @Result(column = "id", property = "id", javaType = String.class, jdbcType = JdbcType.BIGINT),
+            @Result(column = "associate_id", property = "id", javaType = String.class, jdbcType = JdbcType.CHAR),
 //            @Result(column = "id", property = "productTypeId", javaType= Long.class, jdbcType= JdbcType.BIGINT, typeHandler=cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.dataProduct.mapper.DataProductTypeMapper.getAssociateByAssociateId", fetchType = FetchType.LAZY)),
             @Result(column = "id", property = "coverFile", javaType = String.class, jdbcType = JdbcType.BIGINT, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductCoverType", fetchType = FetchType.LAZY)),
 //            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))

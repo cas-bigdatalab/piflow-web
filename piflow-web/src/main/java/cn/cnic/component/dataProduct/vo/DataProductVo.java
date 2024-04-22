@@ -58,7 +58,7 @@ public class DataProductVo extends BasePageVo implements Serializable {
     private String spacialRange;
     private String datasetSize;
     private Integer datasetType;  //数据集类型 0-电子表格 1-数据库
-    private Integer associateId;
+    private String associateId;
 
     private Date crtDttm;
     private String crtUser;

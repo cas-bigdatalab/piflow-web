@@ -68,13 +68,13 @@ public class DataProductMapperProvider {
         this.opinion = SqlUtils.preventSQLInjection(dataProduct.getOpinion());
         this.downReason = SqlUtils.preventSQLInjection(dataProduct.getDownReason());
         this.isShare = (null == dataProduct.getIsShare()) ? 0 : dataProduct.getIsShare();
-        this.doiId = ("null".equals(SqlUtils.preventSQLInjection(dataProduct.getDoiId()))) ? "" : SqlUtils.preventSQLInjection(dataProduct.getDoiId());
-        this.cstrId = ("null".equals(SqlUtils.preventSQLInjection(dataProduct.getCstrId()))) ? "" : SqlUtils.preventSQLInjection(dataProduct.getCstrId());
-        this.subjectTypeId =  ("null".equals(SqlUtils.preventSQLInjection(dataProduct.getSubjectTypeId()))) ? "" : dataProduct.getSubjectTypeId();
-        this.timeRange =  ("null".equals(SqlUtils.preventSQLInjection(dataProduct.getTimeRange()))) ? "" : SqlUtils.preventSQLInjection(dataProduct.getTimeRange());
-        this.spacialRange = ("null".equals(SqlUtils.preventSQLInjection(dataProduct.getSpacialRange()))) ? "" :  SqlUtils.preventSQLInjection(dataProduct.getSpacialRange());
-        this.datasetSize =  ("null".equals(SqlUtils.preventSQLInjection(dataProduct.getDatasetSize()))) ? "" : dataProduct.getDatasetSize();
-        this.datasetType =  (null == dataProduct.getDatasetType()) ? 0 : dataProduct.getDatasetType();
+        this.doiId = SqlUtils.preventSQLInjection(dataProduct.getDoiId());
+        this.cstrId = SqlUtils.preventSQLInjection(dataProduct.getCstrId());
+        this.subjectTypeId = SqlUtils.preventSQLInjection(dataProduct.getSubjectTypeId());
+        this.timeRange = SqlUtils.preventSQLInjection(dataProduct.getTimeRange());
+        this.spacialRange = SqlUtils.preventSQLInjection(dataProduct.getSpacialRange());
+        this.datasetSize = SqlUtils.preventSQLInjection(dataProduct.getDatasetSize());
+        this.datasetType = (null == dataProduct.getDatasetType()) ? 0 : dataProduct.getDatasetType();
         this.associateId = SqlUtils.preventSQLInjection(dataProduct.getAssociateId());
         return true;
     }
@@ -137,12 +137,24 @@ public class DataProductMapperProvider {
             stringBuffer.append("opinion, ");
             stringBuffer.append("down_reason, ");
             stringBuffer.append("is_share, ");
-            stringBuffer.append("doi_id, ");
-            stringBuffer.append("cstr_id, ");
-            stringBuffer.append("subject_type_id, ");
-            stringBuffer.append("time_range, ");
-            stringBuffer.append("spacial_range, ");
-            stringBuffer.append("dataset_size, ");
+            if (!"null".equals(this.doiId)) {
+                stringBuffer.append("doi_id, ");
+            }
+            if (!"null".equals(this.cstrId)) {
+                stringBuffer.append("cstr_id, ");
+            }
+            if (!"null".equals(this.subjectTypeId)) {
+                stringBuffer.append("subject_type_id, ");
+            }
+            if (!"null".equals(this.timeRange)) {
+                stringBuffer.append("time_range, ");
+            }
+            if (!"null".equals(this.spacialRange)) {
+                stringBuffer.append("spacial_range, ");
+            }
+            if (!"null".equals(this.datasetSize)) {
+                stringBuffer.append("dataset_size, ");
+            }
             stringBuffer.append("dataset_type, ");
             stringBuffer.append("associate_id ");
             stringBuffer.append(") ");
@@ -164,12 +176,24 @@ public class DataProductMapperProvider {
             stringBuffer.append(this.opinion).append(", ");
             stringBuffer.append(this.downReason).append(", ");
             stringBuffer.append(this.isShare).append(", ");
-            stringBuffer.append(this.doiId).append(", ");
-            stringBuffer.append(this.cstrId).append(", ");
-            stringBuffer.append(this.subjectTypeId).append(", ");
-            stringBuffer.append(this.timeRange).append(", ");
-            stringBuffer.append(this.spacialRange).append(", ");
-            stringBuffer.append(this.datasetSize).append(", ");
+            if (!"null".equals(this.doiId)) {
+                stringBuffer.append(this.doiId).append(", ");
+            }
+            if (!"null".equals(this.cstrId)) {
+                stringBuffer.append(this.cstrId).append(", ");
+            }
+            if (!"null".equals(this.subjectTypeId)) {
+                stringBuffer.append(this.subjectTypeId).append(", ");
+            }
+            if (!"null".equals(this.timeRange)) {
+                stringBuffer.append(this.timeRange).append(", ");
+            }
+            if (!"null".equals(this.spacialRange)) {
+                stringBuffer.append(this.spacialRange).append(", ");
+            }
+            if (!"null".equals(this.datasetSize)) {
+                stringBuffer.append(this.datasetSize).append(", ");
+            }
             stringBuffer.append(this.datasetType).append(", ");
             stringBuffer.append(this.associateId);
             stringBuffer.append(" ) ");
