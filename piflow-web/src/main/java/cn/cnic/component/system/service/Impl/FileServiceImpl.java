@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -68,7 +69,9 @@ public class FileServiceImpl implements IFileService {
         if (!unzip) {
             if (associateType.equals(FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue()) || associateType.equals(FileAssociateType.DATA_PRODUCT_COVER.getValue())) {
                 path = SysParamsCache.FILE_PATH;
-                FileUtils.uploadRtnMap(file, path, fileName);
+                logger.info("local path:{}",path);
+                Map<String, Object> stringObjectMap = FileUtils.uploadRtnMap(file, path, fileName);
+                logger.info("upload to local:result:{}", JSON.toJSONString(stringObjectMap));
                 path = SysParamsCache.SYS_CONTEXT_PATH + "/files/";
             } else {
                 if (split[1].equals("rar") || split[1].equals("tar") || split[1].equals("tar.gz"))
