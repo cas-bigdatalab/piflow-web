@@ -5,14 +5,13 @@ import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.base.vo.BasePageVo;
 import cn.cnic.common.constant.MessageConfig;
-import cn.cnic.component.dataProduct.vo.ProductUserVo;
 import cn.cnic.component.visual.entity.ProductTemplateGraphAssoDto;
 import cn.cnic.component.visual.mapper.piflowdb.ProductTemplateGraphAssoMapper;
 import cn.cnic.component.visual.service.ProductTemplateGraphAssoService;
 import cn.cnic.component.visual.util.ResponseResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,17 +44,17 @@ public class ProductTemplateGraphAssoServiceImpl implements ProductTemplateGraph
     }
 
     @Override
-    public List<ProductTemplateGraphAssoDto> selectByUsername(BasePageVo basePageVo) {
+    public ResponseResult selectByUsername(BasePageVo basePageVo) {
         String username = SessionUserUtil.getCurrentUsername();
-        Page<ProductUserVo> page = PageHelper.startPage(basePageVo.getPage(), basePageVo.getLimit(), "create_time desc");
+        Page<ProductTemplateGraphAssoDto> page = new Page<>(basePageVo.getPage(), basePageVo.getLimit());
 
         QueryWrapper<ProductTemplateGraphAssoDto> wrapper = new QueryWrapper<>();
         wrapper.eq("owner", username);
-        List<ProductTemplateGraphAssoDto> data = productTemplateGraphAssoMapper.selectList(wrapper);
-       // Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-       // Map<String, Object> stringObjectMap = PageHelperUtils.setLayTableParam(page, rtnMap);
-        // List<ProductTemplateGraphAssoDto> data = (List<ProductTemplateGraphAssoDto>) stringObjectMap.get("data");
-        return data;
+        Page<ProductTemplateGraphAssoDto> page1 = productTemplateGraphAssoMapper.selectPage(page, wrapper);
+        int total = (int)page1.getTotal();
+        List<ProductTemplateGraphAssoDto> data = page1.getRecords();
+
+        return ResponseResult.success(data,total);
     }
 
 }

@@ -12,5 +12,5 @@ public interface ProductTemplateGraphAssoService {
 
     ProductTemplateGraphAssoDto selectById(String id);
 
-    List<ProductTemplateGraphAssoDto> selectByUsername(BasePageVo basePageVo);
+    ResponseResult selectByUsername(BasePageVo basePageVo);
 }

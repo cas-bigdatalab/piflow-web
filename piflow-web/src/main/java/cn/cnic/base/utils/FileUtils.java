@@ -690,6 +690,50 @@ public class FileUtils {
         return HttpUtils.doGet("http://"+ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
     }
 
+    public static InputStream getFileInputStream(String hdfsFilePath, String defaultFs) throws IOException {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", defaultFs);
+        FileSystem fs = FileSystem.get(conf);
+        Path filePath = new Path(hdfsFilePath);
+        return fs.open(filePath);
+    }
+
+    public static  Set<String> findExcelFiles(String[] paths, String defaultFs) {
+        Set<String> excelFiles = new HashSet<>();
+        for (String pathStr : paths) {
+            Path path = new Path(pathStr);
+            Configuration conf = new Configuration();
+            conf.set("fs.defaultFS", defaultFs);
+            try {
+                if (ObjectUtils.isEmpty(fs)) {
+                    fs = FileSystem.get(conf);
+                }
+                traverseDirectory(fs, path, excelFiles);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return excelFiles;
+    }
+
+    private static void traverseDirectory(FileSystem fs, Path directory, Set<String> excelFiles) throws IOException {
+        if (!fs.exists(directory)) {
+            System.out.println("Path does not exist: " + directory.toString());
+            return;
+        }
+
+        FileStatus[] fileStatuses = fs.listStatus(directory);
+        for (FileStatus fileStatus : fileStatuses) {
+            if (fileStatus.isFile() && fileStatus.getPath().getName().endsWith(".xlsx")) {
+                excelFiles.add(fileStatus.getPath().toString());
+            } else if (fileStatus.isDirectory()) {
+                // 递归遍历子目录
+                traverseDirectory(fs, fileStatus.getPath(), excelFiles);
+            }
+        }
+    }
+
     public static void downloadFileFromHdfs(HttpServletResponse response, String filePath, String fileName, String defaultFs) {
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", defaultFs);

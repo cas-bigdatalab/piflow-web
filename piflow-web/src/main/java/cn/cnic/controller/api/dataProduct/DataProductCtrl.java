@@ -1,5 +1,6 @@
 package cn.cnic.controller.api.dataProduct;
 
+import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.base.vo.BasePageVo;
@@ -12,6 +13,7 @@ import cn.cnic.component.visual.entity.ProductTemplateGraphAssoDto;
 import cn.cnic.component.visual.entity.UserProductVisualView;
 import cn.cnic.component.visual.service.GraphTemplateService;
 import cn.cnic.component.visual.service.ProductTemplateGraphAssoService;
+import cn.cnic.component.visual.util.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -25,7 +27,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -85,12 +89,16 @@ public class DataProductCtrl {
     @RequestMapping(value = "/getUserProductList", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "getUserProductList", notes = "获取用户对应的可视化列表")
-    public String getDataSourceList(@RequestBody BasePageVo basePageVo) {
-        List<ProductTemplateGraphAssoDto> assoDtos = productTemplateGraphAssoService.selectByUsername(basePageVo);
+    public ResponseResult getDataSourceList(@RequestBody BasePageVo basePageVo) {
+        ResponseResult responseResult = productTemplateGraphAssoService.selectByUsername(basePageVo);
+        List<ProductTemplateGraphAssoDto> assoDtos = (List<ProductTemplateGraphAssoDto>) responseResult.getData();
         List<UserProductVisualView> userProductVisualViews = assoDtos.stream()
                 .map(this::toUserProductView
                 ).collect(Collectors.toList());
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", userProductVisualViews);
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("data", userProductVisualViews);
+        rtnMap.put("totalCount", responseResult.getTotalCount());
+        return ResponseResult.success(userProductVisualViews, responseResult.getTotalCount());
     }
 
     private UserProductVisualView toUserProductView(ProductTemplateGraphAssoDto dto) {

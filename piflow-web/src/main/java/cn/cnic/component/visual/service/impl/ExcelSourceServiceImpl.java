@@ -1,5 +1,6 @@
 package cn.cnic.component.visual.service.impl;
 
+import cn.cnic.base.utils.FileUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.visual.entity.ExcelNameAsso;
 import cn.cnic.component.visual.entity.GraphTemplate;
@@ -28,6 +29,8 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static cn.cnic.component.dataProduct.util.DataProductUtil.getFileNameFromPath;
 
 /**
  * TODO
@@ -77,15 +80,17 @@ public class ExcelSourceServiceImpl implements ExcelSourceService {
                 }
             }
 
-            File file = new File(path);
-            // 创建FileInputStream对象，以便从文件读取数据
-            FileInputStream fis = new FileInputStream(file);
-            // 创建BufferedInputStream对象，用于提高读取效率
-            BufferedInputStream bis = new BufferedInputStream(fis);
-            // 通过BufferedInputStream获取InputStream对象
-           inputStream = new DataInputStream(bis);
+//            File file = new File(path);
+//            // 创建FileInputStream对象，以便从文件读取数据
+//            FileInputStream fis = new FileInputStream(file);
+//            // 创建BufferedInputStream对象，用于提高读取效率
+//            BufferedInputStream bis = new BufferedInputStream(fis);
+//            // 通过BufferedInputStream获取InputStream对象
+//           inputStream = new DataInputStream(bis);
 
-            String originalFilename = file.getName();
+            inputStream = FileUtils.getFileInputStream(path, FileUtils.getDefaultFs());
+
+            String originalFilename = getFileNameFromPath(path);
 
             workbook = WorkbookFactory.create(inputStream);
             Sheet sheet = null;

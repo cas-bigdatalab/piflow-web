@@ -23,6 +23,16 @@ public class DataProductUtil {
         return result;
     }
 
+    public static String getFileNameFromPath(String path) {
+        // 使用"/"或者"\"作为分隔符，将路径分割成字符串数组
+        String[] parts = path.split("[/\\\\]");
+
+        // 获取数组中最后一个元素，即文件名
+        String fileName = parts[parts.length - 1];
+
+        return fileName;
+    }
+
     public static  Set<String> findExcelFiles(String[] paths) {
         Set<String> excelFiles = new HashSet<>();
         for (String path : paths) {
