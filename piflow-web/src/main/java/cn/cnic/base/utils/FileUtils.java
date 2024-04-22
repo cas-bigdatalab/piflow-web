@@ -687,7 +687,9 @@ public class FileUtils {
     }
 
     public static String getDefaultFs() {
-        return HttpUtils.doGet("http://"+ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
+        //return HttpUtils.doGet("http://"+ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
+        return HttpUtils.doGet(ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
+
     }
 
     public static InputStream getFileInputStream(String hdfsFilePath, String defaultFs) throws IOException {
