@@ -23,4 +23,7 @@ public interface ExcelSourceService {
     String testTransactional();
 
 
+    ResponseResult uploadExcelFromPath(String path, GraphTemplate graphTemplate);
+
+    ResponseResult checkProductExist(String productId, String path, String username);
 }

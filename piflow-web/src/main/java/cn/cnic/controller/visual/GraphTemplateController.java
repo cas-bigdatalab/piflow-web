@@ -1,8 +1,12 @@
 package cn.cnic.controller.visual;
 
 
+import cn.cnic.component.visual.entity.GraphConf;
 import cn.cnic.component.visual.entity.GraphTemplate;
+import cn.cnic.component.visual.entity.ProductTemplateGraphAssoDto;
+import cn.cnic.component.visual.service.GraphConfService;
 import cn.cnic.component.visual.service.GraphTemplateService;
+import cn.cnic.component.visual.service.ProductTemplateGraphAssoService;
 import cn.cnic.component.visual.util.RequestData;
 import cn.cnic.component.visual.util.ResponseResult;
 import io.swagger.annotations.Api;
@@ -10,11 +14,13 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -28,6 +34,13 @@ import java.util.List;
 public class GraphTemplateController {
     @Autowired
     private GraphTemplateService graphTemplateService;
+
+    @Resource(name = "graphConfServiceImpl")
+    private GraphConfService graphConfService;
+
+    @Autowired
+    private ProductTemplateGraphAssoService productTemplateGraphAssoService;
+
     //获取图表模板配置列表
     @PostMapping("/getGraphTemplateList")
     @ApiOperation("获取图表模板配置列表")
@@ -84,5 +97,35 @@ public class GraphTemplateController {
             ,@ApiImplicitParam(name = "tableName",value = "表名称")})
     public ResponseResult updateGraphTemplate(@RequestBody GraphTemplate graphTemplate){
         return graphTemplateService.updateGraphTemplate(graphTemplate);
+    }
+
+
+    /**
+     * 更新图表模板配置与可视化配置(名称与描述)
+     *
+     * @param id - vis_product_template_graph_asso表的id
+     * @return
+     */
+    @PostMapping("/updateGraphTemplateAndGraphConf")
+    @ApiOperation("用id更新图表模板配置")
+    @Transactional
+    public ResponseResult updateGraphTemplateAndGraphConf(String id, String name, String description) {
+        ProductTemplateGraphAssoDto assoDto = productTemplateGraphAssoService.selectById(id);
+        GraphTemplate graphTemplate = new GraphTemplate();
+        graphTemplate.setId(assoDto.getGraphTemplateId());
+        graphTemplate.setName(name);
+        graphTemplate.setDescription(description);
+        ResponseResult responseResult = graphTemplateService.updateGraphTemplate(graphTemplate);
+        if (responseResult.getCode() != 200) {
+            return ResponseResult.error(responseResult.getMsg() + "请联系管理员处理!");
+        }
+        GraphConf conf = new GraphConf();
+        conf.setId(assoDto.getGraphConfId());
+        conf.setDescription(graphTemplate.getDescription());
+        conf.setName(graphTemplate.getName());
+        conf.setGraphTemplateId(graphTemplate.getId());
+        conf.setConfigInfo(""); //fixme: 似乎没有让用户填这个字段
+        conf.setAddFlag("update");
+        return graphConfService.updateGraphConf(conf);
     }
 }

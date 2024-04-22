@@ -20,4 +20,5 @@ public interface GraphTemplateService {
 //    ResponseResult addGraphConfByOne(GraphTemplate graphTemplate);
     ResponseResult delGraphTemplate(GraphTemplate graphTemplate);
     ResponseResult updateGraphTemplate(GraphTemplate graphTemplate);
+    GraphTemplate selectById(Integer id);
 }
