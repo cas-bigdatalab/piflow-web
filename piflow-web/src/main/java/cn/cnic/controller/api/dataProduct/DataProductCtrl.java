@@ -112,6 +112,7 @@ public class DataProductCtrl {
         view.setCreateTime(dto.getCreateTime());
         view.setName(graphTemplate.getName());
         view.setDescription(graphTemplate.getDescription());
+        view.setProductName("测试数据产品名称");
         return view;
     }
 

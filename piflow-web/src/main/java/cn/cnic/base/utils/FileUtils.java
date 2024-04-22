@@ -689,7 +689,6 @@ public class FileUtils {
     public static String getDefaultFs() {
         //return HttpUtils.doGet("http://"+ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
         return HttpUtils.doGet(ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
-
     }
 
     public static InputStream getFileInputStream(String hdfsFilePath, String defaultFs) throws IOException {
@@ -727,7 +726,9 @@ public class FileUtils {
 
         FileStatus[] fileStatuses = fs.listStatus(directory);
         for (FileStatus fileStatus : fileStatuses) {
-            if (fileStatus.isFile() && fileStatus.getPath().getName().endsWith(".xlsx")) {
+            if (fileStatus.isFile() && (fileStatus.getPath().getName().endsWith(".xlsx")
+                    || fileStatus.getPath().getName().endsWith(".xls")
+                    || fileStatus.getPath().getName().endsWith(".csv"))) {
                 excelFiles.add(fileStatus.getPath().toString());
             } else if (fileStatus.isDirectory()) {
                 // 递归遍历子目录

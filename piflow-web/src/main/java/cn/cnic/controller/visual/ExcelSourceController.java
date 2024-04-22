@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -97,8 +98,13 @@ public class ExcelSourceController {
         assoDto.setGraphTemplateId(graphTemplateId);
         assoDto.setGraphConfId(graphConfId);
         assoDto.setCreateTime(getCurrentTimeMiles());
-        productTemplateGraphAssoService.addProductTemplateGraphAsso(assoDto);
-        return ResponseResult.success();
+        ResponseResult result3 = productTemplateGraphAssoService.addProductTemplateGraphAsso(assoDto);
+        if (result3.getCode() != 200) {
+            return ResponseResult.error("路径" + path + "的文件创建关联关系失败!" + result2.getMsg() + " 请联系管理员处理!");
+        }
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", result3.getData());
+        return ResponseResult.success(map);
     }
 
 

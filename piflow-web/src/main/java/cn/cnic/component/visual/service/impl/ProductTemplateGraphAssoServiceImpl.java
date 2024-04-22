@@ -31,8 +31,9 @@ public class ProductTemplateGraphAssoServiceImpl implements ProductTemplateGraph
     @Override
     public ResponseResult addProductTemplateGraphAsso(ProductTemplateGraphAssoDto productTemplateGraphAssoDto) {
         int insert = productTemplateGraphAssoMapper.insert(productTemplateGraphAssoDto);
+        long id = productTemplateGraphAssoDto.getId();
         if (insert == 1) {
-            return ResponseResult.success();
+            return ResponseResult.success(id);
         } else {
             return ResponseResult.error("写入关联表vis_product_template_graph_asso失败!");
         }

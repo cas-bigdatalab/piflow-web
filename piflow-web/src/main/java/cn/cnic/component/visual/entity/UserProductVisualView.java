@@ -17,6 +17,10 @@ public class UserProductVisualView {
     private String productId;
 
     /**
+     * 数据产品名称
+     */
+    private String productName;
+    /**
      * 所有者,用户名
      */
     private String owner;
