@@ -182,7 +182,8 @@ public class ExcelSourceServiceImpl implements ExcelSourceService {
             resMap.put("hasAdded", false);
         } else {
             resMap.put("hasAdded", true);
-            resMap.put("recordId", res.getId());
+            //这里要返回可视化id,用来进入可视化页面
+            resMap.put("graphConfigId", res.getGraphConfId());
         }
         return ResponseResult.success(resMap);
     }

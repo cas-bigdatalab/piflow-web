@@ -7,14 +7,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserProductVisualView {
     /**
-     * id, vis_product_template_graph_asso表的id
+     *  vis_product_template_graph_asso表的id
      */
-    private Long id;
+    private Long productVisualId;
+
+    /**
+     *  vis_graph_conf表的id
+     */
+    private Integer graphConfigId;
 
     /**
      * 数据产品id
      */
-    private String productId;
+    private Long productId;
 
     /**
      * 数据产品名称

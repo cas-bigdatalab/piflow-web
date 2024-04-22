@@ -70,7 +70,7 @@ public class ExcelSourceController {
     @PostMapping(value = "/uploadExcelFromPath")
     @ApiOperation("根据HDFS path上传excel表格")
     @Transactional
-    public ResponseResult uploadExcelFromPath(String productId, String path, GraphTemplate graphTemplate) {
+    public ResponseResult uploadExcelFromPath(Long productId, String path, GraphTemplate graphTemplate) {
         String username = SessionUserUtil.getCurrentUsername();
 
         ResponseResult result1 = excelSourceService.uploadExcelFromPath(path, graphTemplate);

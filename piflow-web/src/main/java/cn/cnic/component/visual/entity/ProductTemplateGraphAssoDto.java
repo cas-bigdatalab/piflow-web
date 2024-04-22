@@ -20,7 +20,7 @@ public class ProductTemplateGraphAssoDto {
     /**
      * 数据产品id
      */
-    private String productId;
+    private Long productId;
 
     /**
      * 所有者,用户名

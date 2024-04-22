@@ -1,8 +1,6 @@
 package cn.cnic.controller.api.dataProduct;
 
-import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
-import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.base.vo.BasePageVo;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.dataProduct.service.IDataProductService;
@@ -93,8 +91,8 @@ public class DataProductCtrl {
         ResponseResult responseResult = productTemplateGraphAssoService.selectByUsername(basePageVo);
         List<ProductTemplateGraphAssoDto> assoDtos = (List<ProductTemplateGraphAssoDto>) responseResult.getData();
         List<UserProductVisualView> userProductVisualViews = assoDtos.stream()
-                .map(this::toUserProductView
-                ).collect(Collectors.toList());
+                .map(this::toUserProductView)
+                .collect(Collectors.toList());
         Map<String, Object> rtnMap = new HashMap<>();
         rtnMap.put("data", userProductVisualViews);
         rtnMap.put("totalCount", responseResult.getTotalCount());
@@ -104,7 +102,8 @@ public class DataProductCtrl {
     private UserProductVisualView toUserProductView(ProductTemplateGraphAssoDto dto) {
         GraphTemplate graphTemplate = graphTemplateService.selectById(dto.getGraphTemplateId());
         UserProductVisualView view = new UserProductVisualView();
-        view.setId(dto.getId());
+        view.setProductVisualId(dto.getId());
+        view.setGraphConfigId(dto.getGraphConfId());
         view.setProductId(dto.getProductId());
         view.setOwner(dto.getOwner());
         view.setType(dto.getType());
