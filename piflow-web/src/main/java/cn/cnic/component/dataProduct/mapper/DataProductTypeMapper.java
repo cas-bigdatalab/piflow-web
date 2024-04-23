@@ -62,13 +62,13 @@ public interface DataProductTypeMapper {
     ProductTypeAssociate getAssociateByTypeIdAndUserName(@Param("typeId") Long typeId, @Param("username") String username);
 
     @Select("<script>" +
-            "select pt.* from data_product_type as pt, product_type_associate as pta " +
-            "left join file on file.associate_id = CAST(pt.id AS CHAR) and file.associate_type = 0 and file.enable_flag = 1 "+
-            "where pt.id = pta.product_type_id and pta.associate_type = 0 and pt.enable_flag = 1 and " +
-            "pta.associate_id in " +
+            "select pt.* from data_product_type as pt " +
+            "inner join product_type_associate as pta on pt.id = pta.product_type_id and pta.associate_type = 0 and pta.associate_id in " +
             "<foreach collection='flowPublishingIds' item='id' index='index' open='(' close=')' separator=','>" +
             "#{id}" +
             "</foreach>" +
+            " left join file on file.associate_id = CAST(pt.id AS CHAR) and file.associate_type = 0 and file.enable_flag = 1 " +
+            " where pt.enable_flag = 1" +
             "</script>"
     )
     List<DataProductType> getByFlowPublishingIds(@Param("flowPublishingIds") List<String> flowPublishingIds);
