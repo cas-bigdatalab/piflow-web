@@ -13,7 +13,8 @@ import java.util.List;
 
 @Mapper
 public interface DataProductTypeMapper {
-    @Select("select * from data_product_type where id = #{id}")
+    @Select("select dpt.*, CAST(file.id AS CHAR) as fileId, file.file_name as fileName, file.file_path as filePath from data_product_type as dpt " +
+            "left join file on file.associate_id = CAST(dpt.id AS CHAR) and file.associate_type = 0 and file.enable_flag = 1 where dpt.id = #{id}")
     DataProductType getById(@Param("id") Long id);
 
     @Select("select * from data_product_type where parent_id = #{parentId}")
