@@ -3,6 +3,8 @@ package cn.cnic.controller.api.dataProduct;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.vo.BasePageVo;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.dataProduct.domain.DataProductDomain;
+import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.service.IDataProductService;
 import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.dataProduct.vo.ProductUserVo;
@@ -42,13 +44,18 @@ public class DataProductCtrl {
 
     private final GraphTemplateService graphTemplateService;
 
+    private final DataProductDomain dataProductDomain;
+
+
     @Autowired
     public DataProductCtrl(IDataProductService dataProductServiceImpl,
                            ProductTemplateGraphAssoService productTemplateGraphAssoService,
-                           GraphTemplateService graphTemplateService) {
+                           GraphTemplateService graphTemplateService,
+                           DataProductDomain dataProductDomain) {
         this.dataProductServiceImpl = dataProductServiceImpl;
         this.productTemplateGraphAssoService = productTemplateGraphAssoService;
         this.graphTemplateService = graphTemplateService;
+        this.dataProductDomain = dataProductDomain;
     }
 
 
@@ -101,6 +108,7 @@ public class DataProductCtrl {
 
     private UserProductVisualView toUserProductView(ProductTemplateGraphAssoDto dto) {
         GraphTemplate graphTemplate = graphTemplateService.selectById(dto.getGraphTemplateId());
+        DataProduct dataProduct = dataProductDomain.getById(dto.getProductId());
         UserProductVisualView view = new UserProductVisualView();
         view.setProductVisualId(dto.getId());
         view.setGraphConfigId(dto.getGraphConfId());
@@ -111,7 +119,7 @@ public class DataProductCtrl {
         view.setCreateTime(dto.getCreateTime());
         view.setName(graphTemplate.getName());
         view.setDescription(graphTemplate.getDescription());
-        view.setProductName("测试数据产品名称");
+        view.setProductName(dataProduct.getName());
         return view;
     }
 
