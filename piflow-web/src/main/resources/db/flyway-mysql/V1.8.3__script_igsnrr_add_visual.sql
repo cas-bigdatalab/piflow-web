@@ -13,7 +13,7 @@ CREATE TABLE  IF NOT EXISTS `vis_dataBase_info` (
                                      `create_time` varchar(255) NOT NULL COMMENT '创建时间',
                                      `update_time` varchar(255) NOT NULL COMMENT '更新时间',
                                      PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='数据库信息';
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci COMMENT='数据库信息';
 
 
 -- ----------------------------
@@ -29,7 +29,7 @@ CREATE TABLE  IF NOT EXISTS `vis_excel_name_asso` (
                                        `reserve1` varchar(255) DEFAULT NULL COMMENT '备用字段1',
                                        `reserve2` varchar(255) DEFAULT NULL COMMENT '备用字段1',
                                        PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='excel表名关联信息';
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci COMMENT='excel表名关联信息';
 
 -- ----------------------------
 -- Table structure for vis_graph_conf
@@ -44,7 +44,7 @@ CREATE TABLE  IF NOT EXISTS `vis_graph_conf` (
                                   `create_time` varchar(255) NOT NULL COMMENT '创建时间',
                                   `update_time` varchar(255) NOT NULL COMMENT '更新时间',
                                   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='图表配置表';
+) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci COMMENT='图表配置表';
 
 -- ----------------------------
 -- Table structure for vis_graph_template
@@ -64,7 +64,7 @@ CREATE TABLE  IF NOT EXISTS `vis_graph_template` (
                                       `reserve1` varchar(255) DEFAULT NULL COMMENT '备用字段1',
                                       `reserve2` varchar(255) DEFAULT NULL COMMENT '备用字段1',
                                       PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='图表模板信息';
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci COMMENT='图表模板信息';
 
 -- ----------------------------
 -- Table structure for vis_product_template_graph_asso
@@ -80,4 +80,4 @@ CREATE TABLE  IF NOT EXISTS `vis_product_template_graph_asso` (
                                                    `path` varchar(255) NOT NULL COMMENT 'excel路径+文件名，MySQL类型为空',
                                                    `create_time` varchar(255) NOT NULL COMMENT '创建时间',
                                                    PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='数据产品关联表';
+) ENGINE=InnoDB AUTO_INCREMENT=94 DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci COMMENT='数据产品关联表';
