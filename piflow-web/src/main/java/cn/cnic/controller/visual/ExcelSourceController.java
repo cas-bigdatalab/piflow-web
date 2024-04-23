@@ -103,7 +103,8 @@ public class ExcelSourceController {
             return ResponseResult.error("路径" + path + "的文件创建关联关系失败!" + result2.getMsg() + " 请联系管理员处理!");
         }
         Map<String, Object> map = new HashMap<>();
-        map.put("id", result3.getData());
+        map.put("productVisualId", result3.getData());
+        map.put("graphConfigId", graphConfId);
         return ResponseResult.success(map);
     }
 

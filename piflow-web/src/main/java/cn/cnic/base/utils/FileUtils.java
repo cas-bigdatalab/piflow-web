@@ -726,9 +726,8 @@ public class FileUtils {
 
         FileStatus[] fileStatuses = fs.listStatus(directory);
         for (FileStatus fileStatus : fileStatuses) {
-            if (fileStatus.isFile() && (fileStatus.getPath().getName().endsWith(".xlsx")
-                    || fileStatus.getPath().getName().endsWith(".xls")
-                    || fileStatus.getPath().getName().endsWith(".csv"))) {
+            if (fileStatus.isFile() &&
+                    (fileStatus.getPath().getName().endsWith(".xlsx") || fileStatus.getPath().getName().endsWith(".xls"))) {
                 excelFiles.add(fileStatus.getPath().toString());
             } else if (fileStatus.isDirectory()) {
                 // 递归遍历子目录
