@@ -119,7 +119,7 @@ public class DataProductCtrl {
         view.setCreateTime(dto.getCreateTime());
         view.setName(graphTemplate.getName());
         view.setDescription(graphTemplate.getDescription());
-        view.setProductName(dataProduct.getName());
+        view.setProductName(dataProduct == null ? "数据产品" + dto.getId() : dataProduct.getName());
         return view;
     }
 
