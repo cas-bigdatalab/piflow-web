@@ -62,7 +62,7 @@ public interface DataProductTypeMapper {
     ProductTypeAssociate getAssociateByTypeIdAndUserName(@Param("typeId") Long typeId, @Param("username") String username);
 
     @Select("<script>" +
-            "select pt.* from data_product_type as pt " +
+            "select pt.*, CAST(file.id AS CHAR) as fileId, file.file_name as fileName, file.file_path as filePath from data_product_type as pt " +
             "inner join product_type_associate as pta on pt.id = pta.product_type_id and pta.associate_type = 0 and pta.associate_id in " +
             "<foreach collection='flowPublishingIds' item='id' index='index' open='(' close=')' separator=','>" +
             "#{id}" +
