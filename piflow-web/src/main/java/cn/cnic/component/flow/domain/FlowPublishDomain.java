@@ -44,13 +44,13 @@ public class FlowPublishDomain {
 
     /**
      * @param vo:
-      * @return FlowPublishing
+     * @return FlowPublishing
      * @author tianyao
      * @description 根据发布名称和flowID查询，同一flow的发布名称不能相同
      * @date 2024/2/20 15:54
      */
     public FlowPublishing getByNameAndFlowId(FlowPublishingVo vo) {
-        return flowPublishingMapper.getByNameAndFlowId(vo.getName(),vo.getFlowId());
+        return flowPublishingMapper.getByNameAndFlowId(vo.getName(), vo.getFlowId());
     }
 
     public int save(FlowPublishing flowPublishing) {
@@ -71,7 +71,7 @@ public class FlowPublishDomain {
 
     /**
      * @param id:
-      * @return int
+     * @return int
      * @author tianyao
      * @description 逻辑删除
      * @date 2024/2/21 13:55
@@ -89,10 +89,10 @@ public class FlowPublishDomain {
     }
 
     public List<FlowPublishingVo> getListByProductTypeId(String keywords, Long productTypeId) {
-        return flowPublishingMapper.getListByProductTypeId(keywords,productTypeId);
+        return flowPublishingMapper.getListByProductTypeId(keywords, productTypeId);
     }
 
-    public List<FlowPublishingVo> getListByProductTypeIds(String keyword, List<Long> productTypeIds) {
-        return flowPublishingMapper.getListByProductTypeIds(keyword,productTypeIds);
+    public List<FlowPublishingVo> getListByProductTypeIds(String keyword, List<Long> productTypeIds, List<String> selectedFlowPublishingIds) {
+        return flowPublishingMapper.getListByProductTypeIds(keyword, productTypeIds, selectedFlowPublishingIds);
     }
 }

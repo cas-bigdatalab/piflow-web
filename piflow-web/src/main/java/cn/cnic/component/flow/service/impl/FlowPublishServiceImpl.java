@@ -403,11 +403,12 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         List<EcosystemTypeAssociate> ecosystemTypeAssociates = ecosystemTypeDomain.getAssociateByAssociateId(username);
         //获取所属生态系统类型的流水线的所属数据产品类型
         List<DataProductType> dataProductTypeList = dataProductTypeDomain.getDataProductTypeAndAllChildById(flowPublishingVo.getProductTypeId());
+        List<String> flowPublishingIds = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(ecosystemTypeAssociates)) {
             //获取所属生态系统类型的流水线id
             //获取流水线相关的数据产品类型
             List<Long> ecosystemTypeIds = ecosystemTypeAssociates.stream().map(EcosystemTypeAssociate::getEcosystemTypeId).collect(Collectors.toList());
-            List<String> flowPublishingIds = ecosystemTypeDomain.getAssociateByEcosystemTypeIdsAndAssociateType(ecosystemTypeIds, EcosystemTypeAssociateType.FLOW.getValue());
+            flowPublishingIds = ecosystemTypeDomain.getAssociateByEcosystemTypeIdsAndAssociateType(ecosystemTypeIds, EcosystemTypeAssociateType.FLOW.getValue());
             if (CollectionUtils.isNotEmpty(flowPublishingIds)) {
                 flowPublishingIds = flowPublishingIds.stream().distinct().collect(Collectors.toList());
                 List<DataProductType> selectedTypes = dataProductTypeDomain.getByFlowPublishingIds(flowPublishingIds);
@@ -422,7 +423,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         }
         Page<FlowPublishingVo> page = PageHelper.startPage(flowPublishingVo.getPage(), flowPublishingVo.getLimit(), "product_type_id ASC, crt_dttm DESC");
         if (CollectionUtils.isNotEmpty(dataProductTypeList)) {
-            flowPublishDomain.getListByProductTypeIds(flowPublishingVo.getKeyword(), dataProductTypeList.stream().map(DataProductType::getId).collect(Collectors.toList()));
+            flowPublishDomain.getListByProductTypeIds(flowPublishingVo.getKeyword(), dataProductTypeList.stream().map(DataProductType::getId).collect(Collectors.toList()),flowPublishingIds);
         }
         List<FlowPublishingVo> result = page.getResult();
         if (CollectionUtils.isNotEmpty(result)) {
