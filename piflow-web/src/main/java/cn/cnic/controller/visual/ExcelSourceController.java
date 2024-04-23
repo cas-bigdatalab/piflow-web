@@ -109,10 +109,16 @@ public class ExcelSourceController {
     }
 
 
+    /**
+     *
+     * @param id productId-数据产品对应的id
+     * @param path
+     * @return
+     */
     @PostMapping(value = "/checkProductConfExist")
-    public ResponseResult checkProductExist(String productId, String path){
+    public ResponseResult checkProductExist(Long id, String path){
         String username = SessionUserUtil.getCurrentUsername();
-        return excelSourceService.checkProductExist(productId, path, username);
+        return excelSourceService.checkProductExist(id, path, username);
     }
 
     //图表删除

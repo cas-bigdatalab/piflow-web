@@ -171,7 +171,7 @@ public class ExcelSourceServiceImpl implements ExcelSourceService {
     }
 
     @Override
-    public ResponseResult checkProductExist(String productId, String path, String username) {
+    public ResponseResult checkProductExist(Long productId, String path, String username) {
         QueryWrapper<ProductTemplateGraphAssoDto> wrapper = new QueryWrapper<>();
         wrapper.eq("product_id", productId);
         wrapper.eq("owner", username);

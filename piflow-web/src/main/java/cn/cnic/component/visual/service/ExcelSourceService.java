@@ -25,5 +25,5 @@ public interface ExcelSourceService {
 
     ResponseResult uploadExcelFromPath(String path, GraphTemplate graphTemplate);
 
-    ResponseResult checkProductExist(String productId, String path, String username);
+    ResponseResult checkProductExist(Long productId, String path, String username);
 }
