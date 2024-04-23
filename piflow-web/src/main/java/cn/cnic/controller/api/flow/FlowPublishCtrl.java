@@ -82,12 +82,12 @@ public class FlowPublishCtrl {
      * @param flowPublishingVo:
      * @return String
      * @author tianyao
-     * @description 根据数据产品分类分页查询发布流水线(包含分类的子级)
+     * @description 门户 根据数据产品分类分页查询发布流水线(包含分类的子级)
      * @date 2024/2/21 16:13
      */
     @RequestMapping(value = "/getFlowPublishingListPageByProductTypeId", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value = "getFlowPublishingListPageByProductTypeId", notes = "根据数据产品分类分页查询发布流水线")
+    @ApiOperation(value = "getFlowPublishingListPageByProductTypeId", notes = "门户根据数据产品分类分页查询发布流水线")
     public String getFlowPublishingListPageByProductTypeId(@RequestBody FlowPublishingVo flowPublishingVo) {
         return flowPublishServiceImpl.getFlowPublishingListPageByProductTypeId(flowPublishingVo);
     }

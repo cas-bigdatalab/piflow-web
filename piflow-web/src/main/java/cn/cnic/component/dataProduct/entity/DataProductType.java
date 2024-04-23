@@ -10,6 +10,7 @@ public class DataProductType extends BaseModelIDNoCorpAgentId {
 
     private static final long serialVersionUID = 1L;
 
+    private Long id;
     private Long parentId;
     private Integer level;//级别
     private String name;
@@ -21,4 +22,24 @@ public class DataProductType extends BaseModelIDNoCorpAgentId {
     private String fileId;
     private String fileName;
     private String filePath;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DataProductType that = (DataProductType) o;
+        return id != null ? id.equals(that.id) : that.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "DataProductType{" +
+                "id='" + id + '\'' +
+                '}';
+    }
 }

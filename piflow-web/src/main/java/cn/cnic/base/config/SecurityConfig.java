@@ -74,6 +74,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/flowPublish/getFlowPublishingListPageByProductTypeId").permitAll()
                 .antMatchers("/file/getFileListByIds").permitAll()
                 .antMatchers("/dataProduct/getByPage").permitAll()
+                .antMatchers("/ecosystemType/**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers().permitAll()
                 // 除上面外的所有请求全部需要鉴权认证

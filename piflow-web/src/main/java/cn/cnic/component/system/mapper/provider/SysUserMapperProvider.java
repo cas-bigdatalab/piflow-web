@@ -25,6 +25,8 @@ public class SysUserMapperProvider {
     private Byte status;
     private String lastLoginIp;
     private String developerAccessKey;
+    private String phoneNumber;
+    private String email;
 
     private boolean preventSQLInjectionSysUser(SysUser sysUser) {
         if (null == sysUser || StringUtils.isBlank(sysUser.getLastUpdateUser())) {
@@ -43,10 +45,12 @@ public class SysUserMapperProvider {
         this.version = (null != sysUser.getVersion() ? sysUser.getVersion() : 0L);
         this.status = (null != sysUser.getStatus() ? sysUser.getStatus() : 0);
         this.lastUpdateUser = SqlUtils.preventSQLInjection(sysUser.getLastUpdateUser());
-        this.lastLoginIp=SqlUtils.preventSQLInjection(sysUser.getLastLoginIp());
+        this.lastLoginIp = SqlUtils.preventSQLInjection(sysUser.getLastLoginIp());
         String lastUpdateDttm = DateUtils.dateTimesToStr(null != sysUser.getLastUpdateDttm() ? sysUser.getLastUpdateDttm() : new Date());
         this.lastUpdateDttmStr = SqlUtils.preventSQLInjection(lastUpdateDttm);
         this.developerAccessKey = SqlUtils.preventSQLInjection(sysUser.getDeveloperAccessKey());
+        this.phoneNumber = SqlUtils.preventSQLInjection(sysUser.getPhoneNumber());
+        this.email = SqlUtils.preventSQLInjection(sysUser.getEmail());
 
         return true;
     }
@@ -63,6 +67,8 @@ public class SysUserMapperProvider {
         this.age = null;
         this.sex = null;
         this.lastLoginIp = null;
+        this.phoneNumber = null;
+        this.email = null;
     }
 
     /**
@@ -81,13 +87,13 @@ public class SysUserMapperProvider {
 
         strBuf.append("( ");
         strBuf.append(SqlUtils.baseFieldName() + ", ");
-        strBuf.append("username, password, name, age, sex, status, developer_access_key ");
+        strBuf.append("username, password, name, age, sex, status, developer_access_key, phone_number,email ");
         strBuf.append(") ");
 
         strBuf.append("values ");
         strBuf.append("(");
         strBuf.append(SqlUtils.baseFieldValues(sysUser) + ", ");
-        strBuf.append(username + "," + password + "," + name + "," + age + "," + sex + "," + status + "," + developerAccessKey);
+        strBuf.append(username + "," + password + "," + name + "," + age + "," + sex + "," + status + "," + developerAccessKey + "," + phoneNumber + "," + email);
         strBuf.append(")");
 
         this.resetSysUser();
@@ -122,10 +128,20 @@ public class SysUserMapperProvider {
         sql.SET("enable_flag = " + enableFlag);
         sql.SET("username = " + this.username);
         sql.SET("name = " + this.name);
-        sql.SET("password = " + this.password);
-        sql.SET("status = " + this.status);
-        sql.SET("last_login_ip = " + this.lastLoginIp);
-        sql.SET("developer_access_key = " + this.developerAccessKey);
+        if (StringUtils.isNotBlank(this.password) && !"null".equals(password)) {
+            sql.SET("password = " + this.password);
+        }
+        if (null != status) {
+            sql.SET("status = " + this.status);
+        }
+        if(StringUtils.isNotBlank(lastLoginIp) && !"null".equals(lastLoginIp)){
+            sql.SET("last_login_ip = " + this.lastLoginIp);
+        }
+        if(StringUtils.isNotBlank(developerAccessKey) && !"null".equals(developerAccessKey)){
+            sql.SET("developer_access_key = " + this.developerAccessKey);
+        }
+        sql.SET("phone_number = " + this.phoneNumber);
+        sql.SET("email = " + this.email);
 
         sql.WHERE("version = " + this.version);
         sql.WHERE("id = " + this.id);
@@ -134,7 +150,7 @@ public class SysUserMapperProvider {
         return sql.toString();
     }
 
-    public String delUserById(boolean isAdmin, String username, String id){
+    public String delUserById(boolean isAdmin, String username, String id) {
         if (StringUtils.isBlank(id)) {
             return "SELECT 0";
         }
@@ -232,18 +248,18 @@ public class SysUserMapperProvider {
      * @return
      */
     public String getSysUserVoList(boolean isAdmin, String username, String param) {
-    	if (!isAdmin) {
-    		return "SELECT 0";
-    	}
-    	StringBuffer strBuf = new StringBuffer();
-    	strBuf.append("SELECT id, username, name, age, sex, crt_dttm, status, last_login_ip FROM sys_user WHERE enable_flag=1");
-    	if (StringUtils.isNotBlank(param)) {
+        if (!isAdmin) {
+            return "SELECT 0";
+        }
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("SELECT id, username, name, age, sex, crt_dttm, status, last_login_ip FROM sys_user WHERE enable_flag=1");
+        if (StringUtils.isNotBlank(param)) {
             strBuf.append("AND ( ");
             strBuf.append("name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
             strBuf.append("OR username LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
             strBuf.append(") ");
         }
-    	String sqlStr = strBuf.toString();
+        String sqlStr = strBuf.toString();
         return sqlStr;
     }
 

@@ -29,6 +29,15 @@ public class DataProductMapperProvider {
     private Integer state;
     private String opinion;
     private String downReason;
+    private Integer isShare;
+    private String doiId;
+    private String cstrId;
+    private String subjectTypeId;
+    private String timeRange;
+    private String spacialRange;
+    private String datasetSize;
+    private Integer datasetType;
+    private String associateId;
 
     private boolean preventSQLInjectionDataProduct(DataProduct dataProduct) {
         if (null == dataProduct) {
@@ -58,6 +67,15 @@ public class DataProductMapperProvider {
         this.state = dataProduct.getState();
         this.opinion = SqlUtils.preventSQLInjection(dataProduct.getOpinion());
         this.downReason = SqlUtils.preventSQLInjection(dataProduct.getDownReason());
+        this.isShare = (null == dataProduct.getIsShare()) ? 0 : dataProduct.getIsShare();
+        this.doiId = SqlUtils.preventSQLInjection(dataProduct.getDoiId());
+        this.cstrId = SqlUtils.preventSQLInjection(dataProduct.getCstrId());
+        this.subjectTypeId = SqlUtils.preventSQLInjection(dataProduct.getSubjectTypeId());
+        this.timeRange = SqlUtils.preventSQLInjection(dataProduct.getTimeRange());
+        this.spacialRange = SqlUtils.preventSQLInjection(dataProduct.getSpacialRange());
+        this.datasetSize = SqlUtils.preventSQLInjection(dataProduct.getDatasetSize());
+        this.datasetType = (null == dataProduct.getDatasetType()) ? 0 : dataProduct.getDatasetType();
+        this.associateId = SqlUtils.preventSQLInjection(dataProduct.getAssociateId());
         return true;
     }
 
@@ -80,6 +98,15 @@ public class DataProductMapperProvider {
         this.state = null;
         this.opinion = null;
         this.downReason = null;
+        this.isShare = null;
+        this.doiId = null;
+        this.cstrId = null;
+        this.subjectTypeId = null;
+        this.timeRange = null;
+        this.spacialRange = null;
+        this.datasetSize = null;
+        this.datasetType = null;
+        this.associateId = null;
     }
 
     /**
@@ -88,7 +115,7 @@ public class DataProductMapperProvider {
      * @param dataProduct
      * @return
      */
-    public String addDataProduct(DataProduct dataProduct) {
+    public String insert(DataProduct dataProduct) {
         String sqlStr = "";
         boolean flag = this.preventSQLInjectionDataProduct(dataProduct);
         if (flag) {
@@ -108,7 +135,28 @@ public class DataProductMapperProvider {
             stringBuffer.append("email, ");
             stringBuffer.append("state, ");
             stringBuffer.append("opinion, ");
-            stringBuffer.append("downReason ");
+            stringBuffer.append("down_reason, ");
+            stringBuffer.append("is_share, ");
+            if (!"null".equals(this.doiId)) {
+                stringBuffer.append("doi_id, ");
+            }
+            if (!"null".equals(this.cstrId)) {
+                stringBuffer.append("cstr_id, ");
+            }
+            if (!"null".equals(this.subjectTypeId)) {
+                stringBuffer.append("subject_type_id, ");
+            }
+            if (!"null".equals(this.timeRange)) {
+                stringBuffer.append("time_range, ");
+            }
+            if (!"null".equals(this.spacialRange)) {
+                stringBuffer.append("spacial_range, ");
+            }
+            if (!"null".equals(this.datasetSize)) {
+                stringBuffer.append("dataset_size, ");
+            }
+            stringBuffer.append("dataset_type, ");
+            stringBuffer.append("associate_id ");
             stringBuffer.append(") ");
             stringBuffer.append("VALUES ");
             stringBuffer.append("( ");
@@ -126,7 +174,28 @@ public class DataProductMapperProvider {
             stringBuffer.append(this.email).append(", ");
             stringBuffer.append(this.state).append(", ");
             stringBuffer.append(this.opinion).append(", ");
-            stringBuffer.append(this.downReason);
+            stringBuffer.append(this.downReason).append(", ");
+            stringBuffer.append(this.isShare).append(", ");
+            if (!"null".equals(this.doiId)) {
+                stringBuffer.append(this.doiId).append(", ");
+            }
+            if (!"null".equals(this.cstrId)) {
+                stringBuffer.append(this.cstrId).append(", ");
+            }
+            if (!"null".equals(this.subjectTypeId)) {
+                stringBuffer.append(this.subjectTypeId).append(", ");
+            }
+            if (!"null".equals(this.timeRange)) {
+                stringBuffer.append(this.timeRange).append(", ");
+            }
+            if (!"null".equals(this.spacialRange)) {
+                stringBuffer.append(this.spacialRange).append(", ");
+            }
+            if (!"null".equals(this.datasetSize)) {
+                stringBuffer.append(this.datasetSize).append(", ");
+            }
+            stringBuffer.append(this.datasetType).append(", ");
+            stringBuffer.append(this.associateId);
             stringBuffer.append(" ) ");
             sqlStr = stringBuffer.toString();
             this.reset();
@@ -170,6 +239,33 @@ public class DataProductMapperProvider {
             }
             if (StringUtils.isNotBlank(dataProduct.getDownReason())) {
                 sql.SET("down_reason = " + downReason);
+            }
+            if (null != dataProduct.getIsShare()) {
+                sql.SET("is_share = " + isShare);
+            }
+            if (StringUtils.isNotBlank(dataProduct.getDoiId())) {
+                sql.SET("doi_id = " + doiId);
+            }
+            if (StringUtils.isNotBlank(dataProduct.getCstrId())) {
+                sql.SET("cstr_id = " + cstrId);
+            }
+            if (StringUtils.isNotBlank(dataProduct.getSubjectTypeId())) {
+                sql.SET("subject_type_id = " + subjectTypeId);
+            }
+            if (StringUtils.isNotBlank(dataProduct.getTimeRange())) {
+                sql.SET("time_range = " + timeRange);
+            }
+            if (StringUtils.isNotBlank(dataProduct.getSpacialRange())) {
+                sql.SET("spacial_range = " + spacialRange);
+            }
+            if (StringUtils.isNotBlank(dataProduct.getDatasetSize())) {
+                sql.SET("dataset_size = " + datasetSize);
+            }
+            if (null != dataProduct.getDatasetType()) {
+                sql.SET("dataset_type = " + datasetType);
+            }
+            if (null != dataProduct.getAssociateId()) {
+                sql.SET("associate_id = " + associateId);
             }
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();
@@ -226,7 +322,7 @@ public class DataProductMapperProvider {
             // The first string in the SET is the name of the field corresponding to the table in the database
             sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(lastUpdateDttm)));
             sql.SET("last_update_user = " + lastUpdateUser);
-            sql.SET("enable_flag = " + 0);
+            sql.SET("enable_flag = " + this.enableFlag);
 
             // handle other fields
 //            sql.SET("enable_flag = " + enableFlag);

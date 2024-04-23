@@ -26,6 +26,15 @@ public class DataProduct extends BaseModelIDNoCorpAgentId {
     private Integer state; //0-已删除 1-生成中 2-生成失败 3-待发布 4-待审核 5-已发布 6-拒绝发布 7-已下架
     private String opinion;
     private String downReason;
+    private Integer isShare;
+    private String doiId;
+    private String cstrId;
+    private String subjectTypeId;
+    private String timeRange;
+    private String spacialRange;
+    private String datasetSize;
+    private Integer datasetType;  //数据集类型 0-电子表格 1-数据库
+    private String associateId;
 
 
     private Long productTypeId;

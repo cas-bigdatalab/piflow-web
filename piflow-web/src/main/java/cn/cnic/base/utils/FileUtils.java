@@ -58,6 +58,8 @@ public class FileUtils {
 
     public static FileSystem fs;
 
+
+
     /**
      * String to "xml" file and save the specified path
      *
@@ -665,7 +667,7 @@ public class FileUtils {
     public static void deleteHdfsFile(String filePath, String defaultFs) {
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", defaultFs);
-
+        logger.error("deleteHdfsFile,filePath:{}",filePath);
         try {
             if (ObjectUtils.isEmpty(fs)) {
                 fs = FileSystem.get(conf);
@@ -685,7 +687,53 @@ public class FileUtils {
     }
 
     public static String getDefaultFs() {
+        //return HttpUtils.doGet("http://"+ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
         return HttpUtils.doGet(ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
+    }
+
+    public static InputStream getFileInputStream(String hdfsFilePath, String defaultFs) throws IOException {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", defaultFs);
+        FileSystem fs = FileSystem.get(conf);
+        Path filePath = new Path(hdfsFilePath);
+        return fs.open(filePath);
+    }
+
+    public static  Set<String> findExcelFiles(String[] paths, String defaultFs) {
+        Set<String> excelFiles = new HashSet<>();
+        for (String pathStr : paths) {
+            Path path = new Path(pathStr);
+            Configuration conf = new Configuration();
+            conf.set("fs.defaultFS", defaultFs);
+            try {
+                if (ObjectUtils.isEmpty(fs)) {
+                    fs = FileSystem.get(conf);
+                }
+                traverseDirectory(fs, path, excelFiles);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return excelFiles;
+    }
+
+    private static void traverseDirectory(FileSystem fs, Path directory, Set<String> excelFiles) throws IOException {
+        if (!fs.exists(directory)) {
+            System.out.println("Path does not exist: " + directory.toString());
+            return;
+        }
+
+        FileStatus[] fileStatuses = fs.listStatus(directory);
+        for (FileStatus fileStatus : fileStatuses) {
+            if (fileStatus.isFile() &&
+                    (fileStatus.getPath().getName().endsWith(".xlsx") || fileStatus.getPath().getName().endsWith(".xls"))) {
+                excelFiles.add(fileStatus.getPath().toString());
+            } else if (fileStatus.isDirectory()) {
+                // 递归遍历子目录
+                traverseDirectory(fs, fileStatus.getPath(), excelFiles);
+            }
+        }
     }
 
     public static void downloadFileFromHdfs(HttpServletResponse response, String filePath, String fileName, String defaultFs) {

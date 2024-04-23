@@ -337,7 +337,7 @@ public class ProcessCtrl {
      * @param appId:
      * @return String
      * @author tianyao
-     * @description 获取报错信息提示
+     * @description 获取报错信息提示,后面弃用
      * @date 2024/2/21 17:45
      */
     @RequestMapping(value = "/getErrorLogInfo", method = RequestMethod.GET)
@@ -345,6 +345,34 @@ public class ProcessCtrl {
     @ApiOperation(value = "getErrorLogInfo", notes = "获取报错信息提示")
     public String getErrorLogInfo(String appId) {
         return processServiceImpl.getErrorLogInfo(appId);
+    }
+
+    /**
+     * @param appId:
+     * @return String
+     * @author tianyao
+     * @description 获取在组件内部的报错信息提示
+     * @date 2024/2/21 17:45
+     */
+    @RequestMapping(value = "/getErrorLogInStop", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "getErrorLogInStop", notes = "获取在组件内部的报错信息提示")
+    public String getErrorLogInStop(String appId) {
+        return processServiceImpl.getErrorLogInStop(appId);
+    }
+
+    /**
+     * @param appId:
+     * @return String
+     * @author tianyao
+     * @description 获取在系统内部的报错信息提示
+     * @date 2024/2/21 17:45
+     */
+    @RequestMapping(value = "/getErrorLogInSystem", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "getErrorLogInSystem", notes = "获取在系统内部的报错信息提示")
+    public String getErrorLogInSystem(String appId) {
+        return processServiceImpl.getErrorLogInSystem(appId);
     }
 
     /**

@@ -30,6 +30,8 @@ public interface ISysUserService {
      */
     public String getUserById(boolean isAdmin, String username, String id);
 
+    String getByUsername();
+
     /**
      * Update user
      *
@@ -62,11 +64,13 @@ public interface ISysUserService {
 
     public String checkUserName(String username);
 
-    public String registerUser(SysUserVo sysUserVo);
+    public String registerUser(SysUserVo sysUserVo, String ecosystemTypeIds);
 
     public String jwtLogin(String username, String password);
 
     public int deleteUser(String id);
 
     public String bindDeveloperAccessKey(boolean isAdmin, String username, String accessKey);
+
+    String updateInfo(SysUserVo sysUserVo);
 }

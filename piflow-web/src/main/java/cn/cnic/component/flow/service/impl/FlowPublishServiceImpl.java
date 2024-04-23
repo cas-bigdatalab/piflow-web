@@ -6,9 +6,8 @@ import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
 import cn.cnic.component.dataProduct.domain.DataProductTypeDomain;
-import cn.cnic.component.dataProduct.entity.DataProduct;
-import cn.cnic.component.dataProduct.entity.DataProductType;
-import cn.cnic.component.dataProduct.entity.ProductTypeAssociate;
+import cn.cnic.component.dataProduct.domain.EcosystemTypeDomain;
+import cn.cnic.component.dataProduct.entity.*;
 import cn.cnic.component.flow.domain.FlowDomain;
 import cn.cnic.component.flow.domain.FlowPublishDomain;
 import cn.cnic.component.flow.domain.FlowStopsPublishingPropertyDomain;
@@ -37,7 +36,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -58,11 +56,14 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
     private final ProcessDomain processDomain;
     private final IFlow flowImpl;
     private final DataProductDomain dataProductDomain;
+
+    private final EcosystemTypeDomain ecosystemTypeDomain;
+
     private final StopsDomain stopsDomain;
     private final PathsMapper pathsMapper;
 
     @Autowired
-    public FlowPublishServiceImpl(SnowflakeGenerator snowflakeGenerator, FlowPublishDomain flowPublishDomain, FileDomain fileDomain, FlowDomain flowDomain, DataProductTypeDomain dataProductTypeDomain, FlowStopsPublishingPropertyDomain flowStopsPublishingPropertyDomain, ProcessDomain processDomain, IFlow flowImpl, DataProductDomain dataProductDomain, StopsDomain stopsDomain, PathsMapper pathsMapper) {
+    public FlowPublishServiceImpl(SnowflakeGenerator snowflakeGenerator, FlowPublishDomain flowPublishDomain, FileDomain fileDomain, FlowDomain flowDomain, DataProductTypeDomain dataProductTypeDomain, FlowStopsPublishingPropertyDomain flowStopsPublishingPropertyDomain, ProcessDomain processDomain, IFlow flowImpl, DataProductDomain dataProductDomain, EcosystemTypeDomain ecosystemTypeDomain, StopsDomain stopsDomain, PathsMapper pathsMapper) {
         this.snowflakeGenerator = snowflakeGenerator;
         this.flowPublishDomain = flowPublishDomain;
         this.fileDomain = fileDomain;
@@ -72,6 +73,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         this.processDomain = processDomain;
         this.flowImpl = flowImpl;
         this.dataProductDomain = dataProductDomain;
+        this.ecosystemTypeDomain = ecosystemTypeDomain;
         this.stopsDomain = stopsDomain;
         this.pathsMapper = pathsMapper;
     }
@@ -165,6 +167,20 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                 flowStopsPublishingPropertyDomain.saveBatch(properties);
             }
             dataProductTypeDomain.insertAssociate(associate);
+            //新增生态系统类型
+            //生态站逻辑：  保存所属生态系统类型
+            String idstr = id.toString();
+            List<EcosystemType> ecosystemTypeList = ecosystemTypeDomain.getByIds(vo.getEcosystemTypeIds());
+            List<EcosystemTypeAssociate> associates = ecosystemTypeList.stream().map(ecosystemType -> {
+                EcosystemTypeAssociate ecosystemTypeAssociate = new EcosystemTypeAssociate();
+                ecosystemTypeAssociate.setEcosystemTypeId(ecosystemType.getId());
+                ecosystemTypeAssociate.setEcosystemTypeName(ecosystemType.getName());
+                ecosystemTypeAssociate.setAssociateId(idstr);
+                ecosystemTypeAssociate.setAssociateType(EcosystemTypeAssociateType.FLOW.getValue());
+                return ecosystemTypeAssociate;
+            }).collect(Collectors.toList());
+            ecosystemTypeDomain.deleteByAssociateId(username);
+            ecosystemTypeDomain.insertAssociateBatch(associates);
         } else {
             id = Long.parseLong(idStr);
             //更新编辑后发布
@@ -270,6 +286,19 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
             }
 
             dataProductTypeDomain.updateAssociate(associate);
+
+            //生态站逻辑：  保存流水线所属生态系统类型
+            List<EcosystemType> ecosystemTypeList = ecosystemTypeDomain.getByIds(vo.getEcosystemTypeIds());
+            List<EcosystemTypeAssociate> associates = ecosystemTypeList.stream().map(ecosystemType -> {
+                EcosystemTypeAssociate ecosystemTypeAssociate = new EcosystemTypeAssociate();
+                ecosystemTypeAssociate.setEcosystemTypeId(ecosystemType.getId());
+                ecosystemTypeAssociate.setEcosystemTypeName(ecosystemType.getName());
+                ecosystemTypeAssociate.setAssociateId(idStr);
+                ecosystemTypeAssociate.setAssociateType(EcosystemTypeAssociateType.FLOW.getValue());
+                return ecosystemTypeAssociate;
+            }).collect(Collectors.toList());
+            ecosystemTypeDomain.deleteByAssociateId(username);
+            ecosystemTypeDomain.insertAssociateBatch(associates);
         }
 
 
@@ -284,6 +313,13 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         FlowPublishingVo result = new FlowPublishingVo();
         BeanUtils.copyProperties(flowPublishing, result);
         result.setId(flowPublishing.getId().toString());
+        //查询所属生态系统类型
+        List<EcosystemTypeAssociate> associates = ecosystemTypeDomain.getAssociateByAssociateId(flowPublishing.getId().toString());
+        if (CollectionUtils.isNotEmpty(associates)) {
+            List<EcosystemType> ecosystemTypes = ecosystemTypeDomain.getByIds(associates.stream().map(x -> String.valueOf(x.getEcosystemTypeId())).collect(Collectors.joining(",")));
+            result.setEcosystemTypes(ecosystemTypes);
+        }
+
         //获取封面
         File flowPublishingCover = fileDomain.getByAssociateId(flowPublishing.getId().toString(), FileAssociateType.FLOW_PUBLISHING_COVER.getValue());
         if (ObjectUtils.isNotEmpty(flowPublishingCover)) {
@@ -362,13 +398,41 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
 
     @Override
     public String getFlowPublishingListPageByProductTypeId(FlowPublishingVo flowPublishingVo) {
+        String username = SessionUserUtil.getCurrentUsername();
+        //获取用户所属的生态系统类型
+        List<EcosystemTypeAssociate> ecosystemTypeAssociates = ecosystemTypeDomain.getAssociateByAssociateId(username);
+        //获取所属生态系统类型的流水线的所属数据产品类型
         List<DataProductType> dataProductTypeList = dataProductTypeDomain.getDataProductTypeAndAllChildById(flowPublishingVo.getProductTypeId());
+        if (CollectionUtils.isNotEmpty(ecosystemTypeAssociates)) {
+            //获取所属生态系统类型的流水线id
+            //获取流水线相关的数据产品类型
+            List<Long> ecosystemTypeIds = ecosystemTypeAssociates.stream().map(EcosystemTypeAssociate::getEcosystemTypeId).collect(Collectors.toList());
+            List<String> flowPublishingIds = ecosystemTypeDomain.getAssociateByEcosystemTypeIdsAndAssociateType(ecosystemTypeIds, EcosystemTypeAssociateType.FLOW.getValue());
+            if (CollectionUtils.isNotEmpty(flowPublishingIds)) {
+                flowPublishingIds = flowPublishingIds.stream().distinct().collect(Collectors.toList());
+                List<DataProductType> selectedTypes = dataProductTypeList = dataProductTypeDomain.getByFlowPublishingIds(flowPublishingIds);
+                if (CollectionUtils.isNotEmpty(selectedTypes)) {
+                    dataProductTypeList = dataProductTypeList.stream()
+                            .filter(selectedTypes::contains)
+                            .collect(Collectors.toList());
+                }
+            } else {
+                dataProductTypeList.clear();
+            }
+        }
         Page<FlowPublishingVo> page = PageHelper.startPage(flowPublishingVo.getPage(), flowPublishingVo.getLimit(), "product_type_id ASC, crt_dttm DESC");
-        flowPublishDomain.getListByProductTypeIds(flowPublishingVo.getKeyword(), dataProductTypeList.stream().map(DataProductType::getId).collect(Collectors.toList()));
-
+        if (CollectionUtils.isNotEmpty(dataProductTypeList)) {
+            flowPublishDomain.getListByProductTypeIds(flowPublishingVo.getKeyword(), dataProductTypeList.stream().map(DataProductType::getId).collect(Collectors.toList()));
+        }
         List<FlowPublishingVo> result = page.getResult();
         if (CollectionUtils.isNotEmpty(result)) {
             result.forEach(publishingVo -> {
+                //获取所属生产系统类型
+                List<EcosystemTypeAssociate> associates = ecosystemTypeDomain.getAssociateByAssociateId(publishingVo.getId().toString());
+                if (CollectionUtils.isNotEmpty(associates)) {
+                    List<EcosystemType> ecosystemTypes = ecosystemTypeDomain.getByIds(associates.stream().map(x -> String.valueOf(x.getEcosystemTypeId())).collect(Collectors.joining(",")));
+                    publishingVo.setEcosystemTypes(ecosystemTypes);
+                }
                 //获取说明书
                 File flowPublishingInstruction = fileDomain.getByAssociateId(publishingVo.getId(), FileAssociateType.FLOW_PUBLISHING_INSTRUCTION.getValue());
                 if (ObjectUtils.isNotEmpty(flowPublishingInstruction)) {
@@ -508,76 +572,89 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
 //            return ReturnMapUtils.setFailedMsgRtnJsonStr("process create failed!!");
 //
 //        final Process process = ProcessUtils.copyProcess(oldProcess, username, RunModeType.RUN, true);
-        final Process process = initProcess(flowPublishingVo, username);
-        process.setState(ProcessState.INIT);
-        if (null == process) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
-        }
-        int updateProcess = processDomain.addProcess(process);
-        if (updateProcess <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
-        }
-        String processId = process.getId();
-        //改成异步获取appid
-        CompletableFuture<Map<String, Object>> starFlowFuture = null; //定义future结构
-        starFlowFuture = CompletableFuture.supplyAsync(() ->
-                flowImpl.startFlow(process, "", RunModeType.RUN));
-        // 当 CompletableFuture 完成时更新appID，生成数据产品记录
-        starFlowFuture.whenComplete((result, throwable) -> {
-            // 检查是否有异常抛出
-            if (throwable != null) {
-                logger.error("start flow failed: " + throwable.getMessage());
-            } else {
-                if (null == result || 200 != ((Integer) result.get("code"))) {
-                    processDomain.updateProcessEnableFlag(username, true, processId);
-                } else {
-                    SysParamsCache.STARTED_PROCESS.put(processId, (String) result.get("appId"));
-                    Process process1 = processDomain.getProcessById(username, true, processId);
-                    process1.setLastUpdateDttm(new Date());
-                    process1.setLastUpdateUser(username);
-                    process1.setAppId((String) result.get("appId"));
-                    process1.setProcessId((String) result.get("appId"));
-                    process1.setState(ProcessState.STARTED);
-                    process1.setLastUpdateUser(username);
-                    process1.setLastUpdateDttm(new Date());
-                    try {
-                        processDomain.updateProcess(process1);
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-                    //为所有发布的输出参数都创建一个数据产品记录
-                    Date now = new Date();
-                    List<DataProduct> dataProducts = new ArrayList<>();
-                    flowPublishingVo.getStops().stream()
-                            .flatMap(stop -> stop.getStopPublishingPropertyVos().stream())
-                            .filter(property -> FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(property.getType()))
-                            .forEach(property -> {
-                                DataProduct dataProduct = new DataProduct();
-                                dataProduct.setId(snowflakeGenerator.next());
-                                dataProduct.setProcessId(processId);
-                                dataProduct.setPropertyId(Long.parseLong(property.getId()));
-                                dataProduct.setPropertyName(property.getName());
-                                dataProduct.setDatasetUrl(property.getCustomValue());
-                                dataProduct.setPermission(DataProductPermission.OPEN.getValue());
-                                dataProduct.setState(DataProductState.CREATING.getValue());
-                                dataProduct.setCrtDttm(now);
-                                dataProduct.setCrtDttmStr(DateUtils.dateTimesToStr(now));
-                                dataProduct.setCrtUser(username);
-                                dataProduct.setLastUpdateDttm(now);
-                                dataProduct.setLastUpdateDttmStr(DateUtils.dateTimeToStr(now));
-                                dataProduct.setLastUpdateUser(username);
-                                dataProduct.setEnableFlag(true);
-                                dataProduct.setEnableFlagNum(1);
-                                dataProduct.setVersion(0L);
-                                dataProducts.add(dataProduct);
-                            });
-                    dataProductDomain.addBatch(dataProducts);
-                }
+        Object lock = new Object();
+        String returnProcessId = "";
+        synchronized (lock) {
+            final Process process = initProcess(flowPublishingVo, username);
+            String processId = process.getId();
+            returnProcessId = processId;
+            process.setState(ProcessState.INIT);
+            if (null == process) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
             }
-        });
+            int updateProcess = processDomain.addProcess(process);
+            if (updateProcess <= 0) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
+            }
+            //改成异步获取appid
+            CompletableFuture<Map<String, Object>> starFlowFuture = null; //定义future结构
+            starFlowFuture = CompletableFuture.supplyAsync(() ->
+                    flowImpl.startFlow(process, "", RunModeType.RUN));
+            // 当 CompletableFuture 完成时更新appID，生成数据产品记录
+            starFlowFuture.whenComplete((result, throwable) -> {
+                // 检查是否有异常抛出
+                if (throwable != null) {
+                    logger.error("start flow failed: " + throwable.getMessage());
+                } else {
+                    if (null == result || 200 != ((Integer) result.get("code"))) {
+                        processDomain.updateProcessEnableFlag(username, true, processId);
+                    } else {
+                        SysParamsCache.STARTED_PROCESS.put(processId, (String) result.get("appId"));
+                        Process process1 = processDomain.getProcessById(username, true, processId);
+                        process1.setLastUpdateDttm(new Date());
+                        process1.setLastUpdateUser(username);
+                        process1.setAppId((String) result.get("appId"));
+                        process1.setProcessId((String) result.get("appId"));
+                        process1.setState(ProcessState.STARTED);
+                        process1.setLastUpdateUser(username);
+                        process1.setLastUpdateDttm(new Date());
+                        try {
+                            processDomain.updateProcess(process1);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                        //为所有发布的输出参数都创建一个数据产品记录
+                        Date now = new Date();
+                        List<DataProduct> dataProducts = new ArrayList<>();
+                        flowPublishingVo.getStops().stream()
+                                .flatMap(stop -> stop.getStopPublishingPropertyVos().stream())
+                                .filter(property -> FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(property.getType()))
+                                .forEach(property -> {
+                                    DataProduct dataProduct = new DataProduct();
+                                    dataProduct.setId(snowflakeGenerator.next());
+                                    dataProduct.setProcessId(processId);
+                                    dataProduct.setPropertyId(Long.parseLong(property.getId()));
+                                    dataProduct.setPropertyName(property.getName());
+                                    dataProduct.setDatasetUrl(property.getCustomValue());
+                                    dataProduct.setPermission(DataProductPermission.OPEN.getValue());
+                                    dataProduct.setState(DataProductState.CREATING.getValue());
+                                    dataProduct.setCrtDttm(now);
+                                    dataProduct.setCrtDttmStr(DateUtils.dateTimesToStr(now));
+                                    dataProduct.setCrtUser(username);
+                                    dataProduct.setLastUpdateDttm(now);
+                                    dataProduct.setLastUpdateDttmStr(DateUtils.dateTimeToStr(now));
+                                    dataProduct.setLastUpdateUser(username);
+                                    dataProduct.setEnableFlag(true);
+                                    dataProduct.setEnableFlagNum(1);
+                                    dataProduct.setVersion(0L);
+                                    dataProduct.setIsShare(0);
+                                    dataProduct.setDoiId("");
+                                    dataProduct.setCstrId("");
+                                    dataProduct.setSubjectTypeId("");
+                                    dataProduct.setTimeRange("");
+                                    dataProduct.setSpacialRange("");
+                                    dataProduct.setDatasetSize("");
+                                    dataProduct.setDatasetType(DatasetType.EXCEL.getValue());
+                                    dataProducts.add(dataProduct);
+                                });
+                        dataProductDomain.addBatch(dataProducts);
+                    }
+                }
+            });
+        }
         logger.info("========run flow finish==================");
         Map<String, String> result = new HashMap<>();
-        result.put("processId", processId);
+        result.put("processId", returnProcessId);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", result);
     }
 
