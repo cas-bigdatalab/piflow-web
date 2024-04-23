@@ -410,7 +410,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
             List<String> flowPublishingIds = ecosystemTypeDomain.getAssociateByEcosystemTypeIdsAndAssociateType(ecosystemTypeIds, EcosystemTypeAssociateType.FLOW.getValue());
             if (CollectionUtils.isNotEmpty(flowPublishingIds)) {
                 flowPublishingIds = flowPublishingIds.stream().distinct().collect(Collectors.toList());
-                List<DataProductType> selectedTypes = dataProductTypeList = dataProductTypeDomain.getByFlowPublishingIds(flowPublishingIds);
+                List<DataProductType> selectedTypes = dataProductTypeDomain.getByFlowPublishingIds(flowPublishingIds);
                 if (CollectionUtils.isNotEmpty(selectedTypes)) {
                     dataProductTypeList = dataProductTypeList.stream()
                             .filter(selectedTypes::contains)
