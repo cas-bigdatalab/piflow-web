@@ -18,6 +18,7 @@ public class FlowPublishing extends BaseModelIDNoCorpAgentId {
     private String productTypeName;
     private String productTypeDescription;
     private String description;
+    private Integer flowSort;
 
     List<FlowStopsPublishingProperty> properties;
 }

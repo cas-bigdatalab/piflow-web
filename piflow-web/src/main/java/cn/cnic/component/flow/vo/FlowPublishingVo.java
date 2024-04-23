@@ -2,6 +2,7 @@ package cn.cnic.component.flow.vo;
 
 import cn.cnic.base.vo.BasePageVo;
 import cn.cnic.common.serializer.ToLongDeserializer;
+import cn.cnic.component.dataProduct.entity.EcosystemType;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -43,6 +44,8 @@ public class FlowPublishingVo extends BasePageVo implements Serializable {
 //    @JsonSerialize(using = ToStringSerializer.class)
 //    @JsonDeserialize(using = ToLongDeserializer.class)
     private Long version;
+    private Integer flowSort;
+    private String ecosystemTypeIds;
 
     private String coverFileId;
     private String coverFileName;
@@ -51,5 +54,6 @@ public class FlowPublishingVo extends BasePageVo implements Serializable {
 
     private String bak1; //用来接收运行进程时的备注
 
+    private List<EcosystemType> ecosystemTypes;   //生态站专用，所属生态系统类型
 
 }

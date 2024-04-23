@@ -25,6 +25,10 @@ public class DataProductDomain {
     @Autowired
     private ProductUserMapper productUserMapper;
 
+    public int insert(DataProduct dataProduct) {
+        return dataProductMapper.insert(dataProduct);
+    }
+
     public int addBatch(List<DataProduct> dataProducts) {
         return dataProductMapper.addBatch(dataProducts);
     }
@@ -45,6 +49,13 @@ public class DataProductDomain {
         return dataProductMapper.updatePermission(dataProduct);
     }
 
+    /**
+     * @param dataProduct:
+     * @return int
+     * @author tianyao
+     * @description 对已发布、下架的数据产品删除，是转换给待发布，，如果是待发布、或者生成失败，则删除
+     * @date 2024/4/21 15:27
+     */
     public int delete(DataProduct dataProduct) {
         return dataProductMapper.delete(dataProduct);
     }
@@ -105,4 +116,11 @@ public class DataProductDomain {
         return productUserMapper.getById(id);
     }
 
+    public List<DataProduct> getByIds(String[] ids) {
+        return dataProductMapper.getByIds(ids);
+    }
+
+    public int updateEnableFlagToFalse(String[] ids) {
+        return dataProductMapper.updateEnableFlagToFalse(ids);
+    }
 }

@@ -1,18 +1,21 @@
 package cn.cnic.component.dataProduct.service.impl;
 
-import cn.cnic.base.utils.*;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.common.Eunm.EcosystemTypeAssociateType;
 import cn.cnic.common.Eunm.FileAssociateType;
-import cn.cnic.common.Eunm.ProductTypeAssociateState;
 import cn.cnic.common.Eunm.ProductTypeAssociateType;
 import cn.cnic.common.constant.MessageConfig;
-import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.domain.DataProductTypeDomain;
+import cn.cnic.component.dataProduct.domain.EcosystemTypeDomain;
+import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.entity.DataProductType;
+import cn.cnic.component.dataProduct.entity.EcosystemTypeAssociate;
 import cn.cnic.component.dataProduct.entity.ProductTypeAssociate;
 import cn.cnic.component.dataProduct.service.IDataProductTypeService;
 import cn.cnic.component.dataProduct.vo.DataProductTypeVo;
 import cn.cnic.component.system.domain.FileDomain;
-import cn.cnic.component.system.entity.File;
 import cn.cnic.component.system.service.IFileService;
 import cn.hutool.core.lang.generator.SnowflakeGenerator;
 import com.alibaba.fastjson2.JSON;
@@ -21,18 +24,13 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -45,13 +43,16 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
     private final FileDomain fileDomain;
     private final IFileService fileServiceImpl;
 
+    private final EcosystemTypeDomain ecosystemTypeDomain;
+
     private final SnowflakeGenerator snowflakeGenerator;
 
     @Autowired
-    public DataProductTypeServiceImpl(DataProductTypeDomain dataProductTypeDomain, FileDomain fileDomain, IFileService fileServiceImpl, SnowflakeGenerator snowflakeGenerator) {
+    public DataProductTypeServiceImpl(DataProductTypeDomain dataProductTypeDomain, FileDomain fileDomain, IFileService fileServiceImpl, EcosystemTypeDomain ecosystemTypeDomain, SnowflakeGenerator snowflakeGenerator) {
         this.dataProductTypeDomain = dataProductTypeDomain;
         this.fileDomain = fileDomain;
         this.fileServiceImpl = fileServiceImpl;
+        this.ecosystemTypeDomain = ecosystemTypeDomain;
         this.snowflakeGenerator = snowflakeGenerator;
     }
 
@@ -63,7 +64,7 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
         if (null != dataProductTypeVo.getId()) {
             //编辑更新
             //删除并新增数据产品类型封面
-            if(ObjectUtils.isNotEmpty(file)){
+            if (ObjectUtils.isNotEmpty(file)) {
                 fileServiceImpl.uploadFile(file, false, FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue(), dataProductTypeVo.getId().toString());
             }
 
@@ -101,7 +102,7 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
             if (ObjectUtils.isNotEmpty(isExist)) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("same name is not allowed in one parent category!!");
             }
-            if(null == dataProductType.getLevel() || 0 == dataProductType.getLevel()){
+            if (null == dataProductType.getLevel() || 0 == dataProductType.getLevel()) {
                 //递归获取分类的级别
                 Integer level = getLevelWithParentId(dataProductType.getParentId());
                 dataProductType.setLevel(level);
@@ -140,7 +141,7 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
     public String delete(Long id) {
         int i = dataProductTypeDomain.delete(id);
         //删除关联的封面
-        fileDomain.deleteByAssociateId(id.toString(),FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue());
+        fileDomain.deleteByAssociateId(id.toString(), FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue());
         if (i > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.DELETE_SUCCEEDED_MSG());
         } else {
@@ -168,7 +169,74 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
                 addChildType(vo, dataProductTypeList);
             }
         }
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data",result);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", result);
+    }
+
+    @Override
+    public String getWithEcosystemType() {
+        List<DataProductTypeVo> result = new ArrayList<>();
+        String username = SessionUserUtil.getCurrentUsername();
+        //获取用户所属的生态系统类型
+        List<EcosystemTypeAssociate> ecosystemTypeAssociates = ecosystemTypeDomain.getAssociateByAssociateId(username);
+        //获取所属生态系统类型的流水线的所属数据产品类型
+        List<DataProductType> dataProductTypeList = dataProductTypeDomain.getAll(null);
+        if (CollectionUtils.isNotEmpty(ecosystemTypeAssociates)) {
+            //获取所属生态系统类型的流水线id
+            //获取流水线相关的数据产品类型
+            List<Long> ecosystemTypeIds = ecosystemTypeAssociates.stream().map(EcosystemTypeAssociate::getEcosystemTypeId).collect(Collectors.toList());
+            List<String> flowPublishingIds = ecosystemTypeDomain.getAssociateByEcosystemTypeIdsAndAssociateType(ecosystemTypeIds, EcosystemTypeAssociateType.FLOW.getValue());
+            if (CollectionUtils.isNotEmpty(flowPublishingIds)) {
+                flowPublishingIds = flowPublishingIds.stream().distinct().collect(Collectors.toList());
+                dataProductTypeList = dataProductTypeDomain.getByFlowPublishingIds(flowPublishingIds);
+            } else {
+                dataProductTypeList.clear();
+            }
+            //构建树形结构返回
+            List<DataProductTypeVo> secondResult = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(dataProductTypeList)) {
+                //获取包含的二级分类
+                List<DataProductType> secondLevelCategories = getCategoriesByLevel(dataProductTypeList, 2);
+                List<DataProductType> firstLevelCategories = getCategoriesByLevel(secondLevelCategories, 1);
+                if (CollectionUtils.isNotEmpty(secondLevelCategories)) {
+                    for (DataProductType dataProductType : secondLevelCategories) {
+                        DataProductTypeVo vo = new DataProductTypeVo();
+                        BeanUtils.copyProperties(dataProductType, vo);
+                        secondResult.add(vo);
+                        addChildType(vo, dataProductTypeList);
+                    }
+                }
+                if (CollectionUtils.isNotEmpty(firstLevelCategories)) {
+                    for (DataProductType dataProductType : firstLevelCategories) {
+                        DataProductTypeVo vo = new DataProductTypeVo();
+                        BeanUtils.copyProperties(dataProductType, vo);
+                        result.add(vo);
+                        addChildType(vo, secondResult.stream().map(x -> {
+                            DataProductType dataProduct = new DataProductType();
+                            BeanUtils.copyProperties(x, dataProduct);
+                            return dataProduct;
+                        }).collect(Collectors.toList()));
+                    }
+                }
+
+            }
+        } else {
+            //如果用户未指定生态系统类型，返回全部
+            if (CollectionUtils.isNotEmpty(dataProductTypeList)) {
+                List<DataProductType> parentList = dataProductTypeList.stream()
+                        .filter(type -> type.getParentId().equals(0L))
+                        .sorted(Comparator.comparing(DataProductType::getId))
+                        .collect(Collectors.toList());
+                if (CollectionUtils.isNotEmpty(parentList)) {
+                    for (DataProductType dataProductType : parentList) {
+                        DataProductTypeVo vo = new DataProductTypeVo();
+                        BeanUtils.copyProperties(dataProductType, vo);
+                        result.add(vo);
+                        addChildType(vo, dataProductTypeList);
+                    }
+                }
+            }
+        }
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", result);
     }
 
     @Override
@@ -203,6 +271,7 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
         }
     }
 
+
     private void addChildType(DataProductTypeVo vo, List<DataProductType> dataProductTypeList) {
         List<DataProductType> tempList = dataProductTypeList.stream()
                 .filter(type -> vo.getId().equals(type.getParentId()))
@@ -211,6 +280,33 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
         List<DataProductTypeVo> dataProductTypeVos = JSON.parseArray(JSON.toJSONString(tempList), DataProductTypeVo.class);
         vo.setChildren(dataProductTypeVos);
         dataProductTypeVos.forEach(typeVo -> addChildType(typeVo, dataProductTypeList));
+    }
+
+    private List<DataProductType> getCategoriesByLevel(List<DataProductType> dataProductTypes, int level) {
+        List<DataProductType> result = new ArrayList<>();
+        for (DataProductType dataProductType : dataProductTypes) {
+            if (dataProductType.getLevel() == level) {
+                result.add(dataProductType);
+            } else {
+                // 递归寻找父级分类
+                findParentCategoryByLevel(dataProductType, result, level);
+            }
+        }
+        return result.stream().distinct().collect(Collectors.toList());
+    }
+
+    private void findParentCategoryByLevel(DataProductType dataProductType, List<DataProductType> result, int level) {
+        if (dataProductType.getLevel() < level) {
+            return;
+        }
+        Long parentId = dataProductType.getParentId();
+        DataProductType parent = dataProductTypeDomain.getById(parentId);
+        Integer parentLevel = parent.getLevel();
+        if (parentLevel == level) {
+            result.add(parent);
+        } else {
+            findParentCategoryByLevel(parent, result, level);
+        }
     }
 
 

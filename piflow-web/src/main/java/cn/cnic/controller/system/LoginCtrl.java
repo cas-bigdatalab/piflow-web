@@ -60,7 +60,7 @@ public class LoginCtrl {
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
-    public String register(String username, String pw, String name, String sex, String status) {
+    public String register(String username, String pw, String name, String sex, String status, String phoneNumber, String email, String ecosystemTypeIds) {
         if (StringUtils.isBlank(status)) {
         	status = "0";
         }
@@ -70,11 +70,13 @@ public class LoginCtrl {
         sysUserVo.setPassword(pw);
         sysUserVo.setSex(sex);
         sysUserVo.setName(name);
+        sysUserVo.setPhoneNumber(phoneNumber);
+        sysUserVo.setEmail(email);
         sysUserVo.setStatus(Byte.valueOf(status));
         // sysUserVo.setLastLoginIp(ipAddr);
         logHelperServiceImpl.logAuthSucceed("create user ",username);
         PasswordUtils.getKeyAndValue(username,pw);
-        return sysUserServiceImpl.registerUser(sysUserVo);
+        return sysUserServiceImpl.registerUser(sysUserVo,ecosystemTypeIds);
     }
 
     @RequestMapping(value = "/checkUserName", method = RequestMethod.POST)

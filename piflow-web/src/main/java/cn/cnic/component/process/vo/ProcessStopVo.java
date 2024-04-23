@@ -35,6 +35,7 @@ public class ProcessStopVo implements Serializable {
     private List<ProcessStopPropertyVo> processStopPropertyVoList = new ArrayList<ProcessStopPropertyVo>();
     private List<ProcessStopsCustomizedPropertyVo> processStopCustomizedPropertyVoList = new ArrayList<>();
     private Boolean isDataSource;
+    private String flowStopId;
 
     public String getStartTimeStr() {
         return DateUtils.dateTimesToStr(this.startTime);

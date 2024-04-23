@@ -96,4 +96,15 @@ public class SysUserDomain {
     public SysUser getSysUserByUserName(String username) {
         return sysUserMapper.getSysUserByUserName(username);
     }
+
+    /**
+     * @param newUsername:
+      * @return SysUser
+     * @author tianyao
+     * @description 检查username是否被其他用户使用
+     * @date 2024/4/20 17:48
+     */
+    public String getOtherSameUserName(String newUsername) {
+        return sysUserMapper.checkUsername(newUsername);
+    }
 }
