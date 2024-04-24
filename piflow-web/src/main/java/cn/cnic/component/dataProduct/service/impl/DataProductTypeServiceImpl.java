@@ -277,9 +277,11 @@ public class DataProductTypeServiceImpl implements IDataProductTypeService {
                 .filter(type -> vo.getId().equals(type.getParentId()))
                 .sorted(Comparator.comparing(DataProductType::getId))
                 .collect(Collectors.toList());
-        List<DataProductTypeVo> dataProductTypeVos = JSON.parseArray(JSON.toJSONString(tempList), DataProductTypeVo.class);
-        vo.setChildren(dataProductTypeVos);
-        dataProductTypeVos.forEach(typeVo -> addChildType(typeVo, dataProductTypeList));
+        if(CollectionUtils.isNotEmpty(tempList)){
+            List<DataProductTypeVo> dataProductTypeVos = JSON.parseArray(JSON.toJSONString(tempList), DataProductTypeVo.class);
+            vo.setChildren(dataProductTypeVos);
+            dataProductTypeVos.forEach(typeVo -> addChildType(typeVo, dataProductTypeList));
+        }
     }
 
     private List<DataProductType> getCategoriesByLevel(List<DataProductType> dataProductTypes, int level) {

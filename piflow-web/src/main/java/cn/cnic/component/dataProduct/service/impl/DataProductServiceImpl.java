@@ -389,7 +389,7 @@ public class DataProductServiceImpl implements IDataProductService {
 
     @Override
     public Set<String> getDataSourceListFromProduct(String id, String datasetUrl) {
-        String[] parts = datasetUrl.split(";");
+        String[] parts = datasetUrl.split(",");
         //Set<String> stringSet = DataProductUtil.findExcelFiles(parts);
         Set<String> stringSet  = FileUtils.findExcelFiles(parts, FileUtils.getDefaultFs());
         return stringSet;

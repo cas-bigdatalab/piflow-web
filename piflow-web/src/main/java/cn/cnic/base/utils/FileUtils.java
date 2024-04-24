@@ -728,7 +728,10 @@ public class FileUtils {
         for (FileStatus fileStatus : fileStatuses) {
             if (fileStatus.isFile() &&
                     (fileStatus.getPath().getName().endsWith(".xlsx") || fileStatus.getPath().getName().endsWith(".xls"))) {
-                excelFiles.add(fileStatus.getPath().toString());
+                // 使用正则表达式匹配并替换路径中的 "hdfs://.../" 部分为"/"
+                String filePath = fileStatus.getPath().toString();
+                filePath = filePath.replaceAll("^hdfs://[^/]+/", "/");
+                excelFiles.add(filePath);
             } else if (fileStatus.isDirectory()) {
                 // 递归遍历子目录
                 traverseDirectory(fs, fileStatus.getPath(), excelFiles);
