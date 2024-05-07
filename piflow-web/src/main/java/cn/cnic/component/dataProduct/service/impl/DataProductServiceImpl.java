@@ -243,6 +243,17 @@ public class DataProductServiceImpl implements IDataProductService {
         //无论是登录状态还是未登录状态，都能查到所有已发布的数据产品，无论是公开的还是需要授权的
         Page<DataProductVo> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
         dataProductDomain.getByPageForHomePage(dataProductVo, username);
+        List<DataProductVo> result = page.getResult();
+        //补充上用户申请记录
+        if (StringUtils.isNotBlank(username)) {
+            for (DataProductVo productVo : result) {
+                String crtUser = productVo.getCrtUser();
+                if (!username.equals(crtUser)) {
+                    ProductUser applyInfo = dataProductDomain.getApplyInfoByUserName(username);
+                    productVo.setApplyRecord(applyInfo);
+                }
+            }
+        }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
@@ -391,7 +402,7 @@ public class DataProductServiceImpl implements IDataProductService {
     public Set<String> getDataSourceListFromProduct(String id, String datasetUrl) {
         String[] parts = datasetUrl.split(",");
         //Set<String> stringSet = DataProductUtil.findExcelFiles(parts);
-        Set<String> stringSet  = FileUtils.findExcelFiles(parts, FileUtils.getDefaultFs());
+        Set<String> stringSet = FileUtils.findExcelFiles(parts, FileUtils.getDefaultFs());
         return stringSet;
     }
 }

@@ -28,6 +28,7 @@ public class SysUserVo implements Serializable {
     private String lastLoginIp;
     private String phoneNumber;
     private String email;
+    private String company;
     private SysRole role;
 
     private List<EcosystemType> ecosystemTypes;   //生态站专用，所属生态系统类型

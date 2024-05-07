@@ -343,6 +343,7 @@ public class SysUserServiceImpl implements ISysUserService {
         sysUser.setStatus(sysUserVo.getStatus());
         sysUser.setPhoneNumber(sysUserVo.getPhoneNumber());
         sysUser.setEmail(sysUserVo.getEmail());
+        sysUser.setCompany(sysUserVo.getCompany());
 
         List<SysRole> sysRoleList = new ArrayList<>();
         SysRole sysRole = new SysRole();
