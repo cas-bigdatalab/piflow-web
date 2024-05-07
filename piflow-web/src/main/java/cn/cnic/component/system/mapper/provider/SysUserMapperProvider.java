@@ -27,6 +27,7 @@ public class SysUserMapperProvider {
     private String developerAccessKey;
     private String phoneNumber;
     private String email;
+    private String company;
 
     private boolean preventSQLInjectionSysUser(SysUser sysUser) {
         if (null == sysUser || StringUtils.isBlank(sysUser.getLastUpdateUser())) {
@@ -51,6 +52,7 @@ public class SysUserMapperProvider {
         this.developerAccessKey = SqlUtils.preventSQLInjection(sysUser.getDeveloperAccessKey());
         this.phoneNumber = SqlUtils.preventSQLInjection(sysUser.getPhoneNumber());
         this.email = SqlUtils.preventSQLInjection(sysUser.getEmail());
+        this.company = SqlUtils.preventSQLInjection(sysUser.getCompany());
 
         return true;
     }
@@ -69,6 +71,7 @@ public class SysUserMapperProvider {
         this.lastLoginIp = null;
         this.phoneNumber = null;
         this.email = null;
+        this.company = null;
     }
 
     /**
@@ -87,13 +90,13 @@ public class SysUserMapperProvider {
 
         strBuf.append("( ");
         strBuf.append(SqlUtils.baseFieldName() + ", ");
-        strBuf.append("username, password, name, age, sex, status, developer_access_key, phone_number,email ");
+        strBuf.append("username, password, name, age, sex, status, developer_access_key, phone_number, email, company ");
         strBuf.append(") ");
 
         strBuf.append("values ");
         strBuf.append("(");
         strBuf.append(SqlUtils.baseFieldValues(sysUser) + ", ");
-        strBuf.append(username + "," + password + "," + name + "," + age + "," + sex + "," + status + "," + developerAccessKey + "," + phoneNumber + "," + email);
+        strBuf.append(username + "," + password + "," + name + "," + age + "," + sex + "," + status + "," + developerAccessKey + "," + phoneNumber + "," + email + "," + company);
         strBuf.append(")");
 
         this.resetSysUser();
@@ -142,6 +145,7 @@ public class SysUserMapperProvider {
         }
         sql.SET("phone_number = " + this.phoneNumber);
         sql.SET("email = " + this.email);
+        sql.SET("company = " + this.company);
 
         sql.WHERE("version = " + this.version);
         sql.WHERE("id = " + this.id);
