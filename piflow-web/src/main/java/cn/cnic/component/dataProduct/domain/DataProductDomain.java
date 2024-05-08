@@ -68,6 +68,10 @@ public class DataProductDomain {
         return dataProductMapper.getListByName(name);
     }
 
+    public List<DataProduct> getListByNameAndId(String id, String name) {
+        return dataProductMapper.getListByNameAndId(id,name);
+    }
+
     public DataProduct getBasicInfoById(Long id) {
         return dataProductMapper.getBasicInfoById(id);
     }
@@ -100,8 +104,8 @@ public class DataProductDomain {
         return dataProductMapper.getFullInfoById(id);
     }
 
-    public ProductUser getApplyInfoByUserName(String username) {
-        return productUserMapper.getOneByUserName(username);
+    public ProductUser getApplyInfoByUserName(Long dataProductId,String username) {
+        return productUserMapper.getOneByUserName(dataProductId,username);
     }
 
     public int insertApplyInfo(ProductUser insertApply) {

@@ -70,18 +70,27 @@ public class DataProductServiceImpl implements IDataProductService {
         //校验，原有的状态是否是待发布,是否有重名的数据产品
         String selectedIds = dataProductVo.getId();
         String[] ids = selectedIds.split(",");
-        DataProduct isExist = dataProductDomain.getById(Long.parseLong(ids[0]));
-        if (ObjectUtils.isEmpty(isExist)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Not find the data product!, please check your id where input");
-        }
-        if (!DataProductState.TO_PUBLISH.getValue().equals(isExist.getState())) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("The publish is not allowed!! state is not TO_PUBLISH");
-        }
-        List<DataProduct> sameNameData = dataProductDomain.getListByName(dataProductVo.getName());
-        if (CollectionUtils.isNotEmpty(sameNameData)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Duplicate name!!");
-        }
         if (ids.length > 1) {
+            //多选数据产品且为第一次编辑
+            DataProduct isExist = dataProductDomain.getById(Long.parseLong(ids[0]));
+            if (ObjectUtils.isEmpty(isExist)) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("Not find the data product!, please check your id where input");
+            }
+            if (!DataProductState.TO_PUBLISH.getValue().equals(isExist.getState())) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("The publish is not allowed!! state is not TO_PUBLISH");
+            }
+            List<DataProduct> sameNameData = dataProductDomain.getListByName(dataProductVo.getName());
+            if (CollectionUtils.isNotEmpty(sameNameData)) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("Duplicate name!!");
+            }
+        } else {
+            //有可能是多选数据产品发布后二次编辑，也有可能是单个数据产品一次或二次编辑
+            List<DataProduct> sameNameData = dataProductDomain.getListByNameAndId(dataProductVo.getId(), dataProductVo.getName());
+            if (CollectionUtils.isNotEmpty(sameNameData)) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("Duplicate name!!");
+            }
+        }
+        if (ids.length > 1) {//初次编辑
             //多选了数据产品
             //将选择的数据产品enable_flag置为0，新建一个数据产品
             List<DataProduct> oldDataProducts = dataProductDomain.getByIds(ids);
@@ -112,7 +121,7 @@ public class DataProductServiceImpl implements IDataProductService {
         dataProduct.setLastUpdateDttm(now);
         dataProduct.setLastUpdateUser(username);
         dataProduct.setVersion(dataProductVo.getVersion());
-        if (ids.length > 1) {
+        if (ids.length > 1) {//初次编辑
             dataProduct.setAssociateId(selectedIds);
             dataProduct.setCrtUser(username);
             dataProduct.setCrtDttm(now);
@@ -249,7 +258,7 @@ public class DataProductServiceImpl implements IDataProductService {
             for (DataProductVo productVo : result) {
                 String crtUser = productVo.getCrtUser();
                 if (!username.equals(crtUser)) {
-                    ProductUser applyInfo = dataProductDomain.getApplyInfoByUserName(username);
+                    ProductUser applyInfo = dataProductDomain.getApplyInfoByUserName(Long.parseLong(productVo.getId()), username);
                     productVo.setApplyRecord(applyInfo);
                 }
             }
@@ -288,7 +297,7 @@ public class DataProductServiceImpl implements IDataProductService {
         String username = SessionUserUtil.getCurrentUsername();
         SysUser currentUser = sysUserDomain.getSysUserByUserName(username);
         //校验  是否有申请，如果有申请且正在审核中，就提醒用户已经申请过了，正在审核中。如果被审核拒绝了，也提醒他，被拒绝了，拒绝原因是什么？是否要重新申请 另外自己的数据产品无需申请
-        ProductUser applyInfo = dataProductDomain.getApplyInfoByUserName(currentUser.getUsername());
+        ProductUser applyInfo = dataProductDomain.getApplyInfoByUserName(Long.parseLong(productUserVo.getProductId()), currentUser.getUsername());
         if (ObjectUtils.isNotEmpty(applyInfo)) {
             Integer state = applyInfo.getState();
             if (ProductUserState.TO_CHECK.getValue().equals(state)) {
