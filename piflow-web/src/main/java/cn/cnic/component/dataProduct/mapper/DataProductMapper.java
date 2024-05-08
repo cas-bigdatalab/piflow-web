@@ -190,6 +190,8 @@ public interface DataProductMapper {
 
     @Select("select id, name from data_product where name = #{name} and enable_flag = 1")
     List<DataProduct> getListByName(@Param("name") String name);
+    @Select("select id, name from data_product where name = #{name} and id != #{id} and enable_flag = 1")
+    List<DataProduct> getListByNameAndId(@Param("id") String id, @Param("name") String name);
 
     @Select("<script>"
             + "select * from data_product "

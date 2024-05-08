@@ -13,8 +13,8 @@ import java.util.List;
 
 @Mapper
 public interface ProductUserMapper {
-    @Select("select * from product_user where user_name = #{username} and state != 0 order by last_update_dttm DESC limit 1")
-    ProductUser getOneByUserName(String username);
+    @Select("select * from product_user where product_id = #{dataProductId} and user_name = #{username} and state != 0 order by last_update_dttm DESC limit 1")
+    ProductUser getOneByUserName(@Param("dataProductId") Long dataProductId, @Param("username") String username);
     @Select("select * from product_user where id = #{id}")
     ProductUser getById(Long id);
     @InsertProvider(type = ProductUserMapperProvider.class, method = "insert")
