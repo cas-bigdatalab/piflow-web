@@ -249,20 +249,20 @@ public class DataProductServiceImpl implements IDataProductService {
     @Override
     public String getByPage(DataProductVo dataProductVo) {
         String username = SessionUserUtil.getCurrentUsername();
-        //无论是登录状态还是未登录状态，都能查到所有已发布的数据产品，无论是公开的还是需要授权的
+        //查到自己已发布的数据产品
         Page<DataProductVo> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
         dataProductDomain.getByPageForHomePage(dataProductVo, username);
         List<DataProductVo> result = page.getResult();
-        //补充上用户申请记录
-        if (StringUtils.isNotBlank(username)) {
-            for (DataProductVo productVo : result) {
-                String crtUser = productVo.getCrtUser();
-                if (!username.equals(crtUser)) {
-                    ProductUser applyInfo = dataProductDomain.getApplyInfoByUserName(Long.parseLong(productVo.getId()), username);
-                    productVo.setApplyRecord(applyInfo);
-                }
-            }
-        }
+//        //补充上用户申请记录
+//        if (StringUtils.isNotBlank(username)) {
+//            for (DataProductVo productVo : result) {
+//                String crtUser = productVo.getCrtUser();
+//                if (!username.equals(crtUser)) {
+//                    ProductUser applyInfo = dataProductDomain.getApplyInfoByUserName(Long.parseLong(productVo.getId()), username);
+//                    productVo.setApplyRecord(applyInfo);
+//                }
+//            }
+//        }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
