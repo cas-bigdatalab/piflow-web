@@ -73,7 +73,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/dataProductType/get").permitAll()
                 .antMatchers("/flowPublish/getFlowPublishingListPageByProductTypeId").permitAll()
                 .antMatchers("/file/getFileListByIds").permitAll()
-                .antMatchers("/dataProduct/getByPage").permitAll()
+//                .antMatchers("/dataProduct/getByPage").permitAll()
                 .antMatchers("/ecosystemType/**").permitAll()
                 .antMatchers("/").permitAll()
                 .antMatchers().permitAll()
