@@ -147,7 +147,7 @@ public class SysUserMapperProvider {
         sql.SET("email = " + this.email);
         sql.SET("company = " + this.company);
 
-        sql.WHERE("version = " + this.version);
+//        sql.WHERE("version = " + this.version);
         sql.WHERE("id = " + this.id);
 
         this.resetSysUser();
