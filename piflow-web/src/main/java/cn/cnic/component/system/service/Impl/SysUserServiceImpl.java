@@ -404,4 +404,10 @@ public class SysUserServiceImpl implements ISysUserService {
             throw new CustomException(ResultJson.failure(ResultCode.LOGIN_ERROR, e.getMessage()));
         }
     }
+
+    public static void main(String[] args) {
+        String password = "PFkj6H@vV";
+        String encodePassword = new BCryptPasswordEncoder().encode(password);
+        System.out.println(encodePassword);
+    }
 }
