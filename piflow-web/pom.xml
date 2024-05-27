@@ -308,6 +308,11 @@
             <artifactId>hutool-all</artifactId>
             <version>5.8.26</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.18</version>
+        </dependency>
         <!--读取excel文件,配置POI框架的依赖-->
         <dependency>
             <groupId>org.apache.poi</groupId>

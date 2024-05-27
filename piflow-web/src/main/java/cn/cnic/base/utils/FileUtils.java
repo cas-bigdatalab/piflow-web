@@ -2,16 +2,15 @@ package cn.cnic.base.utils;
 
 import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.common.constant.MessageConfig;
-import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
-import org.apache.commons.compress.archivers.zip.ZipFile;
+import org.apache.commons.compress.archivers.ArchiveEntry;
+import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
-import org.apache.hadoop.util.Progressable;
 import org.slf4j.Logger;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ResourceUtils;
@@ -34,15 +33,13 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.net.*;
-import java.nio.charset.Charset;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 
@@ -634,8 +631,9 @@ public class FileUtils {
                 fs.mkdirs(hdfsPath);
             }
             //将压缩流解压缩并将压缩包中的所有文件放到hdfsPath目录下
-            try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(file.getInputStream()))) {
-                ZipEntry zipEntry;
+//            try (ZipInputStream zis = new ZipInputStream(new BufferedInputStream(file.getInputStream()))) {
+            try (ZipArchiveInputStream zis = new ZipArchiveInputStream(new BufferedInputStream(file.getInputStream()))) {
+                ArchiveEntry zipEntry;
                 while ((zipEntry = zis.getNextEntry()) != null) {
                     Path filePath = new Path(hdfsPath + "/" + zipEntry.getName());
 
