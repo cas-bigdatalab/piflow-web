@@ -1,13 +1,13 @@
 package cn.cnic.controller.api.dataProduct;
 
-import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.*;
 import cn.cnic.base.vo.BasePageVo;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
 import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.service.IDataProductService;
-import cn.cnic.component.dataProduct.vo.DataProductVo;
-import cn.cnic.component.dataProduct.vo.ProductUserVo;
+import cn.cnic.component.dataProduct.vo.*;
 import cn.cnic.component.visual.entity.GraphTemplate;
 import cn.cnic.component.visual.entity.ProductTemplateGraphAssoDto;
 import cn.cnic.component.visual.entity.UserProductVisualView;
@@ -16,27 +16,34 @@ import cn.cnic.component.visual.service.ProductTemplateGraphAssoService;
 import cn.cnic.component.visual.util.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.sf.json.JSONObject;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static cn.cnic.base.utils.FileUtils.uploadRtnMap;
+import static cn.cnic.component.dataProduct.util.DataProductUtil.getFileNameFromPath;
+
 @Api(value = "data product api", tags = "data product api")
 @Controller
 @RequestMapping("/dataProduct")
 public class DataProductCtrl {
+
+    private static Logger logger = LoggerUtil.getLogger();
 
     private final IDataProductService dataProductServiceImpl;
 
@@ -45,6 +52,20 @@ public class DataProductCtrl {
     private final GraphTemplateService graphTemplateService;
 
     private final DataProductDomain dataProductDomain;
+
+
+    @Value("${share.platform.url}")
+    public String sharePlatformUrl;
+    @Value("${share.platform.upload.uri}")
+    public String sharePlatformUploadUri;
+    @Value("${share.platform.AES.key}")
+    public String sharePlatformAES256Key;
+    @Value("${share.platform.identification}")
+    public String sharePlatformId;
+    @Value("${share.platform.user}")
+    public String sharePlatformUser;
+    @Value("${local.datacenter.url}")
+    public String localDatacenterUrl;
 
 
     @Autowired
@@ -75,11 +96,91 @@ public class DataProductCtrl {
         return dataProductServiceImpl.getByPage(dataProductVo);
     }
 
+
+    @RequestMapping(value = "/uploadDocument", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "uploadDocument", notes = "上传说明文档")
+    public String uploadDocument(MultipartFile file) {
+        return JsonUtils.toJsonNoException(uploadRtnMap(file, SysParamsCache.FILE_PATH,  file.getOriginalFilename()));
+    }
+
+
+    @GetMapping(value = "/getDataProductInfo")
+    @ResponseBody
+    @ApiOperation(value = "getDataProductInfo", notes = "查看数据产品详情")
+    public String getDataProductInfo(String dataProductId) {
+        Map<String, Object> dataProductInfo = dataProductServiceImpl.getDataProductInfo(dataProductId);
+        if (MapUtils.isEmpty(dataProductInfo)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("data product not be found or has been deleted");
+        }
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", dataProductInfo);
+    }
+
+    @RequestMapping(value = "/uploadToSharePlatform", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "uploadToSharePlatform", notes = "上传数据产品到资源共享平台")
+    public String uploadToSharePlatform(@RequestBody DataProductMetaDataView dataProductMetaDataView) throws UnknownHostException {
+        logger.error("zzatets_call_share_platform_upload_uri: " + sharePlatformUrl + sharePlatformUploadUri);
+
+        String identifier = dataProductMetaDataView.getIdentifier();
+        String filePath = SysParamsCache.CSV_PATH + identifier + ".xlsx";
+        try {
+            // 先存到MySQL数据库,成功后写excel文件
+            if (dataProductDomain.insertDataProductMetaDataVo(dataProductMetaDataView, filePath)) {
+                //ExcelUtils.writePojoToExcel(dataProductMetaDataView, filePath);
+                DataProductMetaDataExcelVo excelVo = transferToExcelVo(dataProductMetaDataView);
+                ExcelUtils.appendPojoToExcel(excelVo, filePath, SysParamsCache.CSV_PATH + "demo.xlsx");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("上传失败, 请检查");
+        }
+        // 16个字节的密钥
+        Map<String, String> params = new HashMap<>();
+        params.put("user", AES256Utils.encrypt(sharePlatformUser, sharePlatformAES256Key));
+        params.put("identification", AES256Utils.encrypt(sharePlatformId, sharePlatformAES256Key));
+        params.put("dataProductId", identifier);
+        params.put("link", AES256Utils.encrypt(localDatacenterUrl, sharePlatformAES256Key));
+        logger.info("zzatets_call_share_platform_upload_uri: " + sharePlatformUrl + sharePlatformUploadUri);
+        String sendPostData = HttpUtils.doPostParmaMap(sharePlatformUrl + sharePlatformUploadUri, params, 30 * 1000);
+        if (StringUtils.isBlank(sendPostData)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
+        }
+        JSONObject obj = JSONObject.fromObject(sendPostData);
+        String code = obj.getString("code");
+        if (Integer.parseInt(code) != 200) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("共享服务中心返回[" + obj.getString("message") + "], 请修改");
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
+    }
+
     /**
-     * 根据数据产品获取可配置的数据源列表
-     * @param
+     * 转换为元数据Excel的格式
+     * @param dataProductMetaDataView
      * @return
      */
+    private DataProductMetaDataExcelVo transferToExcelVo(DataProductMetaDataView dataProductMetaDataView) {
+        DataProductMetaDataExcelVo excelVo = new DataProductMetaDataExcelVo();
+        BeanUtils.copyProperties(dataProductMetaDataView, excelVo);
+        excelVo.setIdentifier(dataProductMetaDataView.getInnerIdentifier() + "_" +dataProductMetaDataView.getIdentifier()); // 台站名称+数据集标识
+        excelVo.setDocumentationAddress(dataProductMetaDataView.getDocumentationAddress());
+        excelVo.setIconAddress(getFileNameFromPath(dataProductMetaDataView.getIconAddress()));
+        return excelVo;
+    }
+
+    @RequestMapping(value = "/checkUpdateSharePlatformStatus", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "checkUpdateSharePlatformStatus", notes = "查看审核状态")
+    public String checkUpdateSharePlatformStatus(String dataProductId) {
+        SharePlatformMetadata metadata = dataProductDomain.getDataProductMetaDataById(dataProductId);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", metadata);
+    }
+
+        /**
+         * 根据数据产品获取可配置的数据源列表
+         * @param
+         * @return
+         */
     @RequestMapping(value = "/getDataSourceListFromProduct", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "getDataSourceListFromProduct", notes = "获取数据产品对应的excel列表")
@@ -186,7 +287,9 @@ public class DataProductCtrl {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "save", notes = "数据产品发布（和编辑做成一个接口）数据产品记录是在进程运行完成后自动生成的，只能编辑数据产品")
-    public String save(MultipartFile file, String id, String name, String description, Integer permission, String keyword, String sdPublisher, String email, Integer state, Long version, Long productTypeId, String productTypeName) {
+    public String save(MultipartFile file, String id, String name, String description, Integer permission,
+                       String keyword, String sdPublisher, String email, Integer state, Long version,
+                       Long productTypeId, String productTypeName) {
         DataProductVo dataProductVo = new DataProductVo();
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is blank!!");

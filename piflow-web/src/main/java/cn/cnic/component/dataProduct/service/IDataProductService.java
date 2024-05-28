@@ -5,6 +5,7 @@ import cn.cnic.component.dataProduct.vo.ProductUserVo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletResponse;
@@ -34,4 +35,6 @@ public interface IDataProductService {
     Set<String> getDataSourceListFromProduct(String id, String datasetUrl);
 
     void downloadDataset(HttpServletResponse response, String dataProductId);
+
+    Map<String, Object> getDataProductInfo(String dataProductId);
 }

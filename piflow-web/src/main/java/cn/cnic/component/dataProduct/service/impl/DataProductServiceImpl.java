@@ -1,7 +1,6 @@
 package cn.cnic.component.dataProduct.service.impl;
 
 import cn.cnic.base.utils.*;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.*;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
@@ -10,7 +9,6 @@ import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.entity.ProductTypeAssociate;
 import cn.cnic.component.dataProduct.entity.ProductUser;
 import cn.cnic.component.dataProduct.service.IDataProductService;
-import cn.cnic.component.dataProduct.util.DataProductUtil;
 import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.dataProduct.vo.ProductUserVo;
 import cn.cnic.component.system.domain.FileDomain;
@@ -24,7 +22,6 @@ import com.github.pagehelper.PageHelper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.mortbay.util.StringUtil;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -373,6 +367,25 @@ public class DataProductServiceImpl implements IDataProductService {
     }
 
     @Override
+    public Map<String, Object> getDataProductInfo(String id) {
+        DataProductVo result = dataProductDomain.getFullInfoById(Long.parseLong(id));
+        if (result == null) {
+            return new HashMap<>();
+        }
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("innerIdentifier", "testEcoStation"); // todo: 读取配置-生态站唯一标识
+        resultMap.put("identifier", result.getId());
+        resultMap.put("title", result.getName());
+        resultMap.put("version", "v1");
+        resultMap.put("fileSize", 100);
+        resultMap.put("numberOfEntries", 10);
+        resultMap.put("email", result.getEmail());
+
+        return resultMap;
+    }
+
+
+    @Override
     public void downloadDataset(HttpServletResponse response, String dataProductId) {
         //获取多个文件并返回
         String[] split = dataProductId.split(",");
@@ -395,15 +408,20 @@ public class DataProductServiceImpl implements IDataProductService {
             }
         }
         String time = DateUtils.dateTimesToStrNew(new Date());
-        if (CollectionUtils.isNotEmpty(fileList)) {
-            if (fileList.size() == 1) {
-                File file = fileList.get(0);
-                FileUtils.downloadFileFromHdfs(response, file.getFilePath(), file.getFileName(), FileUtils.getDefaultFs());
+        try {
+            if (CollectionUtils.isNotEmpty(fileList)) {
+                if (fileList.size() == 1) {
+                    File file = fileList.get(0);
+                    FileUtils.downloadFileFromHdfs(response, file.getFilePath(), file.getFileName(), FileUtils.getDefaultFs());
+                } else {
+                    FileUtils.downloadFilesFromHdfs(response, fileList, "Download_" + time + ".zip", FileUtils.getDefaultFs());
+                }
             } else {
-                FileUtils.downloadFilesFromHdfs(response, fileList, "Download_" + time + ".zip", FileUtils.getDefaultFs());
+                throw new RuntimeException("file not be found!!");
             }
-        } else {
-            throw new RuntimeException("file not be found!!");
+        }
+        catch (IOException e) {
+            logger.error("download dataset error!! e:{}", e.getMessage());
         }
     }
 

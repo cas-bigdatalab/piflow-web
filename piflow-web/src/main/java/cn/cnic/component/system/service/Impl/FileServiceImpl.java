@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -62,27 +63,29 @@ public class FileServiceImpl implements IFileService {
         String originalFilename = file.getOriginalFilename();
         originalFilename = FileUtils.getFileName(originalFilename);
         String[] split = originalFilename.split("\\.");
-        String fileName = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
+//        String fileName = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
+        String fileName = originalFilename;
         //上传文件到hdfs，数据产品分类封面和数据产品封面放在服务器上
         String path = "";
         String filePath = "";
         if (!unzip) {
             if (associateType.equals(FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue()) || associateType.equals(FileAssociateType.DATA_PRODUCT_COVER.getValue())) {
                 path = SysParamsCache.FILE_PATH;
-                logger.info("local path:{}",path);
+                logger.info("local path:{}", path);
+                fileName = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
                 Map<String, Object> stringObjectMap = FileUtils.uploadRtnMap(file, path, fileName);
                 logger.info("upload to local:result:{}", JSON.toJSONString(stringObjectMap));
                 path = SysParamsCache.SYS_CONTEXT_PATH + "/files/";
             } else {
                 if (split[1].equals("rar") || split[1].equals("tar") || split[1].equals("tar.gz"))
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("please unload .zip");
-                path = SysParamsCache.FILE_STORAGE_PATH;
+                path = SysParamsCache.FILE_STORAGE_PATH + snowflakeGenerator.next() + "/";
                 FileUtils.saveFileToHdfs(file, fileName, path, FileUtils.getDefaultFs());
             }
             filePath = path + fileName;
         } else {
             if (!split[1].equals("zip")) return ReturnMapUtils.setFailedMsgRtnJsonStr("please unload .zip");
-            path = SysParamsCache.FILE_STORAGE_PATH;
+            path = SysParamsCache.FILE_STORAGE_PATH + snowflakeGenerator.next() + "/";
             FileUtils.saveAndUnzipToHdfs(file, fileName, path, FileUtils.getDefaultFs());
             filePath = path + fileName.split("\\.")[0] + "/";
         }
@@ -113,6 +116,7 @@ public class FileServiceImpl implements IFileService {
         }
     }
 
+    //弃用
     @Override
     public String uploadFilesZip(MultipartFile file, Boolean unzip, Integer associateType, String associateId) {
         String username = SessionUserUtil.getCurrentUsername();
@@ -168,12 +172,20 @@ public class FileServiceImpl implements IFileService {
     @Override
     public void getFileById(HttpServletResponse response, String id) {
         File file = fileDomain.getById(id);
-        FileUtils.downloadFileFromHdfs(response, file.getFilePath(), file.getFileName(), FileUtils.getDefaultFs());
+        try {
+            FileUtils.downloadFileFromHdfs(response, file.getFilePath(), file.getFileName(), FileUtils.getDefaultFs());
+        } catch (IOException e) {
+            logger.error("download dataset error!! e:{}", e.getMessage());
+        }
     }
 
     @Override
     public void getFileByFilePath(HttpServletResponse response, String filePath) {
-        FileUtils.downloadFileFromHdfs(response, filePath, null, FileUtils.getDefaultFs());
+        try {
+            FileUtils.downloadFileFromHdfs(response, filePath, null, FileUtils.getDefaultFs());
+        } catch (IOException e) {
+            logger.error("download dataset error!! e:{}", e.getMessage());
+        }
     }
 
     @Override
@@ -181,15 +193,19 @@ public class FileServiceImpl implements IFileService {
         //获取多个文件并返回
         List<File> fileList = fileDomain.getListByIds(ids);
         String time = DateUtils.dateTimesToStrNew(new Date());
-        if (CollectionUtils.isNotEmpty(fileList)) {
-            if (fileList.size() == 1) {
-                File file = fileList.get(0);
-                FileUtils.downloadFileFromHdfs(response, file.getFilePath(), file.getFileName(), FileUtils.getDefaultFs());
+        try {
+            if (CollectionUtils.isNotEmpty(fileList)) {
+                if (fileList.size() == 1) {
+                    File file = fileList.get(0);
+                    FileUtils.downloadFileFromHdfs(response, file.getFilePath(), file.getFileName(), FileUtils.getDefaultFs());
+                } else {
+                    FileUtils.downloadFilesFromHdfs(response, fileList, "Download_" + time + ".zip", FileUtils.getDefaultFs());
+                }
             } else {
-                FileUtils.downloadFilesFromHdfs(response, fileList, "Download_" + time + ".zip", FileUtils.getDefaultFs());
+                throw new RuntimeException("file not be found!!");
             }
-        } else {
-            throw new RuntimeException("file not be found!!");
+        } catch (IOException e) {
+            logger.error("download dataset error!! e:{}", e.getMessage());
         }
     }
 

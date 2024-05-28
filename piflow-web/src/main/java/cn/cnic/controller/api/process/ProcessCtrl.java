@@ -333,46 +333,60 @@ public class ProcessCtrl {
         processStopServiceImpl.showViewData(response, id);
     }
 
-    /**
-     * @param appId:
-     * @return String
-     * @author tianyao
-     * @description 获取报错信息提示,后面弃用
-     * @date 2024/2/21 17:45
-     */
-    @RequestMapping(value = "/getErrorLogInfo", method = RequestMethod.GET)
-    @ResponseBody
-    @ApiOperation(value = "getErrorLogInfo", notes = "获取报错信息提示")
-    public String getErrorLogInfo(String appId) {
-        return processServiceImpl.getErrorLogInfo(appId);
-    }
+//    /**
+//     * @param appId:
+//     * @return String
+//     * @author tianyao
+//     * @description 获取报错信息提示, 后面弃用
+//     * @date 2024/2/21 17:45
+//     */
+//    @RequestMapping(value = "/getErrorLogInfo", method = RequestMethod.GET)
+//    @ResponseBody
+//    @ApiOperation(value = "getErrorLogInfo", notes = "获取报错信息提示")
+//    public String getErrorLogInfo(String appId) {
+//        return processServiceImpl.getErrorLogInfo(appId);
+//    }
+//
+//    /**
+//     * @param appId:
+//     * @return String
+//     * @author tianyao
+//     * @description 获取在组件内部的报错信息提示,弃用
+//     * @date 2024/2/21 17:45
+//     */
+//    @RequestMapping(value = "/getErrorLogInStop", method = RequestMethod.GET)
+//    @ResponseBody
+//    @ApiOperation(value = "getErrorLogInStop", notes = "获取在组件内部的报错信息提示")
+//    public String getErrorLogInStop(String appId) {
+//        return processServiceImpl.getErrorLogInStop(appId);
+//    }
+//
+//    /**
+//     * @param appId:
+//     * @return String
+//     * @author tianyao
+//     * @description 获取在系统内部的报错信息提示，弃用
+//     * @date 2024/2/21 17:45
+//     */
+//    @RequestMapping(value = "/getErrorLogInSystem", method = RequestMethod.GET)
+//    @ResponseBody
+//    @ApiOperation(value = "getErrorLogInSystem", notes = "获取在系统内部的报错信息提示")
+//    public String getErrorLogInSystem(String appId) {
+//        return processServiceImpl.getErrorLogInSystem(appId);
+//    }
 
     /**
      * @param appId:
      * @return String
      * @author tianyao
-     * @description 获取在组件内部的报错信息提示
-     * @date 2024/2/21 17:45
+     * @description 获取用户可用日志
+     * @date 2024/6/6 10:03
      */
-    @RequestMapping(value = "/getErrorLogInStop", method = RequestMethod.GET)
+    @RequestMapping(value = "/getErrorLogForUser", method = RequestMethod.GET)
     @ResponseBody
-    @ApiOperation(value = "getErrorLogInStop", notes = "获取在组件内部的报错信息提示")
-    public String getErrorLogInStop(String appId) {
-        return processServiceImpl.getErrorLogInStop(appId);
-    }
-
-    /**
-     * @param appId:
-     * @return String
-     * @author tianyao
-     * @description 获取在系统内部的报错信息提示
-     * @date 2024/2/21 17:45
-     */
-    @RequestMapping(value = "/getErrorLogInSystem", method = RequestMethod.GET)
-    @ResponseBody
-    @ApiOperation(value = "getErrorLogInSystem", notes = "获取在系统内部的报错信息提示")
-    public String getErrorLogInSystem(String appId) {
-        return processServiceImpl.getErrorLogInSystem(appId);
+    @ApiOperation(value = "getErrorLogForUser", notes = "获取用户可用日志")
+    public String getErrorLogForUser(String appId) {
+        return processServiceImpl.getErrorLogForUser(appId);
     }
 
     /**
@@ -426,7 +440,7 @@ public class ProcessCtrl {
 
     /**
      * @param id:
-      * @return String
+     * @return String
      * @author tianyao
      * @description 删除发布流水线的运行历史
      * @date 2024/4/7 14:40

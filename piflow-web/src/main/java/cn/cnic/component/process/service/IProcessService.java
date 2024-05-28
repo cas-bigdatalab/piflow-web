@@ -228,10 +228,12 @@ public interface IProcessService {
      */
     public String getProcessStopVoByPageId(String processId, String pageId);
 
-    String getErrorLogInfo(String appId);
-    String getErrorLogInStop(String appId);
+//    String getErrorLogInfo(String appId);
+//    String getErrorLogInStop(String appId);
+//
+//    String getErrorLogInSystem(String appId);
 
-    String getErrorLogInSystem(String appId);
+    String getErrorLogForUser(String appId);
 
     String getProcessPageByPublishingId(ProcessVo processVo);
 

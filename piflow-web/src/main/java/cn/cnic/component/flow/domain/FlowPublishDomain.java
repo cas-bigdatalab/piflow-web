@@ -95,4 +95,8 @@ public class FlowPublishDomain {
     public List<FlowPublishingVo> getListByProductTypeIds(String keyword, List<Long> productTypeIds, List<String> selectedFlowPublishingIds) {
         return flowPublishingMapper.getListByProductTypeIds(keyword, productTypeIds, selectedFlowPublishingIds);
     }
+
+    public int updateSort(FlowPublishing flowPublishing) {
+        return flowPublishingMapper.updateSort(flowPublishing);
+    }
 }

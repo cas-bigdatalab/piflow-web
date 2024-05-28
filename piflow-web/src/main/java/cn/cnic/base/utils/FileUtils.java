@@ -737,10 +737,9 @@ public class FileUtils {
         }
     }
 
-    public static void downloadFileFromHdfs(HttpServletResponse response, String filePath, String fileName, String defaultFs) {
+    public static void downloadFileFromHdfs(HttpServletResponse response, String filePath, String fileName, String defaultFs) throws IOException {
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", defaultFs);
-        try {
             if (ObjectUtils.isEmpty(fs)) {
                 fs = FileSystem.get(conf);
             }
@@ -782,9 +781,6 @@ public class FileUtils {
                 out.flush();
                 out.close();
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public static void downloadFilesFromHdfs(HttpServletResponse response, List<cn.cnic.component.system.entity.File> fileList, String zipName, String defaultFs) {

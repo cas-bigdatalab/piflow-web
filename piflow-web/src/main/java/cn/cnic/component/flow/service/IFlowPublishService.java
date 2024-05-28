@@ -13,6 +13,8 @@ public interface IFlowPublishService {
 
     String publishingStops(FlowPublishingVo vo);
 
+    String publishingSort(List<FlowPublishingVo> voList);
+
     String getPublishingById(String id);
 
     String getListByPage(FlowPublishingVo flowPublishingVo);

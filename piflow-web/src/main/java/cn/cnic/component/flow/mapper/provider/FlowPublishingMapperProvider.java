@@ -141,6 +141,24 @@ public class FlowPublishingMapperProvider {
         return sqlStr;
     }
 
+    public String updateSort(FlowPublishing flowPublishing) {
+        String sqlStr = "";
+        if (null != flowPublishing) {
+            SQL sql = new SQL();
+
+            // INSERT_INTO brackets is table name
+            sql.UPDATE("flow_publishing");
+            // The first string in the SET is the name of the field corresponding to the table in the database
+            sql.SET("last_update_dttm = " + SqlUtils.preventSQLInjection(DateUtils.dateTimesToStr(flowPublishing.getLastUpdateDttm())));
+            sql.SET("flow_sort = " + flowPublishing.getFlowSort());
+            sql.WHERE("id = " + flowPublishing.getId());
+            sqlStr = sql.toString();
+        }
+        this.reset();
+        return sqlStr;
+    }
+
+
     /**
      * getFullInfoById
      *

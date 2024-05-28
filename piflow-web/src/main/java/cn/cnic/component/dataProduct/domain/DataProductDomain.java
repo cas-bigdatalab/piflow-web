@@ -1,12 +1,20 @@
 package cn.cnic.component.dataProduct.domain;
 
 import cn.cnic.base.utils.DateUtils;
+import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.common.Eunm.DataProductMetaDataStatus;
+import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.entity.ProductUser;
 import cn.cnic.component.dataProduct.mapper.DataProductMapper;
+import cn.cnic.component.dataProduct.mapper.DataProductMetaDataMapper;
 import cn.cnic.component.dataProduct.mapper.ProductUserMapper;
+import cn.cnic.component.dataProduct.vo.SharePlatformMetadata;
+import cn.cnic.component.dataProduct.vo.DataProductMetaDataView;
 import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.dataProduct.vo.ProductUserVo;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -16,14 +24,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 
+import static cn.cnic.component.dataProduct.util.DataProductUtil.getFileNameFromPath;
+
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class DataProductDomain {
+
+    private static Logger logger = LoggerUtil.getLogger();
 
     @Autowired
     private DataProductMapper dataProductMapper;
     @Autowired
     private ProductUserMapper productUserMapper;
+    @Autowired
+    private DataProductMetaDataMapper dataProductMetaDataMapper;
 
     public int insert(DataProduct dataProduct) {
         return dataProductMapper.insert(dataProduct);
@@ -126,5 +140,64 @@ public class DataProductDomain {
 
     public int updateEnableFlagToFalse(String[] ids) {
         return dataProductMapper.updateEnableFlagToFalse(ids);
+    }
+
+    public boolean insertDataProductMetaDataVo(DataProductMetaDataView metaDataView, String filePath) {
+        SharePlatformMetadata dto = new SharePlatformMetadata();
+        dto.setId(metaDataView.getIdentifier());
+        dto.setReviewStatus(DataProductMetaDataStatus.EDITED.getValue());
+        dto.setIconPath(transferToReal(metaDataView.getIconAddress()));
+        dto.setDocumentationPath(transferToReal(metaDataView.getDocumentationAddress()));
+        dto.setMetadataFilePath(filePath);
+        dto.setCrtDttm(new Date());
+        dto.setLastUpdatedDttm(new Date());
+//        try {
+//            dto.setMetaData(toJson(metaDataView)); // 把vo转为数据json字符串全部存入metaData字段
+//        } catch (Exception e) {
+//            logger.error("insertDataProductMetaDataVo failed, error message: " + e.getMessage());
+//            e.printStackTrace();
+//            return false;
+//        }
+        SharePlatformMetadata metadata = dataProductMetaDataMapper.selectById(metaDataView.getIdentifier());
+        // mybatis-plus没有提供on duplicate key update的功能，只能先查询后插入
+        if (metadata == null) { //如果不存在则插入
+            return dataProductMetaDataMapper.insert(dto) == 1; //返回插入条数,为1则为插入成功
+        } else {
+            return dataProductMetaDataMapper.updateById(dto) == 1;
+        }
+    }
+
+    /**
+     * 上传的是相对地址,需要转为真实地址
+     * @param iconPath
+     * @return
+     */
+    public static  String transferToReal(String iconPath) {
+        String path= SysParamsCache.FILE_PATH;
+        String fileName = getFileNameFromPath(iconPath);
+
+        return path + fileName;
+    }
+
+    public boolean updateDataProductMetaDataStatus(String dataProductId, String releasedDatasetUrl, int status, String message) {
+
+        SharePlatformMetadata dto = new SharePlatformMetadata();
+        dto.setId(dataProductId);
+        dto.setReviewStatus(status);
+        dto.setLastUpdatedDttm(new Date());
+        if (status == DataProductMetaDataStatus.POSTED.getValue() || status == DataProductMetaDataStatus.NEEDCHANGED.getValue()) {
+            dto.setProductUrl(releasedDatasetUrl);
+            dto.setReviewMessage(message);
+        }
+        return dataProductMetaDataMapper.updateById(dto) == 1;
+    }
+
+
+
+    public SharePlatformMetadata getDataProductMetaDataById(String id) {
+        QueryWrapper<SharePlatformMetadata> wrapper = new QueryWrapper<>();
+        wrapper.eq("id",id);
+        SharePlatformMetadata res = dataProductMetaDataMapper.selectOne(wrapper);
+        return res;
     }
 }
