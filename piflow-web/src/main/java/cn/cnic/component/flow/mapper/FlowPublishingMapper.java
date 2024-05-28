@@ -24,6 +24,9 @@ public interface FlowPublishingMapper {
     @UpdateProvider(type = FlowPublishingMapperProvider.class, method = "update")
     int update(FlowPublishing flowPublishing);
 
+    @UpdateProvider(type = FlowPublishingMapperProvider.class, method = "updateSort")
+    int updateSort(FlowPublishing flowPublishing);
+
     @SelectProvider(type = FlowPublishingMapperProvider.class, method = "getFullInfoById")
     @Results({
             @Result(id = true, column = "id", property = "id"),

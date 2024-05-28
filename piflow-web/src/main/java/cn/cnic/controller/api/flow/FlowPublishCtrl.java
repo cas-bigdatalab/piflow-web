@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Api(value = "flow publishing api", tags = "flow publishing api")
 @Controller
 @RequestMapping("/flowPublish")
@@ -34,6 +36,20 @@ public class FlowPublishCtrl {
     @ApiOperation(value = "publishingStops", notes = "流水线发布")
     public String publishingStops(@RequestBody FlowPublishingVo flowPublishingVo) {
         return flowPublishServiceImpl.publishingStops(flowPublishingVo);
+    }
+
+    /**
+     * @param voList:
+     * @return String
+     * @author tianyao
+     * @description 批量排序发布流水线
+     * @date 2024/5/28 13:24
+     */
+    @RequestMapping(value = "/publishingSort", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "publishingSort", notes = "流水线排序")
+    public String publishingSort(@RequestBody List<FlowPublishingVo> voList) {
+        return flowPublishServiceImpl.publishingSort(voList);
     }
 
     /**

@@ -44,7 +44,7 @@ public class FlowPublishingVo extends BasePageVo implements Serializable {
 //    @JsonSerialize(using = ToStringSerializer.class)
 //    @JsonDeserialize(using = ToLongDeserializer.class)
     private Long version;
-    private Integer flowSort;
+    private Integer flowSort; //流水线排序
     private String ecosystemTypeIds;
 
     private String coverFileId;

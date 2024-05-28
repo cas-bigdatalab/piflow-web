@@ -36,6 +36,8 @@ import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -306,6 +308,25 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRED)
+    public String publishingSort(List<FlowPublishingVo> voList) {
+        if (CollectionUtils.isEmpty(voList)) {
+            logger.error("无更新信息");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("无更新信息");
+        } else {
+            Date now = new Date();
+            for (FlowPublishingVo vo : voList) {
+                FlowPublishing flowPublishing = new FlowPublishing();
+                BeanUtils.copyProperties(vo, flowPublishing);
+                flowPublishing.setId(Long.parseLong(vo.getId()));
+                flowPublishing.setLastUpdateDttm(now);
+                int update = flowPublishDomain.updateSort(flowPublishing);
+            }
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("更新成功");
+        }
+    }
+
+    @Override
     public String getPublishingById(String id) {
         String username = SessionUserUtil.getCurrentUsername();
         FlowPublishing flowPublishing = flowPublishDomain.getFullInfoById(id);
@@ -381,7 +402,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
 
     @Override
     public String getListByPage(FlowPublishingVo flowPublishingVo) {
-        Page<FlowPublishingVo> page = PageHelper.startPage(flowPublishingVo.getPage(), flowPublishingVo.getLimit(), "crt_dttm DESC");
+        Page<FlowPublishingVo> page = PageHelper.startPage(flowPublishingVo.getPage(), flowPublishingVo.getLimit(), "last_update_dttm DESC, flow_sort ASC, crt_dttm DESC");
         flowPublishDomain.getListByPage(flowPublishingVo.getKeyword());
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
@@ -421,9 +442,9 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                 dataProductTypeList.clear();
             }
         }
-        Page<FlowPublishingVo> page = PageHelper.startPage(flowPublishingVo.getPage(), flowPublishingVo.getLimit(), "product_type_id ASC, crt_dttm DESC");
+        Page<FlowPublishingVo> page = PageHelper.startPage(flowPublishingVo.getPage(), flowPublishingVo.getLimit(), "flow_sort ASC, product_type_id ASC, crt_dttm DESC");
         if (CollectionUtils.isNotEmpty(dataProductTypeList)) {
-            flowPublishDomain.getListByProductTypeIds(flowPublishingVo.getKeyword(), dataProductTypeList.stream().map(DataProductType::getId).collect(Collectors.toList()),flowPublishingIds);
+            flowPublishDomain.getListByProductTypeIds(flowPublishingVo.getKeyword(), dataProductTypeList.stream().map(DataProductType::getId).collect(Collectors.toList()), flowPublishingIds);
         }
         List<FlowPublishingVo> result = page.getResult();
         if (CollectionUtils.isNotEmpty(result)) {
