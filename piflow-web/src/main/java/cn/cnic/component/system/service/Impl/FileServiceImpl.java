@@ -62,27 +62,29 @@ public class FileServiceImpl implements IFileService {
         String originalFilename = file.getOriginalFilename();
         originalFilename = FileUtils.getFileName(originalFilename);
         String[] split = originalFilename.split("\\.");
-        String fileName = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
+//        String fileName = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
+        String fileName = originalFilename;
         //上传文件到hdfs，数据产品分类封面和数据产品封面放在服务器上
         String path = "";
         String filePath = "";
         if (!unzip) {
             if (associateType.equals(FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue()) || associateType.equals(FileAssociateType.DATA_PRODUCT_COVER.getValue())) {
                 path = SysParamsCache.FILE_PATH;
-                logger.info("local path:{}",path);
+                logger.info("local path:{}", path);
+                fileName = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
                 Map<String, Object> stringObjectMap = FileUtils.uploadRtnMap(file, path, fileName);
                 logger.info("upload to local:result:{}", JSON.toJSONString(stringObjectMap));
                 path = SysParamsCache.SYS_CONTEXT_PATH + "/files/";
             } else {
                 if (split[1].equals("rar") || split[1].equals("tar") || split[1].equals("tar.gz"))
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("please unload .zip");
-                path = SysParamsCache.FILE_STORAGE_PATH;
+                path = SysParamsCache.FILE_STORAGE_PATH + snowflakeGenerator.next() + "/";
                 FileUtils.saveFileToHdfs(file, fileName, path, FileUtils.getDefaultFs());
             }
             filePath = path + fileName;
         } else {
             if (!split[1].equals("zip")) return ReturnMapUtils.setFailedMsgRtnJsonStr("please unload .zip");
-            path = SysParamsCache.FILE_STORAGE_PATH;
+            path = SysParamsCache.FILE_STORAGE_PATH + snowflakeGenerator.next() + "/";
             FileUtils.saveAndUnzipToHdfs(file, fileName, path, FileUtils.getDefaultFs());
             filePath = path + fileName.split("\\.")[0] + "/";
         }
@@ -113,6 +115,7 @@ public class FileServiceImpl implements IFileService {
         }
     }
 
+    //弃用
     @Override
     public String uploadFilesZip(MultipartFile file, Boolean unzip, Integer associateType, String associateId) {
         String username = SessionUserUtil.getCurrentUsername();

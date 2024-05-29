@@ -64,6 +64,8 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
     private final StopsDomain stopsDomain;
     private final PathsMapper pathsMapper;
 
+    private String fileOutPutPrefix = "/portal_out/";
+
     @Autowired
     public FlowPublishServiceImpl(SnowflakeGenerator snowflakeGenerator, FlowPublishDomain flowPublishDomain, FileDomain fileDomain, FlowDomain flowDomain, DataProductTypeDomain dataProductTypeDomain, FlowStopsPublishingPropertyDomain flowStopsPublishingPropertyDomain, ProcessDomain processDomain, IFlow flowImpl, DataProductDomain dataProductDomain, EcosystemTypeDomain ecosystemTypeDomain, StopsDomain stopsDomain, PathsMapper pathsMapper) {
         this.snowflakeGenerator = snowflakeGenerator;
@@ -402,7 +404,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
 
     @Override
     public String getListByPage(FlowPublishingVo flowPublishingVo) {
-        Page<FlowPublishingVo> page = PageHelper.startPage(flowPublishingVo.getPage(), flowPublishingVo.getLimit(), "last_update_dttm DESC, flow_sort ASC, crt_dttm DESC");
+        Page<FlowPublishingVo> page = PageHelper.startPage(flowPublishingVo.getPage(), flowPublishingVo.getLimit(), "product_type_id ASC, product_type_id ASC,flow_sort ASC, crt_dttm DESC");
         flowPublishDomain.getListByPage(flowPublishingVo.getKeyword());
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
@@ -497,13 +499,13 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                     if (FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(propertyVo.getType())) {
                         String customValue = propertyVo.getCustomValue();
                         if (customValue.contains(".")) {
-                            //file
-                            String[] split = customValue.split("\\.");
-                            customValue = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
+                            //file /a/b/c.txt===>/portal/123456/c.txt
+                            String[] split = customValue.split("/");
+                            customValue = fileOutPutPrefix + snowflakeGenerator.next() + "/" + split[split.length - 1];
                             propertyVo.setCustomValue(customValue);
                         } else {
-                            //file dir /a/b/->/a/b/12345678902    /a/b->a/b12345678902
-                            customValue = customValue + snowflakeGenerator.next();
+                            //file dir /a/b/->/portal_out/a/b/12345678902    /a/b->/portal_out/a/b12345678902
+                            customValue = fileOutPutPrefix + customValue + snowflakeGenerator.next() + "/";
                             propertyVo.setCustomValue(customValue);
                         }
                     }
@@ -545,13 +547,13 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                 if (FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(propertyVo.getType())) {
                     String customValue = propertyVo.getCustomValue();
                     if (customValue.contains(".")) {
-                        //file
-                        String[] split = customValue.split("\\.");
-                        customValue = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
+                        //file /a/b/c.txt===>/portal/123456/c.txt
+                        String[] split = customValue.split("/");
+                        customValue = fileOutPutPrefix + snowflakeGenerator.next() + "/" + split[split.length - 1];
                         propertyVo.setCustomValue(customValue);
                     } else {
-                        //file dir /a/b/->/a/b/12345678902    /a/b->a/b12345678902
-                        customValue = customValue + snowflakeGenerator.next() + "/";
+                        //file dir /a/b/->/portal_out/a/b/12345678902/    /a/b->/portal_out/a/b12345678902/
+                        customValue = fileOutPutPrefix + customValue + snowflakeGenerator.next() + "/";
                         propertyVo.setCustomValue(customValue);
                     }
                 }
