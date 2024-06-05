@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -171,12 +172,20 @@ public class FileServiceImpl implements IFileService {
     @Override
     public void getFileById(HttpServletResponse response, String id) {
         File file = fileDomain.getById(id);
-        FileUtils.downloadFileFromHdfs(response, file.getFilePath(), file.getFileName(), FileUtils.getDefaultFs());
+        try {
+            FileUtils.downloadFileFromHdfs(response, file.getFilePath(), file.getFileName(), FileUtils.getDefaultFs());
+        } catch (IOException e) {
+            logger.error("download dataset error!! e:{}", e.getMessage());
+        }
     }
 
     @Override
     public void getFileByFilePath(HttpServletResponse response, String filePath) {
-        FileUtils.downloadFileFromHdfs(response, filePath, null, FileUtils.getDefaultFs());
+        try {
+            FileUtils.downloadFileFromHdfs(response, filePath, null, FileUtils.getDefaultFs());
+        } catch (IOException e) {
+            logger.error("download dataset error!! e:{}", e.getMessage());
+        }
     }
 
     @Override
@@ -184,15 +193,19 @@ public class FileServiceImpl implements IFileService {
         //获取多个文件并返回
         List<File> fileList = fileDomain.getListByIds(ids);
         String time = DateUtils.dateTimesToStrNew(new Date());
-        if (CollectionUtils.isNotEmpty(fileList)) {
-            if (fileList.size() == 1) {
-                File file = fileList.get(0);
-                FileUtils.downloadFileFromHdfs(response, file.getFilePath(), file.getFileName(), FileUtils.getDefaultFs());
+        try {
+            if (CollectionUtils.isNotEmpty(fileList)) {
+                if (fileList.size() == 1) {
+                    File file = fileList.get(0);
+                    FileUtils.downloadFileFromHdfs(response, file.getFilePath(), file.getFileName(), FileUtils.getDefaultFs());
+                } else {
+                    FileUtils.downloadFilesFromHdfs(response, fileList, "Download_" + time + ".zip", FileUtils.getDefaultFs());
+                }
             } else {
-                FileUtils.downloadFilesFromHdfs(response, fileList, "Download_" + time + ".zip", FileUtils.getDefaultFs());
+                throw new RuntimeException("file not be found!!");
             }
-        } else {
-            throw new RuntimeException("file not be found!!");
+        } catch (IOException e) {
+            logger.error("download dataset error!! e:{}", e.getMessage());
         }
     }
 

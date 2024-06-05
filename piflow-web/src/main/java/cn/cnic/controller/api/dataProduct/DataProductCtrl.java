@@ -1,13 +1,18 @@
 package cn.cnic.controller.api.dataProduct;
 
+import cn.cnic.base.utils.ExcelUtils;
+import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.vo.BasePageVo;
+import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
 import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.service.IDataProductService;
+import cn.cnic.component.dataProduct.vo.DataProductMetaDataView;
 import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.dataProduct.vo.ProductUserVo;
+import cn.cnic.component.dataProduct.vo.SharePlatformMetadata;
 import cn.cnic.component.visual.entity.GraphTemplate;
 import cn.cnic.component.visual.entity.ProductTemplateGraphAssoDto;
 import cn.cnic.component.visual.entity.UserProductVisualView;
@@ -16,17 +21,18 @@ import cn.cnic.component.visual.service.ProductTemplateGraphAssoService;
 import cn.cnic.component.visual.util.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +51,13 @@ public class DataProductCtrl {
     private final GraphTemplateService graphTemplateService;
 
     private final DataProductDomain dataProductDomain;
+
+    @Value("${share.platform.url}")
+    private String sharePlatformUrl;
+
+    @Value("${share.platform.upload.uri}")
+    private String sharePlatformUploadUri;
+
 
 
     @Autowired
@@ -75,11 +88,57 @@ public class DataProductCtrl {
         return dataProductServiceImpl.getByPage(dataProductVo);
     }
 
-    /**
-     * 根据数据产品获取可配置的数据源列表
-     * @param
-     * @return
-     */
+    @GetMapping(value = "/getDataProductInfo")
+    @ResponseBody
+    @ApiOperation(value = "getDataProductInfo", notes = "查看数据产品详情")
+    public String getDataProductInfo(String dataProductId) {
+        Map<String, Object> dataProductInfo = dataProductServiceImpl.getDataProductInfo(dataProductId);
+        if (MapUtils.isEmpty(dataProductInfo)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("data product not be found or has been deleted");
+        }
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", dataProductInfo);
+    }
+
+    @RequestMapping(value = "/uploadToSharePlatform", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "uploadToSharePlatform", notes = "上传数据产品到资源共享平台")
+    public String uploadToSharePlatform(@RequestBody DataProductMetaDataView dataProductMetaDataView) throws UnknownHostException {
+        String storagePathHead = System.getProperty("user.dir");
+        String identifier = dataProductMetaDataView.getIdentifier();
+
+        String path = storagePathHead + "/../../storage/csv/";
+        String filePath = path + identifier + ".xlsx";
+
+        try {
+            // 先存到MySQL数据库,成功后写excel文件
+            if (dataProductDomain.insertDataProductMetaDataVo(dataProductMetaDataView, filePath)) {
+                ExcelUtils.writePojoToExcel(dataProductMetaDataView, filePath);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("上传失败, 请检查");
+        }
+        Map<String, String> params = new HashMap<>();
+        params.put("identification", "HTF");
+        params.put("dataSetId", identifier);
+        params.put("localUrl", InetAddress.getLocalHost().toString());
+        HttpUtils.doPostParmaMap(sharePlatformUrl + sharePlatformUploadUri, params, 30 * 1000);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
+    }
+
+    @RequestMapping(value = "/checkUpdateSharePlatformStatus", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "checkUpdateSharePlatformStatus", notes = "查看上传状态")
+    public String checkUpdateSharePlatformStatus(String dataProductId) {
+        SharePlatformMetadata metadata = dataProductDomain.getDataProductMetaDataById(dataProductId);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", metadata);
+    }
+
+        /**
+         * 根据数据产品获取可配置的数据源列表
+         * @param
+         * @return
+         */
     @RequestMapping(value = "/getDataSourceListFromProduct", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "getDataSourceListFromProduct", notes = "获取数据产品对应的excel列表")
@@ -186,7 +245,9 @@ public class DataProductCtrl {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "save", notes = "数据产品发布（和编辑做成一个接口）数据产品记录是在进程运行完成后自动生成的，只能编辑数据产品")
-    public String save(MultipartFile file, String id, String name, String description, Integer permission, String keyword, String sdPublisher, String email, Integer state, Long version, Long productTypeId, String productTypeName) {
+    public String save(MultipartFile file, String id, String name, String description, Integer permission,
+                       String keyword, String sdPublisher, String email, Integer state, Long version,
+                       Long productTypeId, String productTypeName) {
         DataProductVo dataProductVo = new DataProductVo();
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is blank!!");

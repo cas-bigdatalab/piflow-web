@@ -79,6 +79,10 @@ public class JsonUtils {
         return null;
     }
 
+    public static <T> String toJson(T entity) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(entity);
+    }
+
     public static <T> String toFormatJsonNoException(T entity) {
         try {
             return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(entity);
