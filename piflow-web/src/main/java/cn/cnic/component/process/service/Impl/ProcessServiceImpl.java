@@ -1021,7 +1021,7 @@ public class ProcessServiceImpl implements IProcessService {
             String stderrLog = amContainerLogs + "/stderr/?start=0";
             String stderrLogHtml = HttpUtils.getHtml(stderrLog);
             //分析错误信息
-            StringBuffer error = new StringBuffer("根据您的错误日志，为您解读出以下内容：");
+            StringBuffer error = new StringBuffer("根据您的错误日志，为您解读出以下内容：").append("\n");
             Map<String, List<String>> extractInfo = extractExceptionLines(stderrLogHtml);
             for (String orginLog : extractInfo.keySet()) {
                 error.append("原始报错信息为：").append("\n").append(orginLog).append("\n\n");
@@ -1030,10 +1030,10 @@ public class ProcessServiceImpl implements IProcessService {
                 if (CollectionUtils.isNotEmpty(extract)) {
                     for (int i = 0; i < extract.size(); i++) {
                         //(1) 错误1
-                        error.append("(").append(i + 1).append(") ").append(extract.get(i)).append("\n");
+                        error.append("  (").append(i + 1).append(") ").append(extract.get(i)).append("\n");
                     }
                 } else {
-                    error.append("没有找到该类报错的可能回答，请联系管理员补充！").append("\n");
+                    error.append("  没有找到该类报错的可能回答，请联系管理员补充！").append("\n");
                 }
 
             }
