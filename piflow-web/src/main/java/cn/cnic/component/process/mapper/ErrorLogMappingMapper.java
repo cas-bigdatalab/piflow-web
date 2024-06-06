@@ -23,7 +23,7 @@ public interface ErrorLogMappingMapper {
     ErrorLogMappingVo getById(@Param("id") Long id);
 
     @Select("<script>"
-            + "CAST(er.id as CHAR) as id, er.* from error_log_mapping as er"
+            + "select CAST(er.id as CHAR) as id, er.* from error_log_mapping as er"
             + "<where>"
             + " er.enable_flag = 1"
             + "<if test=\"keyword != null and keyword != '' \">"
