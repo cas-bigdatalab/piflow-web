@@ -147,7 +147,7 @@ public class DataProductDomain {
         dto.setId(metaDataView.getIdentifier());
         dto.setReviewStatus(DataProductMetaDataStatus.EDITED.getValue());
         dto.setIconPath(transferToReal(metaDataView.getIconAddress()));
-        dto.setDocumentationPath("/data/piflow/piflow-test/piflow-web/storage/files/demo_document.pdf"); // TODO 这里需要修改为真实路径zza
+        dto.setDocumentationPath(transferToReal(metaDataView.getDocumentationAddress()));
         dto.setMetadataFilePath(filePath);
         dto.setCrtDttm(new Date());
         dto.setLastUpdatedDttm(new Date());

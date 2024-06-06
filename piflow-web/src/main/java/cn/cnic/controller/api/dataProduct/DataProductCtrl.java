@@ -1,8 +1,6 @@
 package cn.cnic.controller.api.dataProduct;
 
-import cn.cnic.base.utils.ExcelUtils;
-import cn.cnic.base.utils.HttpUtils;
-import cn.cnic.base.utils.ReturnMapUtils;
+import cn.cnic.base.utils.*;
 import cn.cnic.base.vo.BasePageVo;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.common.constant.SysParamsCache;
@@ -36,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static cn.cnic.base.utils.FileUtils.uploadRtnMap;
 import static cn.cnic.component.dataProduct.domain.DataProductDomain.transferToReal;
 import static cn.cnic.component.dataProduct.util.DataProductUtil.getFileNameFromPath;
 
@@ -88,6 +87,15 @@ public class DataProductCtrl {
         return dataProductServiceImpl.getByPage(dataProductVo);
     }
 
+
+    @RequestMapping(value = "/uploadDocument", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "uploadDocument", notes = "上传说明文档")
+    public String uploadDocument(MultipartFile file) {
+        return JsonUtils.toJsonNoException(uploadRtnMap(file, SysParamsCache.FILE_PATH,  file.getOriginalFilename()));
+    }
+
+
     @GetMapping(value = "/getDataProductInfo")
     @ResponseBody
     @ApiOperation(value = "getDataProductInfo", notes = "查看数据产品详情")
@@ -116,11 +124,21 @@ public class DataProductCtrl {
             e.printStackTrace();
             return ReturnMapUtils.setFailedMsgRtnJsonStr("上传失败, 请检查");
         }
+        String username = SessionUserUtil.getCurrentUsername();
+        // 16个字节的密钥
+        String key = "010product2nesdc";
         Map<String, String> params = new HashMap<>();
-        params.put("identification", "HTF");
-        params.put("dataSetId", identifier);
-        params.put("localUrl", InetAddress.getLocalHost().toString());
-        HttpUtils.doPostParmaMap(sharePlatformUrl + sharePlatformUploadUri, params, 30 * 1000);
+        params.put("user", AES256Utils.encrypt("htfSubmit", key));
+        params.put("identification", AES256Utils.encrypt("HTF", key));
+        params.put("dataProductId", identifier);
+        params.put("link", AES256Utils.encrypt("http://10.0.82.122:6008", key));
+        String sendPostData =HttpUtils.doPostParmaMap(sharePlatformUrl + sharePlatformUploadUri, params, 30 * 1000);
+        if (StringUtils.isBlank(sendPostData)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
+        }
+        if (sendPostData.contains("Exception") || sendPostData.contains("error") || sendPostData.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG())) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : " + MessageConfig.INTERFACE_CALL_ERROR_MSG());
+        }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
 
@@ -132,10 +150,10 @@ public class DataProductCtrl {
     private DataProductMetaDataExcelVo transferToExcelVo(DataProductMetaDataView dataProductMetaDataView) {
         DataProductMetaDataExcelVo excelVo = new DataProductMetaDataExcelVo();
         BeanUtils.copyProperties(dataProductMetaDataView, excelVo);
-        excelVo.setIdentifier(dataProductMetaDataView.getInnerIdentifier() + dataProductMetaDataView.getIdentifier()); // 台站名称+数据集标识
-        excelVo.setDocumentationAddress("demo.xlsx");
+        excelVo.setIdentifier(dataProductMetaDataView.getInnerIdentifier() + "_" +dataProductMetaDataView.getIdentifier()); // 台站名称+数据集标识
+        excelVo.setDocumentationAddress(dataProductMetaDataView.getDocumentationAddress());
         excelVo.setIconAddress(getFileNameFromPath(dataProductMetaDataView.getIconAddress()));
-        return null;
+        return excelVo;
     }
 
     @RequestMapping(value = "/checkUpdateSharePlatformStatus", method = RequestMethod.GET)

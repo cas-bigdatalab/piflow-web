@@ -66,15 +66,15 @@ public class DataProductSharePlatformCtrl {
     @RequestMapping(value = "/downloadMetaDataFile")
     @ResponseBody
     @ApiOperation(value = "getMetaDataFile", notes = "获取元数据和图片,说明文档,并压缩为zip文件")
-    public void getMetaDataFile(HttpServletResponse response,String dataProductId) {
+    public void getMetaDataFile(HttpServletResponse response, String dataProductId) {
         SharePlatformMetadata dataProductMetaData = dataProductDomain.getDataProductMetaDataById(dataProductId);
-        if(dataProductMetaData == null){
+        if (dataProductMetaData == null) {
             try {
                 response.reset();
                 response.setStatus(HttpServletResponse.SC_OK); // 设置HTTP状态码为200
                 response.setContentType("application/json;charset=utf-8");
                 PrintWriter writer = response.getWriter();
-                writer.write(ReturnMapUtils.setFailedMsgRtnJsonStr("id" + dataProductId + " is not exist"));
+                writer.write(ReturnMapUtils.setFailedMsgRtnJsonStr("id " + dataProductId + " is not exist"));
                 writer.flush();
                 return;
             } catch (IOException ex) {
@@ -109,8 +109,7 @@ public class DataProductSharePlatformCtrl {
 // 压缩为zip
 // 上传资源共享平台
         try {
-            downloadFilesAsZip(response, new String[]{filePath, iconPath, documentationPath}, dataProductId +"_metaData.zip");
-
+            downloadFilesAsZip(response, new String[]{filePath, iconPath, documentationPath}, dataProductId + "_metaData.zip");
         } catch (IOException e) {
             // 处理异常并返回错误响应
             e.printStackTrace();
