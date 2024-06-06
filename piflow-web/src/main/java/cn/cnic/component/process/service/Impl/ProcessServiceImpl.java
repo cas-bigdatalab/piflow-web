@@ -1050,7 +1050,7 @@ public class ProcessServiceImpl implements IProcessService {
     private Map<String, List<String>> extractExceptionLines(String input) {
         Map<String, List<String>> extractInfo = new LinkedHashMap<>();
         String[] lines = input.split("\n");
-        String regex = "(?i).*\\b(fail|error|exception)\\b.*"; // 使用正则表达式，忽略大小写匹配关键字
+        String regex = "(?i).*\\b(fail|exception)\\b.*"; // 使用正则表达式，忽略大小写匹配关键字
         boolean capture = false;
         int rows = 0;
         StringBuilder result = new StringBuilder();
@@ -1059,7 +1059,7 @@ public class ProcessServiceImpl implements IProcessService {
                 capture = true;
                 rows++;
                 result.append(line).append("\n");
-            } else if (capture && rows > 3) { //捕捉到的异常每次都只截取三行
+            } else if (capture && rows > 2) { //捕捉到的异常每次都只截取三行
                 capture = false;
                 rows = 0;
                 //获取中文映射
