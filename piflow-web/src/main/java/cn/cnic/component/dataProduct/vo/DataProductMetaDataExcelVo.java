@@ -1,18 +1,12 @@
 package cn.cnic.component.dataProduct.vo;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * DataProductMetaDataVo-数据产品元数据VO(传到数据共享平台用)
- */
 @Getter
 @Setter
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class DataProductMetaDataView {
+public class DataProductMetaDataExcelVo {
     private String identifier; // 管理标识符,即数据产品id
-    private String innerIdentifier; // 内部管理标识符
     private String doiIdentifier; // DOI标识符
     private String pidIdentifier; // PID标识符
     private String cstrIdentifier; // CSTR标识符
@@ -46,8 +40,10 @@ public class DataProductMetaDataView {
     private String relatedPaperJournal; // 关联论文期刊
     private String relatedPaperAddress; // 关联论文访问地址
 
-    private String iconAddress; // 图标地址(本地)
-    private String documentationAddress; // 文档地址(相对)
 
+    private String documentationAddress; // 数据说明文档地址(相对)
+
+    private String dataSetFile = ""; // 数据集文件地址(相对)
+    private String iconAddress; // 图标地址(本地)
 
 }

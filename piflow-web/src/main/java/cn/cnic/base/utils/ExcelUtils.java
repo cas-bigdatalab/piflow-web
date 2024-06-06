@@ -48,6 +48,48 @@ public class ExcelUtils {
         workbook.close();
     }
 
+    /**
+     * 把对象中的属性依次追加到excel文件中,写到第一个sheet, 最后一行
+     * @param pojo
+     * @param excelFilePath
+     * @param originFilePath
+     * @throws IOException
+     * @throws IllegalAccessException
+     */
+    public static void appendPojoToExcel(Object pojo, String excelFilePath, String originFilePath) throws IOException, IllegalAccessException {
+        Workbook workbook;
+        Sheet sheet;
+        try (FileInputStream fis = new FileInputStream(originFilePath)) {
+            workbook = new XSSFWorkbook(fis);
+            sheet = workbook.getSheetAt(0);
+        } catch (IOException e) {
+            workbook = new XSSFWorkbook();
+            sheet = workbook.createSheet("Sheet1");
+        }
+
+        int rowIndex = sheet.getLastRowNum() + 1;
+        Row row = sheet.createRow(rowIndex);
+
+        Field[] fields = pojo.getClass().getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            fields[i].setAccessible(true);
+            Object value = fields[i].get(pojo);
+
+            Cell cell = row.createCell(i);
+            if (value != null) {
+                cell.setCellValue(value.toString());
+            } else {
+                cell.setCellValue("");
+            }
+        }
+
+        try (FileOutputStream fos = new FileOutputStream(excelFilePath)) {
+            workbook.write(fos);
+        }
+
+        workbook.close();
+    }
+
     public static void appendIconAndDocumentPathToExcel(String str1, String str2, String filePath) throws IOException {
         File excelFile = new File(filePath);
 

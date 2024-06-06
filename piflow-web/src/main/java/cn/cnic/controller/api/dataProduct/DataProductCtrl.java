@@ -4,15 +4,12 @@ import cn.cnic.base.utils.ExcelUtils;
 import cn.cnic.base.utils.HttpUtils;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.vo.BasePageVo;
-import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
 import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.service.IDataProductService;
-import cn.cnic.component.dataProduct.vo.DataProductMetaDataView;
-import cn.cnic.component.dataProduct.vo.DataProductVo;
-import cn.cnic.component.dataProduct.vo.ProductUserVo;
-import cn.cnic.component.dataProduct.vo.SharePlatformMetadata;
+import cn.cnic.component.dataProduct.vo.*;
 import cn.cnic.component.visual.entity.GraphTemplate;
 import cn.cnic.component.visual.entity.ProductTemplateGraphAssoDto;
 import cn.cnic.component.visual.entity.UserProductVisualView;
@@ -23,8 +20,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,6 +35,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static cn.cnic.component.dataProduct.domain.DataProductDomain.transferToReal;
+import static cn.cnic.component.dataProduct.util.DataProductUtil.getFileNameFromPath;
 
 @Api(value = "data product api", tags = "data product api")
 @Controller
@@ -103,16 +103,14 @@ public class DataProductCtrl {
     @ResponseBody
     @ApiOperation(value = "uploadToSharePlatform", notes = "上传数据产品到资源共享平台")
     public String uploadToSharePlatform(@RequestBody DataProductMetaDataView dataProductMetaDataView) throws UnknownHostException {
-        String storagePathHead = System.getProperty("user.dir");
         String identifier = dataProductMetaDataView.getIdentifier();
-
-        String path = storagePathHead + "/../../storage/csv/";
-        String filePath = path + identifier + ".xlsx";
-
+        String filePath = SysParamsCache.CSV_PATH + identifier + ".xlsx";
         try {
             // 先存到MySQL数据库,成功后写excel文件
             if (dataProductDomain.insertDataProductMetaDataVo(dataProductMetaDataView, filePath)) {
-                ExcelUtils.writePojoToExcel(dataProductMetaDataView, filePath);
+                //ExcelUtils.writePojoToExcel(dataProductMetaDataView, filePath);
+                DataProductMetaDataExcelVo excelVo = transferToExcelVo(dataProductMetaDataView);
+                ExcelUtils.appendPojoToExcel(excelVo, filePath, SysParamsCache.CSV_PATH + "demo.xlsx");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -124,6 +122,20 @@ public class DataProductCtrl {
         params.put("localUrl", InetAddress.getLocalHost().toString());
         HttpUtils.doPostParmaMap(sharePlatformUrl + sharePlatformUploadUri, params, 30 * 1000);
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
+    }
+
+    /**
+     * 转换为元数据Excel的格式
+     * @param dataProductMetaDataView
+     * @return
+     */
+    private DataProductMetaDataExcelVo transferToExcelVo(DataProductMetaDataView dataProductMetaDataView) {
+        DataProductMetaDataExcelVo excelVo = new DataProductMetaDataExcelVo();
+        BeanUtils.copyProperties(dataProductMetaDataView, excelVo);
+        excelVo.setIdentifier(dataProductMetaDataView.getInnerIdentifier() + dataProductMetaDataView.getIdentifier()); // 台站名称+数据集标识
+        excelVo.setDocumentationAddress("demo.xlsx");
+        excelVo.setIconAddress(getFileNameFromPath(dataProductMetaDataView.getIconAddress()));
+        return null;
     }
 
     @RequestMapping(value = "/checkUpdateSharePlatformStatus", method = RequestMethod.GET)

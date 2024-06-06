@@ -3,6 +3,7 @@ package cn.cnic.component.dataProduct.domain;
 import cn.cnic.base.utils.DateUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.common.Eunm.DataProductMetaDataStatus;
+import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.entity.ProductUser;
 import cn.cnic.component.dataProduct.mapper.DataProductMapper;
@@ -22,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+
+import static cn.cnic.component.dataProduct.util.DataProductUtil.getFileNameFromPath;
 
 @Component
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
@@ -143,8 +146,8 @@ public class DataProductDomain {
         SharePlatformMetadata dto = new SharePlatformMetadata();
         dto.setId(metaDataView.getIdentifier());
         dto.setReviewStatus(DataProductMetaDataStatus.EDITED.getValue());
-        dto.setIconPath(metaDataView.getIconAddress());
-        dto.setDocumentationPath(metaDataView.getDocumentationAddress());
+        dto.setIconPath(transferToReal(metaDataView.getIconAddress()));
+        dto.setDocumentationPath("/data/piflow/piflow-test/piflow-web/storage/files/demo_document.pdf"); // TODO 这里需要修改为真实路径zza
         dto.setMetadataFilePath(filePath);
         dto.setCrtDttm(new Date());
         dto.setLastUpdatedDttm(new Date());
@@ -162,6 +165,18 @@ public class DataProductDomain {
         } else {
             return dataProductMetaDataMapper.updateById(dto) == 1;
         }
+    }
+
+    /**
+     * 上传的是相对地址,需要转为真实地址
+     * @param iconPath
+     * @return
+     */
+    public static  String transferToReal(String iconPath) {
+        String path= SysParamsCache.FILE_PATH;
+        String fileName = getFileNameFromPath(iconPath);
+
+        return path + fileName;
     }
 
     public boolean updateDataProductMetaDataStatus(String dataProductId, String releasedDatasetUrl, int status) {

@@ -76,9 +76,12 @@ public class DataProductSharePlatformCtrl {
                 PrintWriter writer = response.getWriter();
                 writer.write(ReturnMapUtils.setFailedMsgRtnJsonStr("id" + dataProductId + " is not exist"));
                 writer.flush();
+                return;
             } catch (IOException ex) {
                 // 记录日志或者进行其他处理
                 ex.printStackTrace();
+                handleException(response, ex);
+                return;
             }
         }
 //        try {
@@ -92,13 +95,13 @@ public class DataProductSharePlatformCtrl {
         String documentationPath = dataProductMetaData.getDocumentationPath();
         String filePath = dataProductMetaData.getMetadataFilePath();
 
-        String iconName = getFileName(iconPath);
-        String documentationName = getFileName(documentationPath);
-        try {
-            appendIconAndDocumentPathToExcel(iconName, documentationName, filePath); // 要把两个文件的相对路径存入Excel,都在同一文件夹下,所以直接取文件名
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        String iconName = getFileName(iconPath);
+//        String documentationName = getFileName(documentationPath);
+//        try {
+//            appendIconAndDocumentPathToExcel(iconName, documentationName, filePath); // 要把两个文件的相对路径存入Excel,都在同一文件夹下,所以直接取文件名
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         //把vo填到excel中
 // 获取文件实体
 // 获取缩略图
