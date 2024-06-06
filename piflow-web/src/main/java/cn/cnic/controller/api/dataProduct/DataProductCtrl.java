@@ -52,11 +52,11 @@ public class DataProductCtrl {
 
     private final DataProductDomain dataProductDomain;
 
-    @Value("${share.platform.url}")
-    private String sharePlatformUrl;
+    //    @Value("${share.platform.url}")
+    private String sharePlatformUrl = "http://10.0.90.238";
 
-    @Value("${share.platform.upload.uri}")
-    private String sharePlatformUploadUri;
+    //     @Value("${share.platform.upload.uri}")
+    private String sharePlatformUploadUri = "/api/uploadToSharePlatformCheck";
 
 
 
