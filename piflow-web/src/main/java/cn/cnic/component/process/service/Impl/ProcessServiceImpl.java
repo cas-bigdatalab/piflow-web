@@ -1,30 +1,45 @@
 package cn.cnic.component.process.service.Impl;
 
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import cn.cnic.base.utils.*;
+import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.*;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
 import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.vo.DataProductVo;
+import cn.cnic.component.flow.domain.FlowDomain;
 import cn.cnic.component.flow.domain.FlowPublishDomain;
-import cn.cnic.component.flow.entity.*;
+import cn.cnic.component.flow.entity.Flow;
+import cn.cnic.component.flow.entity.FlowPublishing;
+import cn.cnic.component.flow.entity.FlowStopsPublishingProperty;
 import cn.cnic.component.flow.vo.FlowPublishingVo;
 import cn.cnic.component.flow.vo.StopPublishingPropertyVo;
 import cn.cnic.component.flow.vo.StopPublishingVo;
+import cn.cnic.component.mxGraph.utils.MxCellUtils;
 import cn.cnic.component.mxGraph.utils.MxGraphUtils;
-import cn.cnic.component.process.entity.ProcessStopProperty;
+import cn.cnic.component.mxGraph.vo.MxCellVo;
+import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
+import cn.cnic.component.process.domain.ErrorLogMappingDomain;
+import cn.cnic.component.process.domain.ProcessDomain;
+import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.process.entity.*;
+import cn.cnic.component.process.service.IProcessService;
+import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.vo.*;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.system.domain.FileDomain;
 import cn.cnic.component.system.entity.File;
+import cn.cnic.third.service.IFlow;
+import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
+import cn.cnic.third.vo.flow.ThirdFlowInfoStopsVo;
+import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
+import cn.cnic.third.vo.flow.ThirdProgressVo;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,27 +48,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.github.pagehelper.Page;
-import com.github.pagehelper.PageHelper;
-
-import cn.cnic.base.vo.UserVo;
-import cn.cnic.component.flow.domain.FlowDomain;
-import cn.cnic.component.mxGraph.utils.MxCellUtils;
-import cn.cnic.component.mxGraph.vo.MxCellVo;
-import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
-import cn.cnic.component.process.domain.ProcessDomain;
-import cn.cnic.component.process.entity.Process;
-import cn.cnic.component.process.entity.ProcessGroup;
-import cn.cnic.component.process.entity.ProcessStop;
-import cn.cnic.component.process.service.IProcessService;
-import cn.cnic.component.process.utils.ProcessUtils;
-import cn.cnic.third.service.IFlow;
-import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
-import cn.cnic.third.vo.flow.ThirdFlowInfoStopsVo;
-import cn.cnic.third.vo.flow.ThirdFlowInfoVo;
-import cn.cnic.third.vo.flow.ThirdProgressVo;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
+import javax.swing.*;
+import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -69,11 +70,13 @@ public class ProcessServiceImpl implements IProcessService {
     private final FlowPublishDomain flowPublishDomain;
     private final FileDomain fileDomain;
 
+    private final ErrorLogMappingDomain errorLogMappingDomain;
+
     @Autowired
     public ProcessServiceImpl(ProcessDomain processDomain,
                               StopsComponentDomain stopsComponentDomain,
                               FlowDomain flowDomain,
-                              IFlow flowImpl, DataProductDomain dataProductDomain, FlowPublishDomain flowPublishDomain, FileDomain fileDomain) {
+                              IFlow flowImpl, DataProductDomain dataProductDomain, FlowPublishDomain flowPublishDomain, FileDomain fileDomain, ErrorLogMappingDomain errorLogMappingDomain) {
         this.processDomain = processDomain;
         this.stopsComponentDomain = stopsComponentDomain;
         this.flowDomain = flowDomain;
@@ -81,6 +84,7 @@ public class ProcessServiceImpl implements IProcessService {
         this.dataProductDomain = dataProductDomain;
         this.flowPublishDomain = flowPublishDomain;
         this.fileDomain = fileDomain;
+        this.errorLogMappingDomain = errorLogMappingDomain;
     }
 
 
@@ -949,20 +953,92 @@ public class ProcessServiceImpl implements IProcessService {
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processStopVo", processStopVo);
     }
 
+//    @Override
+//    public String getErrorLogInfo(String appId) {
+//        String amContainerLogs = flowImpl.getFlowLog(appId);
+//        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+//        if (StringUtils.isNotBlank(amContainerLogs)) {
+//            String stdoutLog = amContainerLogs + "/stdout/?start=0";
+//            String stderrLog = amContainerLogs + "/stderr/?start=0";
+//            String stdoutLogHtml = HttpUtils.getHtml(stdoutLog);
+//            String stderrLogHtml = HttpUtils.getHtml(stderrLog);
+//            //截取错误信息
+//            String error1 = extractExceptionLines(stdoutLogHtml);
+//            String error2 = extractExceptionLines(stderrLogHtml);
+//            Map<String, String> errorMap = new HashMap<>();
+//            errorMap.put("errorInfo", error1 + error2);
+//            rtnMap.put("data", errorMap);
+//        } else {
+//            rtnMap.put("code", 200);
+//            rtnMap.put("errorMsg", MessageConfig.INTERFACE_CALL_ERROR_MSG());
+//        }
+//        return ReturnMapUtils.toJson(rtnMap);
+//    }
+
+//    @Override
+//    public String getErrorLogInStop(String appId) {
+//        String amContainerLogs = flowImpl.getFlowLog(appId);
+//        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+//        if (StringUtils.isNotBlank(amContainerLogs)) {
+//            String stdoutLog = amContainerLogs + "/stdout/?start=0";
+//            String stdoutLogHtml = HttpUtils.getHtml(stdoutLog);
+//            //截取错误信息
+//            String error1 = extractExceptionLines(stdoutLogHtml);
+//            Map<String, String> errorMap = new HashMap<>();
+//            errorMap.put("errorInfo", error1);
+//            rtnMap.put("data", errorMap);
+//        } else {
+//            rtnMap.put("code", 200);
+//            rtnMap.put("errorMsg", MessageConfig.INTERFACE_CALL_ERROR_MSG());
+//        }
+//        return ReturnMapUtils.toJson(rtnMap);
+//    }
+//
+//    @Override
+//    public String getErrorLogInSystem(String appId) {
+//        String amContainerLogs = flowImpl.getFlowLog(appId);
+//        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+//        if (StringUtils.isNotBlank(amContainerLogs)) {
+//            String stderrLog = amContainerLogs + "/stderr/?start=0";
+//            String stderrLogHtml = HttpUtils.getHtml(stderrLog);
+//            //截取错误信息
+//            String error2 = extractExceptionLines(stderrLogHtml);
+//            Map<String, String> errorMap = new HashMap<>();
+//            errorMap.put("errorInfo", error2);
+//            rtnMap.put("data", errorMap);
+//        } else {
+//            rtnMap.put("code", 200);
+//            rtnMap.put("errorMsg", MessageConfig.INTERFACE_CALL_ERROR_MSG());
+//        }
+//        return ReturnMapUtils.toJson(rtnMap);
+//    }
+
     @Override
-    public String getErrorLogInfo(String appId) {
+    public String getErrorLogForUser(String appId) {
         String amContainerLogs = flowImpl.getFlowLog(appId);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         if (StringUtils.isNotBlank(amContainerLogs)) {
-            String stdoutLog = amContainerLogs + "/stdout/?start=0";
             String stderrLog = amContainerLogs + "/stderr/?start=0";
-            String stdoutLogHtml = HttpUtils.getHtml(stdoutLog);
             String stderrLogHtml = HttpUtils.getHtml(stderrLog);
-            //截取错误信息
-            String error1 = extractExceptionLines(stdoutLogHtml);
-            String error2 = extractExceptionLines(stderrLogHtml);
+            //分析错误信息
+            StringBuffer error = new StringBuffer("根据您的错误日志，为您解读出以下内容：");
+            Map<String, List<String>> extractInfo = extractExceptionLines(stderrLogHtml);
+            for (String orginLog : extractInfo.keySet()) {
+                error.append("原始报错信息为：").append("\n").append(orginLog).append("\n\n");
+                error.append("根据您的原始报错信息推断，可能会存在以下问题：").append("\n");
+                List<String> extract = extractInfo.get(orginLog);
+                if (CollectionUtils.isNotEmpty(extract)) {
+                    for (int i = 0; i < extract.size(); i++) {
+                        //(1) 错误1
+                        error.append("(").append(i + 1).append(") ").append(extract.get(i)).append("\n");
+                    }
+                } else {
+                    error.append("没有找到该类报错的可能回答，请联系管理员补充！").append("\n");
+                }
+
+            }
             Map<String, String> errorMap = new HashMap<>();
-            errorMap.put("errorInfo", error1 + error2);
+            errorMap.put("errorInfo", error.toString());
             rtnMap.put("data", errorMap);
         } else {
             rtnMap.put("code", 200);
@@ -971,42 +1047,59 @@ public class ProcessServiceImpl implements IProcessService {
         return ReturnMapUtils.toJson(rtnMap);
     }
 
-    @Override
-    public String getErrorLogInStop(String appId) {
-        String amContainerLogs = flowImpl.getFlowLog(appId);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-        if (StringUtils.isNotBlank(amContainerLogs)) {
-            String stdoutLog = amContainerLogs + "/stdout/?start=0";
-            String stdoutLogHtml = HttpUtils.getHtml(stdoutLog);
-            //截取错误信息
-            String error1 = extractExceptionLines(stdoutLogHtml);
-            Map<String, String> errorMap = new HashMap<>();
-            errorMap.put("errorInfo", error1);
-            rtnMap.put("data", errorMap);
-        } else {
-            rtnMap.put("code", 200);
-            rtnMap.put("errorMsg", MessageConfig.INTERFACE_CALL_ERROR_MSG());
+    private Map<String, List<String>> extractExceptionLines(String input) {
+        Map<String, List<String>> extractInfo = new LinkedHashMap<>();
+        String[] lines = input.split("\n");
+        String regex = "(?i).*\\b(fail|error|exception)\\b.*"; // 使用正则表达式，忽略大小写匹配关键字
+        boolean capture = false;
+        int rows = 0;
+        StringBuilder result = new StringBuilder();
+        for (String line : lines) {
+            if (line.matches(regex)) {
+                capture = true;
+                rows++;
+                result.append(line).append("\n");
+            } else if (capture && rows > 3) { //捕捉到的异常每次都只截取三行
+                capture = false;
+                rows = 0;
+                //获取中文映射
+                String originErrorLog = result.toString();
+                List<String> answers = convertErrorToZh(originErrorLog);
+                extractInfo.put(originErrorLog, answers);
+                //重新清空待解析的日志
+                result.setLength(0);
+            } else if (capture) {
+                rows++;
+                result.append(line).append("\n");
+            }
         }
-        return ReturnMapUtils.toJson(rtnMap);
+        return extractInfo;
     }
 
-    @Override
-    public String getErrorLogInSystem(String appId) {
-        String amContainerLogs = flowImpl.getFlowLog(appId);
-        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-        if (StringUtils.isNotBlank(amContainerLogs)) {
-            String stderrLog = amContainerLogs + "/stderr/?start=0";
-            String stderrLogHtml = HttpUtils.getHtml(stderrLog);
-            //截取错误信息
-            String error2 = extractExceptionLines(stderrLogHtml);
-            Map<String, String> errorMap = new HashMap<>();
-            errorMap.put("errorInfo", error2);
-            rtnMap.put("data", errorMap);
-        } else {
-            rtnMap.put("code", 200);
-            rtnMap.put("errorMsg", MessageConfig.INTERFACE_CALL_ERROR_MSG());
+    private List<String> convertErrorToZh(String originErrorLog) {
+        List<String> answers = new ArrayList<>();
+        //先获取有效的用户错误日志配置列表
+        //一个一个匹配错误信息
+        List<ErrorLogMapping> errorLogMappings = errorLogMappingDomain.getAllAvailable();
+        if (CollectionUtils.isNotEmpty(errorLogMappings)) {
+            for (ErrorLogMapping errorLogMapping : errorLogMappings) {
+                Pattern pattern = Pattern.compile(errorLogMapping.getRegexPattern());
+                Matcher matcher = pattern.matcher(originErrorLog);
+                List<String> matchGroup = new ArrayList<>();
+                while (matcher.find()) {
+                    matchGroup.add(matcher.group());
+                }
+                if (CollectionUtils.isNotEmpty(matchGroup)) {
+                    String explainZh = errorLogMapping.getExplainZh();
+                    for (int i = 0; i < matchGroup.size(); i++) {
+                        String replace = "[" + (i + 1) + "]";
+                        explainZh = explainZh.replace(replace, "[" + matchGroup.get(i) + "]");
+                    }
+                    answers.add(explainZh);
+                }
+            }
         }
-        return ReturnMapUtils.toJson(rtnMap);
+        return answers;
     }
 
     @Override
@@ -1015,7 +1108,7 @@ public class ProcessServiceImpl implements IProcessService {
         if (null == requestVo.getPage() || null == requestVo.getLimit()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
-        Page<Process> page = PageHelper.startPage(requestVo.getPage(), requestVo.getLimit(),"crt_dttm desc");
+        Page<Process> page = PageHelper.startPage(requestVo.getPage(), requestVo.getLimit(), "crt_dttm desc");
         processDomain.getProcessListByPublishingIdAndUserName(Long.parseLong(requestVo.getPublishingId()), requestVo.getKeyword(), username);
         //对result进行加工
         List<Process> result = page.getResult();
@@ -1221,7 +1314,7 @@ public class ProcessServiceImpl implements IProcessService {
     @Override
     public String getAppIdByProcessId(String processId) {
         String appId = SysParamsCache.STARTED_PROCESS.get(processId);
-        if(StringUtils.isNotBlank(appId)){
+        if (StringUtils.isNotBlank(appId)) {
             SysParamsCache.STARTED_PROCESS.remove(processId);
         }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("appId", appId);
@@ -1238,9 +1331,10 @@ public class ProcessServiceImpl implements IProcessService {
         }
         //校验是否有已发布的数据产品
         List<DataProductVo> dataProductVos = dataProductDomain.getListByProcessId(processId);
-        if(CollectionUtils.isNotEmpty(dataProductVos)){
+        if (CollectionUtils.isNotEmpty(dataProductVos)) {
             List<DataProductVo> publishedDataProducts = dataProductVos.stream().filter(x -> x.getState().equals(DataProductState.PUBLISHED.getValue())).collect(Collectors.toList());
-            if(CollectionUtils.isNotEmpty(publishedDataProducts)) return ReturnMapUtils.setFailedMsgRtnJsonStr("The associated data products have been published. Please remove them before deleting the process");
+            if (CollectionUtils.isNotEmpty(publishedDataProducts))
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("The associated data products have been published. Please remove them before deleting the process");
         }
         boolean updateProcessEnableFlag = processDomain.updateProcessEnableFlag(username, isAdmin, processId);
         //删除数据产品及相关file记录
@@ -1261,24 +1355,6 @@ public class ProcessServiceImpl implements IProcessService {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Successfully Deleted");
         }
         return ReturnMapUtils.setFailedMsgRtnJsonStr("Failed Deleted");
-    }
-
-    private String extractExceptionLines(String input) {
-        String[] lines = input.split("\n");
-        String regex = "(?i).*\\b(fail|error|exception)\\b.*"; // 使用正则表达式，忽略大小写匹配关键字
-        boolean capture = false;
-        StringBuilder result = new StringBuilder();
-        for (String line : lines) {
-            if (line.matches(regex)) {
-                capture = true;
-                result.append(line).append("\n");
-            } else if (capture && line.contains("<")) {
-                capture = false;
-            } else if (capture) {
-                result.append(line).append("\n");
-            }
-        }
-        return result.toString();
     }
 
     @SuppressWarnings("rawtypes")
@@ -1342,6 +1418,24 @@ public class ProcessServiceImpl implements IProcessService {
             obj.getJSONArray("series").getJSONObject(i).put("data", sort_data.getJSONArray(i + ""));
         }
         return obj.toString();
+    }
+
+    public static void main(String[] args) {
+        String s = "test4test5test6";
+        String key = "这是第一个错误:[1],这是第二个错误:[2],这是第三个错误:[3]";
+        String regex = "\\d";
+        Pattern compile = Pattern.compile(regex);
+        Matcher matcher = compile.matcher(s);
+        List<String> matchGroup = new ArrayList<>();
+        while (matcher.find()) {
+            matchGroup.add(matcher.group());
+        }
+        for (int i = 0; i < matchGroup.size(); i++) {
+            String replace = "[" + (i + 1) + "]";
+            key = key.replace(replace, "[" + matchGroup.get(i) + "]");
+        }
+
+        System.out.println(key);
     }
 
 }

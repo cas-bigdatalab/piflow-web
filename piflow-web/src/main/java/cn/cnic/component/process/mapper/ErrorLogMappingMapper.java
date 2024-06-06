@@ -35,4 +35,7 @@ public interface ErrorLogMappingMapper {
             + "</where>"
             + "</script>")
     List<ErrorLogMappingVo> getByPage(@Param("keyword") String keyword, @Param("username") String username);
+
+    @Select("select id, name, explain_zh, regex_pattern from error_log_mapping where enable_flag = 1 and regex_pattern is not null")
+    List<ErrorLogMapping> getAllAvailable();
 }

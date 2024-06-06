@@ -19,3 +19,5 @@ CREATE TABLE IF NOT EXISTS `error_log_mapping`
     `bak2` varchar(255) NULL DEFAULT NULL COMMENT '保留字段2',
     `bak3` varchar(255) NULL DEFAULT NULL COMMENT '保留字段3'
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci COMMENT='用户错误日志映射表';
+
+ALTER TABLE `error_log_mapping` ADD INDEX index_regex (`regex_pattern`);

@@ -37,4 +37,8 @@ public class ErrorLogMappingDomain {
     public List<ErrorLogMappingVo> getByPage(ErrorLogMappingVo errorLogMappingVo, String username) {
         return errorLogMappingMapper.getByPage(errorLogMappingVo.getKeyword(), username);
     }
+
+    public List<ErrorLogMapping> getAllAvailable() {
+        return errorLogMappingMapper.getAllAvailable();
+    }
 }
