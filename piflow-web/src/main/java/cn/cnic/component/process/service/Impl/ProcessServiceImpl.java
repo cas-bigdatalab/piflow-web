@@ -1059,7 +1059,7 @@ public class ProcessServiceImpl implements IProcessService {
                 capture = true;
                 rows++;
                 result.append(line).append("\n");
-            } else if (capture && rows > 2) { //捕捉到的异常每次都只截取三行
+            } else if (capture && (rows > 2 || line.contains("<"))) { //捕捉到的异常每次都只截取三行或者遇到一些html标签
                 capture = false;
                 rows = 0;
                 //获取中文映射
