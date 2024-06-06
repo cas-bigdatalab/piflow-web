@@ -2,6 +2,7 @@ package cn.cnic.controller.api.dataProduct;
 
 
 import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
 import cn.cnic.component.dataProduct.service.IDataProductService;
 import cn.cnic.component.dataProduct.vo.SharePlatformMetadata;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.io.UncheckedIOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -66,6 +68,19 @@ public class DataProductSharePlatformCtrl {
     @ApiOperation(value = "getMetaDataFile", notes = "获取元数据和图片,说明文档,并压缩为zip文件")
     public void getMetaDataFile(HttpServletResponse response,String dataProductId) {
         SharePlatformMetadata dataProductMetaData = dataProductDomain.getDataProductMetaDataById(dataProductId);
+        if(dataProductMetaData == null){
+            try {
+                response.reset();
+                response.setStatus(HttpServletResponse.SC_OK); // 设置HTTP状态码为200
+                response.setContentType("application/json;charset=utf-8");
+                PrintWriter writer = response.getWriter();
+                writer.write(ReturnMapUtils.setFailedMsgRtnJsonStr("id" + dataProductId + " is not exist"));
+                writer.flush();
+            } catch (IOException ex) {
+                // 记录日志或者进行其他处理
+                ex.printStackTrace();
+            }
+        }
 //        try {
 //            DataProductMetaDataView metaDataView = JsonUtils.toObject(dataProductMetaData.getMetaData(), DataProductMetaDataView.class);
 //
@@ -95,6 +110,7 @@ public class DataProductSharePlatformCtrl {
 
         } catch (IOException e) {
             // 处理异常并返回错误响应
+            e.printStackTrace();
             handleException(response, e);
         }
     }
@@ -152,9 +168,12 @@ public class DataProductSharePlatformCtrl {
     private void handleException(HttpServletResponse response, IOException e) {
         try {
             response.reset();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setStatus(HttpServletResponse.SC_OK); // 设置HTTP状态码为200
             response.setContentType("application/json;charset=utf-8");
-        } catch (Exception ex) {
+            PrintWriter writer = response.getWriter();
+            writer.write("{\"error\": \"Failed to download files: " + e.getMessage() + "\"}");
+            writer.flush();
+        } catch (IOException ex) {
             // 记录日志或者进行其他处理
             ex.printStackTrace();
         }
