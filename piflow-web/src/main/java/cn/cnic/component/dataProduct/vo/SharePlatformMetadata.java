@@ -20,6 +20,7 @@ public class SharePlatformMetadata {
     private String productUrl; //发布的url,未发布时为空
     private Date crtDttm = new Date();
     private Date lastUpdatedDttm = new Date();
+    private String reviewMessage; // 提交审核时的审核意见
 
 
 }

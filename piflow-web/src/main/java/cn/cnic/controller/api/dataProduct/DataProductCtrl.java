@@ -16,17 +16,18 @@ import cn.cnic.component.visual.service.ProductTemplateGraphAssoService;
 import cn.cnic.component.visual.util.ResponseResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import net.sf.json.JSONObject;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.List;
@@ -35,13 +36,14 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static cn.cnic.base.utils.FileUtils.uploadRtnMap;
-import static cn.cnic.component.dataProduct.domain.DataProductDomain.transferToReal;
 import static cn.cnic.component.dataProduct.util.DataProductUtil.getFileNameFromPath;
 
 @Api(value = "data product api", tags = "data product api")
 @Controller
 @RequestMapping("/dataProduct")
 public class DataProductCtrl {
+
+    private static Logger logger = LoggerUtil.getLogger();
 
     private final IDataProductService dataProductServiceImpl;
 
@@ -51,12 +53,19 @@ public class DataProductCtrl {
 
     private final DataProductDomain dataProductDomain;
 
-    //    @Value("${share.platform.url}")
-    private String sharePlatformUrl = "http://10.0.90.238";
 
-    //     @Value("${share.platform.upload.uri}")
-    private String sharePlatformUploadUri = "/api/uploadToSharePlatformCheck";
-
+    @Value("${share.platform.url}")
+    public String sharePlatformUrl;
+    @Value("${share.platform.upload.uri}")
+    public String sharePlatformUploadUri;
+    @Value("${share.platform.AES.key}")
+    public String sharePlatformAES256Key;
+    @Value("${share.platform.identification}")
+    public String sharePlatformId;
+    @Value("${share.platform.user}")
+    public String sharePlatformUser;
+    @Value("${local.datacenter.url}")
+    public String localDatacenterUrl;
 
 
     @Autowired
@@ -111,6 +120,8 @@ public class DataProductCtrl {
     @ResponseBody
     @ApiOperation(value = "uploadToSharePlatform", notes = "上传数据产品到资源共享平台")
     public String uploadToSharePlatform(@RequestBody DataProductMetaDataView dataProductMetaDataView) throws UnknownHostException {
+        logger.error("zzatets_call_share_platform_upload_uri: " + sharePlatformUrl + sharePlatformUploadUri);
+
         String identifier = dataProductMetaDataView.getIdentifier();
         String filePath = SysParamsCache.CSV_PATH + identifier + ".xlsx";
         try {
@@ -124,20 +135,21 @@ public class DataProductCtrl {
             e.printStackTrace();
             return ReturnMapUtils.setFailedMsgRtnJsonStr("上传失败, 请检查");
         }
-        String username = SessionUserUtil.getCurrentUsername();
         // 16个字节的密钥
-        String key = "010product2nesdc";
         Map<String, String> params = new HashMap<>();
-        params.put("user", AES256Utils.encrypt("htfSubmit", key));
-        params.put("identification", AES256Utils.encrypt("HTF", key));
+        params.put("user", AES256Utils.encrypt(sharePlatformUser, sharePlatformAES256Key));
+        params.put("identification", AES256Utils.encrypt(sharePlatformId, sharePlatformAES256Key));
         params.put("dataProductId", identifier);
-        params.put("link", AES256Utils.encrypt("http://10.0.82.122:6008", key));
-        String sendPostData =HttpUtils.doPostParmaMap(sharePlatformUrl + sharePlatformUploadUri, params, 30 * 1000);
+        params.put("link", AES256Utils.encrypt(localDatacenterUrl, sharePlatformAES256Key));
+        logger.info("zzatets_call_share_platform_upload_uri: " + sharePlatformUrl + sharePlatformUploadUri);
+        String sendPostData = HttpUtils.doPostParmaMap(sharePlatformUrl + sharePlatformUploadUri, params, 30 * 1000);
         if (StringUtils.isBlank(sendPostData)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
         }
-        if (sendPostData.contains("Exception") || sendPostData.contains("error") || sendPostData.contains(MessageConfig.INTERFACE_CALL_ERROR_MSG())) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("Error : " + MessageConfig.INTERFACE_CALL_ERROR_MSG());
+        JSONObject obj = JSONObject.fromObject(sendPostData);
+        String code = obj.getString("code");
+        if (Integer.parseInt(code) != 200) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("共享服务中心返回[" + obj.getString("message") + "], 请修改");
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
@@ -158,7 +170,7 @@ public class DataProductCtrl {
 
     @RequestMapping(value = "/checkUpdateSharePlatformStatus", method = RequestMethod.GET)
     @ResponseBody
-    @ApiOperation(value = "checkUpdateSharePlatformStatus", notes = "查看上传状态")
+    @ApiOperation(value = "checkUpdateSharePlatformStatus", notes = "查看审核状态")
     public String checkUpdateSharePlatformStatus(String dataProductId) {
         SharePlatformMetadata metadata = dataProductDomain.getDataProductMetaDataById(dataProductId);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", metadata);

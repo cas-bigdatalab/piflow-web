@@ -1,15 +1,17 @@
 package cn.cnic.controller.api.dataProduct;
 
 
+import cn.cnic.base.utils.AES256Utils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
 import cn.cnic.component.dataProduct.service.IDataProductService;
 import cn.cnic.component.dataProduct.vo.SharePlatformMetadata;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -27,9 +29,6 @@ import java.nio.file.Paths;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import static cn.cnic.base.utils.ExcelUtils.appendIconAndDocumentPathToExcel;
-import static cn.cnic.base.utils.FileUtils.getFileName;
-
 @Controller
 @RequestMapping("/dataProductSharePlatform")
 public class DataProductSharePlatformCtrl {
@@ -39,6 +38,12 @@ public class DataProductSharePlatformCtrl {
 
     private final DataProductDomain dataProductDomain;
     private final IDataProductService dataProductServiceImpl;
+
+    @Value("${share.platform.AES.key}")
+    public String sharePlatformAES256Key;
+    @Value("${share.platform.identification}")
+    public String sharePlatformId;
+
 
 
     public DataProductSharePlatformCtrl(DataProductDomain dataProductDomain, IDataProductService dataProductServiceImpl) {
@@ -50,23 +55,45 @@ public class DataProductSharePlatformCtrl {
     @RequestMapping(value = "/setDataProductStatus", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "setDataProductStatus", notes = "返回url以及审核状态")
-    public void setDataProductStatus(HttpServletResponse response, String dataProductId, String releasedDatasetUrl, int status) {
-        dataProductDomain.updateDataProductMetaDataStatus(dataProductId, releasedDatasetUrl, status);
+    public String setDataProductStatus(HttpServletResponse response, String dataProductId, String releasedDatasetUrl, int status, String message, String encryptedIdentification) {
+        String decrypt = AES256Utils.decrypt(encryptedIdentification, sharePlatformAES256Key);
+        logger.info("setDataProductStatus, dataProductId:{}, releasedDatasetUrl:{}, status:{}, message:{}, decrypt:{}", dataProductId, releasedDatasetUrl, status, message, decrypt);
+        if (!StringUtils.equalsIgnoreCase(decrypt, sharePlatformId + "_productUrl")) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("身份校验失败!请联系管理员, 明文为" + decrypt);
+        }
+        dataProductDomain.updateDataProductMetaDataStatus(dataProductId, releasedDatasetUrl, status, message);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("success");
     }
 
 
     @RequestMapping(value = "/downloadDataset", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "downloadDataset", notes = "数据产品下载")
-    public void downloadDataset(HttpServletResponse response, String dataProductId) {
+    public String downloadDataset(HttpServletResponse response, String dataProductId, String encryptedIdentification) {
+        String decrypt = AES256Utils.decrypt(encryptedIdentification, sharePlatformAES256Key);
+        logger.info("downloadDataset, dataProductId:{}, decrypt:{}", dataProductId, decrypt);
+        if (!StringUtils.equalsIgnoreCase(decrypt, sharePlatformId + "_rawFile")) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("身份校验失败!请联系管理员, 明文为" + decrypt);
+        }
         dataProductServiceImpl.downloadDataset(response, dataProductId);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("success");
     }
 
 
     @RequestMapping(value = "/downloadMetaDataFile")
     @ResponseBody
     @ApiOperation(value = "getMetaDataFile", notes = "获取元数据和图片,说明文档,并压缩为zip文件")
-    public void getMetaDataFile(HttpServletResponse response, String dataProductId) {
+    public String getMetaDataFile(HttpServletResponse response, String dataProductId, String encryptedIdentification) {
+        String decrypt = AES256Utils.decrypt(encryptedIdentification, sharePlatformAES256Key);
+        logger.info("getMetaDataFile, dataProductId:{}, decrypt:{}", dataProductId, decrypt);
+        if (!StringUtils.equalsIgnoreCase(decrypt, sharePlatformId + "_metadata")) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("身份校验失败!请联系管理员, 明文为" + decrypt);
+        }
+        downloadMetedata(response, dataProductId);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("success");
+    }
+
+    private void downloadMetedata(HttpServletResponse response, String dataProductId) {
         SharePlatformMetadata dataProductMetaData = dataProductDomain.getDataProductMetaDataById(dataProductId);
         if (dataProductMetaData == null) {
             try {

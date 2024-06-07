@@ -1,0 +1,1 @@
+ALTER TABLE share_platform_metadata ADD review_message varchar(256) NULL DEFAULT "" COMMENT '审核意见';

@@ -179,14 +179,15 @@ public class DataProductDomain {
         return path + fileName;
     }
 
-    public boolean updateDataProductMetaDataStatus(String dataProductId, String releasedDatasetUrl, int status) {
+    public boolean updateDataProductMetaDataStatus(String dataProductId, String releasedDatasetUrl, int status, String message) {
 
         SharePlatformMetadata dto = new SharePlatformMetadata();
         dto.setId(dataProductId);
         dto.setReviewStatus(status);
         dto.setLastUpdatedDttm(new Date());
-        if (status == DataProductMetaDataStatus.POSTED.getValue()) {
+        if (status == DataProductMetaDataStatus.POSTED.getValue() || status == DataProductMetaDataStatus.NEEDCHANGED.getValue()) {
             dto.setProductUrl(releasedDatasetUrl);
+            dto.setReviewMessage(message);
         }
         return dataProductMetaDataMapper.updateById(dto) == 1;
     }
