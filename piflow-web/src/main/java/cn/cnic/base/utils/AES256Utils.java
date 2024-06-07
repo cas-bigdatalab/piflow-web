@@ -99,8 +99,8 @@ public class AES256Utils {
     }
 
     public static void main(String[] args) {
-        String text = "嗨，您好！";
-        String key = "woniucsdnvip8888"; // 16字节的密钥
+        String text = "HTF_metadata";
+        String key = "010product2nesdc"; // 16字节的密钥
 
         String encryptTextEBC = encrypt(text, key);
         System.out.println("EBC 加密后内容：" + encryptTextEBC);

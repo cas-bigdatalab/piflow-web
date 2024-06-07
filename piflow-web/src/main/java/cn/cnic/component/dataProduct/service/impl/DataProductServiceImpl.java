@@ -1,7 +1,6 @@
 package cn.cnic.component.dataProduct.service.impl;
 
 import cn.cnic.base.utils.*;
-import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.*;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
@@ -10,7 +9,6 @@ import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.entity.ProductTypeAssociate;
 import cn.cnic.component.dataProduct.entity.ProductUser;
 import cn.cnic.component.dataProduct.service.IDataProductService;
-import cn.cnic.component.dataProduct.util.DataProductUtil;
 import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.dataProduct.vo.ProductUserVo;
 import cn.cnic.component.system.domain.FileDomain;
@@ -24,7 +22,6 @@ import com.github.pagehelper.PageHelper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.mortbay.util.StringUtil;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +31,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
