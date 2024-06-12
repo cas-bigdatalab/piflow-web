@@ -12,5 +12,5 @@ CREATE TABLE IF NOT EXISTS `share_platform_metadata`
 
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 26
-  DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT ='共享服务平台元数据信息表';
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_general_ci COMMENT ='共享服务平台元数据信息表';
