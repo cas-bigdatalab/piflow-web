@@ -142,7 +142,7 @@ public class DataProductDomain {
         return dataProductMapper.updateEnableFlagToFalse(ids);
     }
 
-    public boolean insertDataProductMetaDataVo(DataProductMetaDataView metaDataView, String filePath) {
+    public boolean insertOrUpdateDataProductMetaDataVo(DataProductMetaDataView metaDataView, String filePath) {
         SharePlatformMetadata dto = new SharePlatformMetadata();
         dto.setId(metaDataView.getIdentifier());
         dto.setReviewStatus(DataProductMetaDataStatus.EDITED.getValue());

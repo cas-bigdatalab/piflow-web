@@ -109,6 +109,7 @@ public class DataProductSharePlatformCtrl {
     @ResponseBody
     @ApiOperation(value = "getMetaDataFile", notes = "获取元数据和图片,说明文档,并压缩为zip文件")
     public void getMetaDataFile(HttpServletResponse response, String dataProductId, String encryptedIdentification) {
+        System.out.println("getMetaDataFile, dataProductId:" + dataProductId +", rawtext: "+ encryptedIdentification);
         String decrypt = AES256Utils.decrypt(encryptedIdentification, sharePlatformAES256Key);
         logger.info("getMetaDataFile, dataProductId:{}, decrypt:{}", dataProductId, decrypt);
         System.out.println("getMetaDataFile, dataProductId:" + dataProductId +", decrypt: "+ decrypt);
