@@ -326,6 +326,6 @@ public interface ProcessMapper {
     })
     Process getByFlowIdAndCrtUserWithoutState(@Param("flowId") String flowId, @Param("username") String username);
 
-    @Select("select * from flow_process where enable_flag=1 and crt_user = #{username} and app_id is not null and ( ( state!='COMPLETED' and state!='FINISHED' and state!='FAILED' and state!='KILLED' ) or state is null )")
+    @Select("select * from flow_process where enable_flag=1 and crt_user = #{username} and ( ( state!='COMPLETED' and state!='FINISHED' and state!='FAILED' and state!='KILLED' ) and state is not null )")
     List<Process> getRunningProcessListByCreatUser(@Param("username") String username);
 }

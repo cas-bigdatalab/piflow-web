@@ -71,6 +71,12 @@ public class LoginCtrl {
         return sysUserServiceImpl.beforeLogin(username);
     }
 
+    @RequestMapping(value = "/jwtLogout", method = RequestMethod.GET)
+    @ResponseBody
+    public String jwtLogout(String username) {
+        return sysUserServiceImpl.jwtLogout(username);
+    }
+
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
     public String register(String username, String pw, String name, String sex, String status, String phoneNumber, String email, String company, String ecosystemTypeIds) {

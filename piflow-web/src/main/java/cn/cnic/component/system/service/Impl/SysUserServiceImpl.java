@@ -438,6 +438,12 @@ public class SysUserServiceImpl implements ISysUserService {
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", roles);
     }
 
+    @Override
+    public String jwtLogout(String username) {
+        jwtTokenUtil.deleteToken(username);
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.UPDATE_SUCCEEDED_MSG());
+    }
+
     private Authentication authenticate(String username, String password) {
         try {
             //该方法会去调用userDetailsService.loadUserByUsername()去验证用户名和密码，如果正确，则存储该用户名密码到“security 的 context中”
