@@ -1,9 +1,11 @@
 package cn.cnic.common.Eunm;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import cn.cnic.base.TextureEnumSerializer;
 
 @JsonSerialize(using = TextureEnumSerializer.class)
+@JsonDeserialize(using = SysRoleTypeDeserializer.class)
 public enum SysRoleType {
     ADMIN("ADMIN", "ADMIN", "admin"),
     USER("USER", "USER", "user");

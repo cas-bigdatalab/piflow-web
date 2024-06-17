@@ -2,6 +2,7 @@ package cn.cnic.component.system.mapper;
 
 import cn.cnic.component.system.mapper.provider.SysRoleMapperProvider;
 import cn.cnic.component.system.entity.SysRole;
+import cn.cnic.component.system.vo.SysUserVo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -26,5 +27,11 @@ public interface SysRoleMapper {
     
     @SelectProvider(type = SysRoleMapperProvider.class, method = "getSysRoleBySysUserId")
     public SysRole getSysRoleBySysUserId(@Param("sysUserId") String sysUserId);
+
+    @UpdateProvider(type = SysRoleMapperProvider.class, method = "updateRole")
+    int updateRole(SysUserVo sysUserVo);
+
+    @Select("select distinct role from sys_role group by role")
+    List<SysRole> getAllRole();
 
 }

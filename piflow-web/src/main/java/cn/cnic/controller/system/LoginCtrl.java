@@ -58,6 +58,19 @@ public class LoginCtrl {
         return sysUserServiceImpl.jwtLogin(username, password);
     }
 
+    /**
+     * @param username:
+     * @return String
+     * @author tianyao
+     * @description 同一用户只能同时在一个终端登录
+     * @date 2024/6/17 13:52
+     */
+    @RequestMapping(value = "/beforeLogin", method = RequestMethod.GET)
+    @ResponseBody
+    public String beforeLogin(String username) {
+        return sysUserServiceImpl.beforeLogin(username);
+    }
+
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     @ResponseBody
     public String register(String username, String pw, String name, String sex, String status, String phoneNumber, String email, String company, String ecosystemTypeIds) {

@@ -68,9 +68,16 @@ public interface ISysUserService {
 
     public String jwtLogin(String username, String password);
 
+    String beforeLogin(String username);
+
     public int deleteUser(String id);
 
     public String bindDeveloperAccessKey(boolean isAdmin, String username, String accessKey);
 
     String updateInfo(SysUserVo sysUserVo);
+
+    String addUser(SysUserVo sysUserVo);
+    String updateRole(SysUserVo sysUserVo);
+
+    String getAllRole();
 }

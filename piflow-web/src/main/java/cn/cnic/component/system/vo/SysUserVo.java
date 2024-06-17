@@ -32,6 +32,7 @@ public class SysUserVo implements Serializable {
     private SysRole role;
 
     private List<EcosystemType> ecosystemTypes;   //生态站专用，所属生态系统类型
+    private String ecosystemTypeIds;
 
     public String getCreateTime() {
         return DateUtils.dateTimesToStr(crtDttm);
