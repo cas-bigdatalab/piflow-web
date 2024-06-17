@@ -99,7 +99,7 @@ public class AES256Utils {
     }
 
     public static void main(String[] args) {
-        String text = "HTF_metadata";
+        String text = "HSF_metadata";
         String key = "010product2nesdc"; // 16字节的密钥
 
         String encryptTextEBC = encrypt(text, key);

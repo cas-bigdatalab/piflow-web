@@ -120,13 +120,11 @@ public class DataProductCtrl {
     @ResponseBody
     @ApiOperation(value = "uploadToSharePlatform", notes = "上传数据产品到资源共享平台")
     public String uploadToSharePlatform(@RequestBody DataProductMetaDataView dataProductMetaDataView) throws UnknownHostException {
-        logger.error("zzatets_call_share_platform_upload_uri: " + sharePlatformUrl + sharePlatformUploadUri);
-
         String identifier = dataProductMetaDataView.getIdentifier();
         String filePath = SysParamsCache.CSV_PATH + identifier + ".xlsx";
         try {
             // 先存到MySQL数据库,成功后写excel文件
-            if (dataProductDomain.insertDataProductMetaDataVo(dataProductMetaDataView, filePath)) {
+            if (dataProductDomain.insertOrUpdateDataProductMetaDataVo(dataProductMetaDataView, filePath)) {
                 //ExcelUtils.writePojoToExcel(dataProductMetaDataView, filePath);
                 DataProductMetaDataExcelVo excelVo = transferToExcelVo(dataProductMetaDataView);
                 ExcelUtils.appendPojoToExcel(excelVo, filePath, SysParamsCache.CSV_PATH + "demo.xlsx");
@@ -141,7 +139,7 @@ public class DataProductCtrl {
         params.put("identification", AES256Utils.encrypt(sharePlatformId, sharePlatformAES256Key));
         params.put("dataProductId", identifier);
         params.put("link", AES256Utils.encrypt(localDatacenterUrl, sharePlatformAES256Key));
-        logger.info("zzatets_call_share_platform_upload_uri: " + sharePlatformUrl + sharePlatformUploadUri);
+        logger.info("zzatest_call_share_platform_upload_uri: " + sharePlatformUrl + sharePlatformUploadUri);
         String sendPostData = HttpUtils.doPostParmaMap(sharePlatformUrl + sharePlatformUploadUri, params, 30 * 1000);
         if (StringUtils.isBlank(sendPostData)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
@@ -149,6 +147,7 @@ public class DataProductCtrl {
         JSONObject obj = JSONObject.fromObject(sendPostData);
         String code = obj.getString("code");
         if (Integer.parseInt(code) != 200) {
+            System.out.println("共享服务中心返回[" + obj.getString("message") + "], 请修改");
             return ReturnMapUtils.setFailedMsgRtnJsonStr("共享服务中心返回[" + obj.getString("message") + "], 请修改");
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());

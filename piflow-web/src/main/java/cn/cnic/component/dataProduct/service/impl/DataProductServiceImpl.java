@@ -25,6 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +48,9 @@ public class DataProductServiceImpl implements IDataProductService {
     private final IFileService fileServiceImpl;
     private final SnowflakeGenerator snowflakeGenerator;
     private final SysUserDomain sysUserDomain;
+
+    @Value("${share.platform.identification}")
+    public String sharePlatformId;
 
     @Autowired
     public DataProductServiceImpl(DataProductDomain dataProductDomain, DataProductTypeDomain dataProductTypeDomain, FileDomain fileDomain, IFileService fileServiceImpl, SnowflakeGenerator snowflakeGenerator, SysUserDomain sysUserDomain) {
@@ -373,11 +377,11 @@ public class DataProductServiceImpl implements IDataProductService {
             return new HashMap<>();
         }
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("innerIdentifier", "testEcoStation"); // todo: 读取配置-生态站唯一标识
+        resultMap.put("innerIdentifier", sharePlatformId);
         resultMap.put("identifier", result.getId());
         resultMap.put("title", result.getName());
         resultMap.put("version", "v1");
-        resultMap.put("fileSize", 100);
+        resultMap.put("fileSize", 0); // 这两个字段共享服务中心会更新
         resultMap.put("numberOfEntries", 10);
         resultMap.put("email", result.getEmail());
 

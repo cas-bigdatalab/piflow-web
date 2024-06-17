@@ -5,6 +5,7 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,6 +14,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 
 public class ExcelUtils {
+
+    private static Logger logger = LoggerUtil.getLogger();
 
     /**
      * 把对象中的属性依次写入到excel文件中,写到第一个sheet, 第一行
@@ -63,8 +66,10 @@ public class ExcelUtils {
             workbook = new XSSFWorkbook(fis);
             sheet = workbook.getSheetAt(0);
         } catch (IOException e) {
-            workbook = new XSSFWorkbook();
-            sheet = workbook.createSheet("Sheet1");
+
+            e.printStackTrace();
+            logger.error("读取源文件失败", e);
+            return;
         }
 
         int rowIndex = sheet.getLastRowNum() + 1;
