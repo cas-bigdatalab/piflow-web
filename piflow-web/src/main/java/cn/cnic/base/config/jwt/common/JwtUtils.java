@@ -161,6 +161,17 @@ public class JwtUtils {
         return false;
     }
 
+    public boolean containTokenByUsername(String userName) {
+        if (userName != null && tokenMap.containsKey(userName)) {
+            return true;
+        }
+        return false;
+    }
+
+    public String getTokenFromUsername(String username) {
+        return tokenMap.get(username);
+    }
+
     private Claims getClaimsFromToken(String token) {
         Claims claims;
         try {
@@ -178,7 +189,7 @@ public class JwtUtils {
         return new Date(System.currentTimeMillis() + expiration * 1000);
     }
 
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }

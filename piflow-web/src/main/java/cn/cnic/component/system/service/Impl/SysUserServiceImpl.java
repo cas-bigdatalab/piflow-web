@@ -347,8 +347,8 @@ public class SysUserServiceImpl implements ISysUserService {
 
         List<SysRole> sysRoleList = new ArrayList<>();
         SysRole sysRole = new SysRole();
-        long maxId = sysUserDomain.getSysRoleMaxId();
-        sysRole.setId(maxId + 1);
+//        long maxId = sysUserDomain.getSysRoleMaxId();
+//        sysRole.setId(maxId + 1);
         sysRole.setRole(SysRoleType.USER);
         sysRole.setSysUser(sysUser);
 
@@ -374,7 +374,7 @@ public class SysUserServiceImpl implements ISysUserService {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Congratulations, registration is successful");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
-            throw new CustomException(ResultJson.failure(ResultCode.SERVER_ERROR,e.getMessage()));
+            throw new CustomException(ResultJson.failure(ResultCode.SERVER_ERROR, e.getMessage()));
 //            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ADD_ERROR_MSG());
         }
     }
@@ -394,6 +394,48 @@ public class SysUserServiceImpl implements ISysUserService {
         userVo.setPassword("");
         rtnMap.put("jwtUser", userVo);
         return ReturnMapUtils.toJson(rtnMap);
+    }
+
+    @Override
+    public String beforeLogin(String username) {
+        boolean enableLogin = true;
+        boolean b = jwtTokenUtil.containTokenByUsername(username);
+        if (b) {
+            String token = jwtTokenUtil.getTokenFromUsername(username);
+            Boolean tokenExpired = jwtTokenUtil.isTokenExpired(token);
+            if(!tokenExpired){
+                enableLogin = false;
+            }
+        }
+        if(enableLogin){
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("enable login");
+        }else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("disable login");
+        }
+    }
+
+
+    @Override
+    public String addUser(SysUserVo sysUserVo) {
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        if (!isAdmin) return ReturnMapUtils.setFailedMsgRtnJsonStr("No permission!!");
+        return registerUser(sysUserVo, sysUserVo.getEcosystemTypeIds());
+    }
+
+    @Override
+    public String updateRole(SysUserVo sysUserVo) {
+        int i = sysUserDomain.updateRole(sysUserVo);
+        if (i > 0) {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.UPDATE_SUCCEEDED_MSG());
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPDATE_ERROR_MSG());
+        }
+    }
+
+    @Override
+    public String getAllRole() {
+        List<SysRole> roles = sysUserDomain.getAllRole();
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", roles);
     }
 
     private Authentication authenticate(String username, String password) {

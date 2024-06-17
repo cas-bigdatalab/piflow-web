@@ -107,4 +107,13 @@ public class SysUserDomain {
     public String getOtherSameUserName(String newUsername) {
         return sysUserMapper.checkUsername(newUsername);
     }
+
+
+    public int updateRole(SysUserVo sysUserVo) {
+        return sysRoleMapper.updateRole(sysUserVo);
+    }
+
+    public List<SysRole> getAllRole() {
+        return sysRoleMapper.getAllRole();
+    }
 }

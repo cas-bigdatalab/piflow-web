@@ -2,7 +2,9 @@ package cn.cnic.component.system.mapper.provider;
 
 import cn.cnic.base.utils.SqlUtils;
 import cn.cnic.component.system.entity.SysRole;
+import cn.cnic.component.system.vo.SysUserVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.jdbc.SQL;
 
 import java.util.List;
 import java.util.Map;
@@ -79,6 +81,14 @@ public class SysRoleMapperProvider {
             strSql = strBuf.toString();
         }
         return strSql;
+    }
+
+    public String updateRole(SysUserVo sysUserVo) {
+        SQL sql = new SQL();
+        sql.UPDATE("sys_role");
+        sql.SET("role = " + SqlUtils.preventSQLInjection(sysUserVo.getRole().getRole().name()));
+        sql.WHERE("fk_sys_user_id = " + SqlUtils.preventSQLInjection(sysUserVo.getId()));
+        return sql.toString();
     }
 
 }

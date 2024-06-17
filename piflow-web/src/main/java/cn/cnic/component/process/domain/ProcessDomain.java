@@ -513,4 +513,8 @@ public class ProcessDomain {
     public Process getByFlowIdAndCrtUserWithoutState(String flowId,String username) {
         return processMapper.getByFlowIdAndCrtUserWithoutState(flowId,username);
     }
+
+    public List<Process> getRunningProcessListByCreatUser(String username) {
+        return processMapper.getRunningProcessListByCreatUser(username);
+    }
 }
