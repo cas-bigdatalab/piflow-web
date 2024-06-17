@@ -596,10 +596,11 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
 //            return ReturnMapUtils.setFailedMsgRtnJsonStr("process create failed!!");
 //
 //        final Process process = ProcessUtils.copyProcess(oldProcess, username, RunModeType.RUN, true);
-        //接口层面的限制：同一用户最多只能有1个运行任务
+
+        //接口层面的限制：同一用户最多只能有2个运行任务
         //获取本人正在运行的进程列表
         List<Process> runningProcessList = processDomain.getRunningProcessListByCreatUser(username);
-        if (CollectionUtils.isNotEmpty(runningProcessList) && runningProcessList.size() > 2) {
+        if (CollectionUtils.isNotEmpty(runningProcessList) && runningProcessList.size() > 1) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("您有正在运行中的任务，请等待运行完毕再开启新的任务！");
         }
         Object lock = new Object();

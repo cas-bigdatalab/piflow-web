@@ -80,4 +80,5 @@ public interface ISysUserService {
     String updateRole(SysUserVo sysUserVo);
 
     String getAllRole();
+    String jwtLogout(String username);
 }
