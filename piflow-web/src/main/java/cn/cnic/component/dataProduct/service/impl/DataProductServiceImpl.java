@@ -384,7 +384,7 @@ public class DataProductServiceImpl implements IDataProductService {
         resultMap.put("fileSize", 0); // 这两个字段共享服务中心会更新
         resultMap.put("numberOfEntries", 10);
         resultMap.put("email", result.getEmail());
-
+        resultMap.put("keywords", result.getKeyword());
         return resultMap;
     }
 
