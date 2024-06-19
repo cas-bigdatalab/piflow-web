@@ -29,7 +29,8 @@ module.exports = {
         Example:"Flow Sample",
         admin:"Admin",
         LabelManagement:"Label Management",
-        selectSource:"Select Label"
+        selectSource:"Select Label",
+        pythonMirror:"Image Management",
     },
     page: {
         prev_text: "Previous",
@@ -290,6 +291,23 @@ module.exports = {
         upload: 'Upload',
         language: 'Language',
         version_lang: 'Version',
+        stopsHubName: 'stopsHubName',
+        uploadZip:'Upload zip',
+        InteractiveProgramming:'Interactive programming',
+        base_image:"Base Image",
+        image:"Algorithm Image",
+        image_description:"Image description",
+    },
+    python_mirror:{
+        create_title: "Create Docker Image",
+        update_title: "Update Docker Image",
+        createTime: "CreateTime",
+        name:"Name",
+        version:"Version",
+        description:"Description",
+        harborUser:"User Name",
+        password:"Password",
+        action:'Actions',
     },
     basicInfo:{
         basicInfo:"Basic Information",

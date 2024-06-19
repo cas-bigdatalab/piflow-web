@@ -105,6 +105,12 @@ export default {
           name: "StopHub"
         },
         {
+          btnName: this.$t("sidebar.pythonMirror"),
+          icoName: "ios-ionitron",
+          router: "/baseImage",
+          name: "baseImage",
+        },
+        {
           btnName: this.$t("sidebar.sparkJar"),
           icoName: "md-cog",
           router: "SparkJar",

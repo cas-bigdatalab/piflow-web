@@ -100,7 +100,7 @@ module.exports = {
     // host: "localhost",
     proxy: {
       '/piflow-web': {
-        target: 'http://10.0.82.122:6001',
+        target: 'http://10.0.90.210:6001',
         // target: 'http://localhost:6002/piflow-web/admin',
         // target: 'http://127.0.0.1:6001',
         changeOrigin: true,

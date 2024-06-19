@@ -70,6 +70,11 @@ export default new Router({
               component: () => import('../components/pages/StopHub')
             },
             {
+              path: '/baseImage',
+              name: 'baseImage',
+              component: () => import('../components/pages/PythonMirror')
+            },
+            {
               path: '/sparkJar',
               name: 'SparkJar',
               component: () => import('../components/pages/SparkJar')
