@@ -74,4 +74,8 @@ public class DataProductVo extends BasePageVo implements Serializable {
 
     private ProductUser applyRecord; //申请记录
 
+
+    // 数据共享平台URL
+    private String sharePlatform; //分享平台URL
+
 }

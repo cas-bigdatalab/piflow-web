@@ -1,6 +1,7 @@
 package cn.cnic.component.dataProduct.domain;
 
 import cn.cnic.base.utils.DateUtils;
+import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.common.Eunm.DataProductMetaDataStatus;
 import cn.cnic.common.constant.SysParamsCache;
@@ -145,25 +146,33 @@ public class DataProductDomain {
     public boolean insertOrUpdateDataProductMetaDataVo(DataProductMetaDataView metaDataView, String filePath) {
         SharePlatformMetadata dto = new SharePlatformMetadata();
         dto.setId(metaDataView.getIdentifier());
-        dto.setReviewStatus(DataProductMetaDataStatus.EDITED.getValue());
+        dto.setReviewStatus(DataProductMetaDataStatus.REVIEWED.getValue());
         dto.setIconPath(transferToReal(metaDataView.getIconAddress()));
         dto.setDocumentationPath(transferToReal(metaDataView.getDocumentationAddress()));
         dto.setMetadataFilePath(filePath);
         dto.setCrtDttm(new Date());
         dto.setLastUpdatedDttm(new Date());
-//        try {
-//            dto.setMetaData(toJson(metaDataView)); // 把vo转为数据json字符串全部存入metaData字段
-//        } catch (Exception e) {
-//            logger.error("insertDataProductMetaDataVo failed, error message: " + e.getMessage());
-//            e.printStackTrace();
-//            return false;
-//        }
+        dto.setMetadata(JsonUtils.toJsonNoException(metaDataView));
         SharePlatformMetadata metadata = dataProductMetaDataMapper.selectById(metaDataView.getIdentifier());
         // mybatis-plus没有提供on duplicate key update的功能，只能先查询后插入
         if (metadata == null) { //如果不存在则插入
             return dataProductMetaDataMapper.insert(dto) == 1; //返回插入条数,为1则为插入成功
         } else {
             return dataProductMetaDataMapper.updateById(dto) == 1;
+        }
+    }
+
+
+    public void updateDataProductStatus(String identifier, Integer status, String message) {
+        try {
+            SharePlatformMetadata dto = new SharePlatformMetadata();
+            dto.setId(identifier);
+            dto.setReviewStatus(status);
+            dto.setReviewMessage(message);
+            dataProductMetaDataMapper.updateById(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("updateDataProductStatus error, identifier:{}, status:{}, message:{}", identifier, status, message);
         }
     }
 

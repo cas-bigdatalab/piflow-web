@@ -8,7 +8,6 @@ public enum DataProductMetaDataStatus {
     EDITED(1),       //已编辑,尚未提交
     REVIEWED(2),     //已提交,待审核
     NEEDCHANGED(3),     //已提交,审核不通过,需修改
-
     POSTED(4);       //已发布
 
     private final Integer value;

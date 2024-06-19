@@ -22,5 +22,7 @@ public class SharePlatformMetadata {
     private Date lastUpdatedDttm = new Date();
     private String reviewMessage; // 提交审核时的审核意见
 
+    private String metadata; //元数据名称
+
 
 }

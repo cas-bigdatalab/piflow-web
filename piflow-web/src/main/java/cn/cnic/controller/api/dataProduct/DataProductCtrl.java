@@ -2,6 +2,7 @@ package cn.cnic.controller.api.dataProduct;
 
 import cn.cnic.base.utils.*;
 import cn.cnic.base.vo.BasePageVo;
+import cn.cnic.common.Eunm.DataProductMetaDataStatus;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
@@ -139,7 +140,7 @@ public class DataProductCtrl {
         params.put("identification", AES256Utils.encrypt(sharePlatformId, sharePlatformAES256Key));
         params.put("dataProductId", identifier);
         params.put("link", AES256Utils.encrypt(localDatacenterUrl, sharePlatformAES256Key));
-        logger.info("zzatest_call_share_platform_upload_uri: " + sharePlatformUrl + sharePlatformUploadUri);
+        logger.info("call_share_platform_upload_uri: {} " , sharePlatformUrl + sharePlatformUploadUri);
         String sendPostData = HttpUtils.doPostParmaMap(sharePlatformUrl + sharePlatformUploadUri, params, 30 * 1000);
         if (StringUtils.isBlank(sendPostData)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
@@ -147,8 +148,10 @@ public class DataProductCtrl {
         JSONObject obj = JSONObject.fromObject(sendPostData);
         String code = obj.getString("code");
         if (Integer.parseInt(code) != 200) {
-            System.out.println("共享服务中心返回[" + obj.getString("message") + "], 请修改");
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("共享服务中心返回[" + obj.getString("message") + "], 请修改");
+            String message = obj.getString("message");
+            // 返回错误,更新状态和返回的信息
+            dataProductDomain.updateDataProductStatus(identifier, DataProductMetaDataStatus.NEEDCHANGED.getValue(), message);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("共享服务中心返回[" + message + "], 请修改");
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }

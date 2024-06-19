@@ -1,0 +1,1 @@
+ALTER TABLE share_platform_metadata ADD metadata TEXT  COMMENT '元数据信息';
