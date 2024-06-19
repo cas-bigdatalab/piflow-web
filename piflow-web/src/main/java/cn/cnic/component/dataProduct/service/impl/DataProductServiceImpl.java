@@ -9,8 +9,10 @@ import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.entity.ProductTypeAssociate;
 import cn.cnic.component.dataProduct.entity.ProductUser;
 import cn.cnic.component.dataProduct.service.IDataProductService;
+import cn.cnic.component.dataProduct.vo.DataProductMetaDataView;
 import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.dataProduct.vo.ProductUserVo;
+import cn.cnic.component.dataProduct.vo.SharePlatformMetadata;
 import cn.cnic.component.system.domain.FileDomain;
 import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.File;
@@ -261,8 +263,23 @@ public class DataProductServiceImpl implements IDataProductService {
 //                }
 //            }
 //        }
+
+        for (DataProductVo productVo : result) {
+            String platformURL = getSharePlatformURL(productVo.getId());
+            productVo.setSharePlatform(StringUtils.isBlank(platformURL) ? "" : platformURL); // 获取分享平台跳转链接
+        }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
+    }
+
+    private String getSharePlatformURL(String dataProductId) {
+        SharePlatformMetadata dataProductMetaData = dataProductDomain.getDataProductMetaDataById(dataProductId);
+        if (dataProductMetaData!= null
+                && dataProductMetaData.getProductUrl() != null
+                && dataProductMetaData.getReviewStatus() == DataProductMetaDataStatus.POSTED.getValue()) {
+            return dataProductMetaData.getProductUrl();
+        }
+        return "";
     }
 
     /**
@@ -385,6 +402,12 @@ public class DataProductServiceImpl implements IDataProductService {
         resultMap.put("numberOfEntries", 10);
         resultMap.put("email", result.getEmail());
         resultMap.put("keywords", result.getKeyword());
+        resultMap.put("name", result.getName());
+        SharePlatformMetadata dataProductMetaDataById = dataProductDomain.getDataProductMetaDataById(id);
+        if (dataProductMetaDataById != null && dataProductMetaDataById.getMetadata() != null) {
+            DataProductMetaDataView view = JsonUtils.toObjectNoException(dataProductMetaDataById.getMetadata(), DataProductMetaDataView.class);
+            resultMap.put("metadata", view); // 回显填过的元数据
+        }
         return resultMap;
     }
 
