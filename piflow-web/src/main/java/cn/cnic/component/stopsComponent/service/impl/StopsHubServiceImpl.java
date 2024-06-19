@@ -299,7 +299,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 stopsHub.setLastUpdateDttm(new Date());
                 stopsHubDomain.updateStopHub(stopsHub);
 
-                //把下载的zip包放在/storage/stopHub/下
+                //下载的zip包放在stopsHubPath下
                 String dstPath = stopsHubPath + "/" + jarName;
                 //把dockerFile放在/storage/stopHub/下
                 //stopsHubPath：存放算法包路径，跟下载的zip包放在一起
@@ -317,7 +317,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 buildFuture.whenComplete((result, throwable) -> {
                     try {
                         // 不管结果如何，首先执行清理文件
-                        FileUtils.deleteData(dstPath);
+                        // FileUtils.deleteData(stopsHubPath + "/" + jarName);
                         FileUtils.deleteData(dockerFileSavePath);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -420,6 +420,10 @@ public class StopsHubServiceImpl implements IStopsHubService {
                     FileUtils.writeData(dockerFileSavePath, dockerFileSb.toString());
                 }
             }
+            // 关闭流
+            zipInputStream1.closeEntry();
+            zipInputStream1.close();
+            inputStream1.close();
         } catch (IOException e) {
             logger.error("write dockerFile failed, error message:" + e.getMessage(), e);
             return false;
@@ -434,7 +438,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
             // 构建 docker commit 命令
             String[] command = {"docker", "-H", "unix:///var/run/docker.sock", "build", mountPath, "-f", dockerFileSavePath,
                     "-t", dockerImagesName};
-            System.out.println(joinToString(command, " "));
+            logger.info(joinToString(command, " "));
             // 执行命令
             java.lang.Process process = new ProcessBuilder(command).start();
 
@@ -443,7 +447,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.out.println(line);
+                        logger.info(line);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -454,7 +458,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.err.println(line);
+                        logger.error(line);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -469,15 +473,31 @@ public class StopsHubServiceImpl implements IStopsHubService {
             // 等待命令执行完成
             int exitCode = process.waitFor();
             if (exitCode != 0) {
-                System.out.println("Docker image build failed, please check the command output.");
+                logger.error("Docker image build failed, please check the command output.");
                 return exitCode;
             } else {
-                System.out.println("Docker image built successfully.");
+                logger.info("Docker image built successfully.");
             }
 
+            // 判断是否要推送镜像
+            String pushToHarborEnv = System.getenv("push_to_harbor");
+            boolean shouldPushImage = pushToHarborEnv == null || Boolean.parseBoolean(pushToHarborEnv);
+            if (shouldPushImage) {
+                return pushDockerImage(dockerImagesName);
+            }
+        } catch (Exception e) {
+            logger.error("An error occurred: " + e.getMessage());
+            return -1;
+        }
+        return 0;
+    }
+
+    private Integer pushDockerImage(String dockerImagesName){
+        logger.info("start push python docker image");
+        try {
             // 构建docker push 命令
             String[] command1 = {"docker", "-H", "unix:///var/run/docker.sock", "push", dockerImagesName};
-            System.out.println(joinToString(command1, " "));
+            logger.info(joinToString(command1, " "));
             // 执行命令
             java.lang.Process process1 = new ProcessBuilder(command1).start();
             // 创建线程读取标准输出
@@ -485,7 +505,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(process1.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.out.println(line);
+                        logger.info(line);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -496,7 +516,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(process1.getErrorStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.err.println(line);
+                        logger.error(line);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -511,13 +531,13 @@ public class StopsHubServiceImpl implements IStopsHubService {
             // 等待命令执行完成
             int exitCode1 = process1.waitFor();
             if (exitCode1 != 0) {
-                System.out.println("python算子镜像推送至远程仓库失败，请检查命令输出");
+                logger.error("python算子镜像推送至远程仓库失败，请检查命令输出");
                 return exitCode1;
             } else {
-                System.out.println("Push docker image to repo successfully.");
+                logger.info("Push docker image to repo successfully.");
             }
         } catch (Exception e) {
-            System.out.println("An error occurred: " + e.getMessage());
+            logger.error("An error occurred: " + e.getMessage());
             return -1;
         }
         return 0;
