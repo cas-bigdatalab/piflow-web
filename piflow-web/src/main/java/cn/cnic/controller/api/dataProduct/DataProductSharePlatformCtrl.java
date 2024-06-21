@@ -59,7 +59,7 @@ public class DataProductSharePlatformCtrl {
     @ApiOperation(value = "setDataProductStatus", notes = "返回url以及审核状态")
     public String setDataProductStatus(HttpServletResponse response, String dataProductId, String releasedDatasetUrl, int status, String message, String encryptedIdentification) {
         String decrypt = AES256Utils.decrypt(encryptedIdentification, sharePlatformAES256Key);
-        System.out.println("setDataProductStatus, dataProductId:" + dataProductId +", decrypt: "+ decrypt);
+        System.out.println("setDataProductStatus, dataProductId:" + dataProductId + ", decrypt: " + decrypt);
         // 只接受这两种状态
         if (status != DataProductMetaDataStatus.NEEDCHANGED.getValue() && status != DataProductMetaDataStatus.POSTED.getValue()) {
             System.out.println(status + " is not valid status");
@@ -70,7 +70,12 @@ public class DataProductSharePlatformCtrl {
         if (!StringUtils.equalsIgnoreCase(decrypt, sharePlatformId + "_productUrl")) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("身份校验失败!请联系管理员, 明文为" + decrypt);
         }
-        dataProductDomain.updateDataProductMetaDataStatus(dataProductId, releasedDatasetUrl, status, message);
+        if (status == DataProductMetaDataStatus.NEEDCHANGED.getValue()) {
+            dataProductDomain.updateDataProductMetaDataStatus(dataProductId, null, status, message); // 非发布状态不处理链接
+        }
+        if (status == DataProductMetaDataStatus.POSTED.getValue()) {
+            dataProductDomain.updateDataProductMetaDataStatus(dataProductId, releasedDatasetUrl, status, message);
+        }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("success");
     }
 
