@@ -21,11 +21,16 @@ public class StopsHubMapperProvider {
     private String mountId;
     private String jarName;
     private String jarUrl;
+    private String description;     //算法包描述
     private String status;
     private String bundles;
     private int isPublishing;
     private String type;
     private String languageVersion;
+    private String image;   //算法包镜像
+    private String baseImage;    //算法包基础镜像版本
+    private String baseImageDescription;   //基础镜像描述
+
 
     private boolean preventSQLInjectionStopsHub(StopsHub stopsHub) {
         if (null == stopsHub || StringUtils.isBlank(stopsHub.getLastUpdateUser())) {
@@ -48,11 +53,15 @@ public class StopsHubMapperProvider {
         this.mountId = SqlUtils.preventSQLInjection(stopsHub.getMountId());
         this.jarName = SqlUtils.preventSQLInjection(stopsHub.getJarName());
         this.jarUrl = SqlUtils.preventSQLInjection(stopsHub.getJarUrl());
+        this.description = SqlUtils.preventSQLInjection(stopsHub.getDescription());
         this.status = SqlUtils.preventSQLInjection(null != stopsHub.getStatus() ? stopsHub.getStatus().name() : null);
         this.bundles = SqlUtils.preventSQLInjection(stopsHub.getBundles());
         this.isPublishing = ((null != stopsHub.getIsPublishing() && stopsHub.getIsPublishing()) ? 1 : 0);
         this.type = SqlUtils.preventSQLInjection(null != stopsHub.getType() ? stopsHub.getType().name() : null);
         this.languageVersion = SqlUtils.preventSQLInjection(stopsHub.getLanguageVersion());
+        this.image = SqlUtils.preventSQLInjection(stopsHub.getImage());
+        this.baseImage = SqlUtils.preventSQLInjection(stopsHub.getBaseImage());
+        this.baseImageDescription = SqlUtils.preventSQLInjection(stopsHub.getBaseImageDescription());
         return true;
     }
 
@@ -65,11 +74,15 @@ public class StopsHubMapperProvider {
         this.mountId = null;
         this.jarName = null;
         this.jarUrl = null;
+        this.description = null;
         this.status = null;
         this.bundles = null;
         this.isPublishing = 0;
         this.type = null;
         this.languageVersion = null;
+        this.image = null;
+        this.baseImage = null;
+        this.baseImageDescription = null;
     }
 
     /**
@@ -91,21 +104,29 @@ public class StopsHubMapperProvider {
         strBuf.append("mount_id ");
         strBuf.append(",jar_name ");
         strBuf.append(",jar_url ");
+        strBuf.append(",description ");
         strBuf.append(",status ");
         strBuf.append(",bundles ");
         strBuf.append(",is_publishing ");
         strBuf.append(",type ");
         strBuf.append(",language_version ");
+        strBuf.append(",image ");
+        strBuf.append(",base_image ");
+        strBuf.append(",base_image_description ");
         strBuf.append(") VALUES ( ");
         strBuf.append(SqlUtils.baseFieldValues(stopsHub));
         strBuf.append(", " + this.mountId);
         strBuf.append(", " + this.jarName);
         strBuf.append(", " + this.jarUrl);
+        strBuf.append(", " + this.description);
         strBuf.append(", " + this.status);
         strBuf.append(", " + this.bundles);
         strBuf.append(", " + this.isPublishing);
         strBuf.append( ", " + this.type);
-        strBuf.append( ", " + this.languageVersion + " ");
+        strBuf.append( ", " + this.languageVersion);
+        strBuf.append( ", " + this.image);
+        strBuf.append( ", " + this.baseImage);
+        strBuf.append( ", " + this.baseImageDescription + " ");
         strBuf.append(") ");
         String sqlStr = strBuf.toString();
         this.reset();
@@ -148,6 +169,9 @@ public class StopsHubMapperProvider {
         }
         if (status != null) {
             sql.SET("status = " + status);
+        }
+        if (image != null) {
+            sql.SET("image = " + image);
         }
         if (bundles != null) {
             sql.SET("bundles = " + bundles);

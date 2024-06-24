@@ -10,6 +10,7 @@ import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import cn.cnic.component.stopsComponent.domain.StopsHubDomain;
 import cn.cnic.component.stopsComponent.domain.StopsHubFileRecordDomain;
+import cn.cnic.component.stopsComponent.domain.BaseImageInfoDomain;
 import cn.cnic.component.stopsComponent.entity.*;
 import cn.cnic.component.stopsComponent.service.IStopsHubService;
 import cn.cnic.component.stopsComponent.utils.*;
@@ -34,6 +35,7 @@ import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.slf4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -56,8 +58,13 @@ import java.util.zip.ZipInputStream;
 public class StopsHubServiceImpl implements IStopsHubService {
     private Logger logger = LoggerUtil.getLogger();
 
+    // docker打镜像相关单独作为一个日志文件
+    private static final org.apache.logging.log4j.Logger dockerLogger = LogManager.getLogger("com.docker");
+
+
     private final StopsComponentDomain stopsComponentDomain;
     private final StopsHubDomain stopsHubDomain;
+    private final BaseImageInfoDomain baseImageInfoDomain;
     private final SysUserDomain sysUserDomain;
     private final IStop stopImpl;
     private final IMarket marketImpl;
@@ -66,9 +73,11 @@ public class StopsHubServiceImpl implements IStopsHubService {
     @Autowired
     public StopsHubServiceImpl(StopsComponentDomain stopsComponentDomain,
                                StopsHubDomain stopsHubDomain,
+                               BaseImageInfoDomain baseImageInfoDomain,
                                SysUserDomain sysUserDomain, IStop stopImpl, IMarket marketImpl, StopsHubFileRecordDomain stopsHubFileRecordDomain) {
         this.stopsComponentDomain = stopsComponentDomain;
         this.stopsHubDomain = stopsHubDomain;
+        this.baseImageInfoDomain = baseImageInfoDomain;
         this.sysUserDomain = sysUserDomain;
         this.stopImpl = stopImpl;
         this.marketImpl = marketImpl;
@@ -83,7 +92,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
      * @return
      */
     @Override
-    public String uploadStopsHubFile(String username, MultipartFile file, String type, String languageVersion) {
+    public String uploadStopsHubFile(String username, MultipartFile file, String description, String type, String languageVersion, String baseImage) {
         logger.info("==============upload stops hub start=============");
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Illegal users");
@@ -117,14 +126,26 @@ public class StopsHubServiceImpl implements IStopsHubService {
         }
         logger.info("==============upload stops hub upload to path result=============" + JSON.toJSONString(uploadMap));
 
+        String python_base_image = System.getenv("python_base_image");
+
         //save stopsHub to db
         StopsHub stopsHub = StopsHubUtils.stopsHubNewNoId(username);
         stopsHub.setId(UUIDUtils.getUUID32());
         stopsHub.setJarName(stopsHubName);
         stopsHub.setJarUrl(stopsHubPath + stopsHubName);
+        stopsHub.setDescription(description);
         stopsHub.setStatus(StopsHubState.UNMOUNT);
         stopsHub.setType(fileType);
         stopsHub.setLanguageVersion(languageVersion);
+        stopsHub.setBaseImage(baseImage);      //算法包基础镜像名称
+        if (baseImage.equals(python_base_image)) {   //如果用户选的是默认基础镜像
+            stopsHub.setBaseImageDescription("python算子默认基础镜像");
+        } else {
+            List<BaseImageInfo> infos = baseImageInfoDomain.getBaseImageInfoListByName(baseImage);
+            if (!infos.isEmpty()) {
+                stopsHub.setBaseImageDescription(infos.get(0).getBaseImageDescription());
+            }
+        }
         stopsHubDomain.addStopHub(stopsHub);
         logger.info("==============upload stops hub finish=============");
         return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful jar upload");
@@ -273,7 +294,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                     if (!zipEntry.isDirectory()) {
                         String zipEntryFileName = zipEntry.getName();
-                        logger.info("zipEntry Name: " + zipEntryFileName);
+                        dockerLogger.info("zipEntry Name: " + zipEntryFileName);
                         //没办法判断是python组件还是工具类,在页面让用户自己设置
                         if (zipEntryFileName.endsWith(".py") && !"data_connect.py".equals(zipEntryFileName)) {  //如果是以.py结尾的,生成算法包的具体文件记录,生成记录去除掉基础类data_connect.py
                             //初始化SparkJarFileRecord实体
@@ -299,7 +320,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 stopsHub.setLastUpdateDttm(new Date());
                 stopsHubDomain.updateStopHub(stopsHub);
 
-                //把下载的zip包放在/storage/stopHub/下
+                //下载的zip包放在stopsHubPath下
                 String dstPath = stopsHubPath + "/" + jarName;
                 //把dockerFile放在/storage/stopHub/下
                 //stopsHubPath：存放算法包路径，跟下载的zip包放在一起
@@ -317,7 +338,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 buildFuture.whenComplete((result, throwable) -> {
                     try {
                         // 不管结果如何，首先执行清理文件
-                        FileUtils.deleteData(dstPath);
+                        // FileUtils.deleteData(stopsHubPath + "/" + jarName);
                         FileUtils.deleteData(dockerFileSavePath);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -325,13 +346,13 @@ public class StopsHubServiceImpl implements IStopsHubService {
 
                     // 检查是否有异常抛出
                     if (throwable != null) {
-                        logger.error("Build Docker image failed: " + throwable.getMessage());
+                        dockerLogger.error("Build Docker image failed: " + throwable.getMessage());
                     } else {
                         //stopsHub前面由Unmount更新为Mounting状态时version已加1，故此处也应加1，否则再次更新状态会因version不匹配失败
                         stopsHub.setVersion(stopsHub.getVersion()+1);
                         // 根据 buildPythonImages 方法的返回值判断操作是否成功
                         if (result == 0) {
-                            logger.info("算子镜像构建&推送成功");
+                            dockerLogger.info("算子镜像构建&推送成功");
                             //向算法包的具体文件记录表中插入数据
                             if (insertList.size() > 0) {
                                 for (StopsHubFileRecord stopsHubFileRecord : insertList) {
@@ -341,11 +362,12 @@ public class StopsHubServiceImpl implements IStopsHubService {
                             }
                             //stopsHub更新为Mount状态
                             stopsHub.setStatus(StopsHubState.MOUNT);
+                            stopsHub.setImage(dockerImagesName);
                             stopsHub.setLastUpdateUser(username);
                             stopsHub.setLastUpdateDttm(new Date());
                             stopsHubDomain.updateStopHub(stopsHub);
                         } else {
-                            logger.info("python算子镜像构建&推送失败，error code: " + result);
+                            dockerLogger.info("python算子镜像构建&推送失败，error code: " + result);
                             //stopsHub更新为UnMount状态
                             stopsHub.setStatus(StopsHubState.UNMOUNT);
                             stopsHub.setLastUpdateUser(username);
@@ -355,7 +377,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                     }
                 });
             } catch (Exception e) {
-                logger.error("init PythonStopsComponent error,error message:" + e.getMessage(), e);
+                dockerLogger.error("init PythonStopsComponent error,error message:" + e.getMessage(), e);
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("Mount failed, please try again later");
             }
         } else {
@@ -379,11 +401,15 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 if (!zipEntry.isDirectory() && zipEntry.getName().endsWith("requirements.txt")) {
                     System.out.println("find requirements.txt");
                     StringBuffer dockerFileSb = new StringBuffer();
-                    String python_base_image = System.getenv("python_base_image");
-                    //指定python算子基础镜像，或下载官方python镜像
-                    if (python_base_image != null) {
-                        dockerFileSb.append("FROM " + python_base_image + System.lineSeparator());
-                    } else {
+                    if (stopsHub.getBaseImage() != null && stopsHub.getBaseImage().length() != 0) { //使用用户指定的算子基础镜像（如果非空）
+                        dockerFileSb.append("FROM " + stopsHub.getBaseImage() + System.lineSeparator());
+                        //判断是否需要login
+                        List<BaseImageInfo> infos = baseImageInfoDomain.getBaseImageInfoListByName(stopsHub.getBaseImage());
+                        if (!infos.isEmpty()) {
+                            checkAndLoginHarbor(stopsHub.getBaseImage(),
+                                    infos.get(0).getHarborUser(), infos.get(0).getHarborPassword());
+                        }
+                    } else { //如果未指定，下载官方python镜像
                         dockerFileSb.append("FROM python:" + stopsHub.getLanguageVersion() + System.lineSeparator());
                     }
                     //dockerFileSb.append("MAINTAINER " + LocalDatacenterInfo.LOCAL_DATACENTER_ID + System.lineSeparator());
@@ -420,21 +446,75 @@ public class StopsHubServiceImpl implements IStopsHubService {
                     FileUtils.writeData(dockerFileSavePath, dockerFileSb.toString());
                 }
             }
+            // 关闭流
+            zipInputStream1.closeEntry();
+            zipInputStream1.close();
+            inputStream1.close();
         } catch (IOException e) {
-            logger.error("write dockerFile failed, error message:" + e.getMessage(), e);
+            dockerLogger.error("write dockerFile failed, error message:" + e.getMessage(), e);
             return false;
         }
         return true;
     }
 
+    private void checkAndLoginHarbor(String baseImage, String harborUser, String harborPassword) {
+        try {
+            // 尝试拉取测试镜像以检查是否已登录
+            String[] command = {"docker", "-H", "unix:///var/run/docker.sock","pull", baseImage};
+            dockerLogger.info(joinToString(command, " "));
+            // 执行命令
+            java.lang.Process process = new ProcessBuilder(command).start();
+            int exitCode = process.waitFor();
+
+            if (exitCode != 0) {
+                dockerLogger.info("Not logged in to Harbor. Exit code: " + exitCode);
+
+                String harborUrl = extractHarborUrl(baseImage);
+                if (harborUrl == null) {
+                    dockerLogger.info("Invalid base image name: " + baseImage);
+                    return;
+                }
+                // 执行 docker login 命令
+                command = new String[]{"docker", "-H", "unix:///var/run/docker.sock", "login", harborUrl,
+                        "-u", harborUser, "-p", harborPassword};
+                dockerLogger.info(joinToString(command, " "));
+                // 执行命令
+                process = new ProcessBuilder(command).start();
+                exitCode = process.waitFor();
+
+                if (exitCode == 0) {
+                    dockerLogger.info("Docker login to Harbor successful.");
+                } else {
+                    dockerLogger.info("Docker login to Harbor failed. Exit code: " + exitCode);
+                }
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static String extractHarborUrl(String imageName) {
+        // 假设镜像名称的格式为 <harbor-url>/<repository>/<image>:<tag>
+        int firstSlashIndex = imageName.indexOf('/');
+        if (firstSlashIndex == -1) {
+            return null; // 无效的镜像名称
+        }
+        int secondSlashIndex = imageName.indexOf('/', firstSlashIndex + 1);
+        if (secondSlashIndex == -1) {
+            return null; // 无效的镜像名称
+        }
+        return imageName.substring(0, firstSlashIndex);
+    }
+
+
     private Integer buildAndPushDockerImage(String mountPath, String dockerFileSavePath, String dockerImagesName){
         //通过运行dockerFile的方式以及使用java.lang.Process process = new ProcessBuilder(command).start();来执行docker build  以及docker push
-        logger.info("start build python docker image");
+        dockerLogger.info("start build python docker image");
         try {
             // 构建 docker commit 命令
             String[] command = {"docker", "-H", "unix:///var/run/docker.sock", "build", mountPath, "-f", dockerFileSavePath,
                     "-t", dockerImagesName};
-            System.out.println(joinToString(command, " "));
+            dockerLogger.info(joinToString(command, " "));
             // 执行命令
             java.lang.Process process = new ProcessBuilder(command).start();
 
@@ -443,7 +523,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.out.println(line);
+                        dockerLogger.info(line);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -454,7 +534,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.err.println(line);
+                        dockerLogger.info(line);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -469,15 +549,31 @@ public class StopsHubServiceImpl implements IStopsHubService {
             // 等待命令执行完成
             int exitCode = process.waitFor();
             if (exitCode != 0) {
-                System.out.println("Docker image build failed, please check the command output.");
+                dockerLogger.error("Docker image build failed, please check the command output.");
                 return exitCode;
             } else {
-                System.out.println("Docker image built successfully.");
+                dockerLogger.info("Docker image built successfully.");
             }
 
+            // 判断是否要推送镜像
+            String pushToHarborEnv = System.getenv("push_to_harbor");
+            boolean shouldPushImage = pushToHarborEnv == null || Boolean.parseBoolean(pushToHarborEnv);
+            if (shouldPushImage) {
+                return pushDockerImage(dockerImagesName);
+            }
+        } catch (Exception e) {
+            dockerLogger.error("An error occurred: " + e.getMessage());
+            return -1;
+        }
+        return 0;
+    }
+
+    private Integer pushDockerImage(String dockerImagesName){
+        logger.info("start push python docker image");
+        try {
             // 构建docker push 命令
             String[] command1 = {"docker", "-H", "unix:///var/run/docker.sock", "push", dockerImagesName};
-            System.out.println(joinToString(command1, " "));
+            dockerLogger.info(joinToString(command1, " "));
             // 执行命令
             java.lang.Process process1 = new ProcessBuilder(command1).start();
             // 创建线程读取标准输出
@@ -485,7 +581,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(process1.getInputStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.out.println(line);
+                        dockerLogger.info(line);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -496,7 +592,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 try (BufferedReader reader = new BufferedReader(new InputStreamReader(process1.getErrorStream()))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        System.err.println(line);
+                        dockerLogger.error(line);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -511,13 +607,13 @@ public class StopsHubServiceImpl implements IStopsHubService {
             // 等待命令执行完成
             int exitCode1 = process1.waitFor();
             if (exitCode1 != 0) {
-                System.out.println("python算子镜像推送至远程仓库失败，请检查命令输出");
+                dockerLogger.error("python算子镜像推送至远程仓库失败，请检查命令输出");
                 return exitCode1;
             } else {
-                System.out.println("Push docker image to repo successfully.");
+                dockerLogger.info("Push docker image to repo successfully.");
             }
         } catch (Exception e) {
-            System.out.println("An error occurred: " + e.getMessage());
+            dockerLogger.error("An error occurred: " + e.getMessage());
             return -1;
         }
         return 0;
