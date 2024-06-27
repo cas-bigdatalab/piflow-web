@@ -8,6 +8,7 @@ import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import net.sf.json.JSONArray;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -191,10 +192,11 @@ public class JwtUtils {
 
     public Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
-        if (expiration == null) {
+        if(ObjectUtils.isNotEmpty(expiration)){
+            return expiration.before(new Date());
+        }else {
             return true;
         }
-        return expiration.before(new Date());
     }
 
     private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
