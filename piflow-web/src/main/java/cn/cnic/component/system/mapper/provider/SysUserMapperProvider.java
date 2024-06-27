@@ -256,7 +256,7 @@ public class SysUserMapperProvider {
             return "SELECT 0";
         }
         StringBuffer strBuf = new StringBuffer();
-        strBuf.append("SELECT id, username, name, age, sex, crt_dttm, status, last_login_ip FROM sys_user WHERE enable_flag=1");
+        strBuf.append("SELECT id, username, name, age, sex, crt_dttm, status, last_login_ip, phone_number, email, company FROM sys_user WHERE enable_flag=1");
         if (StringUtils.isNotBlank(param)) {
             strBuf.append("AND ( ");
             strBuf.append("name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");

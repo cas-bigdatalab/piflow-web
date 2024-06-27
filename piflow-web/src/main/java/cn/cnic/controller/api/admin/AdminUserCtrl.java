@@ -37,10 +37,10 @@ public class AdminUserCtrl {
         return sysUserServiceImpl.getUserListPage(username, isAdmin, page, limit, param);
     }
 
-    @RequestMapping(value = "/updateUser", method = RequestMethod.GET)
+    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="updateUserInfo", notes="update user info")
-    public String updateUserInfo(SysUserVo sysUserVo) {
+    public String updateUserInfo(@RequestBody SysUserVo sysUserVo) {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("update user",username);

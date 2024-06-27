@@ -95,6 +95,17 @@ public class SysUserServiceImpl implements ISysUserService {
         }
         Page<SysUserVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         sysUserDomain.getSysUserVoList(isAdmin, username, param);
+        List<SysUserVo> result = page.getResult();
+        if(CollectionUtils.isNotEmpty(result)){
+            for (SysUserVo sysUserVo : result) {
+                //获取用户所属生态系统类型
+                List<EcosystemTypeAssociate> associates = ecosystemTypeDomain.getAssociateByAssociateId(sysUserVo.getUsername());
+                if (CollectionUtils.isNotEmpty(associates)) {
+                    List<EcosystemType> ecosystemTypes = ecosystemTypeDomain.getByIds(associates.stream().map(x -> String.valueOf(x.getEcosystemTypeId())).collect(Collectors.joining(",")));
+                    sysUserVo.setEcosystemTypes(ecosystemTypes);
+                }
+            }
+        }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
@@ -152,14 +163,38 @@ public class SysUserServiceImpl implements ISysUserService {
                 password = new BCryptPasswordEncoder().encode(password);
                 sysUserById.setPassword(password);
             }
+
             sysUserById.setName(sysUserVo.getName());
             sysUserById.setUsername(name);
             sysUserById.setStatus(sysUserVo.getStatus());
+            sysUserById.setPhoneNumber(sysUserVo.getPhoneNumber());
+            sysUserById.setEmail(sysUserVo.getEmail());
+            sysUserById.setCompany(sysUserVo.getCompany());
 
+            //校验是否有所属生态系统类型
+            List<EcosystemType> ecosystemTypes = sysUserVo.getEcosystemTypes();
+            if (CollectionUtils.isEmpty(ecosystemTypes)) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("所属生态系统类型为空，请填写后更新！");
+            }
+            //更新个人资料
             int update = sysUserDomain.updateSysUser(sysUserById);
             if (update <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
             }
+
+            //更新所属生态系统类型
+            List<EcosystemType> ecosystemTypeList = sysUserVo.getEcosystemTypes();
+            List<EcosystemTypeAssociate> associates = ecosystemTypeList.stream().map(ecosystemType -> {
+                EcosystemTypeAssociate ecosystemTypeAssociate = new EcosystemTypeAssociate();
+                ecosystemTypeAssociate.setEcosystemTypeId(ecosystemType.getId());
+                ecosystemTypeAssociate.setEcosystemTypeName(ecosystemType.getName());
+                ecosystemTypeAssociate.setAssociateId(name);
+                ecosystemTypeAssociate.setAssociateType(EcosystemTypeAssociateType.USER.getValue());
+                return ecosystemTypeAssociate;
+            }).collect(Collectors.toList());
+            ecosystemTypeDomain.deleteByAssociateId(name);
+            ecosystemTypeDomain.insertAssociateBatch(associates);
+
             return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
         } catch (Exception e) {
             logger.error("update failed", e);
