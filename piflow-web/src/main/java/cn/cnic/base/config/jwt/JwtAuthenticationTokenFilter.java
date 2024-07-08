@@ -75,7 +75,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     flag = false;
                 } else {
                     String token = TOKEN.get(username);
-                    if (jwtUtils.isTwoTimesTokenExpired(token)) {
+                    if (!jwtUtils.isTwoTimesTokenExpired(token)) {
                         TOKEN.put(username, jwtUtils.refreshToken(auth_token));
                     } else {
                         flag = false;
