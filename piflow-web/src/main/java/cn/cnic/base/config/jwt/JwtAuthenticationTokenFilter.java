@@ -75,10 +75,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
                     flag = false;
                 } else {
                     String token = TOKEN.get(username);
-                    if (!jwtUtils.isTwoTimesTokenExpired(token)) {
-                        TOKEN.put(username, jwtUtils.refreshToken(auth_token));
-                    } else {
+                    if (jwtUtils.isTwoTimesTokenExpired(token)) {
+                        //超过两倍
                         flag = false;
+                    } else {
+                        //未超过两倍，更新缓存
+                        TOKEN.put(username, jwtUtils.refreshToken(auth_token));
                     }
                 }
             } else {
