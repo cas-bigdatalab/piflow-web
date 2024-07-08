@@ -1,5 +1,6 @@
 package cn.cnic.component.system.service.Impl;
 
+import cn.cnic.base.config.jwt.JwtAuthenticationTokenFilter;
 import cn.cnic.base.config.jwt.common.JwtUtils;
 import cn.cnic.base.config.jwt.common.ResultJson;
 import cn.cnic.base.config.jwt.exception.CustomException;
@@ -96,7 +97,7 @@ public class SysUserServiceImpl implements ISysUserService {
         Page<SysUserVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         sysUserDomain.getSysUserVoList(isAdmin, username, param);
         List<SysUserVo> result = page.getResult();
-        if(CollectionUtils.isNotEmpty(result)){
+        if (CollectionUtils.isNotEmpty(result)) {
             for (SysUserVo sysUserVo : result) {
                 //获取用户所属生态系统类型
                 List<EcosystemTypeAssociate> associates = ecosystemTypeDomain.getAssociateByAssociateId(sysUserVo.getUsername());
@@ -425,6 +426,10 @@ public class SysUserServiceImpl implements ISysUserService {
         final String token = jwtTokenUtil.generateAccessToken(userVo);
         //存储token
         jwtTokenUtil.putToken(username, token);
+        //清理续期缓存token
+        if (ObjectUtils.isNotEmpty(JwtAuthenticationTokenFilter.TOKEN.get(username))) {
+            JwtAuthenticationTokenFilter.TOKEN.remove(username);
+        }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededCustomParam("token", token);
         userVo.setPassword("");
         rtnMap.put("jwtUser", userVo);
@@ -438,13 +443,14 @@ public class SysUserServiceImpl implements ISysUserService {
         if (b) {
             String token = jwtTokenUtil.getTokenFromUsername(username);
             Boolean tokenExpired = jwtTokenUtil.isTokenExpired(token);
-            if(!tokenExpired){
+            if (!tokenExpired) {
                 enableLogin = false;
             }
         }
-        if(enableLogin){
+        if (enableLogin) {
+            jwtTokenUtil.deleteToken(username);
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("enable login");
-        }else {
+        } else {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("disable login");
         }
     }
