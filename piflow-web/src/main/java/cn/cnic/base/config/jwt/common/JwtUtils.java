@@ -3,10 +3,7 @@ package cn.cnic.base.config.jwt.common;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.entity.SysRole;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.CompressionCodecs;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import net.sf.json.JSONArray;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,10 +70,10 @@ public class JwtUtils {
     public String getUsernameFromToken(String token) {
         String username;
         try {
-            final Claims claims = getClaimsFromToken(token);
+            final Claims claims = getTokenBody(token);
             username = claims.getSubject();
-        } catch (Exception e) {
-            username = null;
+        } catch (ExpiredJwtException e) {
+            username = e.getClaims().getSubject();
         }
         return username;
     }
@@ -118,10 +115,11 @@ public class JwtUtils {
     public String refreshToken(String token) {
         String refreshedToken;
         try {
-            final Claims claims = getClaimsFromToken(token);
+            final Claims claims = getTokenBody(token);
             refreshedToken = generateAccessToken(claims.getSubject(), claims);
-        } catch (Exception e) {
-            refreshedToken = null;
+        } catch (ExpiredJwtException e) {
+            final Claims claims = e.getClaims();
+            refreshedToken = generateAccessToken(claims.getSubject(), claims);
         }
         return refreshedToken;
     }
@@ -152,7 +150,9 @@ public class JwtUtils {
     }
 
     public void deleteToken(String userName) {
-        tokenMap.remove(userName);
+        if (ObjectUtils.isNotEmpty(tokenMap.get(userName))) {
+            tokenMap.remove(userName);
+        }
     }
 
     public boolean containToken(String userName, String token) {
@@ -180,10 +180,17 @@ public class JwtUtils {
                     .setSigningKey(secret)
                     .parseClaimsJws(token)
                     .getBody();
-        } catch (Exception e) {
-            claims = null;
+        } catch (ExpiredJwtException e) {
+            claims = e.getClaims();
         }
         return claims;
+    }
+
+    private Claims getTokenBody(String token) {
+        return Jwts.parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     private Date generateExpirationDate(long expiration) {
@@ -192,12 +199,24 @@ public class JwtUtils {
 
     public Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
-        if(ObjectUtils.isNotEmpty(expiration)){
+        if (ObjectUtils.isNotEmpty(expiration)) {
             return expiration.before(new Date());
-        }else {
+        } else {
             return true;
         }
     }
+
+    public Boolean isTwoTimesTokenExpired(String token) {
+        try {
+            Claims tokenBody = getTokenBody(token);
+            Date expiration = tokenBody.getExpiration();
+            return expiration.getTime() + access_token_expiration * 1000 * 2 < System.currentTimeMillis();
+        } catch (ExpiredJwtException e) {
+            long expiredTime = e.getClaims().getExpiration().getTime() + access_token_expiration * 1000 * 2;
+            return expiredTime < System.currentTimeMillis();
+        }
+    }
+
 
     private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
         return (lastPasswordReset != null && created.before(lastPasswordReset));
