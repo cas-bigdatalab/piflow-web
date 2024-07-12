@@ -556,7 +556,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
             }
 
             // 判断是否要推送镜像
-            String pushToHarborEnv = System.getenv("push_to_harbor");
+            String pushToHarborEnv =SysParamsCache.PUSH_TO_HARBOR;
             boolean shouldPushImage = pushToHarborEnv == null || Boolean.parseBoolean(pushToHarborEnv);
             if (shouldPushImage) {
                 return pushDockerImage(dockerImagesName);
@@ -621,7 +621,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
 
     public static String generateTagsName(String stopsHubName) {
         //拼成 name-时间戳:tag 格式   registryUrl/projectName/imageName-currentTimeMillis:tags
-        String registryUrl = System.getenv("docker_central_warehouse");
+        String registryUrl = SysParamsCache.DOCKER_CENTRAL_WAREHOUSE;
         String registryProjectName = "piflow";
         String originProjectPath;
         if (StringUtils.isBlank(registryUrl)) {
