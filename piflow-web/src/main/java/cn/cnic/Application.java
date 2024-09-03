@@ -31,7 +31,7 @@ import javax.servlet.ServletException;
         @PropertySource(value = "classpath:messageConfig.properties", encoding = "utf-8"),
         @PropertySource(value = "classpath:docker.properties", encoding = "utf-8")
 })
-@MapperScan(basePackages = "cn.cnic.**.mapper.*.*")
+@MapperScan(basePackages = "cn.cnic.**.mapper")
 @EnableTransactionManagement
 @SpringBootApplication
 @EnableCaching(proxyTargetClass = true)
