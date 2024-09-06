@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import java.text.ParseException;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -603,5 +605,12 @@ public class DateUtils {
             logger.debug("Converted values：" + date);
         }
         return date;
+    }
+
+    public static String getCurDateTimeYYYYMMDD() {
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = currentDate.format(formatter);
+        return formattedDate;
     }
 }

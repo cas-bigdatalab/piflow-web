@@ -2,6 +2,7 @@ package cn.cnic.component.dashboard.mapper;
 
 import cn.cnic.component.dashboard.mapper.provider.StatisticProvider;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 
 import java.util.List;
@@ -18,6 +19,9 @@ public interface StatisticMapper {
     @SelectProvider(type = StatisticProvider.class, method = "getFlowProcessStatisticInfo")
     public List<Map<String, String>>getFlowProcessStatisticInfo();
 
+
+    @SelectProvider(type = StatisticProvider.class, method = "getFlowProcessStatisticInfoByCompany")
+    public List<Map<String, String>>getFlowProcessStatisticInfoByCompany(@Param("company") String company);
 
     /**
      * query flow count

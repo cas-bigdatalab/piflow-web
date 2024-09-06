@@ -78,4 +78,7 @@ public class DataProductVo extends BasePageVo implements Serializable {
     // 数据共享平台URL
     private String sharePlatform; //分享平台URL
 
+
+    private String company; // 创建人单位
+
 }

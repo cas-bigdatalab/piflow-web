@@ -43,7 +43,7 @@ public class DashboardCtrl {
     }
 
     /**
-     * static
+     * 首页-统计接口
      *
      * @return
      */

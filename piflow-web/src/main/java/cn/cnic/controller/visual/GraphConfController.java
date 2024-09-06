@@ -36,7 +36,6 @@ public class GraphConfController {
             ,@ApiImplicitParam(name = "pageSize",value = "每页数量")
             ,@ApiImplicitParam(name = "queryContent",value = "查询内容")})
     public ResponseResult<List<GraphConf>> getGraphConfList(@RequestBody RequestData requestData){
-        //todo : 过滤下用户,只有自己创建的或者admin能看到
         return graphConfService.getGraphConfList(requestData);
     }
     //查询图表配置

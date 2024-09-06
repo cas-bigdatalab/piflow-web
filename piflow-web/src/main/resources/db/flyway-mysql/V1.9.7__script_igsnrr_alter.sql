@@ -1,0 +1,1 @@
+ALTER TABLE `sys_user` ADD UNIQUE KEY `unique_username` (`username`);

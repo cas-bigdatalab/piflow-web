@@ -1,5 +1,7 @@
 package cn.cnic.controller.api.process;
 
+import cn.cnic.common.Eunm.SysRoleType;
+import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.service.ILogHelperService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,16 +25,18 @@ public class ProcessAndProcessGroupCtrl {
     private final IProcessGroupService processGroupServiceImpl;
     private final IProcessService processServiceImpl;
     private final ILogHelperService logHelperServiceImpl;
+    private SysUserDomain sysUserDomain;
 
     @Autowired
     public ProcessAndProcessGroupCtrl(IProcessAndProcessGroupService processAndProcessGroupServiceImpl,
                                       IProcessGroupService processGroupServiceImpl,
                                       IProcessService processServiceImpl,
-                                      ILogHelperService logHelperServiceImpl) {
+                                      ILogHelperService logHelperServiceImpl, SysUserDomain sysUserDomain) {
         this.processAndProcessGroupServiceImpl = processAndProcessGroupServiceImpl;
         this.processGroupServiceImpl = processGroupServiceImpl;
         this.processServiceImpl = processServiceImpl;
         this.logHelperServiceImpl = logHelperServiceImpl;
+        this.sysUserDomain = sysUserDomain;
     }
 
     /**
@@ -46,10 +50,23 @@ public class ProcessAndProcessGroupCtrl {
     @RequestMapping(value = "/processAndProcessGroupListPage", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value="ProcessAndProcessGroupListPage", notes="Process and ProcessGroup list page")
-    public String processAndProcessGroupListPage(Integer page, Integer limit, String param) {
-        String username = SessionUserUtil.getCurrentUsername();
-        boolean isAdmin = SessionUserUtil.isAdmin();
-        return processAndProcessGroupServiceImpl.getProcessAndProcessGroupListPage(username, isAdmin, page, limit, param);
+    public String processAndProcessGroupListPage(Integer page, Integer limit, String param, String name, String state,
+                                                 String company, String createUser) {
+
+        SysRoleType role = SessionUserUtil.getCurrentUserRole();
+        switch (role) {
+            case USER:
+                // 普通用户只能查看自己的
+                createUser = SessionUserUtil.getCurrentUsername();
+                break;
+            case ORS_ADMIN:
+                // 台站管理员只能查看本台站的
+                String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+                company = sysUserDomain.getSysUserCompanyById(userid);
+                break;
+            default:
+        }
+        return processAndProcessGroupServiceImpl.getProcessAndProcessGroupListPage(createUser, page, limit, param, name, state, company);
     }
 
     /**

@@ -2,7 +2,9 @@ package cn.cnic.controller.api.process;
 
 import java.util.Map;
 
+import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.service.ILogHelperService;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +20,8 @@ import cn.cnic.component.process.service.IProcessGroupService;
 import cn.cnic.component.process.service.IProcessService;
 import io.swagger.annotations.Api;
 
+import static cn.cnic.common.Eunm.SysRoleType.ORS_ADMIN;
+
 @Api(value = "processGroup api", tags = "processGroup api")
 @Controller
 @RequestMapping("/processGroup")
@@ -26,14 +30,18 @@ public class ProcessGroupCtrl {
     private final IProcessGroupService processGroupServiceImpl;
     private final ILogHelperService logHelperServiceImpl;
     private final IProcessService processServiceImpl;
+    private final SysUserDomain sysUserDomain;
+
 
     @Autowired
     public ProcessGroupCtrl(IProcessGroupService processGroupServiceImpl,
                             ILogHelperService logHelperServiceImpl,
-                            IProcessService processServiceImpl) {
+                            IProcessService processServiceImpl,
+                            SysUserDomain sysUserDomain) {
         this.processGroupServiceImpl = processGroupServiceImpl;
         this.logHelperServiceImpl = logHelperServiceImpl;
         this.processServiceImpl = processServiceImpl;
+        this.sysUserDomain = sysUserDomain;
     }
 
     /**
@@ -47,10 +55,16 @@ public class ProcessGroupCtrl {
     @RequestMapping(value = "/processGroupListPage", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="processGroupListPage", notes="get ProcessGroup list page")
-    public String processGroupListPage(Integer page, Integer limit, String param) {
+    public String processGroupListPage(Integer page, Integer limit, String param, String name, String state, String crtUser, String company) {
         String username = SessionUserUtil.getCurrentUsername();
-        boolean isAdmin = SessionUserUtil.isAdmin();
-        return processGroupServiceImpl.getProcessGroupVoListPage(username, isAdmin, page, limit, param);
+        boolean isAdmin = SessionUserUtil.isAdminOrORSAdmin();
+        SysRoleType currentUserRole = SessionUserUtil.getCurrentUserRole();
+        // 台站管理员只能看到本台站的
+        if (ORS_ADMIN.equals(currentUserRole)) {
+            String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+            company = sysUserDomain.getSysUserCompanyById(userid);
+        }
+        return processGroupServiceImpl.getProcessGroupVoListPage(username, isAdmin, page, limit, param, name, state, crtUser, company);
     }
 
     /**

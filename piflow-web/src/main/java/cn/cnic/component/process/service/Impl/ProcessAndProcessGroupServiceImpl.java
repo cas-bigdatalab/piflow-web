@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.process.domain.ProcessGroupDomain;
 import org.apache.commons.collections.CollectionUtils;
@@ -43,15 +45,20 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
      * @return json
      */
     @Override
-    public String getProcessAndProcessGroupListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
+    public String getProcessAndProcessGroupListPage(String createUser, Integer offset, Integer limit, String param, String name, String state, String company) {
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         Page<Process> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
-        if (isAdmin) {
-            processGroupDomain.getProcessAndProcessGroupList(param);
-        } else {
-            processGroupDomain.getProcessAndProcessGroupListByUser(param, username);
+        SysRoleType currentUserRole = SessionUserUtil.getCurrentUserRole();
+        switch (currentUserRole) {
+            case ADMIN:
+            case ORS_ADMIN:
+                processGroupDomain.getProcessAndProcessGroupList(createUser, param, name, state, company);
+                break;
+            default:
+                processGroupDomain.getProcessAndProcessGroupListByUser(param, createUser);
+
         }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);

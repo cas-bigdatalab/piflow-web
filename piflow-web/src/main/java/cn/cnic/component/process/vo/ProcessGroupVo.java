@@ -33,6 +33,8 @@ public class ProcessGroupVo implements Serializable {
     private String progress;
     private RunModeType runModeType = RunModeType.RUN;
     private Date crtDttm;
+    private String crtUser;
+    private String company;
     private MxGraphModelVo mxGraphModelVo;
     private ProcessGroupVo processGroupVo;
 

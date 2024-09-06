@@ -34,8 +34,9 @@ public class ProcessGroupMapperProvider {
     private String processParentType;
     private String processGroupId;
     private String viewXml;
+    private String company;
 
-    private boolean preventSQLInjectionProcessGroup(ProcessGroup processGroup) {
+    private boolean preventSQLInjectionProcessGroup(ProcessGroup processGroup, String company) {
         if (null == processGroup || StringUtils.isBlank(processGroup.getLastUpdateUser())) {
             return false;
         }
@@ -70,7 +71,9 @@ public class ProcessGroupMapperProvider {
         this.processParentType = SqlUtils.preventSQLInjection(null != processGroup.getProcessParentType() ? processGroup.getProcessParentType().name() : null);
         this.processGroupId = SqlUtils.preventSQLInjection(null != processGroup.getProcessGroup() ? processGroup.getProcessGroup().getId() : null);
         this.viewXml = SqlUtils.preventSQLInjection(processGroup.getViewXml());
-
+        if (StringUtils.isNotBlank(company)) {
+            this.company = SqlUtils.preventSQLInjection(company);
+        }
         return true;
     }
 
@@ -95,10 +98,11 @@ public class ProcessGroupMapperProvider {
         this.processParentType = null;
         this.processGroupId = null;
         this.viewXml = null;
+        this.company = null;
     }
 
-    public String addProcessGroup(ProcessGroup processGroup) {
-        boolean flag = this.preventSQLInjectionProcessGroup(processGroup);
+    public String addProcessGroup(ProcessGroup processGroup, String company) {
+        boolean flag = this.preventSQLInjectionProcessGroup(processGroup, company);
         if (flag) {
             StringBuffer strBuf = new StringBuffer();
             strBuf.append("INSERT INTO flow_process_group ");
@@ -118,7 +122,8 @@ public class ProcessGroupMapperProvider {
             strBuf.append("run_mode_type, ");
             strBuf.append("process_parent_type, ");
             strBuf.append("fk_flow_process_group_id, ");
-            strBuf.append("view_xml ");
+            strBuf.append("view_xml, ");
+            strBuf.append("company ");
             strBuf.append(") ");
 
             strBuf.append("values ");
@@ -139,6 +144,7 @@ public class ProcessGroupMapperProvider {
             strBuf.append(this.processParentType + ", ");
             strBuf.append(this.processGroupId + ", ");
             strBuf.append(this.viewXml + " ");
+            strBuf.append(this.company + " ");
             strBuf.append(")");
             this.resetProcessGroup();
             return strBuf.toString() + ";";
@@ -155,7 +161,8 @@ public class ProcessGroupMapperProvider {
      */
     public String updateProcessGroup(ProcessGroup processGroup) {
         String sqlStr = "SELECT 0";
-        if (this.preventSQLInjectionProcessGroup(processGroup)) {
+        // 不允许更新company字段
+        if (this.preventSQLInjectionProcessGroup(processGroup, "")) {
             SQL sql = new SQL();
             sql.UPDATE("flow_process_group");
 
@@ -357,7 +364,7 @@ public class ProcessGroupMapperProvider {
      * @param param
      * @return
      */
-    public String getProcessGroupListByParam(String username, boolean isAdmin, String param) {
+    public String getProcessGroupListByParam(String username, boolean isAdmin, String param, String name , String state, String crtUser, String company) {
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("SELECT * ");
         strBuf.append("FROM flow_process_group ");
@@ -368,9 +375,27 @@ public class ProcessGroupMapperProvider {
         if (StringUtils.isNotBlank(param)) {
             strBuf.append("AND ( ");
             strBuf.append("app_id LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
-            strBuf.append("OR name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
-            strBuf.append("OR state LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
             strBuf.append("OR description LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            strBuf.append(") ");
+        }
+        if (StringUtils.isNotBlank(name)) {
+            strBuf.append("AND ( ");
+            strBuf.append("OR name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(name) + ",'%')");
+            strBuf.append(") ");
+        }
+        if (StringUtils.isNotBlank(state)) {
+            strBuf.append("AND ( ");
+            strBuf.append("OR state LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(state) + ",'%')");
+            strBuf.append(") ");
+        }
+        if (StringUtils.isNotBlank(crtUser)) {
+            strBuf.append("AND ( ");
+            strBuf.append("OR crt_user LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(crtUser) + ",'%')");
+            strBuf.append(") ");
+        }
+        if (StringUtils.isNotBlank(company)) {
+            strBuf.append("AND ( ");
+            strBuf.append("OR company LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(company) + ",'%')");
             strBuf.append(") ");
         }
         if (!isAdmin) {

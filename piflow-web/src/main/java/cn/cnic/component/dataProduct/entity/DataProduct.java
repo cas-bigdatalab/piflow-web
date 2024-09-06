@@ -42,4 +42,6 @@ public class DataProduct extends BaseModelIDNoCorpAgentId {
     private File coverFile; //关联的封面文件
     private File file; //关联的数据产品文件记录
     private  ProductUser applyRecord; //申请记录
+
+    private String company; // 创建人单位
 }

@@ -8,7 +8,8 @@ import cn.cnic.base.TextureEnumSerializer;
 @JsonDeserialize(using = SysRoleTypeDeserializer.class)
 public enum SysRoleType {
     ADMIN("ADMIN", "ADMIN", "admin"),
-    USER("USER", "USER", "user");
+    USER("USER", "USER", "user"),
+    ORS_ADMIN("ORS_ADMIN", "ORS_ADMIN", "ors_admin");
 
     private final String value;
     private final String text;

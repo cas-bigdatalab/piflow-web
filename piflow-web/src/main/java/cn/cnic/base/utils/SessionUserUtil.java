@@ -2,10 +2,12 @@ package cn.cnic.base.utils;
 
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.SysRoleType;
+import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.SysRole;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,6 +48,35 @@ public class SessionUserUtil {
             }
         }
         return isAdmin;
+    }
+
+
+    public static SysRoleType getCurrentUserRole() {
+        UserVo currentUser = getCurrentUser();
+        List<SysRole> roles = currentUser.getRoles();
+        for (SysRole sysRole : roles) {
+            if (null != sysRole) {
+                SysRoleType role = sysRole.getRole();
+                if (SysRoleType.ADMIN == role) {
+                    return SysRoleType.ADMIN;
+                }
+            }
+        }
+        for (SysRole sysRole : roles) {
+            if (null != sysRole) {
+                SysRoleType role = sysRole.getRole();
+                if (SysRoleType.ORS_ADMIN == role) {
+                    return SysRoleType.ORS_ADMIN;
+                }
+            }
+        }
+        return SysRoleType.USER;
+
+    }
+
+    public static boolean isAdminOrORSAdmin() {
+        SysRoleType role = getCurrentUserRole();
+        return SysRoleType.ADMIN == role || SysRoleType.ORS_ADMIN == role;
     }
 
     public static String getCurrentUsername() {

@@ -291,12 +291,16 @@ public class DataProductServiceImpl implements IDataProductService {
      */
     @Override
     public String getByPageForPublishing(DataProductVo dataProductVo) {
-        String username = SessionUserUtil.getCurrentUsername();
-        dataProductVo.setCrtUser(username);
-        boolean admin = SessionUserUtil.isAdmin();
-        if (admin) {
+        SysRoleType currentUserRole = SessionUserUtil.getCurrentUserRole();
+        //台站管理员只能看到本台站（单位）的, 普通用户只看到自己的
+        if (currentUserRole == SysRoleType.ADMIN) {
             Page<DataProduct> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
             dataProductDomain.getByPageForPublishingWithAdmin(dataProductVo);
+            Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
+            return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
+        } else if (currentUserRole == SysRoleType.ORS_ADMIN) {
+            Page<DataProduct> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
+            dataProductDomain.getByPageForPublishingWithORSAdmin(dataProductVo);
             Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
             return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
         } else {
