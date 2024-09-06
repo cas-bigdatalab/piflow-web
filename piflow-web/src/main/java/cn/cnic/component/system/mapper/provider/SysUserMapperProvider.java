@@ -251,16 +251,28 @@ public class SysUserMapperProvider {
      *
      * @return
      */
-    public String getSysUserVoList(boolean isAdmin, String username, String param) {
-        if (!isAdmin) {
-            return "SELECT 0";
-        }
+    public String getSysUserVoList(String username, String param, String name, String email, String company) {
         StringBuffer strBuf = new StringBuffer();
-        strBuf.append("SELECT id, username, name, age, sex, crt_dttm, status, last_login_ip, phone_number, email, company FROM sys_user WHERE enable_flag=1");
+        strBuf.append("SELECT id, username, name, age, sex, crt_dttm, status, last_login_ip, phone_number, email, company FROM sys_user WHERE enable_flag=1 ");
         if (StringUtils.isNotBlank(param)) {
             strBuf.append("AND ( ");
-            strBuf.append("name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
-            strBuf.append("OR username LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            strBuf.append(" username LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");
+            strBuf.append(") ");
+        }
+        if (StringUtils.isNotBlank(name)) {
+            strBuf.append("AND ( ");
+            strBuf.append(" name LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(name) + ",'%')");
+            strBuf.append(") ");
+        }
+        if (StringUtils.isNotBlank(email)) {
+            strBuf.append("AND ( ");
+            strBuf.append(" email LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(email) + ",'%')");
+            strBuf.append(") ");
+        }
+        if (StringUtils.isNotBlank(company)) {
+            strBuf.append("AND ( ");
+            strBuf.append("company = " + SqlUtils.addSqlStrAndReplace(company) + " ");
+
             strBuf.append(") ");
         }
         String sqlStr = strBuf.toString();

@@ -1,15 +1,15 @@
 package cn.cnic.component.process.domain;
 
 import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.base.utils.UUIDUtils;
-import cn.cnic.common.Eunm.ProcessState;
-import cn.cnic.component.flow.domain.FlowPublishDomain;
 import cn.cnic.component.flow.utils.FlowGlobalParamsUtils;
 import cn.cnic.component.mxGraph.domain.MxGraphModelDomain;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.*;
 import cn.cnic.component.process.mapper.*;
+import cn.cnic.component.system.domain.SysUserDomain;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +33,8 @@ public class ProcessDomain {
     private final ProcessPathMapper processPathMapper;
     private final ProcessStopMapper processStopMapper;
     private final ProcessMapper processMapper;
+    private final SysUserDomain sysUserDomain;
+
 
     @Autowired
     public ProcessDomain(ProcessStopCustomizedPropertyMapper processStopCustomizedPropertyMapper,
@@ -40,13 +42,15 @@ public class ProcessDomain {
                          MxGraphModelDomain mxGraphModelDomain,
                          ProcessPathMapper processPathMapper,
                          ProcessStopMapper processStopMapper,
-                         ProcessMapper processMapper) {
+                         ProcessMapper processMapper,
+                         SysUserDomain sysUserDomain) {
         this.processStopCustomizedPropertyMapper = processStopCustomizedPropertyMapper;
         this.processStopPropertyMapper = processStopPropertyMapper;
         this.mxGraphModelDomain = mxGraphModelDomain;
         this.processPathMapper = processPathMapper;
         this.processStopMapper = processStopMapper;
         this.processMapper = processMapper;
+        this.sysUserDomain = sysUserDomain;
     }
 
     public int saveOrUpdate(Process process) throws Exception {
@@ -73,7 +77,9 @@ public class ProcessDomain {
         if (StringUtils.isBlank(id)) {
             process.setId(UUIDUtils.getUUID32());
         }
-        int affectedRows = processMapper.addProcess(process);
+        String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+        String company = sysUserDomain.getSysUserCompanyById(userid);
+        int affectedRows = processMapper.addProcess(process, company);
         if (affectedRows <= 0) {
             throw new Exception("save failed");
         }
@@ -506,8 +512,8 @@ public class ProcessDomain {
         return processMapper.getProcessWithFlowPublishingById(processId);
     }
 
-    public List<Process> getProcessHistoryPageOfSelf(String keyword, String username) {
-        return processMapper.getProcessHistoryPageOfSelf(keyword,username);
+    public List<Process> getProcessHistoryPageOfSelf(String keyword, String username, String name, String state) {
+        return processMapper.getProcessHistoryPageOfSelf(keyword, username, name, state);
     }
 
     public Process getByFlowIdAndCrtUserWithoutState(String flowId,String username) {

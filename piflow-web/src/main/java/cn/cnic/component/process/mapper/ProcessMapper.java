@@ -18,7 +18,7 @@ public interface ProcessMapper {
      * @return
      */
     @InsertProvider(type = ProcessMapperProvider.class, method = "addProcess")
-    public int addProcess(Process process);
+    public int addProcess(Process process, @Param("company") String company);
 
     /**
      * update process
@@ -304,6 +304,12 @@ public interface ProcessMapper {
             +"<if test=\"keyword != null and keyword != '' \">"
             +" and `name` like CONCAT('%', #{keyword}, '%')"
             +"</if>"
+            +"<if test=\"name != null and name != '' \">"
+            +" and `name` like CONCAT('%', #{name}, '%')"
+            +"</if>"
+            +"<if test=\"state != null and state != '' \">"
+            +" and `state` like CONCAT('%', #{state}, '%')"
+            +"</if>"
             +"</where>"
             +"order by fp.crt_dttm desc"
             +"</script>")
@@ -314,7 +320,8 @@ public interface ProcessMapper {
             @Result(column = "id", property = "dataProductList", many = @Many(select = "cn.cnic.component.dataProduct.mapper.DataProductMapper.getListByProcessId", fetchType = FetchType.LAZY))
 
     })
-    List<Process> getProcessHistoryPageOfSelf(@Param("keyword") String keyword, @Param("username") String username);
+    List<Process> getProcessHistoryPageOfSelf(@Param("keyword") String keyword, @Param("username") String username,
+                                              @Param("name") String name, @Param("state") String state);
 
     @Select("select * from flow_process where flow_id = #{flowId} and crt_user = #{username} and state is null and enable_flag = 1")
     @Results({

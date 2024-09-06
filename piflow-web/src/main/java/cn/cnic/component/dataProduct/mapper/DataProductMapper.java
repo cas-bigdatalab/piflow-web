@@ -20,13 +20,13 @@ public interface DataProductMapper {
             + "insert into data_product (id, process_id, property_id, property_name, dataset_url, `name`, "
             + "description, permission, keyword, sdPublisher, email, `state`, opinion, down_reason, "
             + "is_share, doi_id, cstr_id, subject_type_id, time_range, spacial_range, dataset_size, dataset_type, associate_id, "
-            + "crt_dttm, crt_user, enable_flag, last_update_dttm, last_update_user, version, bak1, bak2, bak3) values "
+            + "crt_dttm, crt_user, enable_flag, last_update_dttm, last_update_user, version, ``, bak2, bak3) values "
             + "<foreach collection='list' item='item' index='index' separator=', '>"
             + "(#{item.id}, #{item.processId}, #{item.propertyId}, #{item.propertyName}, #{item.datasetUrl}, #{item.name}, "
             + "#{item.description}, #{item.permission}, #{item.keyword}, #{item.sdPublisher}, #{item.email}, #{item.state}, #{item.opinion}, #{item.downReason}, "
             + "#{item.isShare}, #{item.doiId}, #{item.cstrId}, #{item.subjectTypeId}, #{item.timeRange}, #{item.spacialRange}, #{item.datasetSize}, #{item.datasetType}, "
             + "#{item.associateId}, "
-            + "#{item.crtDttmStr}, #{item.crtUser}, #{item.enableFlagNum}, #{item.lastUpdateDttmStr}, #{item.lastUpdateUser}, 0, #{item.bak1}, #{item.bak2}, #{item.bak3})"
+            + "#{item.crtDttmStr}, #{item.crtUser}, #{item.enableFlagNum}, #{item.lastUpdateDttmStr}, #{item.lastUpdateUser}, 0, #{item.company}, #{item.bak2}, #{item.bak3})"
             + "</foreach>"
             + "</script>")
     int addBatch(List<DataProduct> dataProducts);
@@ -113,7 +113,7 @@ public interface DataProductMapper {
     })
     List<DataProductVo> getByPageForPublishing(DataProductVo dataProductVo);
 
-    //管理员 数据产品发布管理菜单列表，显示别人待审核的，以及自己已发布的,被拒绝发布的，已下架的
+    //管理员 数据产品发布管理菜单列表，显示别人待审核的，以及自己已发布的,被拒绝发布的，已下架的,可搜索标题、状态、创建人、单位
     @Select("<script>"
             + "select CAST(dp.id as CHAR) as id, dp.*, pt.product_type_id as productTypeId, pt.product_type_name as productTypeName from data_product as dp "
             + "<if test=\"productTypeId != null \">"
@@ -127,7 +127,25 @@ public interface DataProductMapper {
             + "<if test=\"keyword != null and keyword != '' \">"
             + " and dp.keyword like CONCAT('%', #{keyword}, '%') "
             + "</if>"
-            + " and ((crt_user != #{crtUser} and dp.state = 4) or (crt_user = #{crtUser} and dp.state in (5, 6, 7)))and dp.enable_flag = 1 "
+            + "<if test=\"company != null and company != '' \">"
+            + " and dp.company like CONCAT('%', #{company}, '%') "
+            + "</if>"
+            + "<if test=\"name != null and name != '' \">"
+            + " and dp.name like CONCAT('%', #{name}, '%') "
+            + "</if>"
+            + "<if test=\"crtUser != null and crtUser != '' \">"
+            + " and dp.crt_user like CONCAT('%', #{crtUser}, '%') "
+            + "</if>"
+            + "<choose>"
+            + "    <when test=\"state != null\">"
+            + "        and dp.state = #{state} "
+            + "    </when>"
+            + "    <otherwise>"
+            + "        and dp.state in (4, 5, 6, 7) "
+            + "    </otherwise>"
+            + "</choose>"
+            // + " and ((crt_user != #{crtUser} and dp.state = 4) or (crt_user = #{crtUser} and dp.state in (5, 6, 7)))"
+            + " and dp.enable_flag = 1 "
             + "</where>"
             + "</script>")
     @Results({
@@ -137,7 +155,7 @@ public interface DataProductMapper {
     })
     List<DataProductVo> getByPageForPublishingWithAdmin(DataProductVo dataProductVo);
 
-    //数据产品发布者 数据产品发布管理菜单列表，显示自己待审核的、已发布的,被拒绝发布的，已下架的
+    //数据产品发布者 数据产品发布管理菜单列表，显示自己待审核的、已发布的,被拒绝发布的，已下架的, 可搜索标题、状态
     @Select("<script>"
             + "select CAST(dp.id as CHAR) as id, dp.*, pt.product_type_id as productTypeId, pt.product_type_name as productTypeName from data_product as dp "
             + "<if test=\"productTypeId != null \">"
@@ -148,7 +166,19 @@ public interface DataProductMapper {
             + "<if test=\"keyword != null and keyword != '' \">"
             + " and dp.keyword like CONCAT('%', #{keyword}, '%') "
             + "</if>"
-            + " and crt_user = #{crtUser} and dp.state in (4, 5, 6, 7) and dp.enable_flag = 1 "
+            + "<if test=\"name != null and name != '' \">"
+            + " and dp.name like CONCAT('%', #{name}, '%') "
+            + "</if>"
+            + "<choose>"
+            + "    <when test=\"state != null\">"
+            + "        and dp.state = #{state} "
+            + "    </when>"
+            + "    <otherwise>"
+            + "        and dp.state in (4, 5, 6, 7) "
+            + "    </otherwise>"
+            + "</choose>"
+            //+ " and crt_user = #{crtUser} and dp.state in (4, 5, 6, 7) "
+            + " and dp.enable_flag = 1 "
             + "</where>"
             + "</script>")
     @Results({
@@ -157,6 +187,43 @@ public interface DataProductMapper {
 //            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
     })
     List<DataProductVo> getByPageForPublishingWithSdPublisher(DataProductVo dataProductVo);
+
+
+
+    //台站管理员 数据产品发布管理菜单列表，显示本台站待审核的、已发布的,被拒绝发布的，已下架的, 可搜索标题、状态、创建人
+    @Select("<script>"
+            + "select CAST(dp.id as CHAR) as id, dp.*, pt.product_type_id as productTypeId, pt.product_type_name as productTypeName from data_product as dp "
+            + "<if test=\"productTypeId != null \">"
+            + "inner join product_type_associate as pta on pta.associate_id = dp.id and pta.product_type_id = #{productTypeId} "
+            + "</if>"
+            + "left join product_type_associate as pt on pt.associate_id = CAST(dp.id AS CHAR) "
+            + "<where>"
+            + "<if test=\"keyword != null and keyword != '' \">"
+            + " and dp.keyword like CONCAT('%', #{keyword}, '%') "
+            + "</if>"
+            + "<if test=\"name != null and name != '' \">"
+            + " and dp.name like CONCAT('%', #{name}, '%') "
+            + "</if>"
+            + "<if test=\"crtUser != null and crtUser != '' \">"
+            + " and dp.crt_user like CONCAT('%', #{crtUser}, '%') "
+            + "</if>"
+            + "<choose>"
+            + "    <when test=\"state != null\">"
+            + "        and dp.state = #{state} "
+            + "    </when>"
+            + "    <otherwise>"
+            + "        and dp.state in (4, 5, 6, 7) "
+            + "    </otherwise>"
+            + "</choose>"
+            + " and dp.company = #{company} and dp.enable_flag = 1 "
+            + "</where>"
+            + "</script>")
+    @Results({
+            @Result(column = "id", property = "id", javaType = String.class, jdbcType = JdbcType.BIGINT),
+            @Result(column = "id", property = "coverFile", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductCoverType", fetchType = FetchType.LAZY)),
+//            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, typeHandler = cn.cnic.common.typeHandler.LongToStringTypeHandler.class, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
+    })
+    List<DataProductVo> getByPageForPublishingWithORSAdmin(DataProductVo dataProductVo);
 
     @Select("<script>"
             + "select CAST(du.id as CHAR) as id, CAST(du.product_id AS CHAR) as productId, du.* from product_user as du "

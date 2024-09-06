@@ -1,5 +1,8 @@
 package cn.cnic.component.visual.service.impl;
 
+import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.common.Eunm.SysRoleType;
+import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.visual.entity.ExcelNameAsso;
 import cn.cnic.component.visual.entity.GraphConf;
 import cn.cnic.component.visual.entity.GraphTemplate;
@@ -13,6 +16,7 @@ import cn.cnic.component.visual.util.ResponseResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,13 +36,15 @@ public class GraphTemplateServiceImpl implements GraphTemplateService {
     private ExcelNameAssoMapper excelNameAssoMapper;
     private ExcelSourceServiceImpl excelSourceService;
     private ExcelSourceMapper excelSourceMapper;
+    private SysUserDomain sysUserDomain;
 
-    public GraphTemplateServiceImpl(GraphTemplateMapper graphTemplateMapper, GraphConfMapper graphConfMapper, ExcelNameAssoMapper excelNameAssoMapper, ExcelSourceServiceImpl excelSourceService, ExcelSourceMapper excelSourceMapper) {
+    public GraphTemplateServiceImpl(GraphTemplateMapper graphTemplateMapper, GraphConfMapper graphConfMapper, ExcelNameAssoMapper excelNameAssoMapper, ExcelSourceServiceImpl excelSourceService, ExcelSourceMapper excelSourceMapper, SysUserDomain sysUserDomain) {
         this.graphTemplateMapper = graphTemplateMapper;
         this.graphConfMapper = graphConfMapper;
         this.excelNameAssoMapper = excelNameAssoMapper;
         this.excelSourceService = excelSourceService;
         this.excelSourceMapper = excelSourceMapper;
+        this.sysUserDomain = sysUserDomain;
     }
 
     @Override
@@ -50,14 +56,31 @@ public class GraphTemplateServiceImpl implements GraphTemplateService {
         //分页
         Page<GraphTemplate> page = new Page<>(pageNum,pageSize);
         QueryWrapper<GraphTemplate> wrapper = new QueryWrapper<>();
-        //不为null时，拼接条件
-        if((null != queryContent) && (!"".equals(queryContent.trim()))){
-            wrapper.like("name",queryContent);
+        if (StringUtils.isNotBlank(queryContent)) {
+            wrapper.like("name", queryContent);
+        }
+        if (StringUtils.isNotBlank(requestData.getName())) {
+            wrapper.like("description", requestData.getName());
+        }
+        if (StringUtils.isNotBlank(requestData.getCreateUser())) {
+            wrapper.like("user_name", requestData.getCreateUser());
+        }
+        if (StringUtils.isNotBlank(requestData.getCompany())) {
+            String role = SessionUserUtil.getCurrentUserRole().getValue();
+            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
+                wrapper.like("company", requestData.getCompany());
+            }
+            // 台站管理员只能看到本台站
+            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {
+                String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+                String company = sysUserDomain.getSysUserCompanyById(userid);
+                wrapper.like("company", company);
+            }
         }
         wrapper.orderByDesc("update_time");
         Page<GraphTemplate> page1 = graphTemplateMapper.selectPage(page, wrapper);
         graphTemplates = page1.getRecords();
-        int total = (int)page1.getTotal();
+        int total = Math.toIntExact(graphTemplateMapper.selectCount(wrapper));
         return ResponseResult.success(graphTemplates,total);
     }
 
@@ -91,6 +114,9 @@ public class GraphTemplateServiceImpl implements GraphTemplateService {
         String format = now.format(formatter);
         graphTemplate.setCreateTime(format);
         graphTemplate.setUpdateTime(format);
+        String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+        graphTemplate.setCompany(sysUserDomain.getSysUserCompanyById(userid));
+        graphTemplate.setUserName(SessionUserUtil.getCurrentUsername());
         int insert = graphTemplateMapper.insert(graphTemplate);
         if(insert == 1){
             return ResponseResult.success();
@@ -98,7 +124,7 @@ public class GraphTemplateServiceImpl implements GraphTemplateService {
             return ResponseResult.error("新增图表模板失败！");
         }
     }
-//    public ResponseResult addGraphConfByOne(GraphTemplate graphTemplate) {
+    //    public ResponseResult addGraphConfByOne(GraphTemplate graphTemplate) {
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 //        LocalDateTime now = LocalDateTime.now();
 //        String format = now.format(formatter);

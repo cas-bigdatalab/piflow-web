@@ -42,6 +42,8 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static cn.cnic.base.utils.DateUtils.getCurDateTimeYYYYMMDD;
+
 
 public class FileUtils {
 
@@ -748,7 +750,7 @@ public class FileUtils {
             if (fileStatus.isDirectory()) {
                 int contentLength = 0;
                 // 如果是目录，下载为ZIP文件
-                String zipFileName = hdfsPath.getName() + ".zip";
+                String zipFileName = hdfsPath.getName() + "_" + getCurDateTimeYYYYMMDD() + ".zip";
                 response.reset();
                 response.addHeader("Access-Control-Allow-Origin", "*");
                 response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
@@ -759,11 +761,12 @@ public class FileUtils {
                 }
                 response.setContentLength(contentLength);
             } else {
+                String name = hdfsPath.getName() + "_" + getCurDateTimeYYYYMMDD();
                 response.reset();
                 response.addHeader("Access-Control-Allow-Origin", "*");
                 response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
                 response.setContentType("application/octet-stream;charset=utf-8");
-                response.addHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(hdfsPath.getName(), StandardCharsets.UTF_8.toString()) + "\"");
+                response.addHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(name, StandardCharsets.UTF_8.toString()) + "\"");
                 try (ServletOutputStream out = response.getOutputStream()) {
                     FSDataInputStream in = fs.open(hdfsPath);
                     response.setContentLength(in.available());

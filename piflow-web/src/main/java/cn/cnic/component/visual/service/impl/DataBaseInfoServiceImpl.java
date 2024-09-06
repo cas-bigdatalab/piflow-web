@@ -1,5 +1,9 @@
 package cn.cnic.component.visual.service.impl;
 
+import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.common.Eunm.SysRoleType;
+import cn.cnic.component.system.domain.SysUserDomain;
+import cn.cnic.component.system.entity.SysRole;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import cn.cnic.component.visual.entity.DataBaseInfo;
@@ -15,6 +19,7 @@ import cn.cnic.component.visual.util.MybatisUtil;
 import cn.cnic.component.visual.util.RequestData;
 import cn.cnic.component.visual.util.ResponseResult;
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +29,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static cn.cnic.common.Eunm.SysRoleType.ADMIN;
 
 /**
  * TODO
@@ -40,6 +47,8 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
     private ExcelNameAssoMapper excelNameAssoMapper;
     @Autowired
     private ExcelSourceMapper excelSourceMapper;
+    @Autowired
+    private SysUserDomain sysUserDomain;
     @Override
     public ResponseResult<List<DataBaseInfo>> getDatabaseList(RequestData requestData) {
         String queryContent = requestData.getQueryContent();
@@ -49,13 +58,31 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
         //分页
         Page<DataBaseInfo> page = new Page<>(pageNum,pageSize);
         QueryWrapper<DataBaseInfo> wrapper = new QueryWrapper<>();
-        if((null != queryContent) && (!"".equals(queryContent.trim()))){
+        if(StringUtils.isNotBlank(queryContent)){
             wrapper.like("db_name",queryContent);
+        }
+        if (StringUtils.isNotBlank(requestData.getName())) {
+            wrapper.like("description", requestData.getName());
+        }
+        if (StringUtils.isNotBlank(requestData.getCreateUser())) {
+            wrapper.like("user_name", requestData.getCreateUser());
+        }
+        if (StringUtils.isNotBlank(requestData.getCompany())) {
+            String role = SessionUserUtil.getCurrentUserRole().getValue();
+            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
+                wrapper.like("company", requestData.getCompany());
+            }
+            // 台站管理员只能看到本台站
+            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {
+                String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+                String company = sysUserDomain.getSysUserCompanyById(userid);
+                wrapper.like("company", company);
+            }
         }
         wrapper.orderByDesc("update_time");
         Page<DataBaseInfo> page1 = dataBaseInfoMapper.selectPage(page,wrapper);
         dataBaseInfos = page1.getRecords();
-        int total = (int)page1.getTotal();
+        int total = Math.toIntExact(dataBaseInfoMapper.selectCount(wrapper));
         return ResponseResult.success(dataBaseInfos,total);
     }
 
@@ -97,6 +124,9 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
         String format = now.format(formatter);
         dataBaseInfo.setCreateTime(format);
         dataBaseInfo.setUpdateTime(format);
+        String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+        String company = sysUserDomain.getSysUserCompanyById(userid);
+        dataBaseInfo.setCompany(company);
         int insert = dataBaseInfoMapper.insert(dataBaseInfo);
         if(insert == 1){
             return ResponseResult.success();

@@ -3,8 +3,10 @@ package cn.cnic.component.process.domain;
 import java.util.List;
 import java.util.Map;
 
+import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.process.mapper.ProcessAndProcessGroupMapper;
 import cn.cnic.component.process.vo.ProcessAndProcessGroupVo;
+import cn.cnic.component.system.domain.SysUserDomain;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,18 +38,23 @@ public class ProcessGroupDomain {
     private final ProcessGroupMapper processGroupMapper;
     private final MxGraphModelDomain mxGraphModelDomain;
     private final ProcessDomain processDomain;
+    private final SysUserDomain sysUserDomain;
+
+
 
     @Autowired
     public ProcessGroupDomain(ProcessAndProcessGroupMapper processAndProcessGroupMapper,
                               ProcessGroupPathMapper processGroupPathMapper,
                               ProcessGroupMapper processGroupMapper,
                               MxGraphModelDomain mxGraphModelDomain,
-                              ProcessDomain processDomain) {
+                              ProcessDomain processDomain,
+                              SysUserDomain sysUserDomain) {
         this.processAndProcessGroupMapper = processAndProcessGroupMapper;
         this.processGroupPathMapper = processGroupPathMapper;
         this.processGroupMapper = processGroupMapper;
         this.mxGraphModelDomain = mxGraphModelDomain;
         this.processDomain = processDomain;
+        this.sysUserDomain = sysUserDomain;
     }
 
     /**
@@ -64,7 +71,10 @@ public class ProcessGroupDomain {
         if (StringUtils.isBlank(id)) {
             processGroup.setId(UUIDUtils.getUUID32());
         }
-        int affectedRows = processGroupMapper.addProcessGroup(processGroup);
+        String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+        String company = sysUserDomain.getSysUserCompanyById(userid);
+
+        int affectedRows = processGroupMapper.addProcessGroup(processGroup, company);
         if (affectedRows <= 0) {
             throw new Exception("save failed");
         }
@@ -250,14 +260,15 @@ public class ProcessGroupDomain {
     public int updateEnableFlagById(String id, String username) {
         return processGroupMapper.updateEnableFlagById(id, username);
     }
-    
+
     /**
      * Paging query
      *
      * @return
      */
-    public List<ProcessGroupVo> getProcessGroupListPageByParam(String username, boolean isAdmin, String param){
-        return processGroupMapper.getProcessGroupListByParam(username, isAdmin, param);
+    public List<ProcessGroupVo> getProcessGroupListPageByParam(String username, boolean isAdmin, String param,
+                                                               String name, String state, String crtUser, String company) {
+        return processGroupMapper.getProcessGroupListByParam(username, isAdmin, param, name, state, crtUser, company);
     }
 
     public ProcessGroup getProcessGroupByPageId(String fid, String pageId) {
@@ -268,8 +279,8 @@ public class ProcessGroupDomain {
         return processDomain.getProcessListByAppIDs(appIDs);
     }
 
-    public List<ProcessAndProcessGroupVo> getProcessAndProcessGroupList(String param) {
-        return processAndProcessGroupMapper.getProcessAndProcessGroupList(param);
+    public List<ProcessAndProcessGroupVo> getProcessAndProcessGroupList(String createUser, String param, String name, String state, String company) {
+        return processAndProcessGroupMapper.getProcessAndProcessGroupList(createUser, param, name, state, company);
     }
 
     public List<ProcessAndProcessGroupVo> getProcessAndProcessGroupListByUser(String param, String username) {

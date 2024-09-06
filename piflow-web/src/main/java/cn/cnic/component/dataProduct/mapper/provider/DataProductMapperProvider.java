@@ -38,6 +38,7 @@ public class DataProductMapperProvider {
     private String datasetSize;
     private Integer datasetType;
     private String associateId;
+    private String company;
 
     private boolean preventSQLInjectionDataProduct(DataProduct dataProduct) {
         if (null == dataProduct) {
@@ -76,6 +77,7 @@ public class DataProductMapperProvider {
         this.datasetSize = SqlUtils.preventSQLInjection(dataProduct.getDatasetSize());
         this.datasetType = (null == dataProduct.getDatasetType()) ? 0 : dataProduct.getDatasetType();
         this.associateId = SqlUtils.preventSQLInjection(dataProduct.getAssociateId());
+        this.company = SqlUtils.preventSQLInjection(dataProduct.getCompany());
         return true;
     }
 
@@ -137,6 +139,7 @@ public class DataProductMapperProvider {
             stringBuffer.append("opinion, ");
             stringBuffer.append("down_reason, ");
             stringBuffer.append("is_share, ");
+            stringBuffer.append("company, ");
             if (!"null".equals(this.doiId)) {
                 stringBuffer.append("doi_id, ");
             }
@@ -176,6 +179,7 @@ public class DataProductMapperProvider {
             stringBuffer.append(this.opinion).append(", ");
             stringBuffer.append(this.downReason).append(", ");
             stringBuffer.append(this.isShare).append(", ");
+            stringBuffer.append(this.company).append(", ");
             if (!"null".equals(this.doiId)) {
                 stringBuffer.append(this.doiId).append(", ");
             }
@@ -266,6 +270,9 @@ public class DataProductMapperProvider {
             }
             if (null != dataProduct.getAssociateId()) {
                 sql.SET("associate_id = " + associateId);
+            }
+            if (null != dataProduct.getCompany()) {
+                sql.SET("company = " + company);
             }
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();

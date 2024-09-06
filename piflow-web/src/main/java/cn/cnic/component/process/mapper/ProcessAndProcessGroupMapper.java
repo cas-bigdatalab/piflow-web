@@ -16,7 +16,7 @@ public interface ProcessAndProcessGroupMapper {
      * @return
      */
     @SelectProvider(type = ProcessAndProcessGroupMapperProvider.class, method = "getProcessAndProcessGroupList")
-    public List<ProcessAndProcessGroupVo> getProcessAndProcessGroupList(String param);
+    public List<ProcessAndProcessGroupVo> getProcessAndProcessGroupList(String createUser, String param, String name, String state, String company);
 
     @SelectProvider(type = ProcessAndProcessGroupMapperProvider.class, method = "getProcessAndProcessGroupListByUser")
     public List<ProcessAndProcessGroupVo> getProcessAndProcessGroupListByUser(String param, String username);

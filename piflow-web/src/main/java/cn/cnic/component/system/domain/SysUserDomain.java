@@ -2,8 +2,11 @@ package cn.cnic.component.system.domain;
 
 import java.util.List;
 
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.system.vo.SysUserVo;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Isolation;
@@ -19,6 +22,8 @@ import cn.cnic.component.system.mapper.SysUserMapper;
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 36000, rollbackFor = Exception.class)
 public class SysUserDomain {
 
+    private Logger logger = LoggerUtil.getLogger();
+
     private final SysUserMapper sysUserMapper;
     private final SysRoleMapper sysRoleMapper;
 
@@ -28,6 +33,11 @@ public class SysUserDomain {
         this.sysUserMapper = sysUserMapper;
         this.sysRoleMapper = sysRoleMapper;
     }
+
+    public SysRole getSysRoleBySysUserId(String sysUserId) {
+        return sysRoleMapper.getSysRoleBySysUserId(sysUserId);
+    }
+
 
     public int addSysUser(SysUser sysUser) throws Exception {
         if (null == sysUser) {
@@ -55,16 +65,25 @@ public class SysUserDomain {
         return sysUserMapper.updateSysUser(sysUser);
     }
 
-    public List<SysUserVo> getSysUserVoList(boolean isAdmin, String username, String param) {
-        return sysUserMapper.getSysUserVoList(isAdmin, username, param);
+    public List<SysUserVo> getSysUserVoList(String username, String param, String name, String email, String company) {
+        return sysUserMapper.getSysUserVoList(username, param, name, email, company);
     }
 
     public SysUserVo getSysUserVoById(boolean isAdmin, String username, String param) {
         return sysUserMapper.getSysUserVoById(isAdmin, username, param);
     }
 
-    public SysUser getSysUserById(boolean isAdmin, String username, String param) {
-        return sysUserMapper.getSysUserById(isAdmin, username, param);
+    public SysUser getSysUserById(boolean isAdmin, String username, String id) {
+        return sysUserMapper.getSysUserById(isAdmin, username, id);
+    }
+
+    public String getSysUserCompanyById(String id) {
+        SysUser sysUserById = sysUserMapper.getSysUserById(true, "", id);
+        if (null == sysUserById || StringUtils.isBlank(sysUserById.getCompany())) {
+            logger.error("sysUser company is null or empty");
+            return "";
+        }
+        return sysUserById.getCompany();
     }
 
     public SysUser findUserByUserName(String userName) {

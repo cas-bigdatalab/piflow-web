@@ -24,6 +24,7 @@ import cn.cnic.component.process.entity.ProcessStop;
 import cn.cnic.component.process.entity.ProcessStopProperty;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.system.domain.FileDomain;
+import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.File;
 import cn.cnic.third.service.IFlow;
 import cn.hutool.core.lang.generator.SnowflakeGenerator;
@@ -63,11 +64,23 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
 
     private final StopsDomain stopsDomain;
     private final PathsMapper pathsMapper;
+    private final SysUserDomain sysUserDomain;
 
     private String fileOutPutPrefix = "/portal_out/";
 
     @Autowired
-    public FlowPublishServiceImpl(SnowflakeGenerator snowflakeGenerator, FlowPublishDomain flowPublishDomain, FileDomain fileDomain, FlowDomain flowDomain, DataProductTypeDomain dataProductTypeDomain, FlowStopsPublishingPropertyDomain flowStopsPublishingPropertyDomain, ProcessDomain processDomain, IFlow flowImpl, DataProductDomain dataProductDomain, EcosystemTypeDomain ecosystemTypeDomain, StopsDomain stopsDomain, PathsMapper pathsMapper) {
+    public FlowPublishServiceImpl(SnowflakeGenerator snowflakeGenerator,
+                                  FlowPublishDomain flowPublishDomain,
+                                  FileDomain fileDomain, FlowDomain flowDomain,
+                                  DataProductTypeDomain dataProductTypeDomain,
+                                  FlowStopsPublishingPropertyDomain flowStopsPublishingPropertyDomain,
+                                  ProcessDomain processDomain,
+                                  IFlow flowImpl,
+                                  DataProductDomain dataProductDomain,
+                                  EcosystemTypeDomain ecosystemTypeDomain,
+                                  StopsDomain stopsDomain,
+                                  PathsMapper pathsMapper,
+                                  SysUserDomain sysUserDomain) {
         this.snowflakeGenerator = snowflakeGenerator;
         this.flowPublishDomain = flowPublishDomain;
         this.fileDomain = fileDomain;
@@ -80,6 +93,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         this.ecosystemTypeDomain = ecosystemTypeDomain;
         this.stopsDomain = stopsDomain;
         this.pathsMapper = pathsMapper;
+        this.sysUserDomain = sysUserDomain;
     }
 
     @Override
@@ -647,6 +661,8 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                         //为所有发布的输出参数都创建一个数据产品记录
                         Date now = new Date();
                         List<DataProduct> dataProducts = new ArrayList<>();
+                        String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+                        String company = sysUserDomain.getSysUserCompanyById(userid);
                         flowPublishingVo.getStops().stream()
                                 .flatMap(stop -> stop.getStopPublishingPropertyVos().stream())
                                 .filter(property -> FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(property.getType()))
@@ -676,6 +692,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                                     dataProduct.setSpacialRange("");
                                     dataProduct.setDatasetSize("");
                                     dataProduct.setDatasetType(DatasetType.EXCEL.getValue());
+                                    dataProduct.setCompany(company);
                                     dataProducts.add(dataProduct);
                                 });
                         dataProductDomain.addBatch(dataProducts);

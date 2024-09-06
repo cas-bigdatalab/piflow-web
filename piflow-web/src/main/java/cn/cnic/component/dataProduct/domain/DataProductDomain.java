@@ -111,6 +111,10 @@ public class DataProductDomain {
         return dataProductMapper.getByPageForPublishingWithSdPublisher(dataProductVo);
     }
 
+    public List<DataProductVo> getByPageForPublishingWithORSAdmin(DataProductVo dataProductVo) {
+        return dataProductMapper.getByPageForPublishingWithORSAdmin(dataProductVo);
+    }
+
     public List<ProductUserVo> getByPageForPermission(ProductUserVo productUserVo, String username) {
         return dataProductMapper.getByPageForPermission(productUserVo, username);
     }

@@ -240,12 +240,13 @@ public class ProcessGroupServiceImpl implements IProcessGroupService {
      * @return json
      */
     @Override
-    public String getProcessGroupVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
+    public String getProcessGroupVoListPage(String username, boolean isAdmin, Integer offset, Integer limit,
+                                            String param, String name, String state, String crtUser, String company) {
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         Page<ProcessGroupVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
-        processGroupDomain.getProcessGroupListPageByParam(username, isAdmin, param);
+        processGroupDomain.getProcessGroupListPageByParam(username, isAdmin, param, name, state, crtUser, company);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }
