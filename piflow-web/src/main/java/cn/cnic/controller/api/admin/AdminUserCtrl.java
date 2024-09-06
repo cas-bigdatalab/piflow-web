@@ -1,6 +1,8 @@
 package cn.cnic.controller.api.admin;
 
 import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.common.Eunm.SysRoleType;
+import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.service.ILogHelperService;
 import cn.cnic.component.system.service.ISysUserService;
 import cn.cnic.component.system.vo.SysUserVo;
@@ -21,20 +23,33 @@ public class AdminUserCtrl {
 
     private final ISysUserService sysUserServiceImpl;
     private final ILogHelperService logHelperServiceImpl;
+    private final SysUserDomain sysUserDomain;
+
 
     @Autowired
-    public AdminUserCtrl(ISysUserService sysUserServiceImpl, ILogHelperService logHelperServiceImpl) {
+    public AdminUserCtrl(ISysUserService sysUserServiceImpl, ILogHelperService logHelperServiceImpl, SysUserDomain sysUserDomain) {
         this.sysUserServiceImpl = sysUserServiceImpl;
         this.logHelperServiceImpl = logHelperServiceImpl;
+        this.sysUserDomain = sysUserDomain;
     }
 
     @RequestMapping(value = "/getUserListPage", method = RequestMethod.GET)
     @ResponseBody
-    @ApiOperation(value="getUserListPage", notes="user list")
-    public String getUserListPage(Integer page, Integer limit, String param) {
-        boolean isAdmin = SessionUserUtil.isAdmin();
+    @ApiOperation(value = "getUserListPage", notes = "user list")
+    public String getUserListPage(Integer page, Integer limit, String param, String name, String email, String company) {
+        SysRoleType currentUserRole = SessionUserUtil.getCurrentUserRole();
+        // 两种管理员都可以搜索
+        boolean isAdmin = currentUserRole == SysRoleType.ADMIN || currentUserRole == SysRoleType.ORS_ADMIN;
         String username = SessionUserUtil.getCurrentUsername();
-        return sysUserServiceImpl.getUserListPage(username, isAdmin, page, limit, param);
+        switch (currentUserRole) {
+            case ORS_ADMIN: // 台站管理员角色只显示自己台站的用户,且不能搜索
+                String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+                company = sysUserDomain.getSysUserCompanyById(userid);
+                break;
+            default:
+                break;
+        }
+        return sysUserServiceImpl.getUserListPage(username, isAdmin, page, limit, param, name, email, company);
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
@@ -81,6 +96,8 @@ public class AdminUserCtrl {
     public String addUser(@RequestBody SysUserVo sysUserVo) {
         return sysUserServiceImpl.addUser(sysUserVo);
     }
+
+
     @RequestMapping(value = "/updateRole", method = RequestMethod.POST)
     @ResponseBody
     public String updateRole(@RequestBody SysUserVo sysUserVo) {

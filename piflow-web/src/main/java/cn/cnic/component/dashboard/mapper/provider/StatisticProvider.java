@@ -7,6 +7,11 @@ public class StatisticProvider {
         return  sql;
     }
 
+    public String getFlowProcessStatisticInfoByCompany(String company){
+        String sql = "SELECT `state` as STATE, count(*) as COUNT FROM `flow_process` WHERE `enable_flag`=1 AND `app_id` IS NOT NULL AND `fk_flow_process_group_id` IS NULL AND `company` = '"+company+"' GROUP BY `state`";
+        return  sql;
+    }
+
     public String getFlowCount(){
         String sql = "select count(*) as COUNT from `flow` where `enable_flag` = 1 and `fk_flow_group_id` is null and `is_example` != 1";
         return  sql;

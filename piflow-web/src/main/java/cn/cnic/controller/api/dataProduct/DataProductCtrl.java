@@ -9,6 +9,8 @@ import cn.cnic.component.dataProduct.domain.DataProductDomain;
 import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.service.IDataProductService;
 import cn.cnic.component.dataProduct.vo.*;
+import cn.cnic.component.system.domain.SysUserDomain;
+import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.visual.entity.GraphTemplate;
 import cn.cnic.component.visual.entity.ProductTemplateGraphAssoDto;
 import cn.cnic.component.visual.entity.UserProductVisualView;
@@ -54,6 +56,9 @@ public class DataProductCtrl {
 
     private final DataProductDomain dataProductDomain;
 
+    private final SysUserDomain sysUserDomain;
+
+
 
     @Value("${share.platform.url}")
     public String sharePlatformUrl;
@@ -73,11 +78,12 @@ public class DataProductCtrl {
     public DataProductCtrl(IDataProductService dataProductServiceImpl,
                            ProductTemplateGraphAssoService productTemplateGraphAssoService,
                            GraphTemplateService graphTemplateService,
-                           DataProductDomain dataProductDomain) {
+                           DataProductDomain dataProductDomain, SysUserDomain sysUserDomain) {
         this.dataProductServiceImpl = dataProductServiceImpl;
         this.productTemplateGraphAssoService = productTemplateGraphAssoService;
         this.graphTemplateService = graphTemplateService;
         this.dataProductDomain = dataProductDomain;
+        this.sysUserDomain = sysUserDomain;
     }
 
 
@@ -281,6 +287,7 @@ public class DataProductCtrl {
      * @param email:
      * @param state:
      * @param version:
+     * @param company :创建人所属单位
      * @return String
      * @author tianyao
      * @description 单个数据产品发布（和编辑做成一个接口  数据产品记录是在进程运行完成后自动生成的，只能编辑数据产品
@@ -322,6 +329,9 @@ public class DataProductCtrl {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("data product type name is blank, not allowed!!");
         }
         dataProductVo.setProductTypeName(productTypeName);
+        String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+        String company = sysUserDomain.getSysUserCompanyById(userid);
+        dataProductVo.setCompany(company);
         return dataProductServiceImpl.save(file, dataProductVo);
     }
 

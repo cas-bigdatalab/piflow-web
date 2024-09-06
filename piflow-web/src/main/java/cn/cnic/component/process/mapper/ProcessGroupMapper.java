@@ -24,7 +24,7 @@ import cn.cnic.component.process.vo.ProcessGroupVo;
 public interface ProcessGroupMapper {
 
     @InsertProvider(type = ProcessGroupMapperProvider.class, method = "addProcessGroup")
-    public int addProcessGroup(ProcessGroup processGroup);
+    public int addProcessGroup(ProcessGroup processGroup, @Param("company") String company);
 
     /**
      * update updateProcessGroup
@@ -154,7 +154,10 @@ public interface ProcessGroupMapper {
     @Results({
             @Result(id = true, column = "id", property = "id"),
     })
-    public List<ProcessGroupVo> getProcessGroupListByParam(@Param("username") String username, @Param("isAdmin") boolean isAdmin, @Param("param") String param);
+    public List<ProcessGroupVo> getProcessGroupListByParam(@Param("username") String username, @Param("isAdmin") boolean isAdmin,
+                                                           @Param("param") String param, @Param("name") String name,
+                                                           @Param("String") String state, @Param("crtUser") String crtUser,
+                                                           @Param("company") String company);
 
     /**
      * Query processGroup list

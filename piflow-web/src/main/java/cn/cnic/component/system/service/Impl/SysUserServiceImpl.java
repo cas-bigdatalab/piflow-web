@@ -87,7 +87,8 @@ public class SysUserServiceImpl implements ISysUserService {
      * @return
      */
     @Override
-    public String getUserListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
+    public String getUserListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param,
+                                  String name, String email, String company) {
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
@@ -95,7 +96,7 @@ public class SysUserServiceImpl implements ISysUserService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_PERMISSION_MSG());
         }
         Page<SysUserVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
-        sysUserDomain.getSysUserVoList(isAdmin, username, param);
+        sysUserDomain.getSysUserVoList(username, param, name, email, company);
         List<SysUserVo> result = page.getResult();
         if (CollectionUtils.isNotEmpty(result)) {
             for (SysUserVo sysUserVo : result) {

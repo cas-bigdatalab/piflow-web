@@ -1174,7 +1174,7 @@ public class ProcessServiceImpl implements IProcessService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         Page<Process> page = PageHelper.startPage(requestVo.getPage(), requestVo.getLimit());
-        processDomain.getProcessHistoryPageOfSelf(requestVo.getKeyword(), username);
+        processDomain.getProcessHistoryPageOfSelf(requestVo.getKeyword(), username, requestVo.getName(), requestVo.getState().getValue());
         //对result进行加工
         List<Process> result = page.getResult();
         result.forEach(process -> {

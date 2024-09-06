@@ -53,7 +53,7 @@ public interface IProcessGroupService {
      * @param param    Search content
      * @return json
      */
-    public String getProcessGroupVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
+    public String getProcessGroupVoListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param, String name, String state, String crtUser, String company);
 
     /**
      * Start processesGroup

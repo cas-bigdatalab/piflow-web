@@ -17,7 +17,7 @@ public interface ISysUserService {
      * @param param  Search content
      * @return json
      */
-    public String getUserListPage( String username,boolean isAdmin, Integer offset, Integer limit, String param);
+    public String getUserListPage( String username,boolean isAdmin, Integer offset, Integer limit, String param, String name, String email, String company);
 
 
     /**

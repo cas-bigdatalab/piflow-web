@@ -1,5 +1,8 @@
 package cn.cnic.component.visual.service.impl;
 
+import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.common.Eunm.SysRoleType;
+import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.visual.entity.GraphConf;
 import cn.cnic.component.visual.mapper.piflowdb.GraphConfMapper;
 import cn.cnic.component.visual.service.GraphConfService;
@@ -8,6 +11,7 @@ import cn.cnic.component.visual.util.ResponseResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +29,8 @@ public class GraphConfServiceImpl implements GraphConfService {
 
     @Autowired
     private GraphConfMapper graphConfMapper;
+    @Autowired
+    private SysUserDomain sysUserDomain;
 
 
     @Override
@@ -36,14 +42,31 @@ public class GraphConfServiceImpl implements GraphConfService {
         //分页
         Page<GraphConf> page = new Page<>(pageNum,pageSize);
         QueryWrapper<GraphConf> wrapper = new QueryWrapper<>();
-        //不为null时，拼接条件
-        if((null != queryContent) && (!"".equals(queryContent.trim()))){
-            wrapper.like("name",queryContent);
+        if (StringUtils.isNotBlank(queryContent)) {
+            wrapper.like("name", queryContent);
+        }
+        if (StringUtils.isNotBlank(requestData.getName())) {
+            wrapper.like("name", requestData.getName());
+        }
+        if (StringUtils.isNotBlank(requestData.getCreateUser())) {
+            wrapper.like("user_name", requestData.getCreateUser());
+        }
+        if (StringUtils.isNotBlank(requestData.getCompany())) {
+            String role = SessionUserUtil.getCurrentUserRole().getValue();
+            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
+                wrapper.like("company", requestData.getCompany());
+            }
+            // 台站管理员只能看到本台站
+            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {
+                String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+                String company = sysUserDomain.getSysUserCompanyById(userid);
+                wrapper.like("company", company);
+            }
         }
         wrapper.orderByDesc("update_time");
         Page<GraphConf> page1 = graphConfMapper.selectPage(page,wrapper);
         list = page1.getRecords();
-        int total = (int)page1.getTotal();
+        int total = Math.toIntExact(graphConfMapper.selectCount(wrapper));
         return ResponseResult.success(list,total);
     }
     @Override
@@ -75,6 +98,9 @@ public class GraphConfServiceImpl implements GraphConfService {
         String format = now.format(formatter);
         graphConf.setCreateTime(format);
         graphConf.setUpdateTime(format);
+        String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+        graphConf.setCompany(sysUserDomain.getSysUserCompanyById(userid));
+        graphConf.setUserName(SessionUserUtil.getCurrentUsername());
         int insert = graphConfMapper.insert(graphConf);
         Integer id = graphConf.getId();
         if(insert == 1){

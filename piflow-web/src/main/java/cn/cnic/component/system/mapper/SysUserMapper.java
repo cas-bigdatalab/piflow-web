@@ -29,7 +29,8 @@ public interface SysUserMapper {
         @Result(id = true, column = "id", property = "id"),
         @Result(column = "id", property = "role", many = @Many(select = "cn.cnic.component.system.mapper.SysRoleMapper.getSysRoleBySysUserId", fetchType = FetchType.EAGER))
     })
-    public List<SysUserVo> getSysUserVoList(@Param("isAdmin") boolean isAdmin,@Param("username") String username, @Param("param") String param);
+    public List<SysUserVo> getSysUserVoList(@Param("username") String username, @Param("param") String param,
+                                            @Param("name") String name, @Param("email") String email, @Param("company") String company);
 
     @SelectProvider(type = SysUserMapperProvider.class, method = "findUserByNameLike")
     public List<SysUser> findUserByNameLike(@Param("name") String name);

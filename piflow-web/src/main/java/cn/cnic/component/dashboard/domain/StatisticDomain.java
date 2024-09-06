@@ -31,6 +31,9 @@ public class StatisticDomain {
         return statisticMapper.getFlowProcessStatisticInfo();
     }
 
+    public List<Map<String, String>> getFlowProcessStatisticInfo(String company) {
+        return statisticMapper.getFlowProcessStatisticInfoByCompany(company);
+    }
 
     /**
      * query flow count

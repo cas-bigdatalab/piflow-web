@@ -5,6 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.base.vo.UserVo;
+import cn.cnic.common.Eunm.SysRoleType;
+import cn.cnic.component.system.domain.SysUserDomain;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +21,29 @@ public class StatisticServiceImpl implements IStatisticService {
 
 
     private final StatisticDomain statisticDomain;
+    private final SysUserDomain sysUserDomain;
+
 
     @Autowired
-    public StatisticServiceImpl(StatisticDomain statisticDomain) {
+    public StatisticServiceImpl(StatisticDomain statisticDomain, SysUserDomain sysUserDomain) {
         this.statisticDomain = statisticDomain;
+        this.sysUserDomain = sysUserDomain;
     }
 
     @Override
-    public Map<String,String> getFlowStatisticInfo() {
-        List<Map<String, String>> processStatisticList= statisticDomain.getFlowProcessStatisticInfo();
+    public Map<String, String> getFlowStatisticInfo() {
+        String role = SessionUserUtil.getCurrentUserRole().getValue();
+        List<Map<String, String>> processStatisticList;
+        // admin展示所有的
+        if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
+            processStatisticList = statisticDomain.getFlowProcessStatisticInfo();
+        } else {
+            // 非admin角色只展示本台站的
+            UserVo currentUser = SessionUserUtil.getCurrentUser();
+            String id = sysUserDomain.findUserByUserName(currentUser.getUsername()).getId();
+            String company = sysUserDomain.getSysUserCompanyById(id);
+            processStatisticList = statisticDomain.getFlowProcessStatisticInfo(company);
+        }
         Map<String, String> processInfoMap = convertList2Map(processStatisticList, "STATE", "COUNT");
         Map<String, String> flowInfoMap = new HashMap<>();
         flowInfoMap.put("PROCESSOR_STARTED_COUNT", processInfoMap.getOrDefault("STARTED","0"));

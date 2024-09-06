@@ -26,4 +26,9 @@ public class RequestData {
     private String userName;
     private String password;
 
+    // 权限相关
+    private String name; // 名称
+    private String createUser; // 创建人
+    private String company;// 单位
+
 }

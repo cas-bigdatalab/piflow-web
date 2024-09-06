@@ -48,4 +48,9 @@ public class GraphTemplate{
      * 更新时间
      */
     private String updateTime;
+    /** 单位 */
+    private String company ;
+
+    /** 创建人 */
+    private String userName ;
 }
