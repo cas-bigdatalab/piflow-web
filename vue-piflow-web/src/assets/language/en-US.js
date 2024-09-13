@@ -31,6 +31,10 @@ module.exports = {
         LabelManagement:"Label Management",
         selectSource:"Select Label",
         pythonMirror:"Image Management",
+        visualization: "Visualization",
+        database:'MySQLConfig',
+        datasource:'VisualizationSource',
+        visualconfig:'Visualization',
     },
     page: {
         prev_text: "Previous",
@@ -322,5 +326,41 @@ module.exports = {
         uploadImg:'Upload Image:',
         save:"Save",
         department:'Administration:'
+    },
+    database:{
+        create_title: "MySQL Connection",
+        update_title: "MySQL Connection",
+        name:'Name',
+        description: "Description",
+        url: "Url",
+        driver: "Driver",
+        user: "User",
+        password: "Password",
+        createTime: "CreateTime",
+        action: "Actions"
+    },
+    datasource:{
+        create_title: "Visualization Source Configuration",
+        update_title: "Visualization Source Configuration",
+        database:'MySQL',
+        datasheet:'Table',
+        sheetName:'Sheet Name',
+        excelName:'Excel Name',
+        sheetNamePlaceholder:'Default selection is the first Sheet',
+        type:'Type',
+        upload:'Upload Excel',
+        name:'Name',
+        description: "Description",
+        createTime: "CreateTime",
+        action: "Actions"
+    },
+    visualconfig:{
+        create_title: "Create VisualConfig",
+        update_title: "Update VisualConfig",
+        datasource:'Visualization Source',
+        name:'Name',
+        description: "Description",
+        createTime: "CreateTime",
+        action: "Actions"
     },
 }

@@ -31,6 +31,10 @@ module.exports = {
         LabelManagement:"标签管理",
         selectSource:"选择数据源",
         pythonMirror:"基础镜像管理",
+        visualization: "数据可视化",
+        database:'数据库配置',
+        datasource:'数据源配置',
+        visualconfig:'可视化配置',
     },
     page: {
         prev_text: "上一页",
@@ -323,4 +327,41 @@ module.exports = {
         save:"保存",
         department:'主管部门'
     },
+    database:{
+        create_title: "新增数据库配置",
+        update_title: "编辑数据库配置",
+        name:'名称',
+        description: "描述信息",
+        url: "Url",
+        driver: "Driver",
+        user: "用户名",
+        password: "密码",
+        createTime: "创建时间",
+        action: "操作"
+    },
+    datasource:{
+        create_title: "新建数据源配置",
+        update_title: "更改数据源配置",
+        database:'数据库',
+        datasheet:'数据表',
+        excelName:'Excel名称',
+        sheetName:'工作表',
+        sheetNamePlaceholder:'默认选择第一个Sheet',
+        type:'类型',
+        upload:'上传Excel',
+        name:'名称',
+        description: "描述信息",
+        createTime: "创建时间",
+        action: "操作"
+    },
+    visualconfig:{
+        create_title: "新建可视化配置",
+        update_title: "编辑可视化配置",
+        datasource:'数据源',
+        name:'名称',
+        description: "描述信息",
+        createTime: "创建时间",
+        action: "操作"
+    },
+
 }

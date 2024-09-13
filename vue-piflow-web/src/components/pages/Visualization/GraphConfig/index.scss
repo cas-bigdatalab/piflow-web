@@ -1,0 +1,72 @@
+.card{
+    border-radius: 5px;
+    background: #fff;
+    margin: 12px;
+    padding-bottom: 12px;
+}
+
+.formWrap {
+    > div {
+      label {
+        min-width: 100px;
+        text-align: right;
+      }
+      .ivu-checkbox-wrapper{
+        min-width: auto;
+      }
+      input{
+        border-radius: 10px;
+      }
+      .ivu-select-selection{
+        border-radius: 10px;
+      }
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    opacity: 0;
+    background-color: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background-color: #c1ceda;
+  
+    &:hover {
+      background-color: #c1ceda;
+    }
+  }
+
+  h1{
+    font-size: 14px;
+    padding: 6px 0;
+    margin: 0 10px;
+    border-bottom:  1px solid rgba(0, 0, 0, 0.12);
+    position: relative;
+    text-indent: 16px;
+    &::before{
+      content: "·";
+      position: absolute;
+      left: -8px;
+      top: 5px;
+      font-weight: 900;
+    }
+    
+  }
+
+  .ivu-collapse {
+    border: 0;
+    > .ivu-collapse-item{
+      box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.06);
+      border: none;
+      margin: 0 10px 5px;
+    }
+  }
+  .ivu-modal-content{
+    max-height: 80vh;
+    overflow: auto;
+  }

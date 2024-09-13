@@ -144,6 +144,21 @@ export default new Router({
               path:'/bindingAccount',
               name:'bindingAccount',
               component:() => import('../components/pages/User/bindingAccount')
+            },
+            {
+              path:'/visualization/database',
+              name:'VisualizationDataBase',
+              component:() => import('../components/pages/Visualization/DataBase')
+            },
+            {
+              path:'/visualization/datasource',
+              name:'VisualizationDataSource',
+              component:() => import('../components/pages/Visualization/DataSource')
+            },
+            {
+              path:'/visualization/visualconfig',
+              name:'VisualizationVisualConfig',
+              component:() => import('../components/pages/Visualization/VisualConfig')
             }
           ]
         },
@@ -151,7 +166,12 @@ export default new Router({
           path: '/drawingBoard',
           name: 'drawingboard',
           component: () => import('../components/pages/DrawingBoard')
-        }
+        },
+        {
+          path: '/graphconfig',
+          name: 'GraphConfig',
+          component: () => import('../components/pages/Visualization/GraphConfig')
+        },
       ]
     }
   ]

@@ -1,5 +1,12 @@
 <template>
   <footer>
+      <Breadcrumb v-if="VisualConfig" id="BreadcrumbVisualization">
+      <span class="spanPointer" @click="handleClick('visualconfig')">上级菜单
+        <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
+      </span>
+      <span style="font-weight: bold">可视化</span>
+    </Breadcrumb>
+
     <Breadcrumb id="BreadcrumbFlow">
       <span class="spanPointer" @click="handleClick('flow')">Flow
         <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
@@ -98,7 +105,21 @@ export default {
           break;
       }
     }
-  }
+  },
+  data(){
+    return {
+      VisualConfig:false,
+    }
+  },
+  watch:{
+    '$route':{
+      handler(val){
+      this.VisualConfig = val.name === 'GraphConfig' ?true: false
+    },
+    deep:true,
+    immediate:true
+    }
+  },
 };
 </script>
 
