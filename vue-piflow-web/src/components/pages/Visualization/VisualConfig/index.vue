@@ -12,7 +12,7 @@
       </div>
     </div>
     <!-- search -->
-    <div class="search">
+    <!-- <div class="search">
         <div class="search_item">
           <label>标题：</label>
           <Input
@@ -37,7 +37,7 @@
             style="width: 200px"
           />
         </div>
-    </div>
+    </div> -->
     <!-- Table button -->
     <Table border :columns="columns" :data="tableData">
       <template slot-scope="{ row }" slot="action">
@@ -347,7 +347,7 @@ export default {
       });
     },
     getTableData() {
-      let data = { pageNum: this.page, pageSize: this.limit , ...this.searchFormData};
+      let data = { pageNum: this.page, pageSize: this.limit };
       this.$axios({
         method: "POST",
         url: "/visual/getGraphConfList",

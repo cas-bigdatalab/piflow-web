@@ -1,4 +1,5 @@
 // const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const path = require('path')
 const CompressionPlugin = require("compression-webpack-plugin")
 module.exports = {
   // pluginOptions: {
@@ -20,7 +21,9 @@ module.exports = {
       config.optimization.minimizer[0].options.terserOptions.compress.drop_debugger = true
       config.optimization.minimizer[0].options.terserOptions.compress.pure_funcs = ['console.log']
     }
-
+    config.resolve.alias = {
+      '@': path.join(__dirname, 'src')
+    }
     if (process.env.NODE_ENV === 'production') {
       return {
         plugins: [
@@ -83,7 +86,7 @@ module.exports = {
   publicPath: '/', // publicPath:'/rm', 这里可以设置二级文件夹作为主页面
 
   // build时构建文件的目录 构建时传入 --no-clean 可关闭该行为
-  // outputDir: 'build',
+  outputDir: 'ROOT',
 
   // build时放置生成的静态资源 (js、css、img、fonts) 的 (相对于 outputDir 的) 目录
   // assetsDir: 'assets',

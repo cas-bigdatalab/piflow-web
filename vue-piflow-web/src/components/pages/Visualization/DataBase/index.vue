@@ -11,11 +11,11 @@
         </span>
       </div>
     </div>
-    <div class="search">
+    <!-- <div class="search">
         <div class="search_item">
           <label>标题：</label>
           <Input
-            v-model="searchFormData.name"
+            v-model="searchFormData.params"
             :placeholder="$t('modal.placeholder')"
             style="width: 200px"
           />
@@ -36,7 +36,7 @@
             style="width: 200px"
           />
         </div>
-    </div>
+    </div> -->
     <!-- Table button -->
     <Table border :columns="columns" :data="tableData">
       <template slot-scope="{ row }" slot="action">
@@ -156,7 +156,7 @@ export default {
       formData: {},
       role:Cookies.get("role") || 'USER',
       searchFormData:{
-        name:'',
+        params:'',
         createUser:'',
         company:'',
       },
@@ -357,7 +357,7 @@ export default {
       });
     },
     getTableData() {
-      let data = { pageNum: this.page, pageSize: this.limit,...this.searchFormData };
+      let data = { pageNum: this.page, pageSize: this.limit };
       this.$axios({
           method:'POST',
           url:'/visual/getDatabaseList',
