@@ -1,12 +1,12 @@
 package cn.cnic.base.utils;
 
+import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
-import org.apache.hadoop.util.Progressable;
 import org.slf4j.Logger;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.request.RequestAttributes;
@@ -27,14 +27,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
-import java.net.URI;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
-import java.util.zip.ZipInputStream;
 
 
 public class FileUtils {
@@ -46,6 +43,20 @@ public class FileUtils {
 
     public static String CSV_TITLE_KEY = "CSV_TITLE";
     public static String CSV_DATA_KEY = "CSV_DATA";
+
+    public static FileSystem fs;
+
+
+    public static String getFileNameFromPath(String path) {
+        // 使用"/"或者"\"作为分隔符，将路径分割成字符串数组
+        String[] parts = path.split("[/\\\\]");
+
+        // 获取数组中最后一个元素，即文件名
+        String fileName = parts[parts.length - 1];
+
+        return fileName;
+    }
+
     /**
      * String to "xml" file and save the specified path
      *
@@ -389,7 +400,7 @@ public class FileUtils {
         }
         return result;
     }
-    
+
     /**
      * file conversion string
      *
@@ -397,7 +408,7 @@ public class FileUtils {
      * @param delimiter
      * @param header
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     public static Map<String, Object> ParseCsvFile(String url, String delimiter, String header) throws Exception {
         if (StringUtils.isBlank(url) || StringUtils.isBlank(delimiter)) {
@@ -443,7 +454,7 @@ public class FileUtils {
         }
         return rtnMap;
     }
-    
+
     /**
      * file conversion string
      *
@@ -451,7 +462,7 @@ public class FileUtils {
      * @param delimiter
      * @param header
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     @SuppressWarnings("unchecked")
     public static LinkedHashMap<String, List<String>> ParseCsvFileRtnColumnData(String url, String delimiter, String header) throws Exception {
@@ -564,6 +575,19 @@ public class FileUtils {
             filename = originalFilename.substring(lastSeparatorIndex + 1);
         }
         return filename;
+    }
+
+    public static String getDefaultFs() {
+        //return HttpUtils.doGet("http://"+ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
+        return HttpUtils.doGet(ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
+    }
+
+    public static InputStream getFileInputStream(String hdfsFilePath, String defaultFs) throws IOException {
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", defaultFs);
+        FileSystem fs = FileSystem.get(conf);
+        Path filePath = new Path(hdfsFilePath);
+        return fs.open(filePath);
     }
 
 
