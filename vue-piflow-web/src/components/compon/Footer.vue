@@ -72,6 +72,12 @@ export default {
             document.getElementById('BreadcrumbFlow').style.display = 'none';
           });
           break;
+          case 'visualconfig':
+          this.$router.go(-1);
+          this.$nextTick(()=>{
+              document.getElementById('BreadcrumbGroup').style.display = 'none';
+            });
+          break;
           case 'group':
             window.sessionStorage.setItem("menuName", 'group');
             this.$router.push({
@@ -145,9 +151,10 @@ footer {
     span, a{
       color: #ffffff
     }
+
+  }
   .spanPointer{
     cursor: pointer;
-  }
   }
 }
 </style>

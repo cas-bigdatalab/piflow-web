@@ -286,6 +286,7 @@ export default {
           this.$event.emit("loading", false);
           if (res.data.code === 200) {
             this.isOpen = false;
+            this.$router.push({ path: "/graphconfig", query: { id:res.data.data } });
             this.$Message.success({
               content:  `${this.formData.name} ` + this.$t("tip.add_success_content"),
               duration: 3,
