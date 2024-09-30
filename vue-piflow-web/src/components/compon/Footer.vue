@@ -1,13 +1,13 @@
 <template>
-  <footer>
-      <Breadcrumb v-if="VisualConfig" id="BreadcrumbVisualization">
-      <span class="spanPointer" @click="handleClick('visualconfig')">上级菜单
+  <footer id="footer">
+    <Breadcrumb v-if="VisualConfig" id="BreadcrumbVisualization">
+      <span class="spanPointer" @click="handleClick('visualconfig')">{{lastMenu}}
         <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
       </span>
-      <span style="font-weight: bold">可视化</span>
+      <span style="font-weight: bold">Visualization</span>
     </Breadcrumb>
 
-    <Breadcrumb id="BreadcrumbFlow">
+    <Breadcrumb  id="BreadcrumbFlow">
       <span class="spanPointer" @click="handleClick('flow')">Flow
         <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
       </span>
@@ -114,12 +114,21 @@ export default {
   },
   data(){
     return {
+      lastMenu:'',
       VisualConfig:false,
     }
   },
   watch:{
     '$route':{
-      handler(val){
+      handler(val,from){
+        this.lastMenu =from ? from.name :'lastMenu'
+        if(val.fullPath === '/' && document.getElementById('footer')){
+          console.log(document.getElementById('footer'))
+          const list = Array.from(document.getElementById('footer').children)
+          list.forEach(v=>{
+            v.style.display = 'none'
+          })
+        }
       this.VisualConfig = val.name === 'GraphConfig' ?true: false
     },
     deep:true,

@@ -146,17 +146,17 @@ export default new Router({
               component:() => import('../components/pages/User/bindingAccount')
             },
             {
-              path:'/visualization/database',
+              path:'/visualization-database',
               name:'VisualizationDataBase',
               component:() => import('../components/pages/Visualization/DataBase')
             },
             {
-              path:'/visualization/datasource',
+              path:'/visualization-datasource',
               name:'VisualizationDataSource',
               component:() => import('../components/pages/Visualization/DataSource')
             },
             {
-              path:'/visualization/visualconfig',
+              path:'/visualization-visualconfig',
               name:'VisualizationVisualConfig',
               component:() => import('../components/pages/Visualization/VisualConfig')
             }

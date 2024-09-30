@@ -218,17 +218,17 @@ export default {
             {
               btnName: this.$t("sidebar.database"),
               name: "VisualizationDataBase",
-              router: "/visualization/database",
+              router: "/visualization-database",
             },
             {
               btnName: this.$t("sidebar.datasource"),
               name: "VisualizationDataSource",
-              router: "/visualization/datasource",
+              router: "/visualization-datasource",
             },
             {
               btnName: this.$t("sidebar.visualconfig"),
               name: "VisualizationVisualConfig",
-              router: "/visualization/visualconfig",
+              router: "/visualization-visualconfig",
             },
           ],
         },
