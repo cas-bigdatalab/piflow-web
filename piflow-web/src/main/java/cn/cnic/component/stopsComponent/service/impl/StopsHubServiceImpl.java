@@ -148,7 +148,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
         }
         stopsHubDomain.addStopHub(stopsHub);
         logger.info("==============upload stops hub finish=============");
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("successful jar upload");
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("upload successful");
     }
 
     @Override
