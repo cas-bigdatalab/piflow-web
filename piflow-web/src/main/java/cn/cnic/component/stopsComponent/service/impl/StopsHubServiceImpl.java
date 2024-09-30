@@ -320,20 +320,20 @@ public class StopsHubServiceImpl implements IStopsHubService {
                 stopsHub.setLastUpdateDttm(new Date());
                 stopsHubDomain.updateStopHub(stopsHub);
 
-                //下载的zip包放在stopsHubPath下
-                String dstPath = stopsHubPath + "/" + jarName;
+//              //下载的zip包放在stopsHubPath下
                 //把dockerFile放在/storage/stopHub/下
                 //stopsHubPath：存放算法包路径，跟下载的zip包放在一起
                 String dockerFileSavePath = stopsHubPath + "/" + dockerFileName;
-                if(!generateDockerfile(stopsHub, dstPath, dockerFileSavePath)) {
+                if(!generateDockerfile(stopsHub, jarName, dockerFileSavePath)) {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("Create Dockerfile failed, please try again later");
                 }
 
                 CompletableFuture<Integer> buildFuture = null; //定义future结构
                 String dockerImagesName = generateTagsName(jarName).toLowerCase();   //确定镜像名称
                 // 异步执行镜像构建
+                String finalStopsHubPath = stopsHubPath;
                 buildFuture = CompletableFuture.supplyAsync(() ->
-                        buildAndPushDockerImage("/", dockerFileSavePath, dockerImagesName));
+                        buildAndPushDockerImage(finalStopsHubPath, dockerFileSavePath, dockerImagesName));
                 // 当 CompletableFuture 完成时清理dockerFile和zip
                 buildFuture.whenComplete((result, throwable) -> {
                     try {
@@ -443,6 +443,7 @@ public class StopsHubServiceImpl implements IStopsHubService {
 
                     dockerFileSb.append("    && rm -rf  ~/.cache/pip/* \\" + System.lineSeparator());
                     dockerFileSb.append("    && rm -rf /usr/local/" + jarName + System.lineSeparator());
+                    dockerLogger.info(dockerFileSb);
                     FileUtils.writeData(dockerFileSavePath, dockerFileSb.toString());
                 }
             }
