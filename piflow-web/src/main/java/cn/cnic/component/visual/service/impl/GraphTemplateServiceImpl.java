@@ -209,7 +209,7 @@ public class GraphTemplateServiceImpl implements GraphTemplateService {
     public long getGraphConfCunt(int id){
         QueryWrapper<GraphConf> wrapper = new QueryWrapper<>();
         wrapper.eq("graph_template_id",id);
-        Long count = graphConfMapper.selectCount(wrapper);
+        Integer count = graphConfMapper.selectCount(wrapper);
         return count;
     }
 }

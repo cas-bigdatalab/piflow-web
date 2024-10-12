@@ -3,9 +3,6 @@ package cn.cnic.component.visual.service.impl;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.domain.SysUserDomain;
-import cn.cnic.component.system.entity.SysRole;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import cn.cnic.component.visual.entity.DataBaseInfo;
 import cn.cnic.component.visual.entity.ExcelNameAsso;
 import cn.cnic.component.visual.entity.GraphConf;
@@ -18,6 +15,8 @@ import cn.cnic.component.visual.service.DataBaseInfoService;
 import cn.cnic.component.visual.util.MybatisUtil;
 import cn.cnic.component.visual.util.RequestData;
 import cn.cnic.component.visual.util.ResponseResult;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
@@ -29,8 +28,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import static cn.cnic.common.Eunm.SysRoleType.ADMIN;
 
 /**
  * TODO
@@ -49,17 +46,55 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
     private ExcelSourceMapper excelSourceMapper;
     @Autowired
     private SysUserDomain sysUserDomain;
+//    @Override
+//    public ResponseResult<List<DataBaseInfo>> getDatabaseList(RequestData requestData) {
+//        String queryContent = requestData.getQueryContent();
+//        int pageSize = requestData.getPageSize();
+//        int pageNum = requestData.getPageNum();
+//        List<DataBaseInfo> dataBaseInfos = null;
+//        //分页
+//        Page<DataBaseInfo> page = new Page<>(pageNum,pageSize);
+//        QueryWrapper<DataBaseInfo> wrapper = new QueryWrapper<>();
+//        if(StringUtils.isNotBlank(queryContent)){
+//            wrapper.like("db_name",queryContent);
+//        }
+//        if (StringUtils.isNotBlank(requestData.getName())) {
+//            wrapper.like("description", requestData.getName());
+//        }
+//        if (StringUtils.isNotBlank(requestData.getCreateUser())) {
+//            wrapper.like("user_name", requestData.getCreateUser());
+//        }
+//        if (StringUtils.isNotBlank(requestData.getCompany())) {
+//            String role = SessionUserUtil.getCurrentUserRole().getValue();
+//            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
+//                wrapper.like("company", requestData.getCompany());
+//            }
+//            // 台站管理员只能看到本台站
+//            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {
+//                String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+//                String company = sysUserDomain.getSysUserCompanyById(userid);
+//                wrapper.like("company", company);
+//            }
+//        }
+//        wrapper.orderByDesc("update_time");
+//        Page<DataBaseInfo> page1 = dataBaseInfoMapper.selectPage(page,wrapper);
+//        dataBaseInfos = page1.getRecords();
+//        int total = Math.toIntExact(dataBaseInfoMapper.selectCount(wrapper));
+//        return ResponseResult.success(dataBaseInfos,total);
+//    }
+
     @Override
     public ResponseResult<List<DataBaseInfo>> getDatabaseList(RequestData requestData) {
         String queryContent = requestData.getQueryContent();
         int pageSize = requestData.getPageSize();
         int pageNum = requestData.getPageNum();
-        List<DataBaseInfo> dataBaseInfos = null;
-        //分页
-        Page<DataBaseInfo> page = new Page<>(pageNum,pageSize);
+
+        Page<DataBaseInfo> page = new Page<>(pageNum, pageSize);
         QueryWrapper<DataBaseInfo> wrapper = new QueryWrapper<>();
-        if(StringUtils.isNotBlank(queryContent)){
-            wrapper.like("db_name",queryContent);
+
+        // 模糊查询条件
+        if (StringUtils.isNotBlank(queryContent)) {
+            wrapper.like("db_name", queryContent);
         }
         if (StringUtils.isNotBlank(requestData.getName())) {
             wrapper.like("description", requestData.getName());
@@ -72,19 +107,25 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
             if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
                 wrapper.like("company", requestData.getCompany());
             }
-            // 台站管理员只能看到本台站
             if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {
                 String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
                 String company = sysUserDomain.getSysUserCompanyById(userid);
                 wrapper.like("company", company);
             }
         }
+
+        // 按更新时间降序排序
         wrapper.orderByDesc("update_time");
-        Page<DataBaseInfo> page1 = dataBaseInfoMapper.selectPage(page,wrapper);
-        dataBaseInfos = page1.getRecords();
-        int total = Math.toIntExact(dataBaseInfoMapper.selectCount(wrapper));
-        return ResponseResult.success(dataBaseInfos,total);
+
+        // 执行分页查询
+        Page<DataBaseInfo> page1 = dataBaseInfoMapper.selectPage(page, wrapper);
+        List<DataBaseInfo> dataBaseInfos = page1.getRecords();
+        int total = Math.toIntExact(page1.getTotal());
+
+        // 返回分页结果
+        return ResponseResult.success(dataBaseInfos, total);
     }
+
 
     @Override
     public ResponseResult<DataBaseInfo> getDatabaseInfo(DataBaseInfo dataBaseInfo) {
@@ -261,10 +302,10 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
         return ResponseResult.error("获取表字段失败！");
     }
 
-    public Long getGraphTemplateCount(int id){
+    public long getGraphTemplateCount(int id){
         QueryWrapper<GraphTemplate> wrapper = new QueryWrapper<>();
         wrapper.eq("data_base_id",id);
-        Long count = graphTemplateMapper.selectCount(wrapper);
+        Integer count = graphTemplateMapper.selectCount(wrapper);
         return count;
     }
 
