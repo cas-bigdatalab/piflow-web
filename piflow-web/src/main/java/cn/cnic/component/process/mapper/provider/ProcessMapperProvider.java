@@ -170,7 +170,7 @@ public class ProcessMapperProvider {
             strBuf.append(processParentType + ", ");
             strBuf.append(schedule_id + ", ");
             strBuf.append(processGroup_id + ", ");
-            strBuf.append(viewXml + " ");
+            strBuf.append(viewXml + ", ");
             strBuf.append(company + " ");
             strBuf.append(") ");
             this.reset();
