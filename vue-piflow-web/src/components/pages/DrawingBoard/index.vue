@@ -142,9 +142,6 @@
       </div>
     </Modal>
 
-    <!--dataspace  select file-->
-    <DataSpaceModal  ref="DataSpaceModalRef"/>
-
     <Drawer :closable="false" width="640" v-model="visualization_Drawer">
       <div slot="header"><a target="_blank" :href="visualization_url">查看全部</a></div>
       <iframe :src="visualization_url" style="width: 100%;height: 100%" frameborder="0"></iframe>
@@ -154,10 +151,9 @@
  
 <script>
 import CodeEditor from '../../compon/CodeFormat'
-import DataSpaceModal from './DataSpaceModal'
 export default {
   name: "DrawingBoard",
-  components:{CodeEditor,DataSpaceModal},
+  components:{CodeEditor},
   data() {
     return {
       height: "100%",
@@ -169,6 +165,7 @@ export default {
       buttonSize: 'text',
       stopsId: '',
       programming_Title: 'Set Data For Each Port',
+
       NeedSource_Modal: false,
       tableData: [],
       page: 1,
@@ -292,10 +289,7 @@ export default {
       _this.$event.emit("loading", event.data);
     }, false);
 
-    window['openDataSpace'] = (datasourceId)=>{
-      _this.$refs.DataSpaceModalRef.handleDataSourceProperty(datasourceId)
-    }
-    
+
     //  Visual programming data
     window["openRightHelpPage"] = (val,id,language,name) => {
       _this.Programming = window.innerHeight > 300 ? window.innerHeight - window.innerHeight*0.3 +'px' : window.innerHeight +'px' ;
@@ -409,8 +403,7 @@ export default {
   methods: {
     setSize() {
       this.height = document.querySelector("body").offsetHeight-12 + "px";
-    },  
-
+    },
 
     updateStopsProperty(){
       let data = {};

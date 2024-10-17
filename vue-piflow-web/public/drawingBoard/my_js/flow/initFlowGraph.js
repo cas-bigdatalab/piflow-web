@@ -7,7 +7,6 @@ var flag = 0;
 var pathsCells = [];
 var thisEditor = null;
 var graphGlobal = null;
-var currentNode = null;   //当前选中节点
 
 //init data
 function initFlowDrawingBoardData(loadId, parentAccessPath) {
@@ -635,7 +634,6 @@ function queryStopsProperty(stopPageId, loadId) {
             $('#process_property_inc_loading').hide();
             if (200 === dataMap.code) {
                 var stopsVoData = dataMap.stopsVo;
-                currentNode = stopsVoData
                 stopsId = stopsVoData.id;
                 if (stopsVoData) {
                     //Remove the timer if successful
@@ -666,10 +664,6 @@ function queryStopsProperty(stopPageId, loadId) {
                         for (var y = 0; y < propertiesVo.length; y++) {
                             if (!propertiesVo[y]) {
                                 continue;
-                            }
-                            if(stopsVoData.bundel.toLowerCase().includes('dataspace')){
-                                const arr = ['dsAppId','dsSign','dsRemote','dsEmail',]
-                                if(arr.includes(propertiesVo[y].name)) continue
                             }
                             var propertyVo = propertiesVo[y];
                             var propertyVo_id = propertyVo.id;
@@ -1116,11 +1110,6 @@ function getDatasourceList(stop_id, stops_page_id, dataSourceVo) {
 
 //fill datasource
 function fillDatasource(datasource, stop_id, stops_page_id) {
-    if(!$(datasource).val()) return
-    if(currentNode.bundel.toLowerCase().includes('dataspace')){
-        window.parent.openDataSpace($(datasource).val())
-        return
-    }
     var datasourceId = $(datasource).val();
     if (stop_id) {
         ajaxRequest({
