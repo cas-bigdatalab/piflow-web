@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import {searchTree} from '@/utils/findTree'
 export default {
   data() {
     return {
@@ -70,20 +71,17 @@ export default {
         console.log(error);
       });
     },
-    loadDataSpaceData(item, callback) {
-      if (item.level === 1) {
-        this.spaceName = item.title;
-        this.spaceId = item.id
-      }
+    loadDataSpaceData(node, callback) {
+        const spaceNode = searchTree(this.spaceList,data=>data.id === node.id)[0]
         const data = JSON.parse(JSON.stringify(this.params));
-        data.dsSpaceId = this.spaceId
-        if (item.hash) data.hash = item.hash;
+        data.dsSpaceId = spaceNode.id
+        if (node.hash) data.hash = node.hash;
         this.$axios
           .post("/datasource/fileListByDsSpaceId", data)
           .then((res) => {
             if (res.data.code === 200 && res.data.data && res.data.data.files) {
               let obj = {}
-              let nodes = res.data.data.files.filter(v=>v.hash !== '0' && v.hash !== item.hash).map((v) => {
+              let nodes = res.data.data.files.filter(v=>v.hash !== '0' && v.hash !== node.hash).map((v) => {
                   obj = {
                   title: v.name,
                   level:2,
@@ -111,7 +109,10 @@ export default {
           item.checked = false;
         }
       });
-      this.path = node.id;
+        const spaceNode = searchTree(this.spaceList,data=>data.id === node.id)[0]
+        this.spaceId = spaceNode.id
+        this.spaceName = spaceNode.title
+        this.path = node.id
     },
     changeFilePath() {
       const dsSpaceNameInput = document
