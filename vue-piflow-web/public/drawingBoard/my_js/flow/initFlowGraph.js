@@ -1117,10 +1117,7 @@ function getDatasourceList(stop_id, stops_page_id, dataSourceVo) {
 //fill datasource
 function fillDatasource(datasource, stop_id, stops_page_id) {
     if(!$(datasource).val()) return
-    if(currentNode.bundel.toLowerCase().includes('dataspace')){
-        window.parent.openDataSpace($(datasource).val())
-        return
-    }
+
     var datasourceId = $(datasource).val();
     if (stop_id) {
         ajaxRequest({
@@ -1131,9 +1128,15 @@ function fillDatasource(datasource, stop_id, stops_page_id) {
             success: function (data) {//Operation after request successful
                 var dataMap = JSON.parse(data);
                 if (200 === dataMap.code) {
-                    layer.msg("update success", {icon: 1, shade: 0, time: 1000}, function () {
-                        queryStopsProperty(stops_page_id, loadId);
-                    });
+                    if(currentNode.bundel.toLowerCase().includes('dataspace')){
+                        window.parent.openDataSpace($(datasource).val())
+                        return
+                    }else{
+                        layer.msg("update success", {icon: 1, shade: 0, time: 1000}, function () {
+                            queryStopsProperty(stops_page_id, loadId);
+                        });
+                    }
+
                 } else {
                     layer.msg(dataMap.errorMsg, {icon: 2, shade: 0, time: 2000});
                     console.log(dataMap.errorMsg);
