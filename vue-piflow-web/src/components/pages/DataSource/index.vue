@@ -108,10 +108,10 @@
                   :placeholder="$t('modal.placeholder')"
                   style="width: 180px"/>
               <Icon
-                  @click="handleRemove(m,dataSourcePropertyVoList.length===1)"
+                  @click="handleRemove(m,dataSourcePropertyVoList.length===1)"  v-if="mode !== 'edit'"
                   type="ios-remove-circle-outline"/>
               <Icon
-                  v-if="m==(dataSourcePropertyVoList.length-1)"
+                  v-if="m==(dataSourcePropertyVoList.length-1) && mode !== 'edit'"
                   @click="handleAdd"
                   type="ios-add-circle-outline"/>
             </li>
@@ -239,6 +239,7 @@ export default {
     handleButtonSelect(row, key) {
       switch (key) {
         case 1:
+          this.mode = 'edit'
           this.getRowData(row);
           if (row.dataSourceType === 'STOP'){
             this.currentType = 'STOP';
@@ -595,6 +596,7 @@ export default {
         this.dataSourcePropertyVoList = [];
         this.handleGetStopData();
       }else {
+        this.mode = 'edit'
         this.currentType = '';
         this.handleGetInputData();
       }
