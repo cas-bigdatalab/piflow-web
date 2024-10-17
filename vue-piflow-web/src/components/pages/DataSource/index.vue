@@ -596,10 +596,10 @@ export default {
         this.dataSourcePropertyVoList = [];
         this.handleGetStopData();
       }else {
-        this.mode = 'edit'
         this.currentType = '';
         this.handleGetInputData();
       }
+      this.mode = 'add'
       this.isOpen = !this.isOpen;
     },
 
