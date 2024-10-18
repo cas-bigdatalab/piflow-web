@@ -274,7 +274,7 @@ public class DataProductServiceImpl implements IDataProductService {
 
     private String getSharePlatformURL(String dataProductId) {
         SharePlatformMetadata dataProductMetaData = dataProductDomain.getDataProductMetaDataById(dataProductId);
-        if (dataProductMetaData!= null
+        if (dataProductMetaData != null
                 && dataProductMetaData.getProductUrl() != null
                 && dataProductMetaData.getReviewStatus() == DataProductMetaDataStatus.POSTED.getValue()) {
             return dataProductMetaData.getProductUrl();
@@ -438,6 +438,12 @@ public class DataProductServiceImpl implements IDataProductService {
                 fileList.add(dataset);
             }
         }
+        //把数据产品表头文件一并返回
+        String publishingId = dataProductDomain.getPublishingId(split[0]);
+        File headerFile = fileDomain.getByAssociateId(publishingId, FileAssociateType.FLOW_PUBLISHING_HEADER.getValue());
+        if (ObjectUtils.isNotEmpty(headerFile)) {
+            fileList.add(headerFile);
+        }
         String time = DateUtils.dateTimesToStrNew(new Date());
         try {
             if (CollectionUtils.isNotEmpty(fileList)) {
@@ -450,8 +456,7 @@ public class DataProductServiceImpl implements IDataProductService {
             } else {
                 throw new RuntimeException("file not be found!!");
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             logger.error("download dataset error!! e:{}", e.getMessage());
         }
     }
