@@ -7,7 +7,8 @@ public enum FileAssociateType {
     FLOW_PUBLISHING_PROPERTY_TEMPLATE(3),//流水线发布参数的输入样例文件，唯一
     FLOW_PUBLISHING_PROPERTY(4),//流水线发布参数，供运行发布流水线时记录上传的输入文件，不唯一
     FLOW_PUBLISHING_COVER(5),//流水线发布封面 唯一
-    FLOW_PUBLISHING_INSTRUCTION(6);//流水线发布说明书 唯一
+    FLOW_PUBLISHING_INSTRUCTION(6),//流水线发布说明书 唯一
+    FLOW_PUBLISHING_HEADER(7);//流水线发布数据产品表头 唯一
 
     private final Integer value;
 

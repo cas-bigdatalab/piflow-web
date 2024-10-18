@@ -213,4 +213,8 @@ public class DataProductDomain {
         SharePlatformMetadata res = dataProductMetaDataMapper.selectOne(wrapper);
         return res;
     }
+
+    public String getPublishingId(String id) {
+        return dataProductMapper.getPublishingId(id);
+    }
 }
