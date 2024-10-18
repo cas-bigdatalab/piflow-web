@@ -5,6 +5,7 @@
         :data="spaceList"
         :load-data="loadDataSpaceData"
         @on-check-change="handleSelect"
+        :check-strictly="true"
         :select-node="true"
         show-checkbox
       ></Tree>
@@ -62,6 +63,7 @@ export default {
         title: v.spaceName,
         loading: false,
         level: 1,
+        path:'/'+v.spaceName,
         id: v.spaceId,
         children: [],
       }));
@@ -86,6 +88,7 @@ export default {
                   title: v.name,
                   level:2,
                   id: v.path || v.name,
+                  path:v.path,
                   hash: v.hash,
                 }
                 if(v.mime === 'directory'){
@@ -109,21 +112,25 @@ export default {
           item.checked = false;
         }
       });
+      console.log(node)
         const spaceNode = searchTree(this.spaceList,data=>data.id === node.id)[0]
         this.spaceId = spaceNode.id
         this.spaceName = spaceNode.title
-        this.path = node.id
+        this.path = node.path
     },
     changeFilePath() {
       const dsSpaceNameInput = document
         .getElementById("bariframe")
         .contentWindow.document.getElementsByName("dsSpaceName")[0];
-      dsSpaceNameInput.value = this.spaceName;
+      dsSpaceNameInput.setAttribute('value',this.spaceName)
+      dsSpaceNameInput.setAttribute('data',this.spaceName)
       this.updateStopsProperty(dsSpaceNameInput.id, this.spaceName);
       const filePathInput = document
         .getElementById("bariframe")
         .contentWindow.document.getElementsByName("dsFilePath")[0];
       filePathInput.value = this.path;
+      filePathInput.setAttribute('value',this.path)
+      filePathInput.setAttribute('data',this.path)
       this.updateStopsProperty(filePathInput.id, this.path);
       this.cancel()
     },
