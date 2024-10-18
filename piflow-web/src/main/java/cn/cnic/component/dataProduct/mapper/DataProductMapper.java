@@ -278,4 +278,7 @@ public interface DataProductMapper {
             + "</where>"
             + "</script>")
     int updateEnableFlagToFalse(@Param("ids") String[] ids);
+
+    @Select("select flow_id from flow_process where id = (select process_id from data_product where id = #{id}) and enable_flag = 1")
+    String getPublishingId(String id);
 }
