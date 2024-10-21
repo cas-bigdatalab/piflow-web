@@ -369,10 +369,11 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
             result.setInstructionFileId(flowPublishingInstruction.getId().toString());
             result.setInstructionFileName(flowPublishingInstruction.getFileName());
         }
+        //获取表头表
         File headerTable = fileDomain.getByAssociateId(flowPublishing.getId().toString(), FileAssociateType.FLOW_PUBLISHING_HEADER.getValue());
         if (ObjectUtils.isNotEmpty(headerTable)) {
-            result.setInstructionFileId(headerTable.getId().toString());
-            result.setInstructionFileName(headerTable.getFileName());
+            result.setHeaderTableFileId(headerTable.getId().toString());
+            result.setHeaderTableFileName(headerTable.getFileName());
         }
         //根据username和flowId以及state为空，查看是否有暂存的数据，如果有暂存的数据，将暂存的tempSaveValue赋给property
         Process process = processDomain.getByFlowIdAndCrtUserWithoutState(id, username);
