@@ -51,6 +51,8 @@ public class FlowPublishingVo extends BasePageVo implements Serializable {
     private String coverFileName;
     private String instructionFileId;
     private String instructionFileName;
+    private String headerTableFileId;
+    private String headerTableFileName;
 
     private String bak1; //用来接收运行进程时的备注
 
