@@ -1,5 +1,6 @@
 package cn.cnic.component.visual.service.impl;
 
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.domain.SysUserDomain;
@@ -20,6 +21,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,9 @@ import java.util.Map;
  */
 @Service
 public class DataBaseInfoServiceImpl implements DataBaseInfoService {
+
+    private Logger logger = LoggerUtil.getLogger();
+
     @Autowired
     private DataBaseInfoMapper dataBaseInfoMapper;
     @Autowired
@@ -100,20 +105,22 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
             wrapper.like("description", requestData.getName());
         }
         if (StringUtils.isNotBlank(requestData.getCreateUser())) {
-            wrapper.like("user_name", requestData.getCreateUser());
+            wrapper.like("crt_user", requestData.getCreateUser());
         }
-        if (StringUtils.isNotBlank(requestData.getCompany())) {
-            String role = SessionUserUtil.getCurrentUserRole().getValue();
-            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
+        String role = SessionUserUtil.getCurrentUserRole().getValue();
+        //管理员可以看到所有数据，且可以按单位搜索
+        if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
+            if (StringUtils.isNotBlank(requestData.getCompany())) {
                 wrapper.like("company", requestData.getCompany());
             }
-            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {
-                String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-                String company = sysUserDomain.getSysUserCompanyById(userid);
-                wrapper.like("company", company);
-            }
+        } else if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {  // 管理员看到自己所属单位的数据
+            String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+            String company = sysUserDomain.getSysUserCompanyById(userid);
+            wrapper.like("company", company);
         }
-
+        else {  // 普通用户只能看到自己创建的数据
+            wrapper.like("crt_user", SessionUserUtil.getCurrentUsername());
+        }
         // 按更新时间降序排序
         wrapper.orderByDesc("update_time");
 
@@ -168,6 +175,9 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
         String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
         String company = sysUserDomain.getSysUserCompanyById(userid);
         dataBaseInfo.setCompany(company);
+        dataBaseInfo.setCrtUser(SessionUserUtil.getCurrentUsername());
+        logger.info("addDatabase_create_user:{} ,company:{} " , SessionUserUtil.getCurrentUser().getUsername(), company);
+
         int insert = dataBaseInfoMapper.insert(dataBaseInfo);
         if(insert == 1){
             return ResponseResult.success();

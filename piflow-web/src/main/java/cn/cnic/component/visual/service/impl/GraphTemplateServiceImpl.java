@@ -1,5 +1,6 @@
 package cn.cnic.component.visual.service.impl;
 
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.domain.SysUserDomain;
@@ -17,6 +18,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,9 @@ import java.util.List;
  */
 @Service
 public class GraphTemplateServiceImpl implements GraphTemplateService {
+
+    private Logger logger = LoggerUtil.getLogger();
+
     private GraphTemplateMapper graphTemplateMapper;
     private GraphConfMapper graphConfMapper;
     private ExcelNameAssoMapper excelNameAssoMapper;
@@ -65,18 +70,22 @@ public class GraphTemplateServiceImpl implements GraphTemplateService {
         if (StringUtils.isNotBlank(requestData.getCreateUser())) {
             wrapper.like("user_name", requestData.getCreateUser());
         }
-        if (StringUtils.isNotBlank(requestData.getCompany())) {
-            String role = SessionUserUtil.getCurrentUserRole().getValue();
-            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
+        String role = SessionUserUtil.getCurrentUserRole().getValue();
+        //管理员可以看到所有数据，且可以按单位搜索
+        if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
+            if (StringUtils.isNotBlank(requestData.getCompany())) {
                 wrapper.like("company", requestData.getCompany());
             }
-            // 台站管理员只能看到本台站
-            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {
-                String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-                String company = sysUserDomain.getSysUserCompanyById(userid);
-                wrapper.like("company", company);
-            }
+        } else if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {  // 管理员看到自己所属单位的数据
+            String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+            String company = sysUserDomain.getSysUserCompanyById(userid);
+            wrapper.like("company", company);
         }
+        else {  // 普通用户只能看到自己创建的数据
+            wrapper.like("user_name", SessionUserUtil.getCurrentUsername());
+        }
+        // 按更新时间降序排序
+        wrapper.orderByDesc("update_time");
         wrapper.orderByDesc("update_time");
         Page<GraphTemplate> page1 = graphTemplateMapper.selectPage(page, wrapper);
         graphTemplates = page1.getRecords();
@@ -115,8 +124,10 @@ public class GraphTemplateServiceImpl implements GraphTemplateService {
         graphTemplate.setCreateTime(format);
         graphTemplate.setUpdateTime(format);
         String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-        graphTemplate.setCompany(sysUserDomain.getSysUserCompanyById(userid));
+        String company = sysUserDomain.getSysUserCompanyById(userid);
+        graphTemplate.setCompany(company);
         graphTemplate.setUserName(SessionUserUtil.getCurrentUsername());
+        logger.info("addGraphTemplate_create_user:{} ,company:{} " , SessionUserUtil.getCurrentUser().getUsername(), company);
         int insert = graphTemplateMapper.insert(graphTemplate);
         if(insert == 1){
             return ResponseResult.success();

@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.domain.SysUserDomain;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import cn.cnic.component.dashboard.service.IStatisticService;
 @Service
 public class StatisticServiceImpl implements IStatisticService {
 
+    private Logger logger = LoggerUtil.getLogger();
 
     private final StatisticDomain statisticDomain;
     private final SysUserDomain sysUserDomain;
@@ -33,6 +36,7 @@ public class StatisticServiceImpl implements IStatisticService {
     @Override
     public Map<String, String> getFlowStatisticInfo() {
         String role = SessionUserUtil.getCurrentUserRole().getValue();
+        logger.info("getFlowStatisticInfo, role: " + role);
         List<Map<String, String>> processStatisticList;
         // admin展示所有的
         if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
@@ -108,8 +112,7 @@ public class StatisticServiceImpl implements IStatisticService {
     }
 
     private Map<String, String> convertList2Map(List<Map<String, String>> sqlResult, String key, String value){
-        Map<String, String> result = sqlResult.stream().collect(Collectors.toMap(s -> (String)s.get(key), s -> String.valueOf(s.get(value))));
-        return result;
+        return sqlResult.stream().collect(Collectors.toMap(s -> s.get(key), s -> String.valueOf(s.get(value))));
 
     }
 }

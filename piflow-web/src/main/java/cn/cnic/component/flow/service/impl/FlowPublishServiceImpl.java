@@ -64,7 +64,6 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
 
     private final StopsDomain stopsDomain;
     private final PathsMapper pathsMapper;
-    private final SysUserDomain sysUserDomain;
 
     private String fileOutPutPrefix = "/portal_out/";
 
@@ -79,8 +78,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                                   DataProductDomain dataProductDomain,
                                   EcosystemTypeDomain ecosystemTypeDomain,
                                   StopsDomain stopsDomain,
-                                  PathsMapper pathsMapper,
-                                  SysUserDomain sysUserDomain) {
+                                  PathsMapper pathsMapper) {
         this.snowflakeGenerator = snowflakeGenerator;
         this.flowPublishDomain = flowPublishDomain;
         this.fileDomain = fileDomain;
@@ -93,7 +91,6 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         this.ecosystemTypeDomain = ecosystemTypeDomain;
         this.stopsDomain = stopsDomain;
         this.pathsMapper = pathsMapper;
-        this.sysUserDomain = sysUserDomain;
     }
 
     @Override
@@ -197,7 +194,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                 ecosystemTypeAssociate.setAssociateType(EcosystemTypeAssociateType.FLOW.getValue());
                 return ecosystemTypeAssociate;
             }).collect(Collectors.toList());
-            ecosystemTypeDomain.deleteByAssociateId(username);
+            ecosystemTypeDomain.deleteByAssociateId(idstr);
             ecosystemTypeDomain.insertAssociateBatch(associates);
         } else {
             id = Long.parseLong(idStr);
@@ -315,7 +312,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                 ecosystemTypeAssociate.setAssociateType(EcosystemTypeAssociateType.FLOW.getValue());
                 return ecosystemTypeAssociate;
             }).collect(Collectors.toList());
-            ecosystemTypeDomain.deleteByAssociateId(username);
+            ecosystemTypeDomain.deleteByAssociateId(idStr);
             ecosystemTypeDomain.insertAssociateBatch(associates);
         }
 
@@ -650,6 +647,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                     if (null == result || 200 != ((Integer) result.get("code"))) {
                         processDomain.updateProcessEnableFlag(username, true, processId);
                     } else {
+                        //更新进程状态
                         SysParamsCache.STARTED_PROCESS.put(processId, (String) result.get("appId"));
                         Process process1 = processDomain.getProcessById(username, true, processId);
                         process1.setLastUpdateDttm(new Date());
@@ -667,8 +665,6 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                         //为所有发布的输出参数都创建一个数据产品记录
                         Date now = new Date();
                         List<DataProduct> dataProducts = new ArrayList<>();
-                        String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-                        String company = sysUserDomain.getSysUserCompanyById(userid);
                         flowPublishingVo.getStops().stream()
                                 .flatMap(stop -> stop.getStopPublishingPropertyVos().stream())
                                 .filter(property -> FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(property.getType()))
@@ -698,10 +694,9 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                                     dataProduct.setSpacialRange("");
                                     dataProduct.setDatasetSize("");
                                     dataProduct.setDatasetType(DatasetType.EXCEL.getValue());
-                                    dataProduct.setCompany(company);
                                     dataProducts.add(dataProduct);
                                 });
-                        dataProductDomain.addBatch(dataProducts);
+                        int i = dataProductDomain.addBatch(dataProducts);
                     }
                 }
             });
@@ -711,6 +706,104 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         result.put("processId", returnProcessId);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", result);
     }
+//test 同步
+//    @Override
+//    public String run(FlowPublishingVo flowPublishingVo) throws Exception {
+//        logger.info("=======run flow start===============");
+//        String username = SessionUserUtil.getCurrentUsername();
+//        //先更新暂存，运行的时候复制一份这个暂存的运行,如果没有暂存，不新增暂存，如果有，更新==>不更新暂存
+//
+//        //接口层面的限制：同一用户最多只能有2个运行任务
+//        //获取本人正在运行的进程列表
+//        List<Process> runningProcessList = processDomain.getRunningProcessListByCreatUser(username);
+//        if (CollectionUtils.isNotEmpty(runningProcessList) && runningProcessList.size() > 1) {
+//            return ReturnMapUtils.setFailedMsgRtnJsonStr("您有正在运行中的任务，请等待运行完毕再开启新的任务！");
+//        }
+//        Object lock = new Object();
+//        String returnProcessId = "";
+//        synchronized (lock) {
+//            final Process process = initProcess(flowPublishingVo, username);
+//            String processId = process.getId();
+//            returnProcessId = processId;
+//            process.setState(ProcessState.INIT);
+//            if (null == process) {
+//                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
+//            }
+//            int updateProcess = processDomain.addProcess(process);
+//            if (updateProcess <= 0) {
+//                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
+//            }
+//            //改成异步获取appid
+//            Map<String, Object> result = flowImpl.startFlow(process, "", RunModeType.RUN);
+//            // 当 CompletableFuture 完成时更新appID，生成数据产品记录
+//            // 检查是否有异常抛出
+//            if (null == result || 200 != ((Integer) result.get("code"))) {
+//                processDomain.updateProcessEnableFlag(username, true, processId);
+//            } else {
+//                //为所有发布的输出参数都创建一个数据产品记录
+//                Date now = new Date();
+//                List<DataProduct> dataProducts = new ArrayList<>();
+//                String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+//                logger.warn("userid:" + userid);
+//                String company = sysUserDomain.getSysUserCompanyById(userid);
+//                logger.warn("company:" + company);
+//                flowPublishingVo.getStops().stream()
+//                        .flatMap(stop -> stop.getStopPublishingPropertyVos().stream())
+//                        .filter(property -> FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(property.getType()))
+//                        .forEach(property -> {
+//                            logger.warn("property" + property.getId());
+//                            DataProduct dataProduct = new DataProduct();
+//                            dataProduct.setId(snowflakeGenerator.next());
+//                            dataProduct.setProcessId(processId);
+//                            dataProduct.setPropertyId(Long.parseLong(property.getId()));
+//                            dataProduct.setPropertyName(property.getName());
+//                            dataProduct.setDatasetUrl(property.getCustomValue());
+//                            dataProduct.setPermission(DataProductPermission.OPEN.getValue());
+//                            dataProduct.setState(DataProductState.CREATING.getValue());
+//                            dataProduct.setCrtDttm(now);
+//                            dataProduct.setCrtDttmStr(DateUtils.dateTimesToStr(now));
+//                            dataProduct.setCrtUser(username);
+//                            dataProduct.setLastUpdateDttm(now);
+//                            dataProduct.setLastUpdateDttmStr(DateUtils.dateTimeToStr(now));
+//                            dataProduct.setLastUpdateUser(username);
+//                            dataProduct.setEnableFlag(true);
+//                            dataProduct.setEnableFlagNum(1);
+//                            dataProduct.setVersion(0L);
+//                            dataProduct.setIsShare(0);
+//                            dataProduct.setDoiId("");
+//                            dataProduct.setCstrId("");
+//                            dataProduct.setSubjectTypeId("");
+//                            dataProduct.setTimeRange("");
+//                            dataProduct.setSpacialRange("");
+//                            dataProduct.setDatasetSize("");
+//                            dataProduct.setDatasetType(DatasetType.EXCEL.getValue());
+//                            dataProduct.setCompany(company);
+//                            dataProducts.add(dataProduct);
+//                        });
+//                int i = dataProductDomain.addBatch(dataProducts);
+//                logger.warn("i:" + i);
+//                //更新进程状态
+//                SysParamsCache.STARTED_PROCESS.put(processId, (String) result.get("appId"));
+//                Process process1 = processDomain.getProcessById(username, true, processId);
+//                process1.setLastUpdateDttm(new Date());
+//                process1.setLastUpdateUser(username);
+//                process1.setAppId((String) result.get("appId"));
+//                process1.setProcessId((String) result.get("appId"));
+//                process1.setState(ProcessState.STARTED);
+//                process1.setLastUpdateUser(username);
+//                process1.setLastUpdateDttm(new Date());
+//                try {
+//                    processDomain.updateProcess(process1);
+//                } catch (Exception e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
+//        }
+//        logger.info("========run flow finish==================");
+//        Map<String, String> result = new HashMap<>();
+//        result.put("processId", returnProcessId);
+//        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", result);
+//    }
 
     /**
      * @param file:

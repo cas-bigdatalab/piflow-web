@@ -10,14 +10,13 @@ import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.*;
 import cn.cnic.common.constant.ApiConfig;
 import cn.cnic.common.constant.MessageConfig;
-import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
-import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.process.entity.ProcessStop;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.system.domain.FileDomain;
+import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.File;
 import cn.hutool.core.lang.generator.SnowflakeGenerator;
 import org.apache.commons.collections.CollectionUtils;
@@ -50,14 +49,16 @@ public class FlowImpl implements IFlow {
     private final DataProductDomain dataProductDomain;
     private final FileDomain fileDomain;
     private final SnowflakeGenerator snowflakeGenerator;
+    private final SysUserDomain sysUserDomain;
 
     @Autowired
-    public FlowImpl(ProcessDomain processDomain, StopsComponentDomain stopsComponentDomain, DataProductDomain dataProductDomain, FileDomain fileDomain, SnowflakeGenerator snowflakeGenerator) {
+    public FlowImpl(ProcessDomain processDomain, StopsComponentDomain stopsComponentDomain, DataProductDomain dataProductDomain, FileDomain fileDomain, SnowflakeGenerator snowflakeGenerator, SysUserDomain sysUserDomain) {
         this.processDomain = processDomain;
         this.stopsComponentDomain = stopsComponentDomain;
         this.dataProductDomain = dataProductDomain;
         this.fileDomain = fileDomain;
         this.snowflakeGenerator = snowflakeGenerator;
+        this.sysUserDomain = sysUserDomain;
     }
 
     /**
@@ -319,6 +320,7 @@ public class FlowImpl implements IFlow {
     @Override
     public void getProcessInfoAndSave(String appId) throws Exception {
         ThirdFlowInfoVo thirdFlowInfoVo = getFlowInfo(appId);
+        logger.info("getProcessInfoAndSave======================");
         // Determine if the progress returned by the interface is empty
         if (null != thirdFlowInfoVo) {
             List<Process> processList = processDomain.getProcessNoGroupByAppId(appId);
@@ -356,10 +358,18 @@ public class FlowImpl implements IFlow {
                             }).collect(Collectors.toList());
                             int i = fileDomain.saveBatch(files);
                             dataProductDomain.updateStateByProcessIdWithNoChangeUser(processId, DataProductState.TO_PUBLISH.getValue());
+                            //更新dataProduct company
+                            String userid = sysUserDomain.findUserByUserName(process.getCrtUser()).getId();
+                            String company = sysUserDomain.getSysUserCompanyById(userid);
+                            dataProductDomain.updateCompanyByProcessIdWithNoChangeUser(processId,company);
                         }
                     }
                     if (ProcessState.FAILED.equals(state) || ProcessState.KILLED.equals(state) || ProcessState.ABORTED.equals(state)) {
                         dataProductDomain.updateStateByProcessIdWithNoChangeUser(processId, DataProductState.CREATE_FAILED.getValue());
+                        //更新dataProduct company
+                        String userid = sysUserDomain.findUserByUserName(process.getCrtUser()).getId();
+                        String company = sysUserDomain.getSysUserCompanyById(userid);
+                        dataProductDomain.updateCompanyByProcessIdWithNoChangeUser(processId,company);
                     }
                     processDomain.saveOrUpdate(process);
                 }

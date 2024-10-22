@@ -20,7 +20,7 @@ public interface DataProductMapper {
             + "insert into data_product (id, process_id, property_id, property_name, dataset_url, `name`, "
             + "description, permission, keyword, sdPublisher, email, `state`, opinion, down_reason, "
             + "is_share, doi_id, cstr_id, subject_type_id, time_range, spacial_range, dataset_size, dataset_type, associate_id, "
-            + "crt_dttm, crt_user, enable_flag, last_update_dttm, last_update_user, version, ``, bak2, bak3) values "
+            + "crt_dttm, crt_user, enable_flag, last_update_dttm, last_update_user, version, company, bak2, bak3) values "
             + "<foreach collection='list' item='item' index='index' separator=', '>"
             + "(#{item.id}, #{item.processId}, #{item.propertyId}, #{item.propertyName}, #{item.datasetUrl}, #{item.name}, "
             + "#{item.description}, #{item.permission}, #{item.keyword}, #{item.sdPublisher}, #{item.email}, #{item.state}, #{item.opinion}, #{item.downReason}, "
@@ -155,7 +155,7 @@ public interface DataProductMapper {
     })
     List<DataProductVo> getByPageForPublishingWithAdmin(DataProductVo dataProductVo);
 
-    //数据产品发布者 数据产品发布管理菜单列表，显示自己待审核的、已发布的,被拒绝发布的，已下架的, 可搜索标题、状态
+    //数据产品发布者 数据产品发布管理菜单列表，显示仅自己待审核的、已发布的,被拒绝发布的，已下架的, 可搜索标题、状态
     @Select("<script>"
             + "select CAST(dp.id as CHAR) as id, dp.*, pt.product_type_id as productTypeId, pt.product_type_name as productTypeName from data_product as dp "
             + "<if test=\"productTypeId != null \">"
@@ -177,7 +177,7 @@ public interface DataProductMapper {
             + "        and dp.state in (4, 5, 6, 7) "
             + "    </otherwise>"
             + "</choose>"
-            //+ " and crt_user = #{crtUser} and dp.state in (4, 5, 6, 7) "
+            + " and crt_user = #{crtUser} "
             + " and dp.enable_flag = 1 "
             + "</where>"
             + "</script>")
@@ -281,4 +281,7 @@ public interface DataProductMapper {
 
     @Select("select flow_id from flow_process where id = (select process_id from data_product where id = #{id}) and enable_flag = 1")
     String getPublishingId(String id);
+
+    @Update("update data_product set company = #{company} where process_id = #{processId} and enable_flag = 1")
+    int updateCompanyByProcessIdWithNoChangeUser(@Param("processId") String processId, @Param("company") String company);
 }

@@ -37,4 +37,7 @@ public class DataBaseInfo {
     /** 单位 */
     private String company ;
 
+    /** 创建用户*/
+    private String crtUser;
+
 }

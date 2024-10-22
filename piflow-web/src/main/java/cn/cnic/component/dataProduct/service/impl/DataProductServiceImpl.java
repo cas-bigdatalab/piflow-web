@@ -1,6 +1,7 @@
 package cn.cnic.component.dataProduct.service.impl;
 
 import cn.cnic.base.utils.*;
+import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.*;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
@@ -293,12 +294,16 @@ public class DataProductServiceImpl implements IDataProductService {
     public String getByPageForPublishing(DataProductVo dataProductVo) {
         SysRoleType currentUserRole = SessionUserUtil.getCurrentUserRole();
         //台站管理员只能看到本台站（单位）的, 普通用户只看到自己的
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        String id = sysUserDomain.findUserByUserName(currentUser.getUsername()).getId();
+        String company = sysUserDomain.getSysUserCompanyById(id);
         if (currentUserRole == SysRoleType.ADMIN) {
             Page<DataProduct> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
             dataProductDomain.getByPageForPublishingWithAdmin(dataProductVo);
             Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
             return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
         } else if (currentUserRole == SysRoleType.ORS_ADMIN) {
+            dataProductVo.setCompany(company);
             Page<DataProduct> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
             dataProductDomain.getByPageForPublishingWithORSAdmin(dataProductVo);
             Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());

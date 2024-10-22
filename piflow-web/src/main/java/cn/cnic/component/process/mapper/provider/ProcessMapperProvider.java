@@ -171,7 +171,7 @@ public class ProcessMapperProvider {
             strBuf.append(schedule_id + ", ");
             strBuf.append(processGroup_id + ", ");
             strBuf.append(viewXml + ", ");
-            strBuf.append(this.company);
+            strBuf.append(this.company + " ");
             strBuf.append(") ");
             this.reset();
             return strBuf.toString() + ";";

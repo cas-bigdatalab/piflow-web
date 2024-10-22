@@ -58,7 +58,6 @@ public class FileUtils {
     public static FileSystem fs;
 
 
-
     /**
      * String to "xml" file and save the specified path
      *
@@ -667,7 +666,7 @@ public class FileUtils {
     public static void deleteHdfsFile(String filePath, String defaultFs) {
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", defaultFs);
-        logger.error("deleteHdfsFile,filePath:{}",filePath);
+        logger.error("deleteHdfsFile,filePath:{}", filePath);
         try {
             if (ObjectUtils.isEmpty(fs)) {
                 fs = FileSystem.get(conf);
@@ -687,7 +686,7 @@ public class FileUtils {
     }
 
     public static String getDefaultFs() {
-        //return HttpUtils.doGet("http://"+ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
+//        return HttpUtils.doGet("http://"+ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
         return HttpUtils.doGet(ApiConfig.getTestDataPathUrl(), null, 1000).replace("/user/piflow/testData/", "");
     }
 
@@ -699,7 +698,7 @@ public class FileUtils {
         return fs.open(filePath);
     }
 
-    public static  Set<String> findExcelFiles(String[] paths, String defaultFs) {
+    public static Set<String> findExcelFiles(String[] paths, String defaultFs) {
         Set<String> excelFiles = new HashSet<>();
         for (String pathStr : paths) {
             Path path = new Path(pathStr);
@@ -742,47 +741,52 @@ public class FileUtils {
     public static void downloadFileFromHdfs(HttpServletResponse response, String filePath, String fileName, String defaultFs) throws IOException {
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", defaultFs);
-            if (ObjectUtils.isEmpty(fs)) {
-                fs = FileSystem.get(conf);
+        if (ObjectUtils.isEmpty(fs)) {
+            fs = FileSystem.get(conf);
+        }
+        Path hdfsPath = new Path(filePath);
+        FileStatus fileStatus = fs.getFileStatus(hdfsPath);
+        if (fileStatus.isDirectory()) {
+            int contentLength = 0;
+            // 如果是目录，下载为ZIP文件
+            String zipFileName = hdfsPath.getName() + "_" + getCurDateTimeYYYYMMDD() + ".zip";
+            response.reset();
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            response.setContentType("application/octet-stream;charset=utf-8");
+            response.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(zipFileName, StandardCharsets.UTF_8.toString()) + "\"");
+            try (ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream())) {
+                contentLength += addDirectoryToZip(zipOut, fs, hdfsPath, "");
             }
-            Path hdfsPath = new Path(filePath);
-            FileStatus fileStatus = fs.getFileStatus(hdfsPath);
-            if (fileStatus.isDirectory()) {
-                int contentLength = 0;
-                // 如果是目录，下载为ZIP文件
-                String zipFileName = hdfsPath.getName() + "_" + getCurDateTimeYYYYMMDD() + ".zip";
-                response.reset();
-                response.addHeader("Access-Control-Allow-Origin", "*");
-                response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-                response.setContentType("application/octet-stream;charset=utf-8");
-                response.setHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(zipFileName, StandardCharsets.UTF_8.toString()) + "\"");
-                try {
-                    ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream());
-                    contentLength += addDirectoryToZip(zipOut, fs, hdfsPath, "");
-                    zipOut.finish();
-                    zipOut.close();
-                } catch (IOException e) {
-                    throw new RuntimeException("Error while downloading files from HDFS", e);
-                }
-                response.setContentLength(contentLength);
-            } else {
-                String name = hdfsPath.getName() + "_" + getCurDateTimeYYYYMMDD();
-                response.reset();
-                response.addHeader("Access-Control-Allow-Origin", "*");
-                response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-                response.setContentType("application/octet-stream;charset=utf-8");
-                response.addHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(name, StandardCharsets.UTF_8.toString()) + "\"");
-                try (ServletOutputStream out = response.getOutputStream()) {
-                    FSDataInputStream in = fs.open(hdfsPath);
-                    response.setContentLength(in.available());
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    while ((bytesRead = in.read(buffer)) != -1) {
-                        out.write(buffer, 0, bytesRead);
-                    }
-                    in.close();
-                }
+            response.setContentLength(contentLength);
+        } else {
+            String[] split = fileName.split("\\.");
+            int lastUnderLineIndex = fileName.lastIndexOf("_");
+            String filePrefix = "";
+            // 检查是否包含下划线
+            if (lastUnderLineIndex != -1) {
+                // 获取最后一个下划线前面的部分
+                filePrefix = fileName.substring(0, lastUnderLineIndex);
+            }else {
+                filePrefix = split[0];
             }
+            String name = filePrefix + "_" + getCurDateTimeYYYYMMDD() + "." +split[1];
+            response.reset();
+            response.addHeader("Access-Control-Allow-Origin", "*");
+            response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+            response.setContentType("application/octet-stream;charset=utf-8");
+            response.addHeader("Content-Disposition", "attachment; filename=\"" + URLEncoder.encode(name, StandardCharsets.UTF_8.toString()) + "\"");
+            try (ServletOutputStream out = response.getOutputStream()) {
+                FSDataInputStream in = fs.open(hdfsPath);
+                response.setContentLength(in.available());
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    out.write(buffer, 0, bytesRead);
+                }
+                in.close();
+            }
+        }
     }
 
     public static void downloadFilesFromHdfs(HttpServletResponse response, List<cn.cnic.component.system.entity.File> fileList, String zipName, String defaultFs) {
@@ -794,8 +798,7 @@ public class FileUtils {
         response.setContentType("application/zip");
         response.setHeader("Content-Disposition", "attachment;filename=" + zipName);
         int contentLength = 0;
-        try {
-            ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream());
+        try (ZipOutputStream zipOut = new ZipOutputStream(response.getOutputStream())) {
 //            FileSystem fs = FileSystem.get(conf);
             if (ObjectUtils.isEmpty(fs)) {
                 fs = FileSystem.get(conf);
@@ -807,14 +810,15 @@ public class FileUtils {
                 if (fs.isFile(hdfsPath)) {
                     // 如果是文件，直接添加到ZIP输出流
                     contentLength += addFileToZip(fs, hdfsPath, zipOut);
+                    response.setContentLength(contentLength);
                 } else if (fs.isDirectory(hdfsPath)) {
                     // 如果是目录，递归添加目录内容到ZIP输出流
                     contentLength += addDirectoryToZip(zipOut, fs, hdfsPath, "");
+
                 }
             }
-            response.setContentLength(contentLength);
+
             zipOut.finish();
-            zipOut.close();
 
         } catch (IOException e) {
             throw new RuntimeException("Error while downloading files from HDFS", e);
@@ -835,7 +839,6 @@ public class FileUtils {
         }
         in.close();
         zipOut.closeEntry();
-        zipOut.flush();
         return contentLength;
     }
 

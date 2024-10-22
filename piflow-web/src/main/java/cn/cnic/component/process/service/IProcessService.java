@@ -5,6 +5,7 @@ import java.util.List;
 
 import cn.cnic.component.process.vo.DebugDataRequest;
 import cn.cnic.component.process.vo.ProcessVo;
+import cn.cnic.controller.requestVo.GetProcessHistoryRequestVo;
 
 public interface IProcessService {
 
@@ -237,7 +238,7 @@ public interface IProcessService {
 
     String getProcessPageByPublishingId(ProcessVo processVo);
 
-    String getProcessHistoryPageOfSelf(ProcessVo processVo);
+    String getProcessHistoryPageOfSelf(GetProcessHistoryRequestVo requestVo);
 
     String getByProcessId(String processId) throws InvocationTargetException, IllegalAccessException;
 

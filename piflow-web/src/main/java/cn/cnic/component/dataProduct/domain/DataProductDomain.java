@@ -217,4 +217,8 @@ public class DataProductDomain {
     public String getPublishingId(String id) {
         return dataProductMapper.getPublishingId(id);
     }
+
+    public int updateCompanyByProcessIdWithNoChangeUser(String processId, String company) {
+        return dataProductMapper.updateCompanyByProcessIdWithNoChangeUser(processId,company);
+    }
 }
