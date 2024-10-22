@@ -57,11 +57,16 @@ public class GraphConfServiceImpl implements GraphConfService {
             if (StringUtils.isNotBlank(requestData.getCompany())) {
                 wrapper.like("company", requestData.getCompany());
             }
-        } else { // 其他角色只能看到自己所属单位的数据
+        } else if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {  // 管理员看到自己所属单位的数据
             String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
             String company = sysUserDomain.getSysUserCompanyById(userid);
             wrapper.like("company", company);
         }
+        else {  // 普通用户只能看到自己创建的数据
+            wrapper.like("user_name", SessionUserUtil.getCurrentUsername());
+        }
+        // 按更新时间降序排序
+        wrapper.orderByDesc("update_time");
         wrapper.orderByDesc("update_time");
         Page<GraphConf> page1 = graphConfMapper.selectPage(page,wrapper);
         list = page1.getRecords();

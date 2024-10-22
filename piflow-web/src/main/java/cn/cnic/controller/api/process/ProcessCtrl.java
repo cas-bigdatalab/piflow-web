@@ -3,6 +3,7 @@ package cn.cnic.controller.api.process;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.process.vo.ProcessVo;
 import cn.cnic.component.system.service.ILogHelperService;
+import cn.cnic.controller.requestVo.GetProcessHistoryRequestVo;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -413,8 +414,8 @@ public class ProcessCtrl {
     @RequestMapping(value = "/getProcessHistoryPageOfSelf", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "getProcessHistoryPageOfSelf", notes = "获取自己的运行历史")
-    public String getProcessHistoryPageOfSelf(@RequestBody ProcessVo processVo) {
-        return processServiceImpl.getProcessHistoryPageOfSelf(processVo);
+    public String getProcessHistoryPageOfSelf(@RequestBody GetProcessHistoryRequestVo requestVo) {
+        return processServiceImpl.getProcessHistoryPageOfSelf(requestVo);
     }
 
     /**

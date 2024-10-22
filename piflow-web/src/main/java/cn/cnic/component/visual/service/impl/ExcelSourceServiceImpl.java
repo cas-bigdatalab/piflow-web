@@ -2,6 +2,8 @@ package cn.cnic.component.visual.service.impl;
 
 import cn.cnic.base.utils.FileUtils;
 import cn.cnic.base.utils.LoggerUtil;
+import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.visual.entity.ExcelNameAsso;
 import cn.cnic.component.visual.entity.GraphTemplate;
 import cn.cnic.component.visual.entity.ProductTemplateGraphAssoDto;
@@ -52,6 +54,8 @@ public class ExcelSourceServiceImpl implements ExcelSourceService {
     private ExcelNameAssoMapper excelNameAssoMapper;
     @Autowired
     private ProductTemplateGraphAssoMapper productTemplateGraphAssoMapper;
+    @Autowired
+    private SysUserDomain sysUserDomain;
 
 
     /**
@@ -141,6 +145,10 @@ public class ExcelSourceServiceImpl implements ExcelSourceService {
             graphTemplate.setExcelAssoId(excelNameAsso.getId());//设置新增的excel名称关联表id
             graphTemplate.setCreateTime(getNowTime());
             graphTemplate.setUpdateTime(getNowTime());
+            String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+            String company = sysUserDomain.getSysUserCompanyById(userid);
+            graphTemplate.setCompany(company);
+            graphTemplate.setUserName(SessionUserUtil.getCurrentUsername());
             graphTemplateMapper.insert(graphTemplate);
             //插入成功之后会修改pojo,设置Id属性的值
             graphTemplateId = graphTemplate.getId();
@@ -259,6 +267,11 @@ public class ExcelSourceServiceImpl implements ExcelSourceService {
             graphTemplate.setExcelAssoId(excelNameAsso.getId());//设置新增的excel名称关联表id
             graphTemplate.setCreateTime(getNowTime());
             graphTemplate.setUpdateTime(getNowTime());
+            String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+            String company = sysUserDomain.getSysUserCompanyById(userid);
+            graphTemplate.setCompany(company);
+            graphTemplate.setUserName(SessionUserUtil.getCurrentUsername());
+            logger.info("uploadExcel_create_user:{} ,company:{} " , SessionUserUtil.getCurrentUser().getUsername(), company);
             graphTemplateMapper.insert(graphTemplate);
         } catch (Exception e) {
 //            throw new RuntimeException();

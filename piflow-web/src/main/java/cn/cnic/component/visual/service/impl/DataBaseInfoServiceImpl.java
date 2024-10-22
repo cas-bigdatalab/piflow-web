@@ -105,7 +105,7 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
             wrapper.like("description", requestData.getName());
         }
         if (StringUtils.isNotBlank(requestData.getCreateUser())) {
-            wrapper.like("user_name", requestData.getCreateUser());
+            wrapper.like("crt_user", requestData.getCreateUser());
         }
         String role = SessionUserUtil.getCurrentUserRole().getValue();
         //管理员可以看到所有数据，且可以按单位搜索
@@ -113,10 +113,13 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
             if (StringUtils.isNotBlank(requestData.getCompany())) {
                 wrapper.like("company", requestData.getCompany());
             }
-        } else { // 其他角色只能看到自己所属单位的数据
+        } else if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {  // 管理员看到自己所属单位的数据
             String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
             String company = sysUserDomain.getSysUserCompanyById(userid);
             wrapper.like("company", company);
+        }
+        else {  // 普通用户只能看到自己创建的数据
+            wrapper.like("crt_user", SessionUserUtil.getCurrentUsername());
         }
         // 按更新时间降序排序
         wrapper.orderByDesc("update_time");
@@ -172,6 +175,7 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
         String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
         String company = sysUserDomain.getSysUserCompanyById(userid);
         dataBaseInfo.setCompany(company);
+        dataBaseInfo.setCrtUser(SessionUserUtil.getCurrentUsername());
         logger.info("addDatabase_create_user:{} ,company:{} " , SessionUserUtil.getCurrentUser().getUsername(), company);
 
         int insert = dataBaseInfoMapper.insert(dataBaseInfo);

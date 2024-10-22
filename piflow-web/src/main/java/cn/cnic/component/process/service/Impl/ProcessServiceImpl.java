@@ -31,6 +31,7 @@ import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.system.domain.FileDomain;
 import cn.cnic.component.system.entity.File;
+import cn.cnic.controller.requestVo.GetProcessHistoryRequestVo;
 import cn.cnic.third.service.IFlow;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopVo;
 import cn.cnic.third.vo.flow.ThirdFlowInfoStopsVo;
@@ -1168,13 +1169,13 @@ public class ProcessServiceImpl implements IProcessService {
     }
 
     @Override
-    public String getProcessHistoryPageOfSelf(ProcessVo requestVo) {
+    public String getProcessHistoryPageOfSelf(GetProcessHistoryRequestVo requestVo) {
         String username = SessionUserUtil.getCurrentUsername();
         if (null == requestVo.getPage() || null == requestVo.getLimit()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         Page<Process> page = PageHelper.startPage(requestVo.getPage(), requestVo.getLimit());
-        processDomain.getProcessHistoryPageOfSelf(requestVo.getKeyword(), username, requestVo.getName(), requestVo.getState().getValue());
+        processDomain.getProcessHistoryPageOfSelf(requestVo.getKeyword(), username, requestVo.getName(), requestVo.getState());
         //对result进行加工
         List<Process> result = page.getResult();
         result.forEach(process -> {
