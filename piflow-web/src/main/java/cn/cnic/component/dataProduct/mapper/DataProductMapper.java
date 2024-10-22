@@ -155,7 +155,7 @@ public interface DataProductMapper {
     })
     List<DataProductVo> getByPageForPublishingWithAdmin(DataProductVo dataProductVo);
 
-    //数据产品发布者 数据产品发布管理菜单列表，显示自己待审核的、已发布的,被拒绝发布的，已下架的, 可搜索标题、状态
+    //数据产品发布者 数据产品发布管理菜单列表，显示仅自己待审核的、已发布的,被拒绝发布的，已下架的, 可搜索标题、状态
     @Select("<script>"
             + "select CAST(dp.id as CHAR) as id, dp.*, pt.product_type_id as productTypeId, pt.product_type_name as productTypeName from data_product as dp "
             + "<if test=\"productTypeId != null \">"
@@ -177,7 +177,7 @@ public interface DataProductMapper {
             + "        and dp.state in (4, 5, 6, 7) "
             + "    </otherwise>"
             + "</choose>"
-            //+ " and crt_user = #{crtUser} and dp.state in (4, 5, 6, 7) "
+            + " and crt_user = #{crtUser} "
             + " and dp.enable_flag = 1 "
             + "</where>"
             + "</script>")
