@@ -1,5 +1,6 @@
 package cn.cnic.component.visual.service.impl;
 
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.domain.SysUserDomain;
@@ -17,6 +18,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +33,9 @@ import java.util.List;
  */
 @Service
 public class GraphTemplateServiceImpl implements GraphTemplateService {
+
+    private Logger logger = LoggerUtil.getLogger();
+
     private GraphTemplateMapper graphTemplateMapper;
     private GraphConfMapper graphConfMapper;
     private ExcelNameAssoMapper excelNameAssoMapper;
@@ -114,8 +119,10 @@ public class GraphTemplateServiceImpl implements GraphTemplateService {
         graphTemplate.setCreateTime(format);
         graphTemplate.setUpdateTime(format);
         String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-        graphTemplate.setCompany(sysUserDomain.getSysUserCompanyById(userid));
+        String company = sysUserDomain.getSysUserCompanyById(userid);
+        graphTemplate.setCompany(company);
         graphTemplate.setUserName(SessionUserUtil.getCurrentUsername());
+        logger.info("addGraphTemplate_create_user:{} ,company:{} " , SessionUserUtil.getCurrentUser().getUsername(), company);
         int insert = graphTemplateMapper.insert(graphTemplate);
         if(insert == 1){
             return ResponseResult.success();

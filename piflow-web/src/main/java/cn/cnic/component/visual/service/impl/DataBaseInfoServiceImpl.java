@@ -1,5 +1,6 @@
 package cn.cnic.component.visual.service.impl;
 
+import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.domain.SysUserDomain;
@@ -20,6 +21,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.SqlSession;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +38,9 @@ import java.util.Map;
  */
 @Service
 public class DataBaseInfoServiceImpl implements DataBaseInfoService {
+
+    private Logger logger = LoggerUtil.getLogger();
+
     @Autowired
     private DataBaseInfoMapper dataBaseInfoMapper;
     @Autowired
@@ -167,6 +172,8 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
         String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
         String company = sysUserDomain.getSysUserCompanyById(userid);
         dataBaseInfo.setCompany(company);
+        logger.info("addDatabase_create_user:{} ,company:{} " , SessionUserUtil.getCurrentUser().getUsername(), company);
+
         int insert = dataBaseInfoMapper.insert(dataBaseInfo);
         if(insert == 1){
             return ResponseResult.success();
