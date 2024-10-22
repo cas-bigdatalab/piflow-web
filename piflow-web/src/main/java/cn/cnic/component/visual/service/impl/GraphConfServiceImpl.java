@@ -51,17 +51,16 @@ public class GraphConfServiceImpl implements GraphConfService {
         if (StringUtils.isNotBlank(requestData.getCreateUser())) {
             wrapper.like("user_name", requestData.getCreateUser());
         }
-        if (StringUtils.isNotBlank(requestData.getCompany())) {
-            String role = SessionUserUtil.getCurrentUserRole().getValue();
-            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
+        String role = SessionUserUtil.getCurrentUserRole().getValue();
+        //管理员可以看到所有数据，且可以按单位搜索
+        if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
+            if (StringUtils.isNotBlank(requestData.getCompany())) {
                 wrapper.like("company", requestData.getCompany());
             }
-            // 台站管理员只能看到本台站
-            if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {
-                String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-                String company = sysUserDomain.getSysUserCompanyById(userid);
-                wrapper.like("company", company);
-            }
+        } else { // 其他角色只能看到自己所属单位的数据
+            String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+            String company = sysUserDomain.getSysUserCompanyById(userid);
+            wrapper.like("company", company);
         }
         wrapper.orderByDesc("update_time");
         Page<GraphConf> page1 = graphConfMapper.selectPage(page,wrapper);
