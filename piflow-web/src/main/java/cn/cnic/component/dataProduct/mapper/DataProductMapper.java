@@ -20,7 +20,7 @@ public interface DataProductMapper {
             + "insert into data_product (id, process_id, property_id, property_name, dataset_url, `name`, "
             + "description, permission, keyword, sdPublisher, email, `state`, opinion, down_reason, "
             + "is_share, doi_id, cstr_id, subject_type_id, time_range, spacial_range, dataset_size, dataset_type, associate_id, "
-            + "crt_dttm, crt_user, enable_flag, last_update_dttm, last_update_user, version, ``, bak2, bak3) values "
+            + "crt_dttm, crt_user, enable_flag, last_update_dttm, last_update_user, version, company, bak2, bak3) values "
             + "<foreach collection='list' item='item' index='index' separator=', '>"
             + "(#{item.id}, #{item.processId}, #{item.propertyId}, #{item.propertyName}, #{item.datasetUrl}, #{item.name}, "
             + "#{item.description}, #{item.permission}, #{item.keyword}, #{item.sdPublisher}, #{item.email}, #{item.state}, #{item.opinion}, #{item.downReason}, "
