@@ -54,18 +54,14 @@ public class GraphTemplateServiceImpl implements GraphTemplateService {
 
     @Override
     public ResponseResult<List<GraphTemplate>> getGraphTemplateList(RequestData requestData) {
-        String queryContent = requestData.getQueryContent();
         int pageSize = requestData.getPageSize();
         int pageNum = requestData.getPageNum();
         List<GraphTemplate> graphTemplates = null;
         //分页
         Page<GraphTemplate> page = new Page<>(pageNum,pageSize);
         QueryWrapper<GraphTemplate> wrapper = new QueryWrapper<>();
-        if (StringUtils.isNotBlank(queryContent)) {
-            wrapper.like("name", queryContent);
-        }
         if (StringUtils.isNotBlank(requestData.getName())) {
-            wrapper.like("description", requestData.getName());
+            wrapper.like("name", requestData.getName());
         }
         if (StringUtils.isNotBlank(requestData.getCreateUser())) {
             wrapper.like("user_name", requestData.getCreateUser());

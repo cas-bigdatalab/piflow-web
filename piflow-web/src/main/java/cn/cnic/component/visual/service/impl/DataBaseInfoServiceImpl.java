@@ -90,7 +90,6 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
 
     @Override
     public ResponseResult<List<DataBaseInfo>> getDatabaseList(RequestData requestData) {
-        String queryContent = requestData.getQueryContent();
         int pageSize = requestData.getPageSize();
         int pageNum = requestData.getPageNum();
 
@@ -98,11 +97,8 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
         QueryWrapper<DataBaseInfo> wrapper = new QueryWrapper<>();
 
         // 模糊查询条件
-        if (StringUtils.isNotBlank(queryContent)) {
-            wrapper.like("db_name", queryContent);
-        }
         if (StringUtils.isNotBlank(requestData.getName())) {
-            wrapper.like("description", requestData.getName());
+            wrapper.like("db_name", requestData.getName());
         }
         if (StringUtils.isNotBlank(requestData.getCreateUser())) {
             wrapper.like("crt_user", requestData.getCreateUser());
