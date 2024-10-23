@@ -309,6 +309,7 @@ public class DataProductServiceImpl implements IDataProductService {
             Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
             return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
         } else {
+            dataProductVo.setCrtUser(currentUser.getUsername());
             Page<DataProduct> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
             dataProductDomain.getByPageForPublishingWithSdPublisher(dataProductVo);
             Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
