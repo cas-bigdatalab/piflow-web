@@ -110,3 +110,56 @@
     background-color: var(--button-color);
     border-color: var(--button-color);
   }
+
+  .passport{
+    position: relative;
+    top: 10px;
+    ::v-deep  .ivu-divider{
+      margin: 0;
+      .ivu-divider-inner-text{
+        color: #9196a1;
+        font-size: 12px;
+      }
+    }
+    .icons{
+      display: flex;
+      justify-content: center;
+      .icon-item{
+        width: 36px;
+        height: 36px;
+        background: #f8f8fa;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+          img{
+          width: 24px;
+          height: 24px;
+        }
+      }
+    }
+  
+  }
+  
+  #passportIfame{
+    position: fixed;
+    left: 0;
+    right: 0;
+    width: 60%;
+    height: 82%;
+    top: 0;
+    bottom: 0;
+    z-index: 9998;
+    margin: auto;
+    border-radius: 8px;
+  }
+  .iframe-close{
+    position: fixed;
+    right: 21vw;
+    top: 10%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 9999;
+  }

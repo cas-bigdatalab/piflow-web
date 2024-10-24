@@ -115,6 +115,15 @@
                       REGISTER</button>
                   </div>
                 </div>
+                <!-- <div class="passport" v-if="showPassPort"> -->
+                  <div class="passport" >
+                  <Divider>其他方式登录</Divider>
+                  <div class="icons">
+                    <div class="icon-item" @click="handlePassPort">
+                      <img src="./images/umtIcon.png" alt="科技云通行证登录" >
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -127,10 +136,16 @@
       <p style="text-align: center;font-size: 12px;">Technical support ： Computer Network Information Center,Chinese Academy of Scienes</p>
       <p style="text-align: center;font-size: 12px;">Contact us ：010-58815678</p>
     </div>
-  </div>
+    <!-- iframe -->
+    <img src="./images/close.png" v-if="src" alt="" class="iframe-close"  @click="handleCloseIframe">
+    <iframe :src="src"  v-if="src"  id="passportIfame"></iframe>
+    <!-- iframe -->
+</div>
 </template>
 <script>
 import Cookies from 'js-cookie';
+import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import {getStatus} from "@/apis/passport"
 export default {
   name: "login",
   data() {
@@ -145,7 +160,11 @@ export default {
       status:"",
       isLogin: true,
       isExist: false,
-      title:window.$SYSTEM_TITLE_EN
+      title:window.$SYSTEM_TITLE_EN,
+      src:'',
+      deviceId:'',
+      statusTimer:null,
+      showPassPort:false
     };
   },
   watch: {
@@ -157,6 +176,9 @@ export default {
         this.$Message.destroy();
       }
     }
+  },
+  created(){
+    this.getRedirect()
   },
   mounted() {
     this.$Message.destroy();
@@ -178,8 +200,15 @@ export default {
       this.post = "";
     },
 
-    handleLogin() {
+    handleLogin(type) {
       this.$Message.destroy();
+      if(type !== 'passport' && this.username.includes('科技云')){
+        this.$Message["error"]({
+          background: true,
+          content: "第三方账号不允许直接登录！"
+        });
+        return
+      }
       if (!this.username) {
         this.$Message["error"]({
           background: true,
@@ -315,6 +344,57 @@ export default {
           .catch(function(error) {
             console.log(error);
           });
+    },
+    handleCloseIframe(){
+      this.showIframe = false
+      this.src = ''
+      this.$Message.destroy()
+      this.$event.emit('loading',false)
+    },
+    async getRedirect(){
+      const result = await FingerprintJS.load();
+      const visitor = await result.get()
+      this.deviceId = visitor.visitorId
+      this.$axios
+        .get('/passport/getRedirect?deviceId='+this.deviceId)
+        .then((res) => {
+          if (res.data.code === 200 && res.data?.client_id) {
+            this.passInfo = res.data
+            this.showPassPort = true
+          }else{
+            this.showPassPort = false
+          }
+        })
+        .catch((error) => {
+          this.showPassPort = false
+        });
+
+    },
+    handlePassPort(){
+      this.showIframe = true
+      const {redirect_uri,client_id} = this.passInfo
+      this.src = `https://passport.escience.cn/oauth2/authorize?response_type=code&redirect_uri=${redirect_uri}&client_id=${client_id}&theme=EMBED`
+      this.$event.emit('loading',true)
+      this.$Message.loading({
+        content: "第三方登陆中，请稍后...",
+        duration: 0
+      });
+      this.getPassportStatus()
+    },
+    async getPassportStatus(){
+      const res = await getStatus(this.deviceId)
+      if(res.data.code === 200){
+        if(res.data.loginThirdParty){
+          this.username = res.data.userName
+          this.password = res.data.password
+          this.src = ''
+          this.handleLogin('passport')
+      }else if(this.showIframe){
+         this.statusTimer =  setTimeout(() => {
+            this.getPassportStatus()
+          }, 500);
+        }
+      }
     },
 
     rEnumber(val) {
