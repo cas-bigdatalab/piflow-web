@@ -69,35 +69,7 @@
       :expand-config="{ accordion: true }"
       :data="tableData"
     >
-      <vxe-column
-        field="jarName"
-        :title="$t('python.packageName')"
-        sortable
-      ></vxe-column>
-      <vxe-column
-        field="crtDttm"
-        :title="$t('StopHub_columns.time')"
-        sortable
-      ></vxe-column>
-      <vxe-column
-        field="version"
-        :title="$t('python.version')"
-        width="120"
-        sortable
-        tree-node
-      ></vxe-column>
-      <vxe-column field="jarUrl" :title="$t('python.FileUrl')"></vxe-column>
-      <vxe-column
-        field="status"
-        :title="$t('python.state')"
-        sortable
-        width="150"
-      >
-        <template #default="{ row }">
-          <span>{{ row.status.text }}</span>
-        </template>
-      </vxe-column>
-      <vxe-column type="expand" width="60">
+    <vxe-column type="expand" width="60">
         <template #content="{ row, rowIndex }">
           <div
             class="scrollbar"
@@ -142,6 +114,68 @@
           </div>
         </template>
       </vxe-column>
+      <vxe-column
+        field="jarName"
+        :title="$t('python.packageName')"
+        sortable
+      >
+      <template #default="{ row }">
+          <Tooltip
+            :content="row.jarUrl"
+            placement="top"
+            :transfer="true"
+            max-width="200"
+          >
+            <a>{{ row.jarName }}</a>
+          </Tooltip>
+        </template>
+    </vxe-column>
+    <vxe-column
+        field="version"
+        :title="$t('python.version')"
+        width="120"
+        sortable
+        tree-node
+      ></vxe-column>
+      <vxe-column
+       field="image"
+        :title="$t('python.image')"
+        show-overflow="ellipsis"
+      ></vxe-column>
+      <vxe-column  :title="$t('python.base_image')">
+        <template #default="{ row }">
+          <Tooltip
+            placement="top"
+            :transfer="true"
+            max-width="300"
+          >
+            <div slot="content">
+              <p> 版本:<span>{{row.languageVersion}}</span></p>
+              <p> 描述:<span>{{row.baseImageDescription}}</span></p>
+            </div>
+             <a>{{row.baseImage}}</a>
+          </Tooltip>
+        </template>
+      </vxe-column>
+
+      <vxe-column
+       field="description"
+        :title="$t('python.description')"
+        show-overflow="ellipsis"
+      ></vxe-column>
+
+
+      <vxe-column
+        field="status"
+        :title="$t('python.state')"
+        sortable
+        width="120"
+      >
+        <template #default="{ row }">
+          <span>{{ row.status.text }}</span>
+        </template>
+      </vxe-column>
+
       <vxe-column
         field="action"
         :title="$t('group_columns.action')"
@@ -209,6 +243,7 @@
     </div>
     <!-- Upload -->
     <Modal
+      width="600px"
       v-model="isOpen"
       :loading="loading"
       :title="$t('StopHub_columns.upload')"
@@ -218,10 +253,10 @@
       @on-cancel="uploadError"
     >
       <div class="modal-warp">
-        <div class="flex">
-          <div>
+
+        <div class="item">
             <label>{{ $t("python.language") }}</label>
-            <Select style="width: 100px" @on-change="changeLanguage">
+            <Select style="width: 195px" @on-change="changeLanguage">
               <Option
                 v-for="(item, i) in language"
                 :key="i"
@@ -230,15 +265,55 @@
               >
             </Select>
           </div>
-          <div>
+          <!-- <div>
             <label>{{ $t("python.version_lang") }}</label>
             <Select style="width: 100px" v-model="uploadData.languageVersion">
               <Option v-for="(item, i) in versions" :key="i" :value="item">{{
                 item
               }}</Option>
             </Select>
-          </div>
+          </div> -->
+
+          <div class="item">
+          <label>{{ $t("python.description") }}</label>
+          <Input
+            v-model="uploadData.description"
+            type="textarea"
+            :rows="3"
+            :placeholder="$t('modal.placeholder')"
+          ></Input>
         </div>
+
+          <div class="item" v-if="uploadData.type === 'PYTHON'">
+          <label>{{ $t("python.base_image") }}</label>
+          <Select
+            style="width: 195px"
+            v-model="uploadData.baseImage"
+            @on-change="changeBaseImage"
+          >
+            <Option
+              v-for="item in baseImageList"
+              :key="item.id"
+              :value="item.baseImageName"
+              >{{ item.baseImageName }}</Option
+            >
+          </Select>
+        </div>
+
+        
+        <div  class="item" v-if="uploadData.type==='PYTHON'">
+            <label>{{$t('python.image_description')}}</label>
+            <Input
+              v-model="baseImg.baseImageDescription"
+              disabled="true"
+              type="textarea"
+              :rows="3"
+              :placeholder="$t('modal.placeholder')"
+            ></Input>
+          </div>
+
+
+
         <div class="item">
           <Upload
             :action="this.$url + '/stops/uploadStopsHubFile'"
@@ -253,14 +328,14 @@
             :before-upload="handleBeforeUpload"
             type="drag"
           >
-            <div style="padding: 80px 0; height: 240px">
+            <div style="padding: 20px 0">
               <div>
                 <Icon
                   type="ios-cloud-upload"
                   size="52"
                   style="color: var(--primary-color)"
                 ></Icon>
-                <p>{{ $t("StopHub_columns.jarDescription") }}</p>
+                <p>{{ $t("python.uploadZip") }}</p>
               </div>
             </div>
           </Upload>
@@ -964,13 +1039,15 @@ export default {
       total: 0,
       tableData: [],
       param: "",
+      baseImageList: [],
+      baseImg: {},
       file: null,
       JarIsShow: null,
       token: "",
       language: [
         {
           type: "PYTHON",
-          value: ["2.7.5", "3.7.0", "3.7.5"],
+          value: [],
         },
         {
           type: "SCALA",
@@ -979,7 +1056,9 @@ export default {
       ],
       uploadData: {
         type: "",
+        baseImage: "",
         languageVersion: "",
+        description: "",
       },
       versions: [],
       childData: [],
@@ -1136,6 +1215,7 @@ export default {
   // },
   created() {
     this.getTableData();
+    this.getImageData();
   },
   mounted() {
     let token = this.$store.state.variable.token;
@@ -1335,7 +1415,16 @@ export default {
 
     uploadSuccess() {
       this.isOpen = true;
-      this.$refs.upload.post(this.file);
+      if (this.file != null) {
+        this.$refs.upload.post(this.file);
+      } else {
+        this.loading = false;
+        this.isOpen = true;
+        return this.$Message.error({
+          content: "请选择文件后再进行操作",
+          duration: 3,
+        });
+      }
     },
 
     uploadError() {
@@ -1394,14 +1483,46 @@ export default {
     handleModalSwitch() {
       this.isOpen = !this.isOpen;
     },
+    getImageData() {
+      this.$axios
+        .get("/dockerimage/getBaseImageListByPage", {
+          params: { page: 1, limit: 999 },
+        })
+        .then((res) => {
+          if (res.data.code === 200) {
+            this.language[0].value = res.data.data;
+            this.baseImageList = res.data.data;
+          } else {
+            this.$Message.error({
+              content: this.$t("tip.request_fail_content"),
+              duration: 3,
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          this.$Message.error({
+            content: this.$t("tip.fault_content"),
+            duration: 3,
+          });
+        });
+    },
+        // 选中baseimg
+     changeBaseImage() {
+      this.baseImg = this.baseImageList.find(
+        (v) => v.baseImageName === this.uploadData.baseImage
+      );
+      this.uploadData.languageVersion = this.baseImg.baseImageVersion;
+    },
     //选择语言
     changeLanguage(val) {
       this.uploadData.type = val;
-      this.language.forEach((item) => {
-        if (item.type == val) {
-          this.versions = item.value;
+      if (val === "PYTHON" && this.language[0].value.length) {
+          this.uploadData.baseImage = this.language[0].value[0].baseImageName;
+          this.changeBaseImage();
+        } else {
+          this.uploadData.languageVersion = this.language[0].value[0];
         }
-      });
     },
     //表格展开
     toggleRow({ expanded, row }) {

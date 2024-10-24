@@ -47,13 +47,17 @@ section {
   }
  
 }
- .modal-warp{
+.modal-warp{
+  padding: 0 20px;
     .item{
       margin: 12px 0px;
       label{
         display: inline-block;
-        width: 120px;
         text-align: right;
+        margin-right: 10px;
+      }
+      >div{
+        flex: 1;
       }
     }
   }

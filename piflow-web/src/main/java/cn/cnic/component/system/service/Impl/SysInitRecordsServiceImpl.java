@@ -151,11 +151,11 @@ public class SysInitRecordsServiceImpl implements ISysInitRecordsService {
         if (stopsListWithGroup.isEmpty()) {
             return new ArrayList<>();
         }
-        // The call is successful, empty the "StopsComponentGroup" and "StopsComponent" message and insert
-        int deleteGroup = stopsComponentDomain.deleteStopsComponentGroup();
-        logger.info("Successful deletion Group" + deleteGroup + "piece of data!!!");
-        int deleteStopsInfo = stopsComponentDomain.deleteStopsComponent();
-        logger.info("Successful deletion StopsInfo" + deleteStopsInfo + "piece of data!!!");
+//        // The call is successful, empty the "StopsComponentGroup" and "StopsComponent" message and insert
+//        int deleteGroup = stopsComponentDomain.deleteStopsComponentGroup();
+//        logger.info("Successful deletion Group" + deleteGroup + "piece of data!!!");
+//        int deleteStopsInfo = stopsComponentDomain.deleteStopsComponent();
+//        logger.info("Successful deletion StopsInfo" + deleteStopsInfo + "piece of data!!!");
 
         int addStopsComponentGroupRows = 0;
         // StopsComponent bundle list

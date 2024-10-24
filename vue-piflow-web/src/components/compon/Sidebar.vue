@@ -105,6 +105,12 @@ export default {
           name: "StopHub"
         },
         {
+          btnName: this.$t("sidebar.pythonMirror"),
+          icoName: "ios-ionitron",
+          router: "/baseImage",
+          name: "baseImage",
+        },
+        {
           btnName: this.$t("sidebar.sparkJar"),
           icoName: "md-cog",
           router: "SparkJar",
@@ -204,7 +210,28 @@ export default {
               name: "bindingAccount",
             }
           ]
-        }
+        },
+        {
+          btnName: this.$t("sidebar.visualization"),
+          icoName: "ios-pulse",
+          children: [
+            {
+              btnName: this.$t("sidebar.database"),
+              name: "VisualizationDataBase",
+              router: "/visualization-database",
+            },
+            {
+              btnName: this.$t("sidebar.datasource"),
+              name: "VisualizationDataSource",
+              router: "/visualization-datasource",
+            },
+            {
+              btnName: this.$t("sidebar.visualconfig"),
+              name: "VisualizationVisualConfig",
+              router: "/visualization-visualconfig",
+            },
+          ],
+        },
       ];
     }
   },

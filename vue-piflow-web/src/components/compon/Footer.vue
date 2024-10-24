@@ -1,6 +1,13 @@
 <template>
-  <footer>
-    <Breadcrumb id="BreadcrumbFlow">
+  <footer id="footer">
+    <Breadcrumb v-if="VisualConfig" id="BreadcrumbVisualization">
+      <span class="spanPointer" @click="handleClick('visualconfig')">{{lastMenu}}
+        <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
+      </span>
+      <span style="font-weight: bold">Visualization</span>
+    </Breadcrumb>
+
+    <Breadcrumb  id="BreadcrumbFlow">
       <span class="spanPointer" @click="handleClick('flow')">Flow
         <span style="margin: 0 5px;display: inline-block">&gt;&gt;</span>
       </span>
@@ -65,6 +72,12 @@ export default {
             document.getElementById('BreadcrumbFlow').style.display = 'none';
           });
           break;
+          case 'visualconfig':
+          this.$router.go(-1);
+          this.$nextTick(()=>{
+              document.getElementById('BreadcrumbGroup').style.display = 'none';
+            });
+          break;
           case 'group':
             window.sessionStorage.setItem("menuName", 'group');
             this.$router.push({
@@ -98,7 +111,30 @@ export default {
           break;
       }
     }
-  }
+  },
+  data(){
+    return {
+      lastMenu:'',
+      VisualConfig:false,
+    }
+  },
+  watch:{
+    '$route':{
+      handler(val,from){
+        this.lastMenu =from ? from.name :'lastMenu'
+        if(val.fullPath === '/' && document.getElementById('footer')){
+          console.log(document.getElementById('footer'))
+          const list = Array.from(document.getElementById('footer').children)
+          list.forEach(v=>{
+            v.style.display = 'none'
+          })
+        }
+      this.VisualConfig = val.name === 'GraphConfig' ?true: false
+    },
+    deep:true,
+    immediate:true
+    }
+  },
 };
 </script>
 
@@ -124,9 +160,10 @@ footer {
     span, a{
       color: #ffffff
     }
+
+  }
   .spanPointer{
     cursor: pointer;
-  }
   }
 }
 </style>

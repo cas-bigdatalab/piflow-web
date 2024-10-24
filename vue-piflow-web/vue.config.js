@@ -24,7 +24,6 @@ module.exports = {
     config.resolve.alias = {
       '@': path.join(__dirname, 'src')
     }
-
     if (process.env.NODE_ENV === 'production') {
       return {
         plugins: [
@@ -87,7 +86,7 @@ module.exports = {
   publicPath: '/', // publicPath:'/rm', 这里可以设置二级文件夹作为主页面
 
   // build时构建文件的目录 构建时传入 --no-clean 可关闭该行为
-  // outputDir: 'build',
+  outputDir: 'ROOT',
 
   // build时放置生成的静态资源 (js、css、img、fonts) 的 (相对于 outputDir 的) 目录
   // assetsDir: 'assets',
@@ -104,7 +103,7 @@ module.exports = {
     // host: "localhost",
     proxy: {
       '/piflow-web': {
-        target: 'http://10.0.82.122:6001',
+        target: 'http://10.0.82.194:6001',
         // target: 'http://localhost:6002/piflow-web/admin',
         // target: 'http://127.0.0.1:6001',
         changeOrigin: true,

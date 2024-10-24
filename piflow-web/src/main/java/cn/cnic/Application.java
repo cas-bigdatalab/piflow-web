@@ -12,6 +12,7 @@ import org.springframework.boot.web.embedded.tomcat.TomcatConnectorCustomizer;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -29,9 +30,10 @@ import javax.servlet.ServletException;
         @PropertySource(value = "classpath:messageConfig.properties", encoding = "utf-8"),
         @PropertySource(value = "classpath:docker.properties", encoding = "utf-8")
 })
-@MapperScan(basePackages = "cn.cnic.**.mapper.*.*")
+@MapperScan(basePackages = "cn.cnic.**.mapper")
 @EnableTransactionManagement
 @SpringBootApplication
+@EnableCaching(proxyTargetClass = true)
 public class Application extends SpringBootServletInitializer {
 
 	/**

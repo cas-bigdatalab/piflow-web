@@ -104,4 +104,19 @@ public class SysParamsCache {
         MARKET_SOFTWARE_FLAG = marketSoftwareFlag;
     }
 
+    public static String PUSH_TO_HARBOR;
+
+    @Value("${push_to_harbor}")
+    public void setPushToHarbor(String pushToHarbor) {
+        PUSH_TO_HARBOR = pushToHarbor;
+    }
+
+    public static String DOCKER_CENTRAL_WAREHOUSE;
+
+    @Value("${docker_central_warehouse}")
+    public void setDockerCentralWarehouse(String dockerCentralWarehouse) {
+        DOCKER_CENTRAL_WAREHOUSE = dockerCentralWarehouse;
+    }
+
+
 }

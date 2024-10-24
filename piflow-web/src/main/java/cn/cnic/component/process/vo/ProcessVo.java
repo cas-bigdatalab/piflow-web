@@ -1,6 +1,7 @@
 package cn.cnic.component.process.vo;
 
 import cn.cnic.base.utils.DateUtils;
+import cn.cnic.base.vo.BasePageVo;
 import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
@@ -14,7 +15,7 @@ import java.util.List;
 
 @Setter
 @Getter
-public class ProcessVo implements Serializable {
+public class ProcessVo extends BasePageVo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

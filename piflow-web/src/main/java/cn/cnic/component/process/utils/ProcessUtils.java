@@ -675,7 +675,8 @@ public class ProcessUtils {
     public static String generateYmlContent(ProcessStop processStop){
         long currentTimeMillis = System.currentTimeMillis();
         StringBuffer ymlContentSb = new StringBuffer();
-        String ymlName = processStop.getName() + "-" + currentTimeMillis;
+//        String ymlName = processStop.getName() + "-" + currentTimeMillis;
+        String ymlName = processStop.getBundel() + "-" + currentTimeMillis;
         ymlContentSb.append("version: \"3\"" + System.lineSeparator());
         ymlContentSb.append("services:" + System.lineSeparator());
         ymlContentSb.append("  docker-python-demo:" + System.lineSeparator());
@@ -689,9 +690,11 @@ public class ProcessUtils {
         ymlContentSb.append("    environment:" + System.lineSeparator());
 //        ymlymlContentSb.append(String.format("      - hdfs_url=%s", SysParamsCache.HDFS_URL) + System.lineSeparator());       //从配置文件中获取
         ymlContentSb.append("      - hdfs_url=piflow_hdfs_url" + System.lineSeparator());    //params that .py needs,used to store procedure data
+        ymlContentSb.append("      - embed_model=embed_models_path" + System.lineSeparator());    //params that .py needs,used to get embed models
         ymlContentSb.append("      - TZ=Asia/Shanghai" + System.lineSeparator());
         ymlContentSb.append("    volumes:" + System.lineSeparator());
         ymlContentSb.append("      - ../app:/app" + System.lineSeparator());
+        ymlContentSb.append("      - /data:/data" + System.lineSeparator());
         ymlContentSb.append("    command: python3 /pythonDir/" + processStop.getBundel()+" " );
         //params that .py needs,used to run .py
         if (processStop.getProcessStopPropertyList() !=null && processStop.getProcessStopPropertyList().size()>0){

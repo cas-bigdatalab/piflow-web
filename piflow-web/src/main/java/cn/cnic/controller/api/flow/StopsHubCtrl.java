@@ -57,10 +57,10 @@ public class StopsHubCtrl {
     @RequestMapping(value = "/uploadStopsHubFile", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="uploadStopsHubFile", notes="upload StopsHub file")
-    public String uploadStopsHubFile(@RequestParam("file") MultipartFile file,String type,String languageVersion) {
+    public String uploadStopsHubFile(@RequestParam("file") MultipartFile file, String description, String type, String languageVersion, String baseImage) {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("uploadStopsHubFile " + file.getName(),username);
-        return stopsHubServiceImpl.uploadStopsHubFile(username, file,type,languageVersion);
+        return stopsHubServiceImpl.uploadStopsHubFile(username, file, description, type,languageVersion, baseImage);
     }
 
     /**

@@ -1,6 +1,6 @@
 package cn.cnic.base.utils;
 
-import sun.misc.BASE64Decoder;
+import org.apache.commons.codec.binary.Base64;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -22,15 +22,14 @@ public class ImageUtils {
         if (imgStr == null) // Image data is empty
             return false;
 
-        BASE64Decoder decoder = new BASE64Decoder();
         try {
             // Base64 decoding
-            byte[] b = decoder.decodeBuffer(imgStr);
-            for (int i = 0; i < b.length; ++i) {
-                if (b[i] < 0) {// Adjust abnormal data
-                    b[i] += 256;
-                }
-            }
+            byte[] b = Base64.decodeBase64(imgStr);
+//            for (int i = 0; i < b.length; ++i) {
+//                if (b[i] < 0) {// Adjust abnormal data
+//                    b[i] += 256;
+//                }
+//            }
             CheckPathUtils.isChartPathExist(pathUrl);
             // Set the path to generate the image
             String path = pathUrl + name + "." + type;
@@ -40,6 +39,7 @@ public class ImageUtils {
             out.close();
             return true;
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }
