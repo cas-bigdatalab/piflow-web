@@ -57,7 +57,7 @@ export default {
       this.$store.commit("setToken", "");
       this.$store.commit("setUser", {});
       if(this.user.username.includes('科技云')){
-        window.location.href = "https://passport.escience.cn/logout?WebServerURL=http://bigflow-t13.csdb.cn/"
+        window.location.href = `https://passport.escience.cn/logout?WebServerURL=${window.location.origin}`
       }else{
         this.$router.push({ path: "/login" });
       }

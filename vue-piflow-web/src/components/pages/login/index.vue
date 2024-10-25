@@ -115,8 +115,7 @@
                       REGISTER</button>
                   </div>
                 </div>
-                <!-- <div class="passport" v-if="showPassPort"> -->
-                  <div class="passport" >
+                <div class="passport" v-if="showPassPort">
                   <Divider>其他方式登录</Divider>
                   <div class="icons">
                     <div class="icon-item" @click="handlePassPort">
