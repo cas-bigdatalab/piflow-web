@@ -1,20 +1,25 @@
 package cn.cnic.controller.api.other;
 
 import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.bundle.util.DataSpaceService;
 import cn.cnic.component.dataSource.service.IDataSource;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.flow.service.IStopsService;
 import cn.cnic.component.stopsComponent.service.IStopsComponentService;
 import cn.cnic.component.system.service.ILogHelperService;
+import cn.cnic.controller.requestVo.GetSpaceListRequestVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
 
 @Api(value = "datasource api", tags = "datasource api")
 @Controller
@@ -25,16 +30,19 @@ public class DataSourceCtrl {
     private final IStopsService stopsServiceImpl;
     private final ILogHelperService logHelperServiceImpl;
     private final IStopsComponentService stopsComponentServiceImpl;
+    private final DataSpaceService dataSpaceService;
 
     @Autowired
     public DataSourceCtrl(IDataSource dataSourceImpl,
                           IStopsService stopsServiceImpl,
                           ILogHelperService logHelperServiceImpl,
-                          IStopsComponentService stopsComponentServiceImpl) {
+                          IStopsComponentService stopsComponentServiceImpl,
+                          DataSpaceService dataSpaceService) {
         this.dataSourceImpl = dataSourceImpl;
         this.stopsServiceImpl = stopsServiceImpl;
         this.logHelperServiceImpl = logHelperServiceImpl;
         this.stopsComponentServiceImpl = stopsComponentServiceImpl;
+        this.dataSpaceService = dataSpaceService;
     }
 
     @RequestMapping(value = "/getDatasourceList", method = RequestMethod.POST)
@@ -49,7 +57,7 @@ public class DataSourceCtrl {
     @RequestMapping(value = "/getDataSourceListPagination", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value="getDataSourceListPagination", notes="Get Datasource list")
-	@ApiImplicitParams({ 
+	@ApiImplicitParams({
 		@ApiImplicitParam(name = "page", value = "page", required = true, paramType = "query"),
 		@ApiImplicitParam(name = "limit", value = "limit", required = true, paramType = "query"),
 		@ApiImplicitParam(name = "param", value = "param", required = false, paramType = "query")
@@ -59,6 +67,26 @@ public class DataSourceCtrl {
         boolean isAdmin = SessionUserUtil.isAdmin();
         return dataSourceImpl.getDataSourceVoListPage(currentUsername, isAdmin, page, limit, param);
     }
+
+    @RequestMapping(value = "/getSpaceList", method = RequestMethod.POST)
+    @ResponseBody
+    public String getSpaceList(@RequestBody GetSpaceListRequestVo requestVo) {
+        return dataSpaceService.getDataSpaceList(requestVo.getDsAppId(),
+                requestVo.getDsSign(),
+                requestVo.getDsRemote(),
+                requestVo.getDsEmail());
+    }
+
+    @RequestMapping(value = "/fileListByDsSpaceId", method = RequestMethod.POST)
+    @ResponseBody
+    public String fileListByDsSpaceId(@RequestBody GetSpaceListRequestVo requestVo) {
+        return dataSpaceService.geFileListByDsSpaceId(requestVo.getDsAppId(),
+                requestVo.getDsSign(),
+                requestVo.getDsRemote(),
+                requestVo.getDsSpaceId(),
+                requestVo.getHash());
+    }
+
 
     @RequestMapping(value = "/getDatasourceById", method = RequestMethod.POST)
     @ResponseBody
@@ -104,7 +132,7 @@ public class DataSourceCtrl {
     @RequestMapping(value = "/fillDatasource", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="fillDatasource", notes="fill DataSource")
-	@ApiImplicitParams({ 
+	@ApiImplicitParams({
 		@ApiImplicitParam(name = "dataSourceId", value = "dataSourceId", required = true, paramType = "query"),
 		@ApiImplicitParam(name = "stopId", value = "stopId", required = true, paramType = "query")
 	})
@@ -113,7 +141,7 @@ public class DataSourceCtrl {
         boolean isAdmin = SessionUserUtil.isAdmin();
         return stopsServiceImpl.fillDatasource(username, isAdmin, dataSourceId, stopId);
     }
-    
+
     @RequestMapping(value = "/checkDatasourceLinked", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="checkDatasourceLinked", notes="check DataSource linked")
