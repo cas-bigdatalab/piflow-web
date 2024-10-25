@@ -69,4 +69,8 @@ public interface ISysUserService {
     public int deleteUser(String id);
 
     public String bindDeveloperAccessKey(boolean isAdmin, String username, String accessKey);
+
+
+    boolean checkUserNameExist(String userName);
+
 }

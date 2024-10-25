@@ -303,6 +303,12 @@ public class SysUserServiceImpl implements ISysUserService {
         return ReturnMapUtils.toJson(rtnMap);
     }
 
+    @Override
+    public boolean checkUserNameExist(String userName) {
+        String addUser = sysUserDomain.checkUsername(userName);
+        return StringUtils.isNotBlank(addUser);
+    }
+
     private Authentication authenticate(String username, String password) {
         try {
             //该方法会去调用userDetailsService.loadUserByUsername()去验证用户名和密码，如果正确，则存储该用户名密码到“security 的 context中”

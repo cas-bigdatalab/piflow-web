@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
@@ -27,10 +28,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Http tool class
@@ -504,5 +502,59 @@ public class HttpUtils {
         }
         return response;
     }
+
+    public static String doPostFromComCustomizeHeader(String url, Map<String, Object> json, Integer timeOutMS, Map<String, String> headerParam) throws Exception {
+        if (org.apache.commons.lang.StringUtils.isBlank(url)) {
+            throw new Exception("url is null");
+        }
+        // Create a "post" mode request object
+        HttpPost httpPost = new HttpPost(url);
+        // Set parameters to the request object
+        if (null != json && json.keySet().size() > 0) {
+            //Create parameter queue
+            List<NameValuePair> formParams = new ArrayList<>();
+            for (String key : json.keySet()) {
+                if (null == key || null == json.get(key)) {
+                    continue;
+                }
+                formParams.add(new BasicNameValuePair(key, json.get(key).toString()));
+            }
+            UrlEncodedFormEntity uefEntity;
+            uefEntity = new UrlEncodedFormEntity(formParams, "UTF-8");
+            httpPost.setEntity(uefEntity);
+        }
+        httpPost.setProtocolVersion(HttpVersion.HTTP_1_1);
+        if (null != timeOutMS) {
+            // Set timeout
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectTimeout(timeOutMS).setConnectionRequestTimeout(timeOutMS)
+                    .setSocketTimeout(timeOutMS).build();
+            httpPost.setConfig(requestConfig);
+        }
+        //add header param
+        if (null != headerParam && headerParam.keySet().size() > 0) {
+            for (String key : headerParam.keySet()) {
+                if (null == key) {
+                    continue;
+                }
+                httpPost.addHeader(key, headerParam.get(key));
+            }
+        }
+        logger.info("call '" + url + "' start");
+        String result = doPostComCustomizeHttpPost(httpPost);
+        // Close the connection and release the resource
+        httpPost.releaseConnection();
+        return result;
+    }
+
+    public static Map<String, String> setHeaderContentType(String contentType) {
+        if (org.apache.commons.lang.StringUtils.isBlank(contentType)) {
+            return null;
+        }
+        Map<String, String> headerParam = new HashMap<>();
+        headerParam.put("Content-type", contentType);
+        return headerParam;
+    }
+
 
 }
