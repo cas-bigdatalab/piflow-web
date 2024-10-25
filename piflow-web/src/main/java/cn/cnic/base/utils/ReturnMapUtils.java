@@ -46,6 +46,12 @@ public class ReturnMapUtils {
         return JsonUtils.toJsonNoException(stringObjectMap);
     }
 
+    public static String setSucceededCustomMap(Map<String, Object> map) {
+        map.put(KEY_CODE, SUCCEEDED_CODE);
+        map.put(KEY_ERROR_MSG, MessageConfig.SUCCEEDED_MSG());
+        return JsonUtils.toJsonNoException(map);
+    }
+
     /**
      * set Success message
      *
