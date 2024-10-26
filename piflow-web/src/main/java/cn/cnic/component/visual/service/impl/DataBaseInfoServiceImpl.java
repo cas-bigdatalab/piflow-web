@@ -108,7 +108,7 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
     @Override
     public ResponseResult delDatabase(DataBaseInfo dataBaseInfo) {
         //判断图表模板中是否有使用该连接
-        Long count = getGraphTemplateCount(dataBaseInfo.getId());
+        Integer count = getGraphTemplateCount(dataBaseInfo.getId());
         if(count  ==  0){
             int insert = dataBaseInfoMapper.deleteById(dataBaseInfo.getId());
             if(insert == 1){
@@ -128,7 +128,7 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
         String format = now.format(formatter);
         dataBaseInfo.setUpdateTime(format);
         //判断图表模板中是否有使用该连接
-        Long count = getGraphTemplateCount(dataBaseInfo.getId());
+        Integer count = getGraphTemplateCount(dataBaseInfo.getId());
         if(count  ==  0){
             int num = dataBaseInfoMapper.updateById(dataBaseInfo);
             if(num == 1){
@@ -231,10 +231,10 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
         return ResponseResult.error("获取表字段失败！");
     }
 
-    public Long getGraphTemplateCount(int id){
+    public Integer getGraphTemplateCount(int id){
         QueryWrapper<GraphTemplate> wrapper = new QueryWrapper<>();
         wrapper.eq("data_base_id",id);
-        Long count = graphTemplateMapper.selectCount(wrapper);
+        Integer count = graphTemplateMapper.selectCount(wrapper);
         return count;
     }
 
