@@ -118,7 +118,7 @@
                 <div class="passport" v-if="showPassPort">
                   <Divider>其他方式登录</Divider>
                   <div class="icons">
-                    <div class="icon-item" @click="handlePassPort">
+                    <div class="icon-item" @click="getRedirect">
                       <img src="./images/umtIcon.png" alt="科技云通行证登录" >
                     </div>
                   </div>
@@ -177,7 +177,7 @@ export default {
     }
   },
   created(){
-    this.getRedirect()
+    this.getEnabled()
   },
   mounted() {
     this.$Message.destroy();
@@ -350,15 +350,11 @@ export default {
       this.$Message.destroy()
       this.$event.emit('loading',false)
     },
-    async getRedirect(){
-      const result = await FingerprintJS.load();
-      const visitor = await result.get()
-      this.deviceId = visitor.visitorId
+    getEnabled(){
       this.$axios
-        .get('/passport/getRedirect?deviceId='+this.deviceId)
+        .get('/passport/getEnabled')
         .then((res) => {
-          if (res.data.code === 200 && res.data?.client_id) {
-            this.passInfo = res.data
+          if (res.data.code === 200 && res.data.enabled) {
             this.showPassPort = true
           }else{
             this.showPassPort = false
@@ -366,6 +362,24 @@ export default {
         })
         .catch((error) => {
           this.showPassPort = false
+        });
+    },
+    async getRedirect(){
+      const result = await FingerprintJS.load();
+      const visitor = await result.get()
+      this.deviceId = visitor.visitorId
+      this.$axios
+        .get('/passport/getRedirect?deviceId='+this.deviceId)
+        .then((res) => {
+          if (res.data.code === 200 && !res.data.isBusy) {
+            this.passInfo = res.data
+            this.handlePassPort()
+          }else{
+            this.$Message.warning('系统繁忙中，请稍后再试！')
+          }
+        })
+        .catch((error) => {
+          this.$Message.warning(res.data.errorMsg)
         });
 
     },
