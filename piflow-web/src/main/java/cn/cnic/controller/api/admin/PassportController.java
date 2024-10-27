@@ -1,6 +1,5 @@
 package cn.cnic.controller.api.admin;
 
-
 import cn.cnic.base.utils.*;
 import cn.cnic.component.system.service.ISysUserService;
 import cn.cnic.component.system.vo.KejiyunAuthResponse;
@@ -16,8 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.*;
 
 @Controller
 @RequestMapping("/passport")
@@ -27,16 +25,14 @@ public class PassportController {
 
 
     private Environment environment;
-
     private final ISysUserService sysUserServiceImpl;
-
+    private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private static final ConcurrentHashMap<String, ScheduledFuture<?>> resetTasks = new ConcurrentHashMap<>();
 
     public PassportController(Environment environment, ISysUserService sysUserServiceImpl) {
         this.environment = environment;
         this.sysUserServiceImpl = sysUserServiceImpl;
     }
-
-    private int count = 1;
 
     private String deviceId;
 
@@ -44,22 +40,61 @@ public class PassportController {
 
     private String kejiyunUserName = "";
 
+
+    /**
+     * 是否启用科技云登录功能
+     *
+     * @return
+     */
+    @RequestMapping(value = "/getEnabled", method = RequestMethod.GET)
+    @ResponseBody
+    public String getEnabled() {
+        String passportLogin = environment.getProperty("passport.enable.login");
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("enabled", passportLogin != null && passportLogin.equals("true"));
+    }
+
+
+    /**
+     * 获取登录跳转地址
+     *
+     * @return
+     */
     @RequestMapping(value = "/getRedirect", method = RequestMethod.GET)
     @ResponseBody
     public String getRedirect(String deviceId) {
+        if (StringUtils.isNotBlank(this.deviceId)) {
+            // 科技云回调不带用户信息,所以一个用户登录时,排斥其他用户登录
+            return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("isBusy", true);
+        }
         Map<String, Object> rtnMap = new HashMap<>();
-        if (environment.getProperty("passport.enable.login").equals("true")) {
+        rtnMap.put("isBusy", false);
+        String passportLogin = environment.getProperty("passport.enable.login");
+        if (passportLogin != null && passportLogin.equals("true")) {
+            // 一个设备登录时,排斥其他设备登录
             this.deviceId = deviceId;
-            rtnMap.put("enabled", true);
+            setCountDownTask(deviceId);
             String clientId = environment.getProperty("passport.client.id");
             String redirectUri = environment.getProperty("syspara.local.datacenter.address") + "piflow-web/passport/receiveAuthCode";
             rtnMap.put("client_id", clientId);
             rtnMap.put("redirect_uri", redirectUri);
-        } else {
-            rtnMap.put("enabled", false);
         }
         return ReturnMapUtils.setSucceededCustomMap(rtnMap);
+    }
 
+    private void setCountDownTask(String deviceId) {
+        // 取消已有的任务
+        ScheduledFuture<?> scheduledTask = resetTasks.get(deviceId);
+        if (scheduledTask != null && !scheduledTask.isDone()) {
+            scheduledTask.cancel(true);
+        }
+
+        // 创建新的任务，在1分钟后将deviceId置空
+        ScheduledFuture<?> newTask = scheduler.schedule(() -> {
+            resetTasks.remove(deviceId);
+            this.deviceId = "";  // 将deviceId置为空
+        }, 1, TimeUnit.MINUTES); // 1分钟后重置
+
+        resetTasks.put(deviceId, newTask);
     }
 
     @RequestMapping(value = "/getStatus", method = RequestMethod.GET)
@@ -68,31 +103,24 @@ public class PassportController {
         if (!StringUtils.equalsIgnoreCase(this.deviceId, deviceId)) {
             return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("loginThirdParty", false);
         }
-        // count++;
         Map<String, Object> rtnMap = new HashMap<>();
-        //       if (count >= 10) {
         if (kejiyunLoginStatus) {
-            kejiyunLoginStatus = false; // 重置登录状态
-            this.deviceId = ""; // 重置设备id
             String userName = kejiyunUserName;
             rtnMap.put("loginThirdParty", true);
-//            Random random = new Random();
-//            String userName = "科技云-测试用户" + random.nextInt(10) + 1;
             rtnMap.put("userName", userName);
-
             if (!sysUserServiceImpl.checkUserNameExist(userName)) {
                 String pw = registerUser(userName);
                 logger.info("科技云用户未注册,注册用户成功,用户名:{},密码:{}", userName, pw);
                 rtnMap.put("password", pw);
             } else {
-                //String password = PasswordUtils.getPassword(userName);
                 String password = userName + "password"; // 固定的
                 logger.info("科技云用户已注册,用户名:{},密码:{}", userName, password);
                 rtnMap.put("password", password);
             }
+            kejiyunLoginStatus = false; // 重置登录状态
+            this.deviceId = ""; // 重置设备id
         } else {
             rtnMap.put("loginThirdParty", false);
-
         }
         return ReturnMapUtils.setSucceededCustomMap(rtnMap);
 
