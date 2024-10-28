@@ -118,7 +118,7 @@
                 <div class="passport" v-if="showPassPort">
                   <Divider>其他方式登录</Divider>
                   <div class="icons">
-                    <div class="icon-item" @click="getRedirect">
+                    <div class="icon-item" @click="handlePassPort">
                       <img src="./images/umtIcon.png" alt="科技云通行证登录" >
                     </div>
                   </div>
@@ -177,7 +177,7 @@ export default {
     }
   },
   created(){
-    this.getEnabled()
+    this.getRedirect()
   },
   mounted() {
     this.$Message.destroy();
@@ -350,11 +350,16 @@ export default {
       this.$Message.destroy()
       this.$event.emit('loading',false)
     },
-    getEnabled(){
+
+   async getRedirect(){
+      const result = await FingerprintJS.load();
+      const visitor = await result.get()
+      this.deviceId = visitor.visitorId
       this.$axios
-        .get('/passport/getEnabled')
+        .get('/passport/getRedirect?deviceId='+this.deviceId)
         .then((res) => {
-          if (res.data.code === 200 && res.data.enabled) {
+          if (res.data.code === 200 && res.data?.client_id) {
+            this.passInfo = res.data
             this.showPassPort = true
           }else{
             this.showPassPort = false
@@ -363,30 +368,12 @@ export default {
         .catch((error) => {
           this.showPassPort = false
         });
-    },
-    async getRedirect(){
-      const result = await FingerprintJS.load();
-      const visitor = await result.get()
-      this.deviceId = visitor.visitorId
-      this.$axios
-        .get('/passport/getRedirect?deviceId='+this.deviceId)
-        .then((res) => {
-          if (res.data.code === 200 && !res.data.isBusy) {
-            this.passInfo = res.data
-            this.handlePassPort()
-          }else{
-            this.$Message.warning('系统繁忙中，请稍后再试！')
-          }
-        })
-        .catch((error) => {
-          this.$Message.warning(res.data.errorMsg)
-        });
 
     },
     handlePassPort(){
       this.showIframe = true
       const {redirect_uri,client_id} = this.passInfo
-      this.src = `https://passport.escience.cn/oauth2/authorize?response_type=code&redirect_uri=${redirect_uri}&client_id=${client_id}&theme=EMBED`
+      this.src = `https://passport.escience.cn/oauth2/authorize?response_type=code&redirect_uri=${redirect_uri}&client_id=${client_id}&theme=EMBED&state=${this.deviceId}`
       this.$event.emit('loading',true)
       this.$Message.loading({
         content: "第三方登陆中，请稍后...",
