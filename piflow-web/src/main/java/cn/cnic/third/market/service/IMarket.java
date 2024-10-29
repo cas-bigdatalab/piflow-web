@@ -53,4 +53,13 @@ public interface IMarket {
      */
     public String downloadComponents(String jarName, String bundle);
 
+    /**
+     * @param :
+     * @return void
+     * @author tianyao
+     * @description send statistics to FairMan
+     * @date 2024/1/16 18:45
+     */
+    void sendStatisticToFairMan();
+
 }

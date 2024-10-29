@@ -104,6 +104,20 @@ public class SysParamsCache {
         MARKET_SOFTWARE_FLAG = marketSoftwareFlag;
     }
 
+    public static String IS_SEND_STATISTICS_TO_FAIRMAN;
+
+    @Value("${syspara.isSendStatisticsToFairMan}")
+    public void setIsSendStatisticsToFairMan(String isSendStatisticsToFairMan) {
+        IS_SEND_STATISTICS_TO_FAIRMAN = isSendStatisticsToFairMan;
+    }
+
+    public static String DATA_CENTER_NAME;
+
+    @Value("${syspara.dataCenterName}")
+    public void setDataCenterName(String dataCenterName) {
+        DATA_CENTER_NAME = dataCenterName;
+    }
+
     public static String PUSH_TO_HARBOR;
 
     @Value("${push_to_harbor}")
