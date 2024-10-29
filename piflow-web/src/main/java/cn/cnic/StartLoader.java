@@ -70,6 +70,11 @@ public class StartLoader implements ApplicationRunner {
         List<SysSchedule> sysScheduleByStatusList = sysScheduleMapper.getSysScheduleListByStatus(true, ScheduleState.RUNNING);
         if (null != sysScheduleByStatusList && sysScheduleByStatusList.size() > 0) {
             for (SysSchedule sysSchedule : sysScheduleByStatusList) {
+                //isSendStatisticToFairMan
+                if ("FairManSync".equals(sysSchedule.getJobName()) && !Boolean.parseBoolean(SysParamsCache.IS_SEND_STATISTICS_TO_FAIRMAN)) {
+                    logger.info("no send statistic to fairman!!!!!!!!!!!!");
+                   continue;
+                }
                 JobDetail scheduleJobByJobName = QuartzUtils.getScheduleJobByJobName(scheduler, sysSchedule.getJobName());
                 if (null != scheduleJobByJobName) {
                     continue;
@@ -98,7 +103,7 @@ public class StartLoader implements ApplicationRunner {
                 Set<String> unrepeatedBundles = new HashSet<>();
                 List<String> bundles = stopsHubs.stream().map(StopsHub::getBundles).collect(Collectors.toList());
                 for (String bundle : bundles) {
-                    if (StringUtils.isBlank(bundle)){
+                    if (StringUtils.isBlank(bundle)) {
                         continue;
                     }
                     String[] split = bundle.split(",");

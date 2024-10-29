@@ -412,4 +412,15 @@ public class ApiConfig {
         return MARKET_DOWNLOAD_COMPONENTS_URL;
     }
 
+    public static String SEND_STATISTICS_TO_FAIRMAN_URL;
+
+    @Value("${api.fairMan.sendStatisticsUrl}")
+    public void setSendStatisticsToFairManUrl(String sendStatisticsToFairManUrl) {
+        SEND_STATISTICS_TO_FAIRMAN_URL = sendStatisticsToFairManUrl;
+    }
+
+    public static String getSendStatisticsToFairManUrl() {
+        return SEND_STATISTICS_TO_FAIRMAN_URL;
+    }
+
 }
