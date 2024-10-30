@@ -136,8 +136,10 @@
       <p style="text-align: center;font-size: 12px;">Contact us ：010-58815678</p>
     </div>
     <!-- iframe -->
-    <img src="./images/close.png" v-if="src" alt="" class="iframe-close"  @click="handleCloseIframe">
-    <iframe :src="src"  v-if="src"  id="passportIfame"></iframe>
+     <div v-show="src">
+        <img src="./images/close.png" v-if="showClose" alt="" class="iframe-close"  @click="handleCloseIframe">
+        <iframe :src="src"  id="passportIfame" ref="passportIfame"></iframe>
+     </div>
     <!-- iframe -->
 </div>
 </template>
@@ -163,7 +165,8 @@ export default {
       src:'',
       deviceId:'',
       statusTimer:null,
-      showPassPort:false
+      showPassPort:false,
+      showClose:false
     };
   },
   watch: {
@@ -182,6 +185,11 @@ export default {
   mounted() {
     this.$Message.destroy();
     window.addEventListener('keydown',this.keyDown);
+    const iframe = this.$refs.passportIfame;  
+    // 添加load事件监听器  
+    iframe.addEventListener('load', ()=>{
+        if(this.src) this.showClose = true
+      }); 
   },
   methods: {
     onChange() {
@@ -345,6 +353,7 @@ export default {
           });
     },
     handleCloseIframe(){
+      this.showClose  = false
       this.showIframe = false
       this.src = ''
       this.$Message.destroy()
@@ -375,10 +384,10 @@ export default {
       const {redirect_uri,client_id} = this.passInfo
       this.src = `https://passport.escience.cn/oauth2/authorize?response_type=code&redirect_uri=${redirect_uri}&client_id=${client_id}&theme=EMBED&state=${this.deviceId}`
       this.$event.emit('loading',true)
-      this.$Message.loading({
-        content: "第三方登陆中，请稍后...",
-        duration: 0
-      });
+      // this.$Message.loading({
+      //   content: "第三方登陆中，请稍后...",
+      //   duration: 0
+      // });
       this.getPassportStatus()
     },
     async getPassportStatus(){
@@ -388,11 +397,12 @@ export default {
           this.username = res.data.userName
           this.password = res.data.password
           this.src = ''
+          this.showClose  = false
           this.handleLogin('passport')
       }else if(this.showIframe){
          this.statusTimer =  setTimeout(() => {
             this.getPassportStatus()
-          }, 500);
+          }, 100);
         }
       }
     },

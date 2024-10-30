@@ -147,17 +147,18 @@
     left: 0;
     right: 0;
     width: 60%;
-    height: 82%;
+    height: 85%;
     top: 0;
     bottom: 0;
     z-index: 9998;
     margin: auto;
     border-radius: 8px;
+    border: none;
   }
   .iframe-close{
     position: fixed;
     right: 21vw;
-    top: 10%;
+    top: 8.5%;
     width: 20px;
     height: 20px;
     cursor: pointer;
