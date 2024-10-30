@@ -85,14 +85,13 @@ public class PassportController {
      */
     @RequestMapping(value = "/receiveAuthCode", method = RequestMethod.GET)
     @ResponseBody
-    public String receiveAuthCode(String code, String state) {
+    public void receiveAuthCode(String code, String state) {
         logger.info("receiveAuthCode code: {}, state: {}", code, state);
         CompletableFuture.runAsync(() -> callKejiyunHttpGetUserInfo(code, state))
                 .exceptionally(e -> {
                     logger.error("Asynchronous request failed: {}", e.getMessage());
                     return null;
                 });
-        return ReturnMapUtils.setSucceededMsgRtnJsonStr("登录成功,请关闭当前页面!");
     }
 
     private void callKejiyunHttpGetUserInfo(String code, String deviceId) {
