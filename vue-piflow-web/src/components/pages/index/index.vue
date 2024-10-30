@@ -201,7 +201,7 @@
               </div>
               <ul class="textArea">
                 <li><p>Stop：
-                  <countTo :EndVal = Number(stopResourceInfo.STOP_COUNT)></countTo>
+                  <countTo :EndVal = "(Number(stopResourceInfo.STOP_COUNT) - stopNum)"></countTo>
                 </p></li>
                 <li><p>Stopgroup：
                   <countTo :EndVal = Number(stopResourceInfo.STOPGROUP_COUNT)></countTo>
@@ -276,6 +276,7 @@ export default {
           STOP_COUNT: 0,
           STOPGROUP_COUNT: 0,
       },
+        stopNum:window.$STOP_NUM,
         percent: 0,
         cpuPercent: 0,
         memoryPercent: 0,
