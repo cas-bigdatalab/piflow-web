@@ -70,7 +70,7 @@
               :show-upload-list="true"
               :on-success="handleSuccess"
               :on-error="handleError"
-              :format="['jar']"
+              :format="['jar','zip']"
               :before-upload="handleBeforeUpload"
               type="drag">
             <div style="padding: 80px 0; height: 240px">
@@ -193,12 +193,12 @@ export default {
     handleBeforeUpload (file) {
       var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
       const extension =
-          testmsg === "jar";
+          testmsg === "jar" || testmsg === 'zip';
       const isLt500M = file.size / 1024 / 1024 < 500;
       if (!extension) {
         this.$Notice.warning({
           title: 'The file format is incorrect',
-          desc: 'File format of ' + file.name + ' is incorrect, please select jar.'
+          desc: 'File format of ' + file.name + ' is incorrect, please select jar or zip.'
         });
         return false;
       }
