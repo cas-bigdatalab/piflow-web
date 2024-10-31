@@ -1,7 +1,12 @@
 package cn.cnic.component.sparkJar.service.impl;
 
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.*;
 import java.util.Date;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import cn.cnic.common.constant.MessageConfig;
 import org.apache.commons.lang3.StringUtils;
@@ -54,7 +59,42 @@ public class SparkJarServiceImpl implements ISparkJarService {
         if (file.isEmpty()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPLOAD_FAILED_FILE_EMPTY_MSG());
         }
-        Map<String, Object> uploadMap = FileUtils.uploadRtnMap(file, sparkJarPath, sparkJarName);
+        Map<String, Object> uploadMap = null;
+
+        if (sparkJarName.endsWith(".zip")) {
+            try (InputStream inputStream = file.getInputStream();
+                 ZipInputStream zipIn = new ZipInputStream(inputStream)) {
+                // 创建临时目录用于解压文件
+                Path tempDir = Files.createTempDirectory("spark_jar_upload");
+
+                ZipEntry entry;
+                boolean foundJar = false;
+                while ((entry = zipIn.getNextEntry()) != null) {
+                    if (!entry.isDirectory() && entry.getName().toLowerCase().endsWith(".jar")) {
+                        // 获取第一个JAR文件的名称
+                        sparkJarName = new File(entry.getName()).getName();
+
+                        // 创建临时文件来保存JAR
+                        Path tempFile = tempDir.resolve(sparkJarName);
+                        Files.copy(zipIn, tempFile, StandardCopyOption.REPLACE_EXISTING);
+
+                        // 上传JAR文件到sparkJar路径
+                        uploadMap = FileUtils.uploadRtnMap(tempFile.toFile(), sparkJarPath, sparkJarName);
+                        foundJar = true;
+                        break;
+                    }
+                    zipIn.closeEntry();
+                }
+                if (!foundJar) {
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr("Zip file must contain at least one JAR file");
+                }
+            } catch (Exception e) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("Error processing the uploaded file: " + e.getMessage());
+            }
+        } else {
+            uploadMap = FileUtils.uploadRtnMap(file, sparkJarPath, sparkJarName);
+        }
+
         if (null == uploadMap || uploadMap.isEmpty()) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPLOAD_FAILED_MSG());
         }

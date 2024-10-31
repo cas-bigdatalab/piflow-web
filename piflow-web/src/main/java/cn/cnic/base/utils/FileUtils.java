@@ -193,6 +193,59 @@ public class FileUtils {
         return rtnMap;
     }
 
+    public static Map<String, Object> uploadRtnMap(File file, String path, String saveFileName) {
+        if (file == null || !file.exists() || file.length() == 0) {
+            return ReturnMapUtils.setFailedMsg(MessageConfig.UPLOAD_FAILED_FILE_EMPTY_MSG());
+        }
+        CheckPathUtils.isChartPathExist(path);
+        //file name
+        String fileName = file.getName();
+        String[] fileNameSplit = fileName.split("\\.");
+        if (saveFileName == null) {
+            if (fileNameSplit.length > 0) {
+                saveFileName = UUIDUtils.getUUID32() + "." + fileNameSplit[fileNameSplit.length - 1];
+            }
+        }
+        if (StringUtils.isBlank(saveFileName)) {
+            saveFileName = UUIDUtils.getUUID32();
+        }
+        File saveFile = new File(path + saveFileName);
+        if (!saveFile.getParentFile().exists()) {
+            boolean mkdirs = saveFile.getParentFile().mkdirs();
+            if (mkdirs) {
+                logger.info("File created successfully");
+            }
+        }
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(saveFile));
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+            out.flush();
+            out.close();
+            logger.debug(saveFile.getName() + " Upload success");
+            rtnMap.put("fileName", fileName);
+            rtnMap.put("saveFileName", saveFileName);
+            rtnMap.put("path", path + saveFileName);
+            rtnMap.put("msgInfo", "Upload success");
+            rtnMap.put("code", 200);
+        } catch (FileNotFoundException e) {
+            //e.printStackTrace();
+            rtnMap.put("msgInfo", "Upload failure");
+            logger.error("Upload failure,", e);
+        } catch (IOException e) {
+            //e.printStackTrace();
+            rtnMap.put("msgInfo", "Upload failure");
+            logger.error("Upload failure", e);
+        }
+        return rtnMap;
+    }
+
     /**
      * String to "Document"
      *
