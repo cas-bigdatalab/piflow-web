@@ -1,22 +1,23 @@
 package cn.cnic.component.process.service.Impl;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.flow.domain.FlowPublishDomain;
+import cn.cnic.component.flow.entity.FlowPublishing;
 import cn.cnic.component.process.domain.ProcessGroupDomain;
+import cn.cnic.component.process.service.IProcessService;
+import cn.cnic.component.process.vo.ProcessAndProcessGroupVo;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
-import cn.cnic.base.utils.PageHelperUtils;
-import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.ProcessGroup;
 import cn.cnic.component.process.service.IProcessAndProcessGroupService;
@@ -28,12 +29,21 @@ import cn.cnic.component.process.vo.ProcessVo;
 @Service
 public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGroupService {
 
+    private static Logger logger = LoggerUtil.getLogger();
+
+
     private final ProcessGroupDomain processGroupDomain;
+    private final IProcessService processServiceImpl;
+    private final FlowPublishDomain flowPublishDomain;
 
     @Autowired
-    public ProcessAndProcessGroupServiceImpl(ProcessGroupDomain processGroupDomain) {
+    public ProcessAndProcessGroupServiceImpl(ProcessGroupDomain processGroupDomain,
+                                             IProcessService processServiceImpl,
+                                             FlowPublishDomain flowPublishDomain) {
 
         this.processGroupDomain = processGroupDomain;
+        this.processServiceImpl = processServiceImpl;
+        this.flowPublishDomain = flowPublishDomain;
     }
 
     /**
@@ -45,11 +55,12 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
      * @return json
      */
     @Override
-    public String getProcessAndProcessGroupListPage(String createUser, Integer offset, Integer limit, String param, String name, String state, String company) {
+    public String getProcessAndProcessGroupListPage(String createUser, Integer offset, Integer limit, String param,
+                                                    String name, String state, String company) {
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
-        Page<Process> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
+        Page<ProcessAndProcessGroupVo> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
         SysRoleType currentUserRole = SessionUserUtil.getCurrentUserRole();
         switch (currentUserRole) {
             case ADMIN:
@@ -60,8 +71,28 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
                 processGroupDomain.getProcessAndProcessGroupListByUser(param, createUser);
 
         }
+        List<ProcessAndProcessGroupVo> result = injectFlowPublishingInfo(page);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-        return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
+        return PageHelperUtils.setLayTableParamWithChangeResultRtnStr(page, new ArrayList<>(result), rtnMap);
+        //return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
+    }
+
+    private List<ProcessAndProcessGroupVo> injectFlowPublishingInfo(Page<ProcessAndProcessGroupVo> page) {
+        List<ProcessAndProcessGroupVo> result = page.getResult();
+        for (ProcessAndProcessGroupVo vo : result) {
+            FlowPublishing flow = flowPublishDomain.getByIdId(vo.getFlowId());
+            if (null == flow ) {
+                logger.error("FlowPublishDomain.getByIdId is null, flowId:{}", vo.getFlowId());
+                continue;
+            }
+            if (null == flow.getProductTypeName() || null == flow.getProductTypeId()) {
+                logger.error("FlowPublishDomain.getProductTypeName or getProductTypeId is null, flowId:{}," +
+                        " productTypeName:{}, productTypeId:{}", vo.getFlowId(), flow.getProductTypeName(), flow.getProductTypeId());
+            }
+            vo.setProductTypeName(flow.getProductTypeName());
+            vo.setProductTypeId(flow.getProductTypeId());
+        }
+        return result;
     }
 
     /**

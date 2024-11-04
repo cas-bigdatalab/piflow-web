@@ -42,6 +42,10 @@ public class FlowPublishDomain {
     @Autowired
     private FileDomain fileDomain;
 
+
+    public FlowPublishing getByIdId(String id) {
+        return flowPublishingMapper.getById(id);
+    }
     /**
      * @param vo:
      * @return FlowPublishing

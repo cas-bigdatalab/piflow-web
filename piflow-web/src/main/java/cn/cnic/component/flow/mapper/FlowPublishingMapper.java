@@ -18,6 +18,9 @@ public interface FlowPublishingMapper {
     @Select("select * from flow_publishing where name = #{name} and flow_id = #{flowId} and enable_flag = 1")
     FlowPublishing getByNameAndFlowId(@Param("name") String name, @Param("flowId") String flowId);
 
+    @Select("select * from flow_publishing where id = #{id} and enable_flag = 1")
+    FlowPublishing getById( @Param("id") String id);
+
     @InsertProvider(type = FlowPublishingMapperProvider.class, method = "insert")
     int insert(FlowPublishing flowPublishing);
 

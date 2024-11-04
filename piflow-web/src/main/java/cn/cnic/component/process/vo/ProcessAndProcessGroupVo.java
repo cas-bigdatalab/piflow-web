@@ -25,4 +25,8 @@ public class ProcessAndProcessGroupVo implements Serializable {
     private String processType;
     private String company;
     private String username;
+    private String flowId;
+
+    private Long productTypeId;
+    private String productTypeName;
 }

@@ -60,7 +60,7 @@ public interface IProcessService {
      *
      * @param appID
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     public ProcessVo getAppInfoByThirdAndSave(String appID) throws Exception;
 
@@ -77,7 +77,7 @@ public interface IProcessService {
      *
      * @param appIDs
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     public String getProgressByThirdAndSave(String[] appIDs) throws Exception;
 
@@ -94,7 +94,7 @@ public interface IProcessService {
      *
      * @param processVo
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     public int updateProcess(String username, boolean isAdmin, ProcessVo processVo) throws Exception;
 
@@ -153,7 +153,7 @@ public interface IProcessService {
      * @param checkpoint
      * @param runMode
      * @return
-     * @throws Exception 
+     * @throws Exception
      */
     public String startProcess(boolean isAdmin, String username, String processId, String checkpoint, String runMode) throws Exception;
 
