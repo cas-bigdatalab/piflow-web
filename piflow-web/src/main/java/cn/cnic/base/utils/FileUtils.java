@@ -810,15 +810,15 @@ public class FileUtils {
                 if (fs.isFile(hdfsPath)) {
                     // 如果是文件，直接添加到ZIP输出流
                     contentLength += addFileToZip(fs, hdfsPath, zipOut);
-                    response.setContentLength(contentLength);
                 } else if (fs.isDirectory(hdfsPath)) {
                     // 如果是目录，递归添加目录内容到ZIP输出流
                     contentLength += addDirectoryToZip(zipOut, fs, hdfsPath, "");
 
                 }
             }
+            response.setContentLength(contentLength);
 
-            zipOut.finish();
+//            zipOut.finish();
 
         } catch (IOException e) {
             throw new RuntimeException("Error while downloading files from HDFS", e);
