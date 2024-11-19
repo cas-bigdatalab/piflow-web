@@ -357,6 +357,14 @@ public class SysUserServiceImpl implements ISysUserService {
         }
         String username = sysUserVo.getUsername();
         String password = sysUserVo.getPassword();
+        //password解密
+        try {
+            password = password.replace(" ", "+");
+            password = AESUtils.aesDecrypt(password);
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
+        }
+
         // Determine if it is empty
         if (StringUtils.isAllEmpty(username, password)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Registration failed, username or password is empty");
@@ -422,6 +430,12 @@ public class SysUserServiceImpl implements ISysUserService {
 
     @Override
     public String jwtLogin(String username, String password) {
+        try {
+            password = password.replace(" ", "+");
+            password = AESUtils.aesDecrypt(password);
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
+        }
         //用户验证
         final Authentication authentication = authenticate(username, password);
         //存储认证信息
