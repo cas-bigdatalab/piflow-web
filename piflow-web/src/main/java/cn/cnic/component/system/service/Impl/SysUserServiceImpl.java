@@ -160,6 +160,12 @@ public class SysUserServiceImpl implements ISysUserService {
         try {
             String name = sysUserVo.getUsername();
             String password = sysUserVo.getPassword();
+            try {
+                password = password.replace(" ", "+");
+                password = AESUtils.aesDecrypt(password);
+            } catch (Exception e) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
+            }
             if (StringUtils.isNotBlank(password)) {
                 PasswordUtils.updatePassword(name, password);
                 password = new BCryptPasswordEncoder().encode(password);
@@ -213,8 +219,18 @@ public class SysUserServiceImpl implements ISysUserService {
      * @return json
      */
     public String updatePassword(String username, String oldPassword, String password) {
+
         if (StringUtils.isBlank(username) || StringUtils.isBlank(oldPassword) || StringUtils.isBlank(password)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_OPERATION_MSG());
+        }
+        try {
+            password = password.replace(" ", "+");
+            password = AESUtils.aesDecrypt(password);
+
+            oldPassword = oldPassword.replace(" ", "+");
+            oldPassword = AESUtils.aesDecrypt(oldPassword);
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
         }
         SysUser userByUserName = sysUserDomain.findUserByUserName(username);
         if (userByUserName == null || StringUtils.isBlank(userByUserName.getUsername())) {
