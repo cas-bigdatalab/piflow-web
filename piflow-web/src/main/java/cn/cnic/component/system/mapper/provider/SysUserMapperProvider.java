@@ -90,13 +90,15 @@ public class SysUserMapperProvider {
 
         strBuf.append("( ");
         strBuf.append(SqlUtils.baseFieldName() + ", ");
-        strBuf.append("username, password, name, age, sex, status, developer_access_key, phone_number, email, company ");
+        strBuf.append("username, password, name, age, sex, status, developer_access_key, phone_number, email, company,p_last_update_dttm ");
         strBuf.append(") ");
 
         strBuf.append("values ");
         strBuf.append("(");
         strBuf.append(SqlUtils.baseFieldValues(sysUser) + ", ");
-        strBuf.append(username + "," + password + "," + name + "," + age + "," + sex + "," + status + "," + developerAccessKey + "," + phoneNumber + "," + email + "," + company);
+        strBuf.append(username + "," + password + "," + name + "," + age + "," + sex + "," + status
+                + "," + developerAccessKey + "," + phoneNumber + "," + email + "," + company
+                + "," + SqlUtils.preventSQLInjection(sysUser.getPLastUpdateDttmStr()));
         strBuf.append(")");
 
         this.resetSysUser();
@@ -133,6 +135,9 @@ public class SysUserMapperProvider {
         sql.SET("name = " + this.name);
         if (StringUtils.isNotBlank(this.password) && !"null".equals(password)) {
             sql.SET("password = " + this.password);
+        }
+        if (StringUtils.isNotBlank(sysUser.getPLastUpdateDttmStr()) && !"null".equals(sysUser.getPLastUpdateDttmStr())) {
+            sql.SET("p_last_update_dttm = " + SqlUtils.preventSQLInjection(sysUser.getPLastUpdateDttmStr()));
         }
         if (null != status) {
             sql.SET("status = " + this.status);

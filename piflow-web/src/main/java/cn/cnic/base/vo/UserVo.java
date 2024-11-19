@@ -25,6 +25,7 @@ public class UserVo implements UserDetails, Serializable {
     private String id;
     private String username;
     private String password;
+    private String pLastUpdateDttmStr;
     private String name;
     private Integer age;
     private Byte status;

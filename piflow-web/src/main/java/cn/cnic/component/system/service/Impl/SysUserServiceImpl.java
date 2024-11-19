@@ -226,6 +226,8 @@ public class SysUserServiceImpl implements ISysUserService {
         }
         String encodePassword = new BCryptPasswordEncoder().encode(password);
         userByUserName.setPassword(encodePassword);
+        String pLastUpdateDttm = DateUtils.dateTimesToStr(new Date());
+        userByUserName.setPLastUpdateDttmStr(pLastUpdateDttm);
         try {
             sysUserDomain.updateSysUser(userByUserName);
         } catch (Exception e) {
@@ -374,6 +376,8 @@ public class SysUserServiceImpl implements ISysUserService {
         sysUser.setEnableFlag(true);
         sysUser.setUsername(username);
         sysUser.setPassword(password);
+        String pLastUpdateDttm = DateUtils.dateTimesToStr(new Date());
+        sysUser.setPLastUpdateDttmStr(pLastUpdateDttm);
         sysUser.setName(sysUserVo.getName());
         sysUser.setAge(sysUserVo.getAge());
         sysUser.setSex(sysUserVo.getSex());

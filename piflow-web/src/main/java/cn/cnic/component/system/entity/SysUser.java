@@ -1,5 +1,6 @@
 package cn.cnic.component.system.entity;
 
+import java.util.Date;
 import java.util.List;
 
 import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
@@ -27,5 +28,7 @@ public class SysUser extends BaseModelUUIDNoCorpAgentId {
     private String phoneNumber;
     private String email;
     private String company;
+    private Date pLastUpdateDttm;
+    private String pLastUpdateDttmStr;
     private List<SysRole> roles;
 }
