@@ -228,6 +228,7 @@ public class SysUserMapperProvider {
             sql.SELECT("*");
             sql.FROM("sys_user");
             sql.WHERE("name = '" + name + "'");
+            sql.WHERE("enable_flag = 1");
             sqlStr = sql.toString();
         }
         return sqlStr;

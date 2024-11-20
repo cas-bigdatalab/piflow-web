@@ -160,13 +160,14 @@ public class SysUserServiceImpl implements ISysUserService {
         try {
             String name = sysUserVo.getUsername();
             String password = sysUserVo.getPassword();
-            try {
-                password = password.replace(" ", "+");
-                password = AESUtils.aesDecrypt(password);
-            } catch (Exception e) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
-            }
             if (StringUtils.isNotBlank(password)) {
+                try {
+                    password = password.replace(" ", "+");
+                    password = AESUtils.aesDecrypt(password);
+                } catch (Exception e) {
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
+                }
+
                 PasswordUtils.updatePassword(name, password);
                 password = new BCryptPasswordEncoder().encode(password);
                 sysUserById.setPassword(password);
@@ -446,14 +447,14 @@ public class SysUserServiceImpl implements ISysUserService {
 
     @Override
     public String jwtLogin(String username, String password) {
+        //用户验证
+        final Authentication authentication = authenticate(username, password);
         try {
             password = password.replace(" ", "+");
             password = AESUtils.aesDecrypt(password);
         } catch (Exception e) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
         }
-        //用户验证
-        final Authentication authentication = authenticate(username, password);
         //存储认证信息
         SecurityContextHolder.getContext().setAuthentication(authentication);
         //生成token
