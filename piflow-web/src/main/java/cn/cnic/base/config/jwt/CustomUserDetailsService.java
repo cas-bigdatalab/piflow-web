@@ -3,7 +3,9 @@ package cn.cnic.base.config.jwt;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.cnic.base.utils.DateUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -49,6 +51,9 @@ public class CustomUserDetailsService implements UserDetailsService {
             userVo.setPassword(sysUser.getPassword());
             userVo.setName(sysUser.getName());
             userVo.setAge(sysUser.getAge());
+            if(ObjectUtils.isNotEmpty(sysUser.getPLastUpdateDttm())){
+                userVo.setPLastUpdateDttmStr(DateUtils.dateTimesToStr(sysUser.getPLastUpdateDttm()));
+            }
             List<SysRole> sysRoleTypes = sysUser.getRoles();
             userVo.setRoles(sysRoleTypes);
             if (CollectionUtils.isNotEmpty(sysRoleTypes)) {

@@ -118,6 +118,14 @@ public class SysUserServiceImpl implements ISysUserService {
             String name = sysUserVo.getUsername();
             String password = sysUserVo.getPassword();
             if (StringUtils.isNotBlank(password)) {
+                //密码解密
+                try {
+                    password = password.replace(" ", "+");
+                    password = AESUtils.aesDecrypt(password);
+                } catch (Exception e) {
+                    return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
+                }
+
             	PasswordUtils.updatePassword(name,password);
                 password = new BCryptPasswordEncoder().encode(password);
                 sysUserById.setPassword(password);
@@ -149,6 +157,17 @@ public class SysUserServiceImpl implements ISysUserService {
         if(StringUtils.isBlank(username) || StringUtils.isBlank(oldPassword) || StringUtils.isBlank(password)){
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_OPERATION_MSG());
         }
+        //密码解密
+        try {
+            password = password.replace(" ", "+");
+            password = AESUtils.aesDecrypt(password);
+
+            oldPassword = oldPassword.replace(" ", "+");
+            oldPassword = AESUtils.aesDecrypt(oldPassword);
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
+        }
+
         SysUser userByUserName = sysUserDomain.findUserByUserName(username);
         if (userByUserName == null || StringUtils.isBlank(userByUserName.getUsername())) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
@@ -159,6 +178,8 @@ public class SysUserServiceImpl implements ISysUserService {
         }
         String encodePassword = new BCryptPasswordEncoder().encode(password);
         userByUserName.setPassword(encodePassword);
+        String pLastUpdateDttm = DateUtils.dateTimesToStr(new Date());
+        userByUserName.setPLastUpdateDttmStr(pLastUpdateDttm);
         try {
             sysUserDomain.updateSysUser(userByUserName);
         } catch (Exception e) {
@@ -243,6 +264,13 @@ public class SysUserServiceImpl implements ISysUserService {
         }
         String username = sysUserVo.getUsername();
         String password = sysUserVo.getPassword();
+        //password解密
+        try {
+            password = password.replace(" ", "+");
+            password = AESUtils.aesDecrypt(password);
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
+        }
         // Determine if it is empty
         if (StringUtils.isAllEmpty(username, password)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("Registration failed, username or password is empty");
@@ -262,6 +290,8 @@ public class SysUserServiceImpl implements ISysUserService {
         sysUser.setEnableFlag(true);
         sysUser.setUsername(username);
         sysUser.setPassword(password);
+        String pLastUpdateDttm = DateUtils.dateTimesToStr(new Date());
+        sysUser.setPLastUpdateDttmStr(pLastUpdateDttm);
         sysUser.setName(sysUserVo.getName());
         sysUser.setAge(sysUserVo.getAge());
         sysUser.setSex(sysUserVo.getSex());
