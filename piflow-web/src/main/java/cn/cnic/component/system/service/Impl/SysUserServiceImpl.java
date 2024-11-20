@@ -35,6 +35,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -447,14 +448,14 @@ public class SysUserServiceImpl implements ISysUserService {
 
     @Override
     public String jwtLogin(String username, String password) {
-        //用户验证
-        final Authentication authentication = authenticate(username, password);
         try {
             password = password.replace(" ", "+");
             password = AESUtils.aesDecrypt(password);
         } catch (Exception e) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
         }
+        //用户验证
+        final Authentication authentication = authenticate(username, password);
         //存储认证信息
         SecurityContextHolder.getContext().setAuthentication(authentication);
         //生成token
