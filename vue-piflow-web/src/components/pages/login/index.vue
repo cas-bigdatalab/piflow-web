@@ -147,6 +147,8 @@
 import Cookies from 'js-cookie';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import {getStatus} from "@/apis/passport"
+import {aesMinEncrypt} from "@/utils/crypto.js"
+import { validatePassword } from '@/utils'
 export default {
   name: "login",
   data() {
@@ -233,7 +235,7 @@ export default {
 
       let data = {
         username: this.username,
-        password: this.password
+        password: aesMinEncrypt(this.password)
       };
       this.$axios
         .post("/jwtLogin", this.$qs.stringify(data))
@@ -276,7 +278,17 @@ export default {
           background: true,
           content: "请填写密码！"
         });
-      } else if (this.password !== this.isPassword) {
+      }else if (!validatePassword(this.password)) {
+        this.$Message["error"]({
+          background: true,
+          content: this.$t("user_columns.passwordComplexity")
+        });
+      } else if (this.username == this.password) {
+        this.$Message["error"]({
+          background: true,
+          content: "密码不能与账号相同，请重新输入！"
+        });
+      }else if (this.password !== this.isPassword) {
         this.$Message["error"]({
           background: true,
           content: "密码与确认密码不一致，请重新输入！"
@@ -322,7 +334,7 @@ export default {
       });
       let data = {
         username: this.username,
-        pw: this.password,
+        pw: aesMinEncrypt(this.password),
         name: this.name,
         status:0
       };
@@ -395,7 +407,7 @@ export default {
       if(res.data.code === 200){
         if(res.data.loginThirdParty){
           this.username = res.data.userName
-          this.password = res.data.password
+          this.password = aesMinEncrypt(res.data.password)
           this.src = ''
           this.showClose  = false
           this.handleLogin('passport')

@@ -26,25 +26,32 @@
 </template>
 
 <script>
+import {aesMinEncrypt} from "@/utils/crypto.js"
+import { validatePassword } from '@/utils'
 export default {
   name: "modification",
   components:{},
   data() {
     const validatePass = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('Please enter your new password'));
-      } else {
+        callback(new Error(this.$t('user_columns.newPsd')));
+      }else if (value == this.formCustom.oldPasswd) {
+        callback(new Error(this.$t('user_columns.passwordDiff')));
+      }else if(!validatePassword(value)){
+        callback(new Error(this.$t('user_columns.passwordComplexity')));
+      }else {
         if (this.formCustom.passwdCheck !== '') {
           this.$refs.formCustom.validateField('passwdCheck');
         }
         callback();
       }
     };
+    
     const validatePassCheck = (rule, value, callback) => {
       if (value === '') {
-        callback(new Error('Please enter your new password again'));
+        callback(new Error(this.$t('user_columns.newPsdCheck')));
       } else if (value !== this.formCustom.passwd) {
-        callback(new Error('The two input passwords do not match!'));
+        callback(new Error(this.$t('user_columns.psdCheckDiff')));
       } else {
         callback();
       }
@@ -57,7 +64,7 @@ export default {
       },
       ruleCustom: {
         oldPasswd: [
-          { required: true, message: 'Please enter your old password', trigger: 'blur' }
+          { required: true, message: this.$t('user_columns.oldPsd'), trigger: 'blur' }
         ],
         passwd: [
           { required: true, validator: validatePass, trigger: 'blur' }
@@ -69,8 +76,8 @@ export default {
     };
   },
   methods:{
-    handleSubmit (name) {
-      this.$refs[name].validate((valid) => {
+    handleSubmit () {
+      this.$refs.formCustom.validate((valid) => {
         if (valid) {
           this.changePassword();
 
@@ -80,28 +87,27 @@ export default {
       })
     },
 
-    handleReset (name) {
-      this.$refs[name].resetFields();
+    handleReset () {
+      this.$refs.formCustom.resetFields();
     },
 
     changePassword(){
       let parameter= {};
-      parameter.oldPassword = this.formCustom.oldPasswd;
-      parameter.password = this.formCustom.passwdCheck;
+      parameter.oldPassword = aesMinEncrypt(this.formCustom.oldPasswd);
+      parameter.password = aesMinEncrypt(this.formCustom.passwdCheck);
       this.$axios
           .post("/sysUser/updatePassword", this.$qs.stringify(parameter))
           .then((res) => {
             if (res.data.code === 200) {
               this.$Message.success('Success!');
-              this.formCustom= {
-                oldPasswd: '',
-                passwd: '',
-                passwdCheck: ''
-              };
-
-              this.deleteCookies();
-              this.$router.push({ path: "/login" })
-
+              this.handleReset()
+              if (this.$route.query.redirect) {
+                //如果存在参数
+                let redirect = this.$route.query.redirect;
+                this.$router.push(redirect); //则跳转至进入登录页前的路由
+              } else {
+                this.$router.push("/home"); //否则跳转至首页
+              }
             } else {
               this.$Message.error('Fail!');
 

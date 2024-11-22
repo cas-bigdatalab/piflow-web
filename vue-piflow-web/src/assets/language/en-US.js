@@ -217,7 +217,13 @@ module.exports = {
         createTime: "CreateTime",
         action: "Actions",
         password:"Password",
-        role:"Role"
+        role:"Role",
+        passwordComplexity:'The password must contain uppercase and lowercase digits and characters and must be longer than 8 characters',
+        passwordDiff:'The new password cannot be the same as the old password!',
+        newPsd:"Please enter your new password",
+        newPsdCheck:"Please enter your new password again",
+        oldPsd:"Please enter your old password",
+        psdCheckDiff:"The two input passwords do not match"
     },
     modification_columns:{
         oldPasswd: "old Password",

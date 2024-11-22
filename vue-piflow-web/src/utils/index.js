@@ -39,3 +39,27 @@ export const formatFlow = (val, type, fixed = 2) => {
       }
     }
   }
+
+export const  validatePassword = (password) => {
+    // 正则表达式解释：
+    // (?=.*[a-z]) - 至少一个小写字母
+    // (?=.*[A-Z]) - 至少一个大写字母
+    // (?=.*\d) - 至少一个数字
+    // (?=.*[@$!%*?&]) - 至少一个特殊字符
+    // .{9,} - 至少9个字符（因为长度要大于8）
+    const regex = /(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,30}/;
+    
+    return regex.test(password);
+}
+
+
+ 
+
+export const defaultChangePsdDays = 30 *  24 * 60 * 60 * 1000
+
+export const validateTime = (time)=>{
+  const  now = new Date().getTime()
+  const last = new Date(time).getTime()
+
+  return now > last + defaultChangePsdDays
+}

@@ -217,7 +217,13 @@ module.exports = {
         createTime: "创建时间",
         action: "操作",
         password:"密码",
-        role:"权限"
+        role:"权限",
+        passwordComplexity:'密码必须包含大写小写数字以及字符 ，且长度>8',
+        passwordDiff:'新密码不能与旧密码相同，请重新输入!',
+        newPsd:"请输入新密码！",
+        newPsdCheck:"请再次输入新密码！",
+        oldPsd:"请输入旧密码！",
+        psdCheckDiff:"两次输入密码不同，请重输!"
     },
     modification_columns:{
         oldPasswd: "旧密码",

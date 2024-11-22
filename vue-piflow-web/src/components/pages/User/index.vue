@@ -98,6 +98,7 @@
     </section>
 </template>
 <script>
+import {aesMinEncrypt} from "@/utils/crypto.js"
 export default {
     name:"user",
     components:{},
@@ -195,7 +196,7 @@ export default {
         },
 
       handleResetPassword() {
-            this.password= this.username;
+            this.password= aesMinEncrypt(this.username);
         },
 
       handleButtonSelect(row,key) {
