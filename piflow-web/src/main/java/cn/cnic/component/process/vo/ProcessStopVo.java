@@ -28,8 +28,8 @@ public class ProcessStopVo implements Serializable {
     private String outports;
     private PortType outPortType;
     private String state;
-    private Date startTime;
-    private Date endTime;
+    private String startTime;
+    private String endTime;
     private String pageId;
     private String visualizationType;
     private List<ProcessStopPropertyVo> processStopPropertyVoList = new ArrayList<ProcessStopPropertyVo>();
@@ -37,10 +37,10 @@ public class ProcessStopVo implements Serializable {
     private Boolean isDataSource;
 
     public String getStartTimeStr() {
-        return DateUtils.dateTimesToStr(this.startTime);
+        return this.startTime;
     }
 
     public String getEndTimeStr() {
-        return DateUtils.dateTimesToStr(this.endTime);
+        return this.endTime;
     }
 }

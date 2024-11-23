@@ -33,8 +33,8 @@ public class Process extends BaseModelUUIDNoCorpAgentId {
     private String parentProcessId;
     private String processId;
     private ProcessState state;
-    private Date startTime;
-    private Date endTime;
+    private String startTime;
+    private String endTime;
     private String progress;
     private RunModeType runModeType = RunModeType.RUN;
     private ProcessParentType processParentType;

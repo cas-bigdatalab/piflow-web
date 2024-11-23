@@ -97,8 +97,8 @@ public class ThirdFlowGroupInfoResponseUtils {
             process.setProcessId(flowInfoResponse.getId());
             process.setAppId(flowInfoResponse.getId());
             process.setName(flowInfoResponse.getName());
-            process.setStartTime(DateUtils.strCstToDate(flowInfoResponse.getStartTime()));
-            process.setEndTime(DateUtils.strCstToDate(flowInfoResponse.getEndTime()));
+            process.setStartTime(flowInfoResponse.getStartTime());
+            process.setEndTime(flowInfoResponse.getEndTime());
             List<ProcessStop> processStopList = process.getProcessStopList();
             if (CollectionUtils.isNotEmpty(stops) && CollectionUtils.isNotEmpty(processStopList)) {
                 for (ThirdFlowStopInfoOutResponse thirdFlowStopInfoOutResponse : stops) {
@@ -114,8 +114,8 @@ public class ThirdFlowGroupInfoResponseUtils {
                         ThirdFlowStopInfoResponse stopInfoResponse = stopsMap.get(processStop.getName());
                         if (null != stopInfoResponse) {
                             processStop.setState(StopState.selectGender(stopInfoResponse.getState()));
-                            processStop.setStartTime(DateUtils.strCstToDate(stopInfoResponse.getStartTime()));
-                            processStop.setEndTime(DateUtils.strCstToDate(stopInfoResponse.getEndTime()));
+                            processStop.setStartTime(stopInfoResponse.getStartTime());
+                            processStop.setEndTime(stopInfoResponse.getEndTime());
                         }
                     }
                 }

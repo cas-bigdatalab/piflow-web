@@ -58,6 +58,7 @@ public class DateUtils {
      */
     public static final String DATE_PATTERN_yyyy_MM_dd_HH_MM_ss_S = "yyyy-MM-dd HH:mm:ss.S";
 
+
     /**
      * yyyy-MM-dd HH:mm:ss 2012-12-25 20:20
      */
@@ -97,6 +98,11 @@ public class DateUtils {
      * EEE MMM dd HH:mm:ss zzz yyyy 例如 Thu Oct 25 10:03:25 CST 2018
      */
     public static final String EEE_MMM_dd_HH_mm_ss_zzz_yyyy = "EEE MMM dd HH:mm:ss zzz yyyy";
+
+    /**
+     * yyyy-MM-dd HH:mm:ss 2012-12-25 20:20:20.098
+     */
+    public static final String DATE_PATTERN_yyyy_MM_dd_HH_MM_ss_SSS = "EEE MMM dd HH:mm:ss.SSS zzz yyyy";
 
     /**
      * Calculate the beginning of the next day
@@ -234,6 +240,21 @@ public class DateUtils {
             return "";
         }
         SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN_yyyy_MM_dd_HH_MM_ss_S);
+        String dateString = formatter.format(dateDate);
+        return dateString;
+    }
+
+    /**
+     * Convert the time format to the string "yyyy-MM-dd_HH_MM_ss"
+     *
+     * @param dateDate
+     * @return
+     */
+    public static String dateTimesToStrMill(Date dateDate) {
+        if (dateDate == null) {
+            return "";
+        }
+        SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN_yyyy_MM_dd_HH_MM_ss_SSS, Locale.ENGLISH);
         String dateString = formatter.format(dateDate);
         return dateString;
     }
@@ -587,6 +608,17 @@ public class DateUtils {
         Date date = null;
         if (StringUtils.isNotBlank(cstStr)) {
             SimpleDateFormat formatter = new SimpleDateFormat(EEE_MMM_dd_HH_mm_ss_zzz_yyyy, Locale.US);
+            ParsePosition pos = new ParsePosition(0);
+            date = formatter.parse(cstStr, pos);
+            logger.debug("Converted values：" + date);
+        }
+        return date;
+    }
+
+    public static Date strMillToDate(String cstStr) {
+        Date date = null;
+        if (StringUtils.isNotBlank(cstStr)) {
+            SimpleDateFormat formatter = new SimpleDateFormat(DATE_PATTERN_yyyy_MM_dd_HH_MM_ss_SSS, Locale.ENGLISH);
             ParsePosition pos = new ParsePosition(0);
             date = formatter.parse(cstStr, pos);
             logger.debug("Converted values：" + date);
