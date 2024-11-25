@@ -7,9 +7,6 @@ window.$SYSTEM_INTRODUCTION_INFO_EN = "πFlow is a big data pipeline system deve
 window.$SYSTEM_INTRODUCTION_INFO_ZH = "πFlow是一款基于分布式计算引擎Spark开发的大数据流水线系统，以所见即所得的方式，实现大数据采集、处理、存储与分析流程化配置、运行与智能监控，提供了100+的标准化组件， 包括Hadoop 、Spark、MLlib、Hive、Solr、ElasticSearch、Redis等，更支持面向领域、灵活的二次组件开发，性能优越。"
 
 
-window.$COMMON_STOP = 0   // Dashboard  COMMON STOP 减去的数量
-window.$DOMAIN_STOP = 0  // Dashboard  DOMAIN STOP 的数量
-window.$STOP_GROUP = 0  // Dashboard  GROUP STOP 减去的数量
-
+window.$STOP_NUM = 0
 
 document.title = window.$SYSTEM_TITLE_EN 

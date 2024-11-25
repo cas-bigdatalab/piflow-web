@@ -200,14 +200,11 @@
                 <img src="../../../assets/img/stop.png" alt="STOP" />
               </div>
               <ul class="textArea">
-                <li><p>CommonStop：
-                  <countTo :EndVal = "(Number(stopResourceInfo.STOP_COUNT) - commonStopNum)"></countTo>
-                </p></li>
-                 <li><p>DomainStop：
-                  <countTo :EndVal = "domainStopNum"></countTo>
+                <li><p>Stop
+                  <countTo :EndVal = "(Number(stopResourceInfo.STOP_COUNT) - stopNum)"></countTo>
                 </p></li>
                 <li><p>StopGroup：
-                  <countTo :EndVal = "(Number(stopResourceInfo.STOPGROUP_COUNT) - groupStopNum)"></countTo>
+                  <countTo :EndVal = "(Number(stopResourceInfo.STOPGROUP_COUNT) )"></countTo>
                 </p></li>
               </ul>
               <div class="leftTop20">
@@ -279,9 +276,7 @@ export default {
           STOP_COUNT: 0,
           STOPGROUP_COUNT: 0,
       },
-        commonStopNum:window.$COMMON_STOP,
-        domainStopNum:window.$DOMAIN_STOP,
-        groupStopNum:window.$STOP_GROUP,
+        stopNum:window.$STOP_NUM,
         percent: 0,
         cpuPercent: 0,
         memoryPercent: 0,
