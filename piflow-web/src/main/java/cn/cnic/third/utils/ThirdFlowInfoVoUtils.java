@@ -44,8 +44,8 @@ public class ThirdFlowInfoVoUtils {
         //process.setName(thirdFlowInfoVo.getName());
         //process.setProcessId(thirdFlowInfoVo.getPid());
         process.setProcessId(thirdFlowInfoVo.getId());
-        process.setStartTime(DateUtils.strCstToDate(thirdFlowInfoVo.getStartTime()));
-        process.setEndTime(DateUtils.strCstToDate(thirdFlowInfoVo.getEndTime()));
+        process.setStartTime(thirdFlowInfoVo.getStartTime());
+        process.setEndTime(thirdFlowInfoVo.getEndTime());
         Map<String, ThirdFlowInfoStopVo> stopsMap = new HashMap<>();
         List<ProcessStop> processStopList = process.getProcessStopList();
         List<ThirdFlowInfoStopsVo> stops = thirdFlowInfoVo.getStops();
@@ -65,8 +65,8 @@ public class ThirdFlowInfoVoUtils {
                 ThirdFlowInfoStopVo stopVo = stopsMap.get(processStop.getName());
                 if (null != stopVo) {
                     processStop.setState(StopState.selectGender(stopVo.getState()));
-                    processStop.setStartTime(DateUtils.strCstToDate(stopVo.getStartTime()));
-                    processStop.setEndTime(DateUtils.strCstToDate(stopVo.getEndTime()));
+                    processStop.setStartTime(stopVo.getStartTime());
+                    processStop.setEndTime(stopVo.getEndTime());
                 }
             }
         }

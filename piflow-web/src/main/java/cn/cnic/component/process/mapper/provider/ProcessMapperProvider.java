@@ -65,9 +65,9 @@ public class ProcessMapperProvider {
         this.pageId = SqlUtils.preventSQLInjection(process.getPageId());
         this.processId = SqlUtils.preventSQLInjection(process.getProcessId());
         this.stateName = SqlUtils.preventSQLInjection(null != process.getState() ? process.getState().name() : null);
-        String startTime = (null != process.getStartTime() ? DateUtils.dateTimesToStr(process.getStartTime()) : null);
+        String startTime = (null != process.getStartTime() ? process.getStartTime() : null);
         this.startTimeStr = SqlUtils.preventSQLInjection(startTime);
-        String endTime = (null != process.getEndTime() ? DateUtils.dateTimesToStr(process.getEndTime()) : null);
+        String endTime = (null != process.getEndTime() ? process.getEndTime() : null);
         this.endTimeStr = SqlUtils.preventSQLInjection(endTime);
         this.progress = SqlUtils.preventSQLInjection(process.getProgress());
         this.flowId = SqlUtils.preventSQLInjection(process.getFlowId());

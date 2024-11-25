@@ -32,8 +32,8 @@ public class ProcessVo extends BasePageVo implements Serializable {
     private String parentProcessId;
     private String processId;
     private ProcessState state;
-    private Date startTime;
-    private Date endTime;
+    private String startTime;
+    private String endTime;
     private String progress;
     private RunModeType runModeType;
     private String pageId;
@@ -48,10 +48,10 @@ public class ProcessVo extends BasePageVo implements Serializable {
     }
 
     public String getStartTimeStr() {
-        return DateUtils.dateTimesToStr(this.startTime);
+        return this.startTime;
     }
 
     public String getEndTimeStr() {
-        return DateUtils.dateTimesToStr(this.endTime);
+        return this.endTime;
     }
 }
