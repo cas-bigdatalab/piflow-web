@@ -318,6 +318,12 @@ public class SysUserServiceImpl implements ISysUserService {
 
     @Override
     public String jwtLogin(String username, String password) {
+        try {
+            password = password.replace(" ", "+");
+            password = AESUtils.aesDecrypt(password);
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
+        }
         //用户验证
         final Authentication authentication = authenticate(username, password);
         //存储认证信息
