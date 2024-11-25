@@ -3,12 +3,21 @@
     <transition name="show">
       <router-view/>
     </transition>
+       <passwordModal ref="passwordModalRef" :closeAble="false"/>
   </div>
 </template>
 
 <script>
+import passwordModal from '@/components/pages/User/passwordModal.vue';
 export default {
   name: "app",
+  components:{ passwordModal },
+  created() {
+    this.$event.on("changePsd", val => {
+      this.openPasswordModal()
+    });
+
+  },
   mounted() {
     //*****************************解决刷新页面数据丢失开始**************************************** */
     if (sessionStorage.getItem("store")) {
@@ -25,7 +34,12 @@ export default {
     window.addEventListener("beforeunload", () => {
       sessionStorage.setItem("store", JSON.stringify(this.$store.state));
     });
-  }
+  },
+  methods: {
+    openPasswordModal(){
+        this.$refs.passwordModalRef.handleOpen()
+    }
+  },
 };
 </script>
 

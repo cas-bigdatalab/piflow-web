@@ -6,7 +6,7 @@
       </div>
     </div>
     <div class="contentArea">
-      <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
+      <!-- <Form ref="formCustom" :model="formCustom" :rules="ruleCustom" :label-width="80">
         <FormItem :label="this.$t('modification_columns.oldPasswd')" prop="oldPasswd">
           <Input type="password" v-model="formCustom.oldPasswd"></Input>
         </FormItem>
@@ -20,7 +20,8 @@
           <Button @click="handleReset('formCustom')">{{$t("modification_columns.Reset")}}</Button>
           <Button type="primary" @click="handleSubmit('formCustom')" style="margin-left: 8px">{{$t("modification_columns.Submit")}}</Button>
         </FormItem>
-      </Form>
+      </Form> -->
+      <PasswordForm/>
     </div>
   </section>
 </template>
@@ -28,9 +29,10 @@
 <script>
 import {aesMinEncrypt} from "@/utils/crypto.js"
 import { validatePassword } from '@/utils'
+import PasswordForm from './PasswordForm.vue'
 export default {
   name: "modification",
-  components:{},
+  components:{PasswordForm},
   data() {
     const validatePass = (rule, value, callback) => {
       if (value === '') {

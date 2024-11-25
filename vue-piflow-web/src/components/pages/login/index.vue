@@ -148,7 +148,7 @@ import Cookies from 'js-cookie';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
 import {getStatus} from "@/apis/passport"
 import {aesMinEncrypt} from "@/utils/crypto.js"
-import { validatePassword } from '@/utils'
+import { validatePassword,validateTime } from '@/utils'
 export default {
   name: "login",
   data() {
@@ -247,8 +247,18 @@ export default {
             Cookies.set('state', "jwtok");
             Cookies.set('usre', this.username);
             Cookies.set('setUser', JSON.stringify(res.data.jwtUser.roles));
-
-            this.getIsInBootPage();
+            if(!validatePassword(this.password) || this.password == this.username){
+              this.$Message.success("密码太过简单或为默认密码，请修改！");
+              Cookies.set('changePsd',1)
+              this.$event.emit('changePsd')
+            }else if( res.data.jwtUser?.plastUpdateDttmStr && validateTime(res.data.jwtUser?.plastUpdateDttmStr)){
+              this.$Message.success("密码长时间未修改，请修改！");
+              Cookies.set('changePsd',1)
+              this.$event.emit('changePsd')
+            }else{
+              Cookies.set('changePsd',2)
+              this.getIsInBootPage();
+            }
           } else {
             this.$Message["error"]({
               background: true,
@@ -281,7 +291,7 @@ export default {
       }else if (!validatePassword(this.password)) {
         this.$Message["error"]({
           background: true,
-          content: this.$t("user_columns.passwordComplexity")
+          content:"密码必须包含大写小写数字以及字符 ，且长度>8"
         });
       } else if (this.username == this.password) {
         this.$Message["error"]({
@@ -309,6 +319,7 @@ export default {
             .post("/checkUserName", this.$qs.stringify({'username':this.username}))
             .then(res => {
               if (res.data.code === 200) {
+                this.$Message.success(res.data.errorMsg)
                 this.registered();
               }else if(res.data.code === 500){
                 this.$Modal.error({
@@ -468,7 +479,7 @@ export default {
     },
 
     keyDown(e){
-      if(e.keyCode === 13 || e.keyCode === 100){
+      if(e.keyCode === 13){
         this.isLogin?this.handleLogin():this.handleRegister();
       }
     }

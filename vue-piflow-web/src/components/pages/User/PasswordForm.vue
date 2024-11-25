@@ -37,6 +37,7 @@
 <script>
 import {aesMinEncrypt} from "@/utils/crypto.js"
 import { validatePassword } from '@/utils'
+import Cookies from "js-cookie";
 export default {
   data() {
     const validatePass = (rule, value, callback) => {
@@ -109,18 +110,20 @@ export default {
           .then((res) => {
             if (res.data.code === 200) {
               this.$Message.success('Success!');
+              Cookies.set('changePsd',2)
               this.$emit('submit')
               this.handleReset()
-              if (this.$route.query.redirect) {
+              if(this.$route.name === 'modification'){
+                // 
+              }else if (this.$route.query.redirect) {
                 //如果存在参数
                 let redirect = this.$route.query.redirect;
                 this.$router.push(redirect); //则跳转至进入登录页前的路由
               } else {
-                this.$router.push("/home"); //否则跳转至首页
+                this.$router.push("/"); //否则跳转至首页
               }
             } else {
               this.$Message.error('Fail!');
-
             }
           })
           .catch((error) => {

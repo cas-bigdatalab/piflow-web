@@ -16,6 +16,7 @@
 <script>
 import Header from "./compon/Header";
 import Footer from "./compon/Footer";
+import Cookies from "js-cookie";
 export default {
   name: "mains",
   components: {
@@ -32,6 +33,10 @@ export default {
     this.$event.on("loading", val => {
       this.loading = val;
     });
+    if(Cookies.get('changePsd') == 1){
+      this.$event.emit('changePsd')
+    }
+
   }
 };
 </script>
