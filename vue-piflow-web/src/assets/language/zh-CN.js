@@ -223,7 +223,9 @@ module.exports = {
         newPsd:"请输入新密码！",
         newPsdCheck:"请再次输入新密码！",
         oldPsd:"请输入旧密码！",
-        psdCheckDiff:"两次输入密码不同，请重输!"
+        psdCheckDiff:"两次输入密码不同，请重输!",
+        assign_roles:"分配角色",
+        role:'角色'
     },
     modification_columns:{
         oldPasswd: "旧密码",

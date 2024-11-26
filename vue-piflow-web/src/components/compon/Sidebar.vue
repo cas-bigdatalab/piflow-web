@@ -8,28 +8,28 @@
     v-if="!isCollapsed"
     @on-select="handleMenuSelect"
   >
-    <div v-for="(item,i) in menulist" :key="i+'q1'">
+    <div v-for="(item,i) in menu" :key="i+'q1'">
       <MenuItem v-if="!item.children" :name="item.name" class="item-par" :to="item.router">
         <Icon :type="item.icoName" size="18" />
-        <span>{{item.btnName}}</span>
+        <span>{{ $t(item.btnName)}}</span>
       </MenuItem>
       <Submenu v-else :name="i+'q1'">
         <template slot="title">
           <Icon :type="item.icoName" size="18" />
-          <span>{{item.btnName}}</span>
+          <span>{{$t(item.btnName)}}</span>
         </template>
         <MenuItem
           v-for="(item,key) in item.children "
           :key="key+'w1'"
           :to="item.router"
           :name="item.name"
-        >{{item.btnName}}</MenuItem>
+        >{{$t(item.btnName)}}</MenuItem>
       </Submenu>
     </div>
   </Menu>
 
   <div class="side-nav" v-else>
-    <div class="side-list" v-for="(item,i) in menulist" :key="i+'q'">
+    <div class="side-list" v-for="(item,i) in menu" :key="i+'q'">
       <Dropdown>
         <div>
           <Icon :type="item.icoName" size="18" />
@@ -49,208 +49,300 @@ export default {
     return {
       isCollapsed: false,
       menuName: "home",
-      mouseOver: ""
+      mouseOver: "",
+      menu:[
+          {
+            btnName: "sidebar.dashboard",
+            icoName: "ios-home",
+            router: "/",
+            name: 'home'
+          },
+          {
+            btnName: "sidebar.flow",
+            icoName: "ios-ionitron",
+            router: "/flow",
+            name: "flow"
+          },
+          {
+            btnName: "sidebar.group",
+            icoName: "ios-apps",
+            router: "/group",
+            name: "group"
+          },
+          {
+            btnName: "sidebar.processes",
+            icoName: "md-analytics",
+            router: "/processes",
+            name: "processes"
+          },
+          {
+            btnName: "sidebar.template",
+            icoName: "md-list-box",
+            router: "/template",
+            name: "template"
+          },
+          {
+            btnName: "sidebar.data_source",
+            icoName: "ios-color-filter",
+            router: "datasource",
+            name: "datasource"
+          },
+          {
+            btnName: "sidebar.schedule",
+            icoName: "ios-timer",
+            router: "schedule",
+            name: "schedule"
+          },
+          {
+            btnName: "sidebar.stopHub",
+            icoName: "ios-speedometer",
+            router: "StopHub",
+            name: "StopHub"
+          },
+          {
+            btnName: "sidebar.pythonMirror",
+            icoName: "ios-ionitron",
+            router: "/baseImage",
+            name: "baseImage",
+          },
+          {
+            btnName: "sidebar.sparkJar",
+            icoName: "md-cog",
+            router: "SparkJar",
+            name: "SparkJar"
+          },
+          {
+            btnName: "sidebar.testData",
+            icoName: "md-list",
+            router: "TestData",
+            name: "TestData"
+          },
+        // {
+            //btnName: "sidebar.code",
+            //icoName: "md-code",
+          // router: "Code",
+          // name: "Code"
+          //},
+          {
+            btnName: "sidebar.publish",
+            icoName: "md-checkbox-outline",
+            router: "publish",
+            name: "publish"
+          },
+          {
+            btnName: "sidebar.example",
+            icoName: "md-cube",
+            children: [
+              {
+                icoName: "ios-paper",
+                btnName: "FlowExample",
+                name: "FlowExample",
+                router: {
+                  path: "/drawingBoard",
+                  query: {
+                    src: `/drawingBoard/page/flow/mxGraph/index.html?load=0641076d5ae840c09d2be5b71fw00001`,
+                  },
+                },
+              },
+              {
+                icoName: "ios-paper",
+                btnName: "GroupExample",
+                name: "GroupExample",
+                router: {
+                  path: "/drawingBoard",
+                  query: {
+                    src:`/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=ff808181725050fe017250group10002`
+                  }
+                },
+              }
+            ]
+          },
+          // {
+          //   btnName: "sidebar.admin",
+          //   icoName: "ios-people",
+          //   children: [
+          //     {
+          //       router: "/admin",
+          //       icoName: "ios-paper",
+          //       btnName:  "sidebar.admin_schedule",
+          //       name: "admin",
+          //     },{
+          //       router: "/stopsComponent",
+          //       icoName: "ios-paper",
+          //       btnName: "sidebar.stopsComponent",
+          //       name: "stopsComponent",
+          //     },{
+          //       router: "/globalVariable",
+          //       icoName: "ios-paper",
+          //       btnName: "sidebar.globalVariable",
+          //       name: "globalVariable",
+          //     }
+          //   ]
+          // },
+          // {
+          //   btnName: "sidebar.user",
+          //   icoName: "ios-people",
+          //   children: [
+          //     {
+          //       router: "/user",
+          //       icoName: "ios-paper",
+          //       btnName:  "sidebar.user",
+          //       name: "user",
+          //     },{
+          //       router: "/log",
+          //       icoName: "ios-paper",
+          //       btnName:  "sidebar.log",
+          //       name: "log",
+          //     },{
+          //       router: "/modification",
+          //       icoName: "ios-paper",
+          //       btnName:  "sidebar.modification",
+          //       name: "modification",
+          //     },{
+          //       router: "/bindingAccount",
+          //       icoName: "ios-paper",
+          //       btnName:  "sidebar.bindingAccount",
+          //       name: "bindingAccount",
+          //     }
+          //   ]
+          // },
+          {
+            btnName: "sidebar.visualization",
+            icoName: "ios-pulse",
+            children: [
+              {
+                btnName: "sidebar.database",
+                name: "VisualizationDataBase",
+                router: "/visualization-database",
+              },
+              {
+                btnName: "sidebar.datasource",
+                name: "VisualizationDataSource",
+                router: "/visualization-datasource",
+              },
+              {
+                btnName: "sidebar.visualconfig",
+                name: "VisualizationVisualConfig",
+                router: "/visualization-visualconfig",
+              },
+            ],
+          },
+      ]
     };
   },
   props: ["width"],
-  computed: {
-    menulist() {
-      return [
-        {
-          btnName: this.$t("sidebar.dashboard"),
-          icoName: "ios-home",
-          router: "/",
-          name: 'home'
-        },
-        {
-          btnName: this.$t("sidebar.flow"),
-          icoName: "ios-ionitron",
-          router: "/flow",
-          name: "flow"
-        },
-        {
-          btnName: this.$t("sidebar.group"),
-          icoName: "ios-apps",
-          router: "/group",
-          name: "group"
-        },
-        {
-          btnName: this.$t("sidebar.processes"),
-          icoName: "md-analytics",
-          router: "/processes",
-          name: "processes"
-        },
-        {
-          btnName: this.$t("sidebar.template"),
-          icoName: "md-list-box",
-          router: "/template",
-          name: "template"
-        },
-        {
-          btnName: this.$t("sidebar.data_source"),
-          icoName: "ios-color-filter",
-          router: "datasource",
-          name: "datasource"
-        },
-        {
-          btnName: this.$t("sidebar.schedule"),
-          icoName: "ios-timer",
-          router: "schedule",
-          name: "schedule"
-        },
-        {
-          btnName: this.$t("sidebar.stopHub"),
-          icoName: "ios-speedometer",
-          router: "StopHub",
-          name: "StopHub"
-        },
-        {
-          btnName: this.$t("sidebar.pythonMirror"),
-          icoName: "ios-ionitron",
-          router: "/baseImage",
-          name: "baseImage",
-        },
-        {
-          btnName: this.$t("sidebar.sparkJar"),
-          icoName: "md-cog",
-          router: "SparkJar",
-          name: "SparkJar"
-        },
-        {
-          btnName: this.$t("sidebar.testData"),
-          icoName: "md-list",
-          router: "TestData",
-          name: "TestData"
-        },
-       // {
-          //btnName: this.$t("sidebar.code"),
-          //icoName: "md-code",
-         // router: "Code",
-         // name: "Code"
-        //},
-        {
-          btnName: this.$t("sidebar.publish"),
-          icoName: "md-checkbox-outline",
-          router: "publish",
-          name: "publish"
-        },
-        {
-          btnName: this.$t("sidebar.example"),
-          icoName: "md-cube",
-          children: [
-            {
-              icoName: "ios-paper",
-              btnName: "FlowExample",
-              name: "FlowExample",
-              router: {
-                path: "/drawingBoard",
-                query: {
-                  src: `/drawingBoard/page/flow/mxGraph/index.html?load=0641076d5ae840c09d2be5b71fw00001`,
-                },
-              },
-            },
-            {
-              icoName: "ios-paper",
-              btnName: "GroupExample",
-              name: "GroupExample",
-              router: {
-                path: "/drawingBoard",
-                query: {
-                  src:`/drawingBoard/page/flowGroup/mxGraph/index.html?drawingBoardType=GROUP&load=ff808181725050fe017250group10002`
-                }
-              },
-            }
-          ]
-        },
-        {
-          btnName: this.$t("sidebar.admin"),
-          icoName: "ios-people",
-          children: [
-            {
-              router: "/admin",
-              icoName: "ios-paper",
-              btnName:  this.$t("sidebar.admin_schedule"),
-              name: "admin",
-            },{
-              router: "/stopsComponent",
-              icoName: "ios-paper",
-              btnName: this.$t("sidebar.stopsComponent"),
-              name: "stopsComponent",
-            },{
-              router: "/globalVariable",
-              icoName: "ios-paper",
-              btnName: this.$t("sidebar.globalVariable"),
-              name: "globalVariable",
-            }
-          ]
-        },
-        {
-          btnName: this.$t("sidebar.user"),
-          icoName: "ios-people",
-          children: [
-            {
-              router: "/user",
-              icoName: "ios-paper",
-              btnName:  this.$t("sidebar.user"),
-              name: "user",
-            },{
-              router: "/log",
-              icoName: "ios-paper",
-              btnName:  this.$t("sidebar.log"),
-              name: "log",
-            },{
-              router: "/modification",
-              icoName: "ios-paper",
-              btnName:  this.$t("sidebar.modification"),
-              name: "modification",
-            },{
-              router: "/bindingAccount",
-              icoName: "ios-paper",
-              btnName:  this.$t("sidebar.bindingAccount"),
-              name: "bindingAccount",
-            }
-          ]
-        },
-        {
-          btnName: this.$t("sidebar.visualization"),
-          icoName: "ios-pulse",
-          children: [
-            {
-              btnName: this.$t("sidebar.database"),
-              name: "VisualizationDataBase",
-              router: "/visualization-database",
-            },
-            {
-              btnName: this.$t("sidebar.datasource"),
-              name: "VisualizationDataSource",
-              router: "/visualization-datasource",
-            },
-            {
-              btnName: this.$t("sidebar.visualconfig"),
-              name: "VisualizationVisualConfig",
-              router: "/visualization-visualconfig",
-            },
-          ],
-        },
-      ];
-    }
-  },
+  // computed: {
+  //   menu:{
+  //     get(){
+  //       this.$i18n.locale
+  //       return this.menu
+  //     },
+  //     set(value){
+  //       this.menu = value
+  //     }
+  //   },
+  // },
   created() {
     this.$event.on("isCollapsed", e => {
       this.isCollapsed = e;
     });
 
     let isRole = JSON.parse(Cookies.get('setUser'));
-    if (!!isRole && isRole[0].role.stringValue !== "ADMIN"){
-      this.menulist.forEach((item,index,arr)=>{
-        if (!!item.children){
-          item.children.forEach((items,inx,arrs)=>{
-            if ( items.name=== "user" || items.name=== "stopsComponent"){
-              arrs.splice(inx,1);
+    if(!isRole) return
+
+    if ( isRole[0].role.stringValue == "ADMIN"){
+      const list = [        {
+          btnName: "sidebar.admin",
+          icoName: "ios-people",
+          children: [
+              {
+              router: "/user",
+              icoName: "ios-paper",
+              btnName:  "sidebar.user",
+              name: "user",
+            },
+            {
+              router: "/admin",
+              icoName: "ios-paper",
+              btnName:  "sidebar.admin_schedule",
+              name: "admin",
+            },{
+              router: "/stopsComponent",
+              icoName: "ios-paper",
+              btnName: "sidebar.stopsComponent",
+              name: "stopsComponent",
+            },{
+              router: "/globalVariable",
+              icoName: "ios-paper",
+              btnName: "sidebar.globalVariable",
+              name: "globalVariable",
+            },
+            {
+              router: "/log",
+              icoName: "ios-paper",
+              btnName:  "sidebar.log",
+              name: "log",
+            },
+          ]
+        },
+        {
+          btnName: "sidebar.user",
+          icoName: "ios-people",
+          children: [
+            {
+              router: "/modification",
+              icoName: "ios-paper",
+              btnName:  "sidebar.modification",
+              name: "modification",
+            },{
+              router: "/bindingAccount",
+              icoName: "ios-paper",
+              btnName:  "sidebar.bindingAccount",
+              name: "bindingAccount",
             }
-          })
+          ]
+        }]
+       this.menu =  this.menu.concat(list)
+    }else if( isRole[0].role.stringValue == "USER"){
+      const list = [
+         {
+          btnName: "sidebar.user",
+          icoName: "ios-people",
+          children: [
+           {
+              router: "/log",
+              icoName: "ios-paper",
+              btnName:  "sidebar.log",
+              name: "log",
+            },
+            {
+              router: "/modification",
+              icoName: "ios-paper",
+              btnName:  "sidebar.modification",
+              name: "modification",
+            },{
+              router: "/bindingAccount",
+              icoName: "ios-paper",
+              btnName:  "sidebar.bindingAccount",
+              name: "bindingAccount",
+            },
+             {
+              router: "/admin",
+              icoName: "ios-paper",
+              btnName:  "sidebar.admin_schedule",
+              name: "admin",
+            },
+            {
+              router: "/globalVariable",
+              icoName: "ios-paper",
+              btnName: "sidebar.globalVariable",
+              name: "globalVariable",
+            },
+
+          ]
         }
-      })
+      ]
+       this.menu =  this.menu.concat(list)
     }
 
 

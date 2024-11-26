@@ -223,7 +223,9 @@ module.exports = {
         newPsd:"Please enter your new password",
         newPsdCheck:"Please enter your new password again",
         oldPsd:"Please enter your old password",
-        psdCheckDiff:"The two input passwords do not match"
+        psdCheckDiff:"The two input passwords do not match",
+        assign_roles:"Assign roles",
+        role:'Role'
     },
     modification_columns:{
         oldPasswd: "old Password",
