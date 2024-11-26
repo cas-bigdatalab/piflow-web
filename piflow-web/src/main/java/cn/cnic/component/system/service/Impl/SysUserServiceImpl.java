@@ -30,6 +30,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +45,7 @@ public class SysUserServiceImpl implements ISysUserService {
     @Value("${jwt.tokenHead}")
     private String tokenHead;
 
-	/**
+    /**
      * Introducing logs, note that they are all packaged under "org.slf4j"
      */
     private Logger logger = LoggerUtil.getLogger();
@@ -66,7 +67,6 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     /**
-     *
      * @param isAdmin  is admin
      * @param username username
      * @param offset   Number of pages
@@ -90,7 +90,7 @@ public class SysUserServiceImpl implements ISysUserService {
 
     @Override
     public String getUserById(boolean isAdmin, String username, String userId) {
-        SysUserVo sysUser = sysUserDomain.getSysUserVoById(isAdmin,username,userId);
+        SysUserVo sysUser = sysUserDomain.getSysUserVoById(isAdmin, username, userId);
         if (null == sysUser) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
@@ -126,7 +126,7 @@ public class SysUserServiceImpl implements ISysUserService {
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
                 }
 
-            	PasswordUtils.updatePassword(name,password);
+                PasswordUtils.updatePassword(name, password);
                 password = new BCryptPasswordEncoder().encode(password);
                 sysUserById.setPassword(password);
             }
@@ -148,13 +148,13 @@ public class SysUserServiceImpl implements ISysUserService {
     /**
      * Update user
      *
-     * @param username   username
-     * @param oldPassword   old password
-     * @param password   new  password
+     * @param username    username
+     * @param oldPassword old password
+     * @param password    new  password
      * @return json
      */
-    public String updatePassword(String username, String oldPassword, String password){
-        if(StringUtils.isBlank(username) || StringUtils.isBlank(oldPassword) || StringUtils.isBlank(password)){
+    public String updatePassword(String username, String oldPassword, String password) {
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(oldPassword) || StringUtils.isBlank(password)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_OPERATION_MSG());
         }
         //密码解密
@@ -189,6 +189,7 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String delUser(boolean isAdmin, String username, String sysUserId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
@@ -196,24 +197,28 @@ public class SysUserServiceImpl implements ISysUserService {
         if (StringUtils.isBlank(sysUserId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("sysUserId"));
         }
-        SysUser sysUserById = sysUserDomain.getSysUserById(isAdmin,username,sysUserId);
+        SysUser sysUserById = sysUserDomain.getSysUserById(isAdmin, username, sysUserId);
         if (null == sysUserById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(sysUserId));
         }
         try {
-
-            sysUserById.setLastUpdateDttm(new Date());
-            sysUserById.setLastUpdateUser(username);
-            if ("admin".equals(sysUserById.getUsername())) {
+            //delete user and role info
+            int deleteUser = sysUserDomain.deleteUserById(sysUserId);
+            if (deleteUser > 0) {
+                sysUserDomain.deleteRoleByUserId(sysUserId);
+            }
+//            sysUserById.setLastUpdateDttm(new Date());
+//            sysUserById.setLastUpdateUser(username);
+//            if ("admin".equals(sysUserById.getUsername())) {
+//                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
+//            }
+//            sysUserById.setEnableFlag(false);
+//            int update = sysUserDomain.updateSysUser(sysUserById);
+//
+            if (deleteUser <= 0) {
                 return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
             }
-            sysUserById.setEnableFlag(false);
-            int update = sysUserDomain.updateSysUser(sysUserById);
-
-            if (update <= 0) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
-            }
-            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Started successfully");
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Delete successfully");
         } catch (Exception e) {
             logger.error("delete failed", e);
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG());

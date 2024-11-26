@@ -92,4 +92,8 @@ public class SysUserDomain {
         }
         return sysUserMapper.checkUsername(username);
     }
+
+    public int deleteRoleByUserId(String sysUserId) {
+        return sysUserMapper.deleteRoleByUserId(sysUserId);
+    }
 }
