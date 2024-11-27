@@ -20,6 +20,7 @@ module.exports = {
         stopsComponent: '组件显示',
         globalVariable: '全局变量',
         user:'用户管理',
+        myCenter:'个人中心',
         log:'通知管理',
         modification:"修改密码",
         bindingAccount:"绑定开发者账号",

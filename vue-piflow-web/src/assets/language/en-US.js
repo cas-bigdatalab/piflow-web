@@ -20,6 +20,7 @@ module.exports = {
         stopsComponent: 'StopsComponent',
         globalVariable: 'GlobalVariable',
         user:"User",
+        myCenter:'My Center',
         log:"Log",
         modification:"Modification",
         bindingAccount:"BindingAccount",
