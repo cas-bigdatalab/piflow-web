@@ -73,4 +73,7 @@ public interface ISysUserService {
 
     boolean checkUserNameExist(String userName);
 
+    String updateRole(SysUserVo sysUserVo);
+
+    String getAllRole();
 }

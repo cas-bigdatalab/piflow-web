@@ -9,6 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -73,6 +74,18 @@ public class AdminUserCtrl {
         String username = SessionUserUtil.getCurrentUsername();
         logHelperServiceImpl.logAuthSucceed("Bind Developer " + accessKey, username);
         return  sysUserServiceImpl.bindDeveloperAccessKey(isAdmin, username, accessKey);
+    }
+
+    @RequestMapping(value = "/updateRole", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateRole(@RequestBody SysUserVo sysUserVo) {
+        return sysUserServiceImpl.updateRole(sysUserVo);
+    }
+
+    @RequestMapping(value = "/getAllRole", method = RequestMethod.GET)
+    @ResponseBody
+    public String getAllRole() {
+        return sysUserServiceImpl.getAllRole();
     }
 
 }
