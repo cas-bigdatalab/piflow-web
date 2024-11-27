@@ -239,6 +239,22 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     @Override
+    public String updateRole(SysUserVo sysUserVo) {
+        int i = sysUserDomain.updateRole(sysUserVo);
+        if (i > 0) {
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.UPDATE_SUCCEEDED_MSG());
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.UPDATE_ERROR_MSG());
+        }
+    }
+
+    @Override
+    public String getAllRole() {
+        List<SysRole> roles = sysUserDomain.getAllRole();
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", roles);
+    }
+
+    @Override
     public int deleteUser(String id) {
         sysUserDomain.deleteUserById(id);
         return 1;
