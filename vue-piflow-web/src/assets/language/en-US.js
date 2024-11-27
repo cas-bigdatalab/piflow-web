@@ -305,7 +305,7 @@ module.exports = {
         language: 'Language',
         version_lang: 'Version',
         stopsHubName: 'stopsHubName',
-        uploadZip:'Upload zip',
+        uploadZip:'upload .jar or .zip',
         InteractiveProgramming:'Interactive programming',
         base_image:"Base Image",
         image:"Algorithm Image",

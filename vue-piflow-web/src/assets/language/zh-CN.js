@@ -305,7 +305,7 @@ module.exports = {
         language: '算法语言',
         version_lang: '语言版本',
         stopsHubName: '组件包名称',
-        uploadZip:'zip包上传',
+        uploadZip:'上传 .jar 或 .zip',
         InteractiveProgramming:'交互式编程',
         base_image:"基础镜像",
         image:"算法镜像",
