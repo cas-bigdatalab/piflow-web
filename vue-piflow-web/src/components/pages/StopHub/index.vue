@@ -324,7 +324,7 @@
             :show-upload-list="true"
             :on-success="handleSuccess"
             :on-error="handleError"
-            :format="['zip', 'jar']"
+            :format="uploadData.type === 'PYTHON' ? ['zip']:['zip', 'jar']"
             :before-upload="handleBeforeUpload"
             type="drag"
           >
@@ -335,7 +335,7 @@
                   size="52"
                   style="color: var(--primary-color)"
                 ></Icon>
-                <p>{{ $t("python.uploadZip") }}</p>
+                <p>{{uploadData.type === 'PYTHON' ?  $t('python.uploadZip'): $t("python.uploadZipJar") }}</p>
               </div>
             </div>
           </Upload>
@@ -1267,13 +1267,19 @@ export default {
 
     handleBeforeUpload(file) {
       var testmsg = file.name.substring(file.name.lastIndexOf(".") + 1);
-      const extension = testmsg === "zip" || testmsg === "jar";
+      let fileType 
+      if(this.uploadData.type === 'PYTHON'){
+          fileType = ['zip']
+      }else{
+          fileType = ['zip','jar']
+      }
+      const extension =fileType.includes(testmsg);
       const isLt500M = file.size / 1024 / 1024 < 500;
       if (!extension) {
         this.$Notice.warning({
           title: "The file format is incorrect",
           desc:
-            "File format of " + file.name + " is incorrect, please select jar.",
+            "File format of " + file.name + ` is incorrect, please select ${fileType}.`,
         });
         return false;
       }
