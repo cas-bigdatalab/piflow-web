@@ -88,10 +88,23 @@ export default {
             name: "datasource"
           },
           {
-            btnName: "sidebar.schedule",
+            btnName: "sidebar.FlowSchedule",
             icoName: "ios-timer",
-            router: "schedule",
-            name: "schedule"
+            ref: "FlowSchedule",
+            children: [
+              {
+                btnName: "sidebar.TimingSchedule",
+                icoName: "ios-timer",
+                router: "schedule",
+                name: "schedule",
+              },
+              {
+                btnName: "sidebar.FileSchedule",
+                icoName: "ios-color-filter",
+                router: "/fileSchedule",
+                name: "fileSchedule",
+              },
+            ],
           },
           {
             btnName: "sidebar.stopHub",

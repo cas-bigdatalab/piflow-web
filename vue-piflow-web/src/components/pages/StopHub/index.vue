@@ -70,7 +70,7 @@
       :data="tableData"
     >
     <vxe-column type="expand" width="60">
-        <template #content="{ row, rowIndex }">
+        <template #content="{ row }">
           <div
             class="scrollbar"
             style="max-height: 330px; overflow: auto; padding: 20px 10px"

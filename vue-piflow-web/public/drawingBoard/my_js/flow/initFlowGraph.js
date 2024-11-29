@@ -8,6 +8,7 @@ var pathsCells = [];
 var thisEditor = null;
 var graphGlobal = null;
 var currentNode = null;   //当前选中节点
+var saveTimer
 
 //init data
 function initFlowDrawingBoardData(loadId, parentAccessPath) {
@@ -1152,7 +1153,15 @@ function fillDatasource(datasource, stop_id, stops_page_id) {
 }
 
 //Save XML file and related information
-function saveXml(paths, operType, cells) {
+function saveXml(...params){
+    if(saveTimer){  
+        window.clearTimeout(saveTimer)
+    }
+    saveTimer =  setTimeout(()=>{saveXmlAjax(...params)},1000)
+}
+
+//Save XML file and related information
+function saveXmlAjax(paths, operType, cells) {
     var getXml = thisEditor.getGraphXml();
     var xml_outer_html = getXml.outerHTML;
     var time, time1
@@ -1189,7 +1198,6 @@ function saveXml(paths, operType, cells) {
                 layer.msg(operType + " save fail", {icon: 2, shade: 0, time: 2000});
                 console.log(operType + " save fail");
                 // $('#fullScreen').hide();
-                window.parent.postMessage(false);
             }
 
         },
@@ -2336,13 +2344,13 @@ function loadingXml(id, loadId) {
         async: true,
         url: "/flowTemplate/loadingXmlPage",
         success: function (data) {
+            window.parent.postMessage(false);
             var dataMap = JSON.parse(data);
             var icon_code = 2;
             if (200 === dataMap.code) {
                 icon_code = 1;
             }
             // $('#fullScreen').hide();
-            window.parent.postMessage(false);
             layer.msg(dataMap.errorMsg, {icon: icon_code, shade: 0.7, time: 2000}, function () {
                 window.location.reload();
             });
@@ -2367,6 +2375,7 @@ function runFlow(runMode) {
             runMode: runMode
         },
         success: function (data) {//After the request is successful
+            window.parent.postMessage(false);
             var dataMap = JSON.parse(data);
             if (200 === dataMap.code) {
                 layer.msg(dataMap.errorMsg, {icon: 1, shade: 0, time: 2000}, function () {
@@ -2379,7 +2388,6 @@ function runFlow(runMode) {
                 });
             }
             // $('#fullScreen').hide();
-            window.parent.postMessage(false);
         },
         error: function (request) {//Operation after request failure
             //alert("Request Failed");
