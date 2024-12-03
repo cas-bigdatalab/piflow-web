@@ -470,8 +470,8 @@ export default {
       if (res.data.code === 200) {
        children = res.data.stopsList
           .map((v) => {
-            if (v.propertiesVo.length) {
-              const list = v.propertiesVo.map((item) => ({
+            if (v.properties.length) {
+              const list = v.properties.map((item) => ({
                 value: item.id,
                 label: item.name,
               }));
