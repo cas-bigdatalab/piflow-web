@@ -1,5 +1,5 @@
 <template>
-  <Modal v-model="open" title="重置密码" footer-hide  :closable="false" :mask-closable="false">
+  <Modal v-model="open" title="重置密码" footer-hide  width="600"  :closable="false" :mask-closable="false">
         <PasswordForm  mode="passwordModal"  @submit="handleClose"/>
   </Modal>
 </template>

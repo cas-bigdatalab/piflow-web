@@ -225,17 +225,17 @@ export default {
             children: [
               {
                 btnName: "sidebar.database",
-                name: "VisualizationDataBase",
+                name: "visualization-database",
                 router: "/visualization-database",
               },
               {
                 btnName: "sidebar.datasource",
-                name: "VisualizationDataSource",
+                name: "visualization-datasource",
                 router: "/visualization-datasource",
               },
               {
                 btnName: "sidebar.visualconfig",
-                name: "VisualizationVisualConfig",
+                name: "visualization-visualconfig",
                 router: "/visualization-visualconfig",
               },
             ],

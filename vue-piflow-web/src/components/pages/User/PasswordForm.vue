@@ -3,7 +3,7 @@
     ref="formCustom"
     :model="formCustom"
     :rules="ruleCustom"
-    :label-width="80"
+    :label-width="120"
   >
     <FormItem
       :label="this.$t('modification_columns.oldPasswd')"
