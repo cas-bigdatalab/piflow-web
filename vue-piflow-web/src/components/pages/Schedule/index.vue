@@ -3,7 +3,7 @@
     <!-- header -->
     <div class="navbar">
       <div class="left">
-        <span>{{$t("sidebar.schedule")}}</span>
+        <span>{{$t("sidebar.TimingSchedule")}}</span>
       </div>
       <div class="right">
         <span class="button-warp" @click="handleModalSwitch">

@@ -3,7 +3,7 @@
     ref="formCustom"
     :model="formCustom"
     :rules="ruleCustom"
-    :label-width="80"
+    :label-width="120"
   >
     <FormItem
       :label="this.$t('modification_columns.oldPasswd')"
@@ -39,6 +39,9 @@ import {aesMinEncrypt} from "@/utils/crypto.js"
 import { validatePassword } from '@/utils'
 import Cookies from "js-cookie";
 export default {
+  props:{
+    mode:String
+  },
   data() {
     const validatePass = (rule, value, callback) => {
       if (value === "") {
@@ -113,14 +116,8 @@ export default {
               Cookies.set('changePsd',2)
               this.$emit('submit')
               this.handleReset()
-              if(this.$route.name === 'modification'){
-                // 
-              }else if (this.$route.query.redirect) {
-                //如果存在参数
-                let redirect = this.$route.query.redirect;
-                this.$router.push(redirect); //则跳转至进入登录页前的路由
-              } else {
-                this.$router.push("/"); //否则跳转至首页
+              if(this.mode === 'passwordModal'){
+                  this.getIsInBootPage()
               }
             } else {
               this.$Message.error('Fail!');
@@ -134,16 +131,33 @@ export default {
             });
           });
     },
-
-    deleteCookies(){
-      let keys = document.cookie.match(/[^ =;]+(?==)/g);
-      if (keys) {
-        for (let i = keys.length; i--;) {
-          document.cookie = keys[i] + '=0;path=/;expires=' + new Date(0).toUTCString()
-          document.cookie = keys[i] + '=0;path=/;domain=' + document.domain + ';expires=' + new Date(0).toUTCString()
-          document.cookie = keys[i] + '=0;path=/;domain=ratingdog.cn;expires=' + new Date(0).toUTCString()
-        }
-      }
+    getIsInBootPage(){
+      this.$axios
+              .get("/bootPage/isInBootPage")
+              .then((res) => {
+                var dataMap = res.data;
+                if (dataMap.code === 200 && dataMap.isIn === true) {
+                  this.$router.push({
+                    name: 'bootPage',
+                    path: '/bootPage'
+                  })
+                }else if (dataMap.code === 200 && dataMap.isIn === false){
+                  if (this.$route.query.redirect) { //如果存在参数
+                    let redirect = this.$route.query.redirect;
+                    this.$router.push(redirect)//则跳转至进入登录页前的路由
+                  } else {
+                    this.$router.push("/"); //否则跳转至首页
+                  }
+                } else {
+                  this.$Modal.success({
+                    title: this.$t("tip.title"),
+                    content: this.$t("tip.request_fail_content"),
+                  });
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
     },
   }
 };

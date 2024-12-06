@@ -88,10 +88,23 @@ export default {
             name: "datasource"
           },
           {
-            btnName: "sidebar.schedule",
+            btnName: "sidebar.FlowSchedule",
             icoName: "ios-timer",
-            router: "schedule",
-            name: "schedule"
+            ref: "FlowSchedule",
+            children: [
+              {
+                btnName: "sidebar.TimingSchedule",
+                icoName: "ios-timer",
+                router: "schedule",
+                name: "schedule",
+              },
+              {
+                btnName: "sidebar.FileSchedule",
+                icoName: "ios-color-filter",
+                router: "/fileSchedule",
+                name: "fileSchedule",
+              },
+            ],
           },
           {
             btnName: "sidebar.stopHub",
@@ -212,17 +225,17 @@ export default {
             children: [
               {
                 btnName: "sidebar.database",
-                name: "VisualizationDataBase",
+                name: "visualization-database",
                 router: "/visualization-database",
               },
               {
                 btnName: "sidebar.datasource",
-                name: "VisualizationDataSource",
+                name: "visualization-datasource",
                 router: "/visualization-datasource",
               },
               {
                 btnName: "sidebar.visualconfig",
-                name: "VisualizationVisualConfig",
+                name: "visualization-visualconfig",
                 router: "/visualization-visualconfig",
               },
             ],
@@ -260,12 +273,6 @@ export default {
               icoName: "ios-paper",
               btnName:  "sidebar.user",
               name: "user",
-            },
-            {
-              router: "/admin",
-              icoName: "ios-paper",
-              btnName:  "sidebar.admin_schedule",
-              name: "admin",
             },{
               router: "/stopsComponent",
               icoName: "ios-paper",
@@ -286,7 +293,7 @@ export default {
           ]
         },
         {
-          btnName: "sidebar.user",
+          btnName: "sidebar.myCenter",
           icoName: "ios-people",
           children: [
             {
@@ -306,7 +313,7 @@ export default {
     }else if( isRole[0].role.stringValue == "USER"){
       const list = [
          {
-          btnName: "sidebar.user",
+          btnName: "sidebar.myCenter",
           icoName: "ios-people",
           children: [
            {
@@ -325,12 +332,6 @@ export default {
               icoName: "ios-paper",
               btnName:  "sidebar.bindingAccount",
               name: "bindingAccount",
-            },
-             {
-              router: "/admin",
-              icoName: "ios-paper",
-              btnName:  "sidebar.admin_schedule",
-              name: "admin",
             },
             {
               router: "/globalVariable",
