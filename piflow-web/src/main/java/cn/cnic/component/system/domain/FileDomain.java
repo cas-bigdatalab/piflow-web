@@ -74,6 +74,35 @@ public class FileDomain {
     }
 
     /**
+     * @param fileId:
+     * @return int
+     * @author tianyao
+     * @description 物理删除文件记录
+     * @date 2024/12/05 16:48
+     */
+    public int deleteByFileId(String fileId, Integer associateType) {
+        int i = 0;
+//        File oldFile = this.getByAssociateId(associateId, associateType);
+        File oldFile = fileMapper.getById(fileId);
+        if (ObjectUtils.isNotEmpty(oldFile)) {
+            try {
+                String fileName = oldFile.getFileName();
+                String filePath = oldFile.getFilePath();
+                if (associateType.equals(FileAssociateType.DATA_PRODUCT_TYPE_COVER.getValue()) || associateType.equals(FileAssociateType.DATA_PRODUCT_COVER.getValue())) {
+                    FileUtils.deleteFile(SysParamsCache.FILE_PATH + fileName);
+                } else {
+                    FileUtils.deleteHdfsFile(filePath,FileUtils.getDefaultFs());
+                }
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
+            }
+            i = fileMapper.deleteById(oldFile.getId());
+
+        }
+        return i;
+    }
+
+    /**
      * @param name:
      * @return File
      * @author tianyao

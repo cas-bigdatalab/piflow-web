@@ -209,6 +209,20 @@ public class FileServiceImpl implements IFileService {
         }
     }
 
+    @Override
+    public String deleteFile(String fileId, Integer associateType) {
+
+        String username = SessionUserUtil.getCurrentUsername();
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NOT_LOGIN);
+        }
+        //先删除原有的绑定文件，同一个type和id只能绑定一个文件,除了流水线发布参数（也就是运行时上传文件）
+        if (!Objects.equals(FileAssociateType.FLOW_PUBLISHING_PROPERTY.getValue(), associateType)) {
+            fileDomain.deleteByFileId(fileId, associateType);
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("delete success");
+    }
+
     private void addChildType(DataProductTypeVo vo, List<DataProductType> dataProductTypeList) {
         List<DataProductType> tempList = dataProductTypeList.stream().filter(type -> vo.getId().equals(type.getParentId())).collect(Collectors.toList());
         List<DataProductTypeVo> dataProductTypeVos = JSON.parseArray(JSON.toJSONString(tempList), DataProductTypeVo.class);

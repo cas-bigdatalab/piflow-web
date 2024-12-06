@@ -16,4 +16,6 @@ public interface IFileService {
     void getFileByFilePath(HttpServletResponse response, String filePath);
 
     void getFileListByIds(HttpServletResponse response, String ids);
+
+    String deleteFile(String fileId, Integer associateType);
 }

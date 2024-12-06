@@ -26,7 +26,7 @@ public class FileCtrl {
 
     /**
      * @param file:
-     * @param unzip:是否解压缩, 上传文件、上传文件夹不解压缩，为false，上传文件夹并解压缩，为true
+     * @param unzip:是否解压缩, 上传文件、上传文件夹不解压缩，为false，上传文件夹并解压缩，为true  门户的运行界面，上传文件zip时会为true
      * @param associateType:
      * @param associateId:
      * @return String
@@ -99,6 +99,22 @@ public class FileCtrl {
     @ApiOperation(value = "getFileListByIds", notes = "根据文件id列表获取多个文件")
     public void getFileListByIds(HttpServletResponse response, String ids) {
         fileServiceImpl.getFileListByIds(response, ids);
+    }
+
+    /**
+     *
+     * @param fileId
+     * @param associateType
+     * @return
+     * @author tianyao
+     * @description 刪除文件
+     * @date 2024/12/02 11:28
+     */
+    @RequestMapping(value = "/deleteFile", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "deleteFile", notes = "删除文件")
+    public String deleteFile(String fileId, Integer associateType) {
+        return fileServiceImpl.deleteFile(fileId, associateType);
     }
 
 }
