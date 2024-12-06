@@ -5,6 +5,7 @@ import java.util.Map;
 
 import cn.cnic.component.process.mapper.ProcessAndProcessGroupMapper;
 import cn.cnic.component.process.vo.ProcessAndProcessGroupVo;
+import cn.cnic.component.process.vo.ProcessPageVo;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -268,12 +269,12 @@ public class ProcessGroupDomain {
         return processDomain.getProcessListByAppIDs(appIDs);
     }
 
-    public List<ProcessAndProcessGroupVo> getProcessAndProcessGroupList(String param) {
-        return processAndProcessGroupMapper.getProcessAndProcessGroupList(param);
+    public List<ProcessAndProcessGroupVo> getProcessAndProcessGroupList(ProcessPageVo pageVo) {
+        return processAndProcessGroupMapper.getProcessAndProcessGroupList(pageVo);
     }
 
-    public List<ProcessAndProcessGroupVo> getProcessAndProcessGroupListByUser(String param, String username) {
-        return processAndProcessGroupMapper.getProcessAndProcessGroupListByUser(param, username);
+    public List<ProcessAndProcessGroupVo> getProcessAndProcessGroupListByUser(String username, ProcessPageVo pageVo) {
+        return processAndProcessGroupMapper.getProcessAndProcessGroupListByUser(username, pageVo);
     }
     
 }

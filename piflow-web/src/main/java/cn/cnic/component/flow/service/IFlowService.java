@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.cnic.component.flow.entity.Flow;
 import cn.cnic.component.flow.vo.FlowVo;
+import cn.cnic.component.schedule.entity.FileSchedule;
 import cn.cnic.controller.requestVo.FlowInfoVoRequestAdd;
 import cn.cnic.controller.requestVo.FlowInfoVoRequestUpdate;
 
@@ -91,4 +92,5 @@ public interface IFlowService {
 
     public String drawingBoardData(String username, boolean isAdmin, String load, String parentAccessPath);
 
+    String runFlowByFileSchedule(FileSchedule fileSchedule, String filePath) throws Exception;
 }

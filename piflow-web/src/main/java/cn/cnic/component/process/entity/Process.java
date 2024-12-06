@@ -44,6 +44,10 @@ public class Process extends BaseModelUUIDNoCorpAgentId {
     private List<ProcessStop> processStopList = new ArrayList<ProcessStop>();
     private List<ProcessPath> processPathList = new ArrayList<ProcessPath>();
     List<FlowGlobalParams> flowGlobalParamsList;
+    private Integer triggerMode;
+    private String scheduleId;
+    private String scheduleName;
+    private String triggerFile;
 
 	public String getFlowId() {
 		return flowId;

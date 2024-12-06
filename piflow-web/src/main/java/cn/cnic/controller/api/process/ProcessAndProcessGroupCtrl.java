@@ -46,10 +46,11 @@ public class ProcessAndProcessGroupCtrl {
     @RequestMapping(value = "/processAndProcessGroupListPage", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value="ProcessAndProcessGroupListPage", notes="Process and ProcessGroup list page")
-    public String processAndProcessGroupListPage(Integer page, Integer limit, String param) {
+    public String processAndProcessGroupListPage(Integer page, Integer limit, String name,Integer triggerMode,
+                                                 String state, String ctrDttm, String scheduleName) {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
-        return processAndProcessGroupServiceImpl.getProcessAndProcessGroupListPage(username, isAdmin, page, limit, param);
+        return processAndProcessGroupServiceImpl.getProcessAndProcessGroupListPage(username, isAdmin, page, limit, name,triggerMode, state, ctrDttm, scheduleName);
     }
 
     /**

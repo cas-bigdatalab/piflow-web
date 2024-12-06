@@ -8,10 +8,11 @@ public interface IProcessAndProcessGroupService {
      *
      * @param offset Number of pages
      * @param limit  Number each page
-     * @param param  Search content
+     * @param name  Search content
      * @return json
      */
-    public String getProcessAndProcessGroupListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param);
+    public String getProcessAndProcessGroupListPage(String username, boolean isAdmin, Integer offset, Integer limit, String name, Integer triggerMode,
+                                                    String state, String ctrDttm, String scheduleName);
 
     /**
      * getAppInfoList

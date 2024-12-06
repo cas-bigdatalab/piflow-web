@@ -57,12 +57,30 @@ public class StopsCtrl {
         stopGroupServiceImpl.updateGroupAndStopsListByServer(username);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("load", load);
     }
-
+    /**
+     * 单击flow页面某个组件,查询此组件的详细信息
+     *
+     * @param fid        flow的id
+     * @param stopPageId flow页面,组件所在的page值
+     * @return
+     */
     @RequestMapping(value = "/queryIdInfo", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="queryIdInfo", notes="query id info")
     public String getStopGroup(String fid, String stopPageId) {
         return propertyServiceImpl.queryAll(fid, stopPageId);
+    }
+    /**
+     * @param flowId:
+     * @return String
+     * @author tianyao
+     * @description 获取某一流水线包含的组件信息
+     * @date 2024/5/30 13:59
+     */
+    @RequestMapping(value = "/getStopsInfoByFlowId", method = RequestMethod.GET)
+    @ResponseBody
+    public String getStopsInfoByFlowId(String flowId) {
+        return propertyServiceImpl.getStopsInfoByFlowId(flowId);
     }
 
     @RequestMapping(value = "/deleteLastReloadData", method = RequestMethod.POST)

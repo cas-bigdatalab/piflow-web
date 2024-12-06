@@ -23,4 +23,8 @@ public class ProcessAndProcessGroupVo implements Serializable {
     private String state;
     private String parentProcessId;
     private String processType;
+    private Integer triggerMode;
+    private String scheduleId;
+    private String scheduleName;
+    private String triggerFile;
 }
