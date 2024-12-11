@@ -52,6 +52,8 @@ public interface ISysUserService {
      */
     public String updatePassword(String username, String oldPassword, String password);
 
+    String updatePasswordBySystem(String username, String password);
+
     /**
      * Delete user
      *

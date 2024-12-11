@@ -37,6 +37,15 @@ public class SystemUserCtrl {
         return sysUserServiceImpl.updatePassword(username, oldPassword, password);
     }
 
+    @RequestMapping(value = "/updatePasswordBySystem", method = RequestMethod.POST)
+    @ResponseBody
+    @ApiOperation(value = "updatePasswordBySystem", notes = "update password")
+    public String updatePasswordBySystem(String username, String password) {
+        //boolean isAdmin = SessionUserUtil.isAdmin();
+        logHelperServiceImpl.logAuthSucceed("update passwd by system", username);
+        return sysUserServiceImpl.updatePasswordBySystem(username, password);
+    }
+
     /**
      * @param :
      * @return String

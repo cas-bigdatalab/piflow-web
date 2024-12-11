@@ -816,7 +816,7 @@ public class FileUtils {
 
                 }
             }
-            response.setContentLength(contentLength);
+//            response.setContentLength(contentLength);
 
 //            zipOut.finish();
 

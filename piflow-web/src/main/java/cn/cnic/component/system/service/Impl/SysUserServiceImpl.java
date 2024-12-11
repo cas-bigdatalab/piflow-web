@@ -255,6 +255,31 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     @Override
+    public String updatePasswordBySystem(String username, String password) {
+        try {
+            password = password.replace(" ", "+");
+            password = AESUtils.aesDecrypt(password);
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
+        }
+        SysUser userByUserName = sysUserDomain.findUserByUserName(username);
+        if (userByUserName == null || StringUtils.isBlank(userByUserName.getUsername())) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
+        }
+        PasswordUtils.updatePassword(username, password);
+        String encodePassword = new BCryptPasswordEncoder().encode(password);
+        userByUserName.setPassword(encodePassword);
+        String pLastUpdateDttm = DateUtils.dateTimesToStr(new Date());
+        userByUserName.setPLastUpdateDttmStr(pLastUpdateDttm);
+        try {
+            sysUserDomain.updateSysUser(userByUserName);
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
+    }
+
+    @Override
     public String delUser(boolean isAdmin, String username, String sysUserId) {
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
