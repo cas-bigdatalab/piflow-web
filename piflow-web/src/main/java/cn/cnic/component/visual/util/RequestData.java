@@ -29,6 +29,6 @@ public class RequestData {
     // 权限相关
     private String name; // 名称
     private String createUser; // 创建人
-    private String company;// 单位
+    private String company;// 台站
 
 }

@@ -18,6 +18,7 @@ import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.system.domain.FileDomain;
 import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.File;
+import cn.cnic.component.system.entity.SysUser;
 import cn.hutool.core.lang.generator.SnowflakeGenerator;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -360,16 +361,16 @@ public class FlowImpl implements IFlow {
                             dataProductDomain.updateStateByProcessIdWithNoChangeUser(processId, DataProductState.TO_PUBLISH.getValue());
                             //更新dataProduct company
                             String userid = sysUserDomain.findUserByUserName(process.getCrtUser()).getId();
-                            String company = sysUserDomain.getSysUserCompanyById(userid);
-                            dataProductDomain.updateCompanyByProcessIdWithNoChangeUser(processId,company);
+                            SysUser user = sysUserDomain.getSysUserById(userid);
+                            dataProductDomain.updateCompanyByProcessIdWithNoChangeUser(processId,StringUtils.defaultString(user.getCompany()), StringUtils.defaultString(user.getOrganization()));
                         }
                     }
                     if (ProcessState.FAILED.equals(state) || ProcessState.KILLED.equals(state) || ProcessState.ABORTED.equals(state)) {
                         dataProductDomain.updateStateByProcessIdWithNoChangeUser(processId, DataProductState.CREATE_FAILED.getValue());
                         //更新dataProduct company
                         String userid = sysUserDomain.findUserByUserName(process.getCrtUser()).getId();
-                        String company = sysUserDomain.getSysUserCompanyById(userid);
-                        dataProductDomain.updateCompanyByProcessIdWithNoChangeUser(processId,company);
+                        SysUser user = sysUserDomain.getSysUserById(userid);
+                        dataProductDomain.updateCompanyByProcessIdWithNoChangeUser(processId,StringUtils.defaultString(user.getCompany()), StringUtils.defaultString(user.getOrganization()));
                     }
                     processDomain.saveOrUpdate(process);
                 }

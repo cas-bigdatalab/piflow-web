@@ -4,6 +4,7 @@ import cn.cnic.base.utils.FileUtils;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.system.domain.SysUserDomain;
+import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.visual.entity.ExcelNameAsso;
 import cn.cnic.component.visual.entity.GraphTemplate;
 import cn.cnic.component.visual.entity.ProductTemplateGraphAssoDto;
@@ -17,6 +18,7 @@ import cn.cnic.component.visual.util.RequestData;
 import cn.cnic.component.visual.util.ResponseResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -146,8 +148,9 @@ public class ExcelSourceServiceImpl implements ExcelSourceService {
             graphTemplate.setCreateTime(getNowTime());
             graphTemplate.setUpdateTime(getNowTime());
             String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-            String company = sysUserDomain.getSysUserCompanyById(userid);
-            graphTemplate.setCompany(company);
+            SysUser user = sysUserDomain.getSysUserById(userid);
+            graphTemplate.setCompany(StringUtils.defaultString(user.getCompany()));
+            graphTemplate.setOrganization(StringUtils.defaultString(user.getOrganization()));
             graphTemplate.setUserName(SessionUserUtil.getCurrentUsername());
             graphTemplateMapper.insert(graphTemplate);
             //插入成功之后会修改pojo,设置Id属性的值
@@ -268,10 +271,11 @@ public class ExcelSourceServiceImpl implements ExcelSourceService {
             graphTemplate.setCreateTime(getNowTime());
             graphTemplate.setUpdateTime(getNowTime());
             String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-            String company = sysUserDomain.getSysUserCompanyById(userid);
-            graphTemplate.setCompany(company);
+            SysUser user = sysUserDomain.getSysUserById(userid);
+            graphTemplate.setCompany(StringUtils.defaultString(user.getCompany()));
+            graphTemplate.setOrganization(StringUtils.defaultString(user.getOrganization()));
             graphTemplate.setUserName(SessionUserUtil.getCurrentUsername());
-            logger.info("uploadExcel_create_user:{} ,company:{} " , SessionUserUtil.getCurrentUser().getUsername(), company);
+            logger.info("uploadExcel_create_user:{} ,company:{} " , SessionUserUtil.getCurrentUser().getUsername(), StringUtils.defaultString(user.getCompany()));
             graphTemplateMapper.insert(graphTemplate);
         } catch (Exception e) {
 //            throw new RuntimeException();

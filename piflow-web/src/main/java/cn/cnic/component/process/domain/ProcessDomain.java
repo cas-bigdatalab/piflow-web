@@ -10,6 +10,7 @@ import cn.cnic.component.process.entity.Process;
 import cn.cnic.component.process.entity.*;
 import cn.cnic.component.process.mapper.*;
 import cn.cnic.component.system.domain.SysUserDomain;
+import cn.cnic.component.system.entity.SysUser;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,8 +79,8 @@ public class ProcessDomain {
             process.setId(UUIDUtils.getUUID32());
         }
         String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-        String company = sysUserDomain.getSysUserCompanyById(userid);
-        int affectedRows = processMapper.addProcess(process, company);
+        SysUser user = sysUserDomain.getSysUserById(userid);
+        int affectedRows = processMapper.addProcess(process, user.getCompany(), user.getOrganization());
         if (affectedRows <= 0) {
             throw new Exception("save failed");
         }

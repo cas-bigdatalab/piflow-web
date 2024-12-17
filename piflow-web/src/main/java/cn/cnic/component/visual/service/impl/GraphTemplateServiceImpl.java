@@ -4,6 +4,7 @@ import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.domain.SysUserDomain;
+import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.visual.entity.ExcelNameAsso;
 import cn.cnic.component.visual.entity.GraphConf;
 import cn.cnic.component.visual.entity.GraphTemplate;
@@ -72,7 +73,7 @@ public class GraphTemplateServiceImpl implements GraphTemplateService {
             if (StringUtils.isNotBlank(requestData.getCompany())) {
                 wrapper.like("company", requestData.getCompany());
             }
-        } else if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {  // 管理员看到自己所属单位的数据
+        } else if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {  // 管理员看到自己所属台站的数据
             String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
             String company = sysUserDomain.getSysUserCompanyById(userid);
             wrapper.like("company", company);
@@ -120,10 +121,11 @@ public class GraphTemplateServiceImpl implements GraphTemplateService {
         graphTemplate.setCreateTime(format);
         graphTemplate.setUpdateTime(format);
         String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-        String company = sysUserDomain.getSysUserCompanyById(userid);
-        graphTemplate.setCompany(company);
+        SysUser user = sysUserDomain.getSysUserById(userid);
+        graphTemplate.setCompany(StringUtils.defaultString(user.getCompany()));
+        graphTemplate.setOrganization(StringUtils.defaultString(user.getCompany()));
         graphTemplate.setUserName(SessionUserUtil.getCurrentUsername());
-        logger.info("addGraphTemplate_create_user:{} ,company:{} " , SessionUserUtil.getCurrentUser().getUsername(), company);
+        logger.info("addGraphTemplate_create_user:{} ,company:{} " , SessionUserUtil.getCurrentUser().getUsername(), StringUtils.defaultString(user.getCompany()));
         int insert = graphTemplateMapper.insert(graphTemplate);
         if(insert == 1){
             return ResponseResult.success();

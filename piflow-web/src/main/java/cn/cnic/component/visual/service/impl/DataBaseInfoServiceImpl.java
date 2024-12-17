@@ -4,6 +4,7 @@ import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.domain.SysUserDomain;
+import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.visual.entity.DataBaseInfo;
 import cn.cnic.component.visual.entity.ExcelNameAsso;
 import cn.cnic.component.visual.entity.GraphConf;
@@ -104,15 +105,15 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
             wrapper.like("crt_user", requestData.getCreateUser());
         }
         String role = SessionUserUtil.getCurrentUserRole().getValue();
-        //管理员可以看到所有数据，且可以按单位搜索
+        //管理员可以看到所有数据，且可以按台站搜索
         if (StringUtils.equalsIgnoreCase(role, SysRoleType.ADMIN.getValue())) {
             if (StringUtils.isNotBlank(requestData.getCompany())) {
-                wrapper.like("company", requestData.getCompany());
+                wrapper.like("company", StringUtils.defaultString(requestData.getCompany()));
             }
-        } else if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {  // 管理员看到自己所属单位的数据
+        } else if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {  // 管理员看到自己所属台站的数据
             String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-            String company = sysUserDomain.getSysUserCompanyById(userid);
-            wrapper.like("company", company);
+            SysUser user = sysUserDomain.getSysUserById(userid);
+            wrapper.like("company", StringUtils.defaultString(user.getCompany()));
         }
         else {  // 普通用户只能看到自己创建的数据
             wrapper.like("crt_user", SessionUserUtil.getCurrentUsername());
@@ -169,10 +170,11 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
         dataBaseInfo.setCreateTime(format);
         dataBaseInfo.setUpdateTime(format);
         String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-        String company = sysUserDomain.getSysUserCompanyById(userid);
-        dataBaseInfo.setCompany(company);
+        SysUser user = sysUserDomain.getSysUserById(userid);
+        dataBaseInfo.setCompany(StringUtils.defaultString(user.getCompany()));
         dataBaseInfo.setCrtUser(SessionUserUtil.getCurrentUsername());
-        logger.info("addDatabase_create_user:{} ,company:{} " , SessionUserUtil.getCurrentUser().getUsername(), company);
+        dataBaseInfo.setOrganization(StringUtils.defaultString(user.getOrganization()));
+        logger.info("addDatabase_create_user:{} ,company:{} " , SessionUserUtil.getCurrentUser().getUsername(), StringUtils.defaultString(user.getCompany()));
 
         int insert = dataBaseInfoMapper.insert(dataBaseInfo);
         if(insert == 1){

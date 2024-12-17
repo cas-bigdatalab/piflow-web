@@ -18,7 +18,7 @@ public interface ProcessMapper {
      * @return
      */
     @InsertProvider(type = ProcessMapperProvider.class, method = "addProcess")
-    public int addProcess(Process process, @Param("company") String company);
+    public int addProcess(Process process, @Param("company") String company, @Param("organization") String organization);
 
     /**
      * update process
