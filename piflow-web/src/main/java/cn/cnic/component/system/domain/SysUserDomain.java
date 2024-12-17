@@ -86,6 +86,16 @@ public class SysUserDomain {
         return sysUserById.getCompany();
     }
 
+
+    public SysUser getSysUserById(String id) {
+        SysUser sysUserById = sysUserMapper.getSysUserById(true, "", id);
+        if (null == sysUserById) {
+            logger.error("sysUser  is null or empty");
+            return null;
+        }
+        return sysUserById;
+    }
+
     public SysUser findUserByUserName(String userName) {
         return sysUserMapper.findUserByUserName(userName);
     }

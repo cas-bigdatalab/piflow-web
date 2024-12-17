@@ -20,13 +20,13 @@ public interface DataProductMapper {
             + "insert into data_product (id, process_id, property_id, property_name, dataset_url, `name`, "
             + "description, permission, keyword, sdPublisher, email, `state`, opinion, down_reason, "
             + "is_share, doi_id, cstr_id, subject_type_id, time_range, spacial_range, dataset_size, dataset_type, associate_id, "
-            + "crt_dttm, crt_user, enable_flag, last_update_dttm, last_update_user, version, company, bak2, bak3) values "
+            + "crt_dttm, crt_user, enable_flag, last_update_dttm, last_update_user, version, company, organization, bak3) values "
             + "<foreach collection='list' item='item' index='index' separator=', '>"
             + "(#{item.id}, #{item.processId}, #{item.propertyId}, #{item.propertyName}, #{item.datasetUrl}, #{item.name}, "
             + "#{item.description}, #{item.permission}, #{item.keyword}, #{item.sdPublisher}, #{item.email}, #{item.state}, #{item.opinion}, #{item.downReason}, "
             + "#{item.isShare}, #{item.doiId}, #{item.cstrId}, #{item.subjectTypeId}, #{item.timeRange}, #{item.spacialRange}, #{item.datasetSize}, #{item.datasetType}, "
             + "#{item.associateId}, "
-            + "#{item.crtDttmStr}, #{item.crtUser}, #{item.enableFlagNum}, #{item.lastUpdateDttmStr}, #{item.lastUpdateUser}, 0, #{item.company}, #{item.bak2}, #{item.bak3})"
+            + "#{item.crtDttmStr}, #{item.crtUser}, #{item.enableFlagNum}, #{item.lastUpdateDttmStr}, #{item.lastUpdateUser}, 0, #{item.company}, #{item.organization}, #{item.bak3})"
             + "</foreach>"
             + "</script>")
     int addBatch(List<DataProduct> dataProducts);
@@ -129,6 +129,9 @@ public interface DataProductMapper {
             + "</if>"
             + "<if test=\"company != null and company != '' \">"
             + " and dp.company like CONCAT('%', #{company}, '%') "
+            + "</if>"
+            + "<if test=\"organization != null and organization != '' \">"
+            + " and dp.organization like CONCAT('%', #{organization}, '%') "
             + "</if>"
             + "<if test=\"name != null and name != '' \">"
             + " and dp.name like CONCAT('%', #{name}, '%') "
@@ -282,6 +285,6 @@ public interface DataProductMapper {
     @Select("select flow_id from flow_process where id = (select process_id from data_product where id = #{id}) and enable_flag = 1")
     String getPublishingId(String id);
 
-    @Update("update data_product set company = #{company} where process_id = #{processId} and enable_flag = 1")
-    int updateCompanyByProcessIdWithNoChangeUser(@Param("processId") String processId, @Param("company") String company);
+    @Update("update data_product set company = #{company}, organization = #{organization}  where process_id = #{processId} and enable_flag = 1")
+    int updateCompanyByProcessIdWithNoChangeUser(@Param("processId") String processId, @Param("company") String company, @Param("organization") String organization);
 }

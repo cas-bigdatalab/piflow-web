@@ -35,8 +35,9 @@ public class ProcessGroupMapperProvider {
     private String processGroupId;
     private String viewXml;
     private String company;
+    private String organization;
 
-    private boolean preventSQLInjectionProcessGroup(ProcessGroup processGroup, String company) {
+    private boolean preventSQLInjectionProcessGroup(ProcessGroup processGroup, String company, String organization) {
         if (null == processGroup || StringUtils.isBlank(processGroup.getLastUpdateUser())) {
             return false;
         }
@@ -74,6 +75,9 @@ public class ProcessGroupMapperProvider {
         if (StringUtils.isNotBlank(company)) {
             this.company = SqlUtils.preventSQLInjection(company);
         }
+        if (StringUtils.isNotBlank(organization)) {
+            this.organization = SqlUtils.preventSQLInjection(organization);
+        }
         return true;
     }
 
@@ -99,10 +103,11 @@ public class ProcessGroupMapperProvider {
         this.processGroupId = null;
         this.viewXml = null;
         this.company = null;
+        this.organization = null;
     }
 
-    public String addProcessGroup(ProcessGroup processGroup, String company) {
-        boolean flag = this.preventSQLInjectionProcessGroup(processGroup, company);
+    public String addProcessGroup(ProcessGroup processGroup, String company, String organization) {
+        boolean flag = this.preventSQLInjectionProcessGroup(processGroup, company, organization);
         if (flag) {
             StringBuffer strBuf = new StringBuffer();
             strBuf.append("INSERT INTO flow_process_group ");
@@ -145,6 +150,7 @@ public class ProcessGroupMapperProvider {
             strBuf.append(this.processGroupId + ", ");
             strBuf.append(this.viewXml + " ");
             strBuf.append(this.company + " ");
+            strBuf.append(this.organization + " ");
             strBuf.append(")");
             this.resetProcessGroup();
             return strBuf.toString() + ";";
@@ -161,8 +167,8 @@ public class ProcessGroupMapperProvider {
      */
     public String updateProcessGroup(ProcessGroup processGroup) {
         String sqlStr = "SELECT 0";
-        // 不允许更新company字段
-        if (this.preventSQLInjectionProcessGroup(processGroup, "")) {
+        // 不允许更新company和organization字段
+        if (this.preventSQLInjectionProcessGroup(processGroup, "", "")) {
             SQL sql = new SQL();
             sql.UPDATE("flow_process_group");
 

@@ -180,6 +180,7 @@ public class SysUserServiceImpl implements ISysUserService {
             sysUserById.setPhoneNumber(sysUserVo.getPhoneNumber());
             sysUserById.setEmail(sysUserVo.getEmail());
             sysUserById.setCompany(sysUserVo.getCompany());
+            sysUserById.setOrganization(sysUserVo.getOrganization());
 
             //校验是否有所属生态系统类型
             List<EcosystemType> ecosystemTypes = sysUserVo.getEcosystemTypes();
@@ -436,6 +437,7 @@ public class SysUserServiceImpl implements ISysUserService {
         sysUser.setPhoneNumber(sysUserVo.getPhoneNumber());
         sysUser.setEmail(sysUserVo.getEmail());
         sysUser.setCompany(sysUserVo.getCompany());
+        sysUser.setOrganization(sysUserVo.getOrganization());
 
         List<SysRole> sysRoleList = new ArrayList<>();
         SysRole sysRole = new SysRole();

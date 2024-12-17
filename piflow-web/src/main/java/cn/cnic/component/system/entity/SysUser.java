@@ -28,6 +28,7 @@ public class SysUser extends BaseModelUUIDNoCorpAgentId {
     private String phoneNumber;
     private String email;
     private String company;
+    private String organization;
     private Date pLastUpdateDttm;
     private String pLastUpdateDttmStr;
     private List<SysRole> roles;

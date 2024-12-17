@@ -10,7 +10,7 @@ public class ProcessAndProcessGroupMapperProvider {
         strBuf.append("SELECT id, last_update_dttm AS lastUpdateDttm, crt_dttm AS crtDttm, ");
         strBuf.append("app_id AS appId, name, description, start_time AS startTime, ");
         strBuf.append("end_time AS endTime, progress, state, parent_process_id AS parentProcessId, ");
-        strBuf.append("processType, company, username, flow_id AS flowId ");
+        strBuf.append("processType, company, organization, username, flow_id AS flowId ");
         strBuf.append("FROM ( ");
         String commonCondition = "enable_flag=1 AND app_id IS NOT NULL AND fk_flow_process_group_id IS NULL ";
         if (StringUtils.isNotBlank(createUser)) {
@@ -28,14 +28,14 @@ public class ProcessAndProcessGroupMapperProvider {
 
         strBuf.append("SELECT id, last_update_dttm, crt_dttm, app_id, name, description, ");
         strBuf.append("start_time, end_time, progress, state, parent_process_id, 'TASK' AS processType, ");
-        strBuf.append("company, crt_user AS username, flow_id ");
+        strBuf.append("company,organization, crt_user AS username, flow_id ");
         strBuf.append("FROM flow_process WHERE " + commonCondition);
 
         strBuf.append(" UNION ALL ");
 
         strBuf.append("SELECT id, last_update_dttm, crt_dttm, app_id, name, description, ");
         strBuf.append("start_time, end_time, progress, state, parent_process_id, 'GROUP' AS processType, ");
-        strBuf.append("company, crt_user AS username, flow_id ");
+        strBuf.append("company,organization, crt_user AS username, flow_id ");
         strBuf.append("FROM flow_process_group WHERE " + commonCondition);
 
         strBuf.append(") AS re ");

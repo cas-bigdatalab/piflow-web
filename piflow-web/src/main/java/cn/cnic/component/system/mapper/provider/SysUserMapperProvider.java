@@ -90,7 +90,7 @@ public class SysUserMapperProvider {
 
         strBuf.append("( ");
         strBuf.append(SqlUtils.baseFieldName() + ", ");
-        strBuf.append("username, password, name, age, sex, status, developer_access_key, phone_number, email, company,p_last_update_dttm ");
+        strBuf.append("username, password, name, age, sex, status, developer_access_key, phone_number, email, company, p_last_update_dttm, organization ");
         strBuf.append(") ");
 
         strBuf.append("values ");
@@ -98,7 +98,8 @@ public class SysUserMapperProvider {
         strBuf.append(SqlUtils.baseFieldValues(sysUser) + ", ");
         strBuf.append(username + "," + password + "," + name + "," + age + "," + sex + "," + status
                 + "," + developerAccessKey + "," + phoneNumber + "," + email + "," + company
-                + "," + SqlUtils.preventSQLInjection(sysUser.getPLastUpdateDttmStr()));
+                + "," + SqlUtils.preventSQLInjection(sysUser.getPLastUpdateDttmStr())
+                + "," + SqlUtils.preventSQLInjection(sysUser.getOrganization()));
         strBuf.append(")");
 
         this.resetSysUser();
@@ -260,7 +261,8 @@ public class SysUserMapperProvider {
      */
     public String getSysUserVoList(String username, String param, String name, String email, String company) {
         StringBuffer strBuf = new StringBuffer();
-        strBuf.append("SELECT id, username, name, age, sex, crt_dttm, status, last_login_ip, phone_number, email, company FROM sys_user WHERE enable_flag=1 ");
+        strBuf.append("SELECT id, username, name, age, sex, crt_dttm, status, last_login_ip, phone_number, email, company, organization " +
+                "FROM sys_user WHERE enable_flag=1 ");
         if (StringUtils.isNotBlank(param)) {
             strBuf.append("AND ( ");
             strBuf.append(" username LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(param) + ",'%')");

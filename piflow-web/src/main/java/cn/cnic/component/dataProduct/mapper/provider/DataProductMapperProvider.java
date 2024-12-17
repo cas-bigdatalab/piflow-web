@@ -39,6 +39,7 @@ public class DataProductMapperProvider {
     private Integer datasetType;
     private String associateId;
     private String company;
+    private String organization;
 
     private boolean preventSQLInjectionDataProduct(DataProduct dataProduct) {
         if (null == dataProduct) {
@@ -78,6 +79,7 @@ public class DataProductMapperProvider {
         this.datasetType = (null == dataProduct.getDatasetType()) ? 0 : dataProduct.getDatasetType();
         this.associateId = SqlUtils.preventSQLInjection(dataProduct.getAssociateId());
         this.company = SqlUtils.preventSQLInjection(dataProduct.getCompany());
+        this.organization = SqlUtils.preventSQLInjection(dataProduct.getOrganization());
         return true;
     }
 
@@ -109,6 +111,8 @@ public class DataProductMapperProvider {
         this.datasetSize = null;
         this.datasetType = null;
         this.associateId = null;
+        this.company = null;
+        this.organization = null;
     }
 
     /**
@@ -140,6 +144,7 @@ public class DataProductMapperProvider {
             stringBuffer.append("down_reason, ");
             stringBuffer.append("is_share, ");
             stringBuffer.append("company, ");
+            stringBuffer.append("organization, ");
             if (!"null".equals(this.doiId)) {
                 stringBuffer.append("doi_id, ");
             }
@@ -180,6 +185,7 @@ public class DataProductMapperProvider {
             stringBuffer.append(this.downReason).append(", ");
             stringBuffer.append(this.isShare).append(", ");
             stringBuffer.append(this.company).append(", ");
+            stringBuffer.append(this.organization).append(", ");
             if (!"null".equals(this.doiId)) {
                 stringBuffer.append(this.doiId).append(", ");
             }
@@ -273,6 +279,9 @@ public class DataProductMapperProvider {
             }
             if (null != dataProduct.getCompany()) {
                 sql.SET("company = " + company);
+            }
+            if (null != dataProduct.getCompany()) {
+                sql.SET("organization = " + organization);
             }
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();

@@ -30,8 +30,10 @@ public class GraphConf{
     private String createTime ;
     /** 更新时间 */
     private String updateTime ;
-    /** 单位 */
+    /** 台站 */
     private String company ;
+    /** 单位 */
+    private String organization;
     /** 创建人 */
     private String userName ;
     //判断是新增还是修改标记（add为新增，update为修改）

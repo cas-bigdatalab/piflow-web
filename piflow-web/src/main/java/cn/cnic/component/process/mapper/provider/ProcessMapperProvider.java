@@ -39,9 +39,10 @@ public class ProcessMapperProvider {
     private String processGroup_id;
     private String viewXml;
     private String company;
+    private String organization;
 
 
-    private boolean preventSQLInjectionProcess(Process process, String company) {
+    private boolean preventSQLInjectionProcess(Process process, String company, String organization) {
         if (null == process || StringUtils.isBlank(process.getLastUpdateUser())) {
             return false;
         }
@@ -80,6 +81,9 @@ public class ProcessMapperProvider {
         if (StringUtils.isNotBlank(company)) {
             this.company = SqlUtils.preventSQLInjection(company);
         }
+        if (StringUtils.isNotBlank(organization)) {
+            this.organization = SqlUtils.preventSQLInjection(organization);
+        }
         return true;
     }
 
@@ -110,6 +114,7 @@ public class ProcessMapperProvider {
         this.processGroup_id = null;
         this.viewXml = null;
         this.company = null;
+        this.organization = null;
     }
 
     /**
@@ -118,9 +123,9 @@ public class ProcessMapperProvider {
      * @param process
      * @return
      */
-    public String addProcess(Process process, String company) {
+    public String addProcess(Process process, String company, String organization) {
         String sqlStr = "SELECT 0";
-        if (this.preventSQLInjectionProcess(process, company)) {
+        if (this.preventSQLInjectionProcess(process, company, organization)) {
             StringBuffer strBuf = new StringBuffer();
             strBuf.append("INSERT INTO flow_process ");
             strBuf.append("( ");
@@ -145,7 +150,8 @@ public class ProcessMapperProvider {
             strBuf.append("fk_group_schedule_id, ");
             strBuf.append("fk_flow_process_group_id, ");
             strBuf.append("view_xml, ");
-            strBuf.append("company ");
+            strBuf.append("company, ");
+            strBuf.append("organization ");
             strBuf.append(") ");
 
             strBuf.append("VALUES ");
@@ -171,7 +177,9 @@ public class ProcessMapperProvider {
             strBuf.append(schedule_id + ", ");
             strBuf.append(processGroup_id + ", ");
             strBuf.append(viewXml + ", ");
-            strBuf.append(this.company + " ");
+            strBuf.append(this.company + ", ");
+            strBuf.append(this.organization + " ");
+
             strBuf.append(") ");
             this.reset();
             return strBuf.toString() + ";";
@@ -189,7 +197,7 @@ public class ProcessMapperProvider {
      */
     public String updateProcess(Process process) {
         String sqlStr = "SELECT 0";
-        if (this.preventSQLInjectionProcess(process, "")) {
+        if (this.preventSQLInjectionProcess(process, "", "")) { // 更新时无需传入company和organization
             SQL sql = new SQL();
             sql.UPDATE("flow_process");
 

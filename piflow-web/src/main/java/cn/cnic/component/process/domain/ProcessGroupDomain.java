@@ -7,6 +7,7 @@ import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.process.mapper.ProcessAndProcessGroupMapper;
 import cn.cnic.component.process.vo.ProcessAndProcessGroupVo;
 import cn.cnic.component.system.domain.SysUserDomain;
+import cn.cnic.component.system.entity.SysUser;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,9 +73,10 @@ public class ProcessGroupDomain {
             processGroup.setId(UUIDUtils.getUUID32());
         }
         String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-        String company = sysUserDomain.getSysUserCompanyById(userid);
+        SysUser user = sysUserDomain.getSysUserById(userid);
 
-        int affectedRows = processGroupMapper.addProcessGroup(processGroup, company);
+
+        int affectedRows = processGroupMapper.addProcessGroup(processGroup, user.getCompany(), user.getOrganization());
         if (affectedRows <= 0) {
             throw new Exception("save failed");
         }

@@ -3,6 +3,7 @@ package cn.cnic.component.visual.service.impl;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.domain.SysUserDomain;
+import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.visual.entity.GraphConf;
 import cn.cnic.component.visual.mapper.piflowdb.GraphConfMapper;
 import cn.cnic.component.visual.service.GraphConfService;
@@ -57,7 +58,7 @@ public class GraphConfServiceImpl implements GraphConfService {
             if (StringUtils.isNotBlank(requestData.getCompany())) {
                 wrapper.like("company", requestData.getCompany());
             }
-        } else if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {  // 管理员看到自己所属单位的数据
+        } else if (StringUtils.equalsIgnoreCase(role, SysRoleType.ORS_ADMIN.getValue())) {  // 管理员看到自己所属台站的数据
             String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
             String company = sysUserDomain.getSysUserCompanyById(userid);
             wrapper.like("company", company);
@@ -103,7 +104,9 @@ public class GraphConfServiceImpl implements GraphConfService {
         graphConf.setCreateTime(format);
         graphConf.setUpdateTime(format);
         String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-        graphConf.setCompany(sysUserDomain.getSysUserCompanyById(userid));
+        SysUser user = sysUserDomain.getSysUserById(userid);
+        graphConf.setCompany(StringUtils.defaultString(user.getCompany()));
+        graphConf.setOrganization(StringUtils.defaultString(user.getOrganization()));
         graphConf.setUserName(SessionUserUtil.getCurrentUsername());
         int insert = graphConfMapper.insert(graphConf);
         Integer id = graphConf.getId();

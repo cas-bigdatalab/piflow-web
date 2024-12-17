@@ -24,7 +24,7 @@ import cn.cnic.component.process.vo.ProcessGroupVo;
 public interface ProcessGroupMapper {
 
     @InsertProvider(type = ProcessGroupMapperProvider.class, method = "addProcessGroup")
-    public int addProcessGroup(ProcessGroup processGroup, @Param("company") String company);
+    public int addProcessGroup(ProcessGroup processGroup, @Param("company") String company, @Param("organization") String organization);
 
     /**
      * update updateProcessGroup

@@ -10,6 +10,7 @@ import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.domain.SysUserDomain;
+import cn.cnic.component.system.entity.SysUser;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,8 +46,8 @@ public class StatisticServiceImpl implements IStatisticService {
             // 非admin角色只展示本台站的
             UserVo currentUser = SessionUserUtil.getCurrentUser();
             String id = sysUserDomain.findUserByUserName(currentUser.getUsername()).getId();
-            String company = sysUserDomain.getSysUserCompanyById(id);
-            processStatisticList = statisticDomain.getFlowProcessStatisticInfo(company);
+            SysUser user = sysUserDomain.getSysUserById(id);
+            processStatisticList = statisticDomain.getFlowProcessStatisticInfo(user.getCompany());
         }
         Map<String, String> processInfoMap = convertList2Map(processStatisticList, "STATE", "COUNT");
         Map<String, String> flowInfoMap = new HashMap<>();
