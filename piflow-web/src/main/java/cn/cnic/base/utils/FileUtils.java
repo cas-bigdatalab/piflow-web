@@ -760,7 +760,8 @@ public class FileUtils {
             }
             response.setContentLength(contentLength);
         } else {
-            String[] split = fileName.split("\\.");
+//            String[] split = fileName.split("\\.");
+            int lastPointIndex = fileName.lastIndexOf(".");
             int lastUnderLineIndex = fileName.lastIndexOf("_");
             String filePrefix = "";
             // 检查是否包含下划线
@@ -768,9 +769,10 @@ public class FileUtils {
                 // 获取最后一个下划线前面的部分
                 filePrefix = fileName.substring(0, lastUnderLineIndex);
             }else {
-                filePrefix = split[0];
+                //获取最后一个.前面的部分
+                filePrefix =fileName.substring(0,lastPointIndex);
             }
-            String name = filePrefix + "_" + getCurDateTimeYYYYMMDD() + "." +split[1];
+            String name = filePrefix + "_" + getCurDateTimeYYYYMMDD() + "." +fileName.substring(lastPointIndex+1);
             response.reset();
             response.addHeader("Access-Control-Allow-Origin", "*");
             response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
