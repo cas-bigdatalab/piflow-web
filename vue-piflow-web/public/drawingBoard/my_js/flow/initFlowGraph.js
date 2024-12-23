@@ -2432,7 +2432,7 @@ window.addEventListener("message",function(event){
         });
         window.parent.postMessage(false);
 
-    }else {
+    }else if(data.pageMsg) {
         layer.msg("Startup failure：" + data.pageMsg, {icon: 2, shade: 0, time: 2000}, function () {
         });
         window.parent.postMessage(false);
