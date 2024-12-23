@@ -1,5 +1,6 @@
 package cn.cnic.base.utils;
 
+import cn.cnic.base.BaseModelIDNoCorpAgentId;
 import cn.cnic.base.BaseModelUUIDNoCorpAgentId;
 import org.apache.commons.lang3.StringUtils;
 
@@ -53,6 +54,10 @@ public class SqlUtils {
         return " `id`, `crt_dttm`, `crt_user`, `last_update_dttm`, `last_update_user`, `enable_flag`, `version` ";
     }
 
+    public static String baseFieldNameWithNoId() {
+        return " `crt_dttm`, `crt_user`, `last_update_dttm`, `last_update_user`, `enable_flag`, `version` ";
+    }
+
     public static String baseFieldValues(BaseModelUUIDNoCorpAgentId baseInfo) {
         if (null == baseInfo) {
             return " ";
@@ -79,6 +84,31 @@ public class SqlUtils {
         String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
         Date lastUpdateDttm = (null == baseInfo.getLastUpdateDttm()) ? new Date() : baseInfo.getLastUpdateDttm();
         String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
+
+
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(crtDttmStr) + ",");
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(crtUser) + ",");
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(lastUpdateDttmStr) + ",");
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(lastUpdateUser) + ",");
+        valueStringBuffer.append(((null != enableFlag && enableFlag) ? 1 : 0) + ",");
+        valueStringBuffer.append((null != version ? version : 0L) + " ");
+        return valueStringBuffer.toString();
+    }
+
+    public static String baseFieldValuesNoLongId(BaseModelIDNoCorpAgentId baseInfo) {
+        if (null == baseInfo) {
+            return " ";
+        }
+        StringBuffer valueStringBuffer = new StringBuffer();
+        String crtUser = StringUtils.isNotBlank(baseInfo.getCrtUser()) ? baseInfo.getCrtUser() : "-1";
+        String lastUpdateUser = baseInfo.getLastUpdateUser();
+        Boolean enableFlag = baseInfo.getEnableFlag();
+        Long version = baseInfo.getVersion();
+        Date crtDttm = (null == baseInfo.getCrtDttm()) ? new Date() : baseInfo.getCrtDttm();
+        String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
+        Date lastUpdateDttm = (null == baseInfo.getLastUpdateDttm()) ? new Date() : baseInfo.getLastUpdateDttm();
+        String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
+
 
 
         valueStringBuffer.append(SqlUtils.preventSQLInjection(crtDttmStr) + ",");

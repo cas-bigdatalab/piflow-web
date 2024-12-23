@@ -11,10 +11,12 @@ import cn.cnic.component.flow.entity.Stops;
 import cn.cnic.component.flow.request.UpdatePathRequest;
 import cn.cnic.component.flow.service.IPropertyService;
 import cn.cnic.component.flow.utils.StopsUtils;
+import cn.cnic.component.flow.vo.StopsPropertyVo;
 import cn.cnic.component.flow.vo.StopsVo;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
 import cn.cnic.component.stopsComponent.entity.StopsComponent;
 import cn.cnic.component.stopsComponent.entity.StopsComponentProperty;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.BeanUtils;
@@ -363,5 +365,24 @@ public class PropertyServiceImpl implements IPropertyService {
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
+
+    @Override
+    public String getStopsInfoByFlowId(String flowId) {
+        //flow_stops表和对应的其他的相关信息
+        List<Stops> stopsList = flowDomain.getStopsListByFlowId(flowId);
+//        List<StopsVo> result = new ArrayList<>();
+//        try {
+//            if(CollectionUtils.isNotEmpty(stopsList)){
+//                for (Stops stops : stopsList) {
+//                    StopsVo stopsVo = extendStopsInfo(stops);
+//                    result.add(stopsVo);
+//                }
+//            }
+//        } catch (Exception e) {
+//            return ReturnMapUtils.setFailedMsgRtnJsonStr(e.getMessage());
+//        }
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("stopsList",stopsList);
+    }
+
 
 }

@@ -2,6 +2,7 @@ package cn.cnic.component.flow.service.impl;
 
 import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.ProcessState;
+import cn.cnic.common.Eunm.ProcessTriggerMode;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.dataSource.domain.DataSourceDomain;
@@ -25,9 +26,11 @@ import cn.cnic.component.mxGraph.utils.MxGraphUtils;
 import cn.cnic.component.mxGraph.vo.MxGraphModelVo;
 import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.process.entity.Process;
+import cn.cnic.component.process.entity.ProcessStop;
 import cn.cnic.component.process.utils.ProcessUtils;
 import cn.cnic.component.process.vo.ProcessVo;
 import cn.cnic.component.schedule.domain.ScheduleDomain;
+import cn.cnic.component.schedule.entity.FileSchedule;
 import cn.cnic.component.stopsComponent.service.IStopGroupService;
 import cn.cnic.component.stopsComponent.vo.StopGroupVo;
 import cn.cnic.controller.requestVo.FlowInfoVoRequestAdd;
@@ -339,6 +342,8 @@ public class FlowServiceImpl implements IFlowService {
         }
         process.setRunModeType(runModeType);
         process.setId(UUIDUtils.getUUID32());
+        //增加进程触发模式为手动触发
+        process.setTriggerMode(ProcessTriggerMode.MANUAL.getValue());
         int updateProcess = processDomain.addProcess(process);
         if (updateProcess <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
@@ -570,5 +575,85 @@ public class FlowServiceImpl implements IFlowService {
         List<String> stopsDisabledPagesList = flowDomain.getStopsDisabledPagesListByFlowId(load);
         rtnMap.put("stopsDisabled", stopsDisabledPagesList);
         return ReturnMapUtils.toJson(rtnMap);
+    }
+
+
+    /**
+     * @param fileSchedule:
+     * @param filePath:
+     * @return String
+     * @author tianyao
+     * @description 文件调度触发流水线执行
+     * @date 2024/5/29 16:43
+     */
+    @Override
+    public String runFlowByFileSchedule(FileSchedule fileSchedule, String filePath) throws Exception {
+        String username = fileSchedule.getCrtUser();
+        String flowId = fileSchedule.getAssociateId();
+        boolean isAdmin = true;
+        // find flow by flowId
+        Flow flowById = this.getFlowById(username, isAdmin, flowId);
+        // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
+        if (null == flowById) {
+            throw new Exception("Flow with FlowId" + flowId + "was not queried");
+        }
+        //替换掉对应stopId的propertyId的customValue,将flowId 换成 fileScheduleId
+        List<Stops> stops = flowById.getStopsList();
+        for (Stops stop : stops) {
+            if (fileSchedule.getStopId().equals(stop.getId()) || fileSchedule.getStopName().equals(stop.getName())) {
+                List<Property> properties = stop.getProperties();
+                for (Property property : properties) {
+                    if (fileSchedule.getPropertyId().equals(property.getId()) || fileSchedule.getPropertyName().equals(property.getName())) {
+                        property.setCustomValue(filePath);
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+//        flowById.setId(String.valueOf(fileSchedule.getId()));
+
+
+        Process process = ProcessUtils.flowToProcess(flowById, username, false);
+        RunModeType runModeType = RunModeType.RUN;
+        process.setRunModeType(runModeType);
+        process.setId(UUIDUtils.getUUID32());
+        //补充文件触发调度信息
+        process.setTriggerMode(ProcessTriggerMode.FILE.getValue());
+        String[] pathParts = filePath.split(java.io.File.separator);
+        process.setTriggerFile(pathParts[pathParts.length-1]);
+        process.setScheduleId(fileSchedule.getId().toString());
+        process.setScheduleName(fileSchedule.getName());
+        int updateProcess = processDomain.addProcess(process);
+        String checkpoint = "";
+        List<Stops> stopsList = flowById.getStopsList();
+        for (Stops stop : stopsList) {
+            stop.getIsCheckpoint();
+            if (null != stop.getIsCheckpoint() && stop.getIsCheckpoint()) {
+                if (StringUtils.isNotBlank(checkpoint)) {
+                    checkpoint = (checkpoint + ",");
+                }
+                checkpoint = (checkpoint + stop.getName());
+            }
+        }
+        String processId = process.getId();
+        Map<String, Object> stringObjectMap = flowImpl.startFlow(process, checkpoint.toString(), runModeType);
+        if (null == stringObjectMap || 200 != ((Integer) stringObjectMap.get("code"))) {
+            processDomain.updateProcessEnableFlag(username, isAdmin, processId);
+            String errorMsg = (String) stringObjectMap.get("errorMsg");
+            logger.error("run flow :" + flowId + " failed, msg: " + errorMsg);
+            throw new Exception("run flow :" + flowId + " failed, msg: " + errorMsg);
+        }
+        process = processDomain.getProcessById(username, isAdmin, processId);
+        process.setLastUpdateDttm(new Date());
+        process.setLastUpdateUser(username);
+        process.setAppId((String) stringObjectMap.get("appId"));
+        process.setProcessId((String) stringObjectMap.get("appId"));
+        process.setState(ProcessState.STARTED);
+        process.setLastUpdateUser(username);
+        process.setLastUpdateDttm(new Date());
+        processDomain.updateProcess(process);
+
+        return processId;
     }
 }

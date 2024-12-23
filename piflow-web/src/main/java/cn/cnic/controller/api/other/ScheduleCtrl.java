@@ -1,12 +1,10 @@
 package cn.cnic.controller.api.other;
 
+import cn.cnic.component.schedule.vo.FileScheduleVo;
 import cn.cnic.component.system.service.ILogHelperService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.schedule.service.IScheduleService;
@@ -136,6 +134,91 @@ public class ScheduleCtrl {
         String username = SessionUserUtil.getCurrentUsername();
         boolean isAdmin = SessionUserUtil.isAdmin();
         return scheduleServiceImpl.stopSchedule(isAdmin, username, scheduleId);
+    }
+
+    /**
+     * @param fileScheduleVo:
+     * @return String
+     * @author tianyao
+     * @description 关键词获取文件触发列表 分页
+     * @date 2024/5/14 18:19
+     */
+    @RequestMapping(value = "/getFileScheduleListByPage", method = RequestMethod.GET)
+    @ResponseBody
+    public String getFileScheduleListByPage(@ModelAttribute FileScheduleVo fileScheduleVo) {
+        return scheduleServiceImpl.getFileScheduleListByPage(fileScheduleVo);
+    }
+
+    /**
+     * @param fileScheduleVo:
+     * @return String
+     * @author tianyao
+     * @description 新增或编辑文件触发
+     * @date 2024/5/14 18:11
+     */
+    @RequestMapping(value = "/saveFileSchedule", method = RequestMethod.POST)
+    @ResponseBody
+    public String saveFileSchedule(@RequestBody FileScheduleVo fileScheduleVo) {
+        return scheduleServiceImpl.saveFileSchedule(fileScheduleVo);
+    }
+
+    /**
+     * @param id:
+     * @return String
+     * @author tianyao
+     * @description 根据Id获取文件触发调度记录
+     * @date 2024/5/14 18:12
+     */
+    @RequestMapping(value = "/getFileScheduleById", method = RequestMethod.GET)
+    @ResponseBody
+    public String getFileScheduleById(String id) {
+        return scheduleServiceImpl.getFileScheduleById(id);
+    }
+
+    /**
+     * @param id:
+     * @return String
+     * @author tianyao
+     * @description 删除文件触发调度
+     * @date 2024/5/14 18:13
+     */
+    @RequestMapping(value = "/delFileSchedule", method = RequestMethod.POST)
+    @ResponseBody
+    public String delFileSchedule(String id) {
+        return scheduleServiceImpl.delFileSchedule(id);
+    }
+
+
+    /**
+     * @param id:
+     * @return String
+     * @author tianyao
+     * @description 开启文件触发调度
+     * @date 2024/5/14 18:14
+     */
+    @RequestMapping(value = "/startFileSchedule", method = RequestMethod.POST)
+    @ResponseBody
+    public String startFileSchedule(String id) {
+        return scheduleServiceImpl.startFileSchedule(id);
+    }
+
+    /**
+     * @param id:
+     * @return String
+     * @author tianyao
+     * @description 停止文件触发调度
+     * @date 2024/5/14 18:15
+     */
+    @RequestMapping(value = "/stopFileSchedule", method = RequestMethod.POST)
+    @ResponseBody
+    public String stopFileSchedule(String id) {
+        return scheduleServiceImpl.stopFileSchedule(id);
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.POST)
+    @ResponseBody
+    public String test(String id) {
+        return scheduleServiceImpl.test(id);
     }
 
 }

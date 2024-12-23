@@ -38,6 +38,10 @@ public class ProcessMapperProvider {
     private String schedule_id;
     private String processGroup_id;
     private String viewXml;
+    private Integer triggerMode;
+    private String scheduleId;
+    private String scheduleName;
+    private String triggerFile;
 
 
     private boolean preventSQLInjectionProcess(Process process) {
@@ -76,6 +80,10 @@ public class ProcessMapperProvider {
         this.processParentType = SqlUtils.preventSQLInjection(null != process.getProcessParentType() ? process.getProcessParentType().name() : null);
         this.schedule_id = SqlUtils.preventSQLInjection(null != process.getSchedule() ? process.getSchedule().getId() : null);
         this.processGroup_id = SqlUtils.preventSQLInjection(null != process.getProcessGroup() ? process.getProcessGroup().getId() : null);
+        this.triggerMode = process.getTriggerMode();
+        this.scheduleId = SqlUtils.preventSQLInjection(process.getScheduleId());
+        this.scheduleName = SqlUtils.preventSQLInjection(process.getScheduleName());
+        this.triggerFile = SqlUtils.preventSQLInjection(process.getTriggerFile());
         return true;
     }
 
@@ -105,6 +113,10 @@ public class ProcessMapperProvider {
         this.schedule_id = null;
         this.processGroup_id = null;
         this.viewXml = null;
+        this.triggerMode = null;
+        this.scheduleId = null;
+        this.scheduleName = null;
+        this.triggerFile = null;
     }
 
     /**
@@ -139,7 +151,11 @@ public class ProcessMapperProvider {
             strBuf.append("process_parent_type, ");
             strBuf.append("fk_group_schedule_id, ");
             strBuf.append("fk_flow_process_group_id, ");
-            strBuf.append("view_xml ");
+            strBuf.append("view_xml, ");
+            strBuf.append("trigger_mode, ");
+            strBuf.append("schedule_id, ");
+            strBuf.append("schedule_name, ");
+            strBuf.append("trigger_file ");
             strBuf.append(") ");
 
             strBuf.append("VALUES ");
@@ -164,7 +180,11 @@ public class ProcessMapperProvider {
             strBuf.append(processParentType + ", ");
             strBuf.append(schedule_id + ", ");
             strBuf.append(processGroup_id + ", ");
-            strBuf.append(viewXml + " ");
+            strBuf.append(viewXml + ", ");
+            strBuf.append(triggerMode + ", ");
+            strBuf.append(scheduleId + ", ");
+            strBuf.append(scheduleName + ", ");
+            strBuf.append(triggerFile + " ");
             strBuf.append(") ");
             this.reset();
             return strBuf.toString() + ";";
@@ -207,6 +227,10 @@ public class ProcessMapperProvider {
             sql.SET("end_time=" + endTimeStr);
             sql.SET("progress=" + progress);
             sql.SET("run_mode_type=" + runModeTypeStr);
+            sql.SET("trigger_mode=" + triggerMode);
+            sql.SET("schedule_id=" + scheduleId);
+            sql.SET("schedule_name=" + scheduleName);
+            sql.SET("trigger_file=" + triggerFile);
             sql.WHERE("version = " + version);
             sql.WHERE("id = " + id);
             if (StringUtils.isNotBlank(id)) {

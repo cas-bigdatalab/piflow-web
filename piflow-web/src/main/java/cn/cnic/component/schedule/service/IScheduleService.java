@@ -1,5 +1,6 @@
 package cn.cnic.component.schedule.service;
 
+import cn.cnic.component.schedule.vo.FileScheduleVo;
 import cn.cnic.component.schedule.vo.ScheduleVo;
 
 public interface IScheduleService {
@@ -72,5 +73,21 @@ public interface IScheduleService {
      * @return json
      */
     public String stopSchedule(boolean isAdmin, String username, String id);
+
+    String getFileScheduleListByPage(FileScheduleVo fileScheduleVo);
+
+    String saveFileSchedule(FileScheduleVo fileScheduleVo);
+
+    String getFileScheduleById(String id);
+
+    String delFileSchedule(String id);
+
+    String startFileSchedule(String id);
+
+    String stopFileSchedule(String id);
+
+    void run();
+
+    String test(String id);
 
 }
