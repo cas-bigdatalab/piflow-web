@@ -9,6 +9,7 @@ import cn.cnic.component.process.vo.ProcessAndProcessGroupVo;
 import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.SysUser;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -287,6 +288,10 @@ public class ProcessGroupDomain {
 
     public List<ProcessAndProcessGroupVo> getProcessAndProcessGroupListByUser(String param, String username) {
         return processAndProcessGroupMapper.getProcessAndProcessGroupListByUser(param, username);
+    }
+
+    public int updateCompanyAndOrgByUserName(String company, String organization, String crtUser) {
+        return processGroupMapper.updateCompanyAndOrgByUserName(company, organization, crtUser);
     }
     
 }

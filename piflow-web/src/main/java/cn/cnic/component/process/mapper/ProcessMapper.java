@@ -20,6 +20,10 @@ public interface ProcessMapper {
     @InsertProvider(type = ProcessMapperProvider.class, method = "addProcess")
     public int addProcess(Process process, @Param("company") String company, @Param("organization") String organization);
 
+    @Update("update flow_process set company = #{company}, organization = #{organization} where crt_user = #{crtUser}")
+    int updateCompanyAndOrgByUserName(@Param("company") String company, @Param("organization") String organization, @Param("crtUser") String crtUser);
+
+
     /**
      * update process
      *

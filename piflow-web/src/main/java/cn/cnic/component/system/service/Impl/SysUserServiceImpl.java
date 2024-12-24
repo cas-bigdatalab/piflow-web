@@ -10,14 +10,20 @@ import cn.cnic.common.Eunm.EcosystemTypeAssociateType;
 import cn.cnic.common.Eunm.ResultCode;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.component.dataProduct.domain.DataProductDomain;
 import cn.cnic.component.dataProduct.domain.EcosystemTypeDomain;
 import cn.cnic.component.dataProduct.entity.EcosystemType;
 import cn.cnic.component.dataProduct.entity.EcosystemTypeAssociate;
+import cn.cnic.component.process.domain.ProcessDomain;
+import cn.cnic.component.process.domain.ProcessGroupDomain;
 import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.SysRole;
 import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.system.service.ISysUserService;
 import cn.cnic.component.system.vo.SysUserVo;
+import cn.cnic.component.visual.service.DataBaseInfoService;
+import cn.cnic.component.visual.service.GraphConfService;
+import cn.cnic.component.visual.service.GraphTemplateService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import org.apache.commons.collections.CollectionUtils;
@@ -35,7 +41,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -64,6 +69,15 @@ public class SysUserServiceImpl implements ISysUserService {
     private final UserDetailsService userDetailsService;
     private final JwtUtils jwtTokenUtil;
     private final SysUserDomain sysUserDomain;
+    private final DataProductDomain dataProductDomain;
+    private final GraphTemplateService graphTemplateService;
+    private final GraphConfService graphConfService;
+    private final DataBaseInfoService dataBaseInfoService;
+    private final ProcessGroupDomain processGroupDomain;
+    private final ProcessDomain processDomain;
+
+
+
 
     private final EcosystemTypeDomain ecosystemTypeDomain;
 
@@ -71,11 +85,22 @@ public class SysUserServiceImpl implements ISysUserService {
     public SysUserServiceImpl(AuthenticationManager authenticationManager,
                               @Qualifier("customUserDetailsService") UserDetailsService userDetailsService,
                               JwtUtils jwtTokenUtil,
-                              SysUserDomain sysUserDomain, EcosystemTypeDomain ecosystemTypeDomain) {
+                              SysUserDomain sysUserDomain, DataProductDomain dataProductDomain,
+                              GraphTemplateService graphTemplateService,
+                              GraphConfService graphConfService,
+                              DataBaseInfoService dataBaseInfoService,
+                              ProcessGroupDomain processGroupDomain,
+                              ProcessDomain processDomain, EcosystemTypeDomain ecosystemTypeDomain) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.sysUserDomain = sysUserDomain;
+        this.dataProductDomain = dataProductDomain;
+        this.graphTemplateService = graphTemplateService;
+        this.graphConfService = graphConfService;
+        this.dataBaseInfoService = dataBaseInfoService;
+        this.processGroupDomain = processGroupDomain;
+        this.processDomain = processDomain;
         this.ecosystemTypeDomain = ecosystemTypeDomain;
     }
 
@@ -155,6 +180,10 @@ public class SysUserServiceImpl implements ISysUserService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("id"));
         }
         SysUser sysUserById = sysUserDomain.getSysUserById(isAdmin, username, id);
+        String oldCompany = sysUserById.getCompany();
+        String oldOrganization = sysUserById.getOrganization();
+        String newCompany = sysUserVo.getCompany();
+        String newOrganization = sysUserVo.getOrganization();
         if (null == sysUserById) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("The task for which the current Id does not exist");
         }
@@ -206,6 +235,16 @@ public class SysUserServiceImpl implements ISysUserService {
             ecosystemTypeDomain.deleteByAssociateId(name);
             ecosystemTypeDomain.insertAssociateBatch(associates);
 
+            // 更新台站和单位时,插入对应的表中
+            if (!StringUtils.equalsIgnoreCase(oldCompany, newCompany) ||
+                    !StringUtils.equalsIgnoreCase(oldOrganization, newOrganization)) {
+                dataProductDomain.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), username);
+                graphTemplateService.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), username);
+                graphConfService.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), username);
+                dataBaseInfoService.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), username);
+                processGroupDomain.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), username);
+                processDomain.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), username);
+            }
             return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
         } catch (Exception e) {
             logger.error("update failed", e);

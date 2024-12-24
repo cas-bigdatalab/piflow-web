@@ -287,4 +287,7 @@ public interface DataProductMapper {
 
     @Update("update data_product set company = #{company}, organization = #{organization}  where process_id = #{processId} and enable_flag = 1")
     int updateCompanyByProcessIdWithNoChangeUser(@Param("processId") String processId, @Param("company") String company, @Param("organization") String organization);
+
+    @Update("update data_product set company = #{company}, organization = #{organization}  where crt_user = #{crtUser}")
+    int updateCompanyAndOrganizationByUserName(@Param("company") String company, @Param("organization") String organization, @Param("crt_user") String crtUser);
 }

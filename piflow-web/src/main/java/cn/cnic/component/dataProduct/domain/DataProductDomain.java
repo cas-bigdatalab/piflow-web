@@ -221,4 +221,8 @@ public class DataProductDomain {
     public int updateCompanyByProcessIdWithNoChangeUser(String processId, String company, String organization) {
         return dataProductMapper.updateCompanyByProcessIdWithNoChangeUser(processId,company,organization);
     }
+
+    public int updateCompanyAndOrgByUserName(String company, String organization, String crtUser) {
+        return dataProductMapper.updateCompanyAndOrganizationByUserName(company,organization,crtUser);
+    }
 }

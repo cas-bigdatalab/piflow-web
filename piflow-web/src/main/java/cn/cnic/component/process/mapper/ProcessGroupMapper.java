@@ -3,16 +3,7 @@ package cn.cnic.component.process.mapper;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.InsertProvider;
-import org.apache.ibatis.annotations.Many;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.One;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.SelectProvider;
-import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
 import cn.cnic.common.Eunm.RunModeType;
@@ -35,7 +26,10 @@ public interface ProcessGroupMapper {
     @UpdateProvider(type = ProcessGroupMapperProvider.class, method = "updateProcessGroup")
     public int updateProcessGroup(ProcessGroup processGroup);
 
-    
+
+    @Update("update flow_process_group set company = #{company}, organization = #{organization} where crt_user = #{crtUser}")
+    int updateCompanyAndOrgByUserName(@Param("company") String company, @Param("organization") String organization, @Param("crtUser") String crtUser);
+
     /**
      * Query processGroup by processGroup ID
      *
