@@ -594,6 +594,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
         RunModeType runModeType = RunModeType.RUN;
         process.setRunModeType(runModeType);
         process.setId(UUIDUtils.getUUID32());
+        process.setDescription(flowPublishingVo.getDescription());
         return process;
     }
 
