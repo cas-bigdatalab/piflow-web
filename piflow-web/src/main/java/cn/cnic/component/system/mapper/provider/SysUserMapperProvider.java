@@ -285,7 +285,7 @@ public class SysUserMapperProvider {
         }
         if (StringUtils.isNotBlank(company)) {
             strBuf.append("AND ( ");
-            strBuf.append("company = " + SqlUtils.addSqlStrAndReplace(company) + " ");
+            strBuf.append("company LIKE CONCAT('%'," + SqlUtils.preventSQLInjection(company) + ",'%')");
 
             strBuf.append(") ");
         }
