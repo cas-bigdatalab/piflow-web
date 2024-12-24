@@ -16,6 +16,7 @@ import cn.cnic.component.visual.service.GraphTemplateService;
 import cn.cnic.component.visual.util.RequestData;
 import cn.cnic.component.visual.util.ResponseResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import org.apache.commons.lang3.StringUtils;
@@ -169,6 +170,25 @@ public class GraphTemplateServiceImpl implements GraphTemplateService {
 //            return ResponseResult.error("一键生成图表配置失败！");
 //        }
 //    }
+
+
+    @Override
+    public ResponseResult updateCompanyAndOrgByUserName(String company, String organization, String name) {
+        // 创建 UpdateWrapper 对象
+        UpdateWrapper<GraphTemplate> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("user_name", name); // WHERE 条件
+        updateWrapper.set("company", company); // 更新字段
+        updateWrapper.set("organization", organization); // 更新字段
+
+        // 执行更新操作
+        int num = graphTemplateMapper.update(null, updateWrapper);
+        if (num >= 1) {
+            return ResponseResult.success();
+        } else {
+            return ResponseResult.error("修改图表模板失败！");
+        }
+    }
+
     @Transactional
     @Override
     public ResponseResult delGraphTemplate(GraphTemplate graphTemplate) {

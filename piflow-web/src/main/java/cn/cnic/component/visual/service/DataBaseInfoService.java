@@ -26,4 +26,6 @@ public interface DataBaseInfoService {
     ResponseResult<List<String>> showTables(RequestData requestData);
     ResponseResult<List<String>> getTableCol(RequestData requestData);
     ResponseResult<List<Map>> getVisualData(RequestData requestData);
+
+    ResponseResult updateCompanyAndOrgByUserName(String company, String organization, String username);
 }

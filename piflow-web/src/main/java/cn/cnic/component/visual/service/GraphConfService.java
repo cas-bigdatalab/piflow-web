@@ -20,6 +20,8 @@ public interface GraphConfService {
     ResponseResult addGraphConf(GraphConf graphConf);
     ResponseResult delGraphConf(GraphConf graphConf);
     ResponseResult updateGraphConf(GraphConf graphConf);
+
+    ResponseResult updateCompanyAndOrgByUserName(String company, String organization, String username);
 //    ResponseResult<List<GraphConf>> getGraphConfByNameAndId(GraphConf graphConf);
 
 }

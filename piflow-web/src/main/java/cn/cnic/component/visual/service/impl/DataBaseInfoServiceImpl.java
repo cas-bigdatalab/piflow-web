@@ -18,6 +18,7 @@ import cn.cnic.component.visual.util.MybatisUtil;
 import cn.cnic.component.visual.util.RequestData;
 import cn.cnic.component.visual.util.ResponseResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
@@ -324,6 +325,23 @@ public class DataBaseInfoServiceImpl implements DataBaseInfoService {
             return ResponseResult.success(maps,maps.size());
         }else {
             return ResponseResult.error("获取数据失败！");
+        }
+    }
+
+    @Override
+    public ResponseResult updateCompanyAndOrgByUserName(String company, String organization, String username) {
+        // 创建 UpdateWrapper 对象
+        UpdateWrapper<DataBaseInfo> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("user_name", username); // WHERE 条件
+        updateWrapper.set("company", company); // 更新字段
+        updateWrapper.set("organization", organization); // 更新字段
+
+        // 执行更新操作
+        int num = dataBaseInfoMapper.update(null, updateWrapper);
+        if (num >= 1) {
+            return ResponseResult.success();
+        } else {
+            return ResponseResult.error("修改图表模板失败！");
         }
     }
 }

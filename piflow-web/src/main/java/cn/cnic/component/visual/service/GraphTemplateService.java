@@ -21,4 +21,5 @@ public interface GraphTemplateService {
     ResponseResult delGraphTemplate(GraphTemplate graphTemplate);
     ResponseResult updateGraphTemplate(GraphTemplate graphTemplate);
     GraphTemplate selectById(Integer id);
+    ResponseResult updateCompanyAndOrgByUserName(String company, String organization, String name);
 }

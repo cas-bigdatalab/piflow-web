@@ -28,6 +28,7 @@ public class SysUserMapperProvider {
     private String phoneNumber;
     private String email;
     private String company;
+    private String organization;
 
     private boolean preventSQLInjectionSysUser(SysUser sysUser) {
         if (null == sysUser || StringUtils.isBlank(sysUser.getLastUpdateUser())) {
@@ -53,6 +54,7 @@ public class SysUserMapperProvider {
         this.phoneNumber = SqlUtils.preventSQLInjection(sysUser.getPhoneNumber());
         this.email = SqlUtils.preventSQLInjection(sysUser.getEmail());
         this.company = SqlUtils.preventSQLInjection(sysUser.getCompany());
+        this.organization = SqlUtils.preventSQLInjection(sysUser.getOrganization());
 
         return true;
     }
@@ -72,6 +74,7 @@ public class SysUserMapperProvider {
         this.phoneNumber = null;
         this.email = null;
         this.company = null;
+        this.organization = null;
     }
 
     /**
@@ -152,6 +155,8 @@ public class SysUserMapperProvider {
         sql.SET("phone_number = " + this.phoneNumber);
         sql.SET("email = " + this.email);
         sql.SET("company = " + this.company);
+        sql.SET("organization = " + this.organization);
+
 
 //        sql.WHERE("version = " + this.version);
         sql.WHERE("id = " + this.id);

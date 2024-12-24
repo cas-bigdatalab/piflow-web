@@ -10,8 +10,8 @@ import cn.cnic.component.visual.service.GraphConfService;
 import cn.cnic.component.visual.util.RequestData;
 import cn.cnic.component.visual.util.ResponseResult;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -162,6 +162,23 @@ public class GraphConfServiceImpl implements GraphConfService {
             }
         }else {
             return ResponseResult.error("修改配置失败！");
+        }
+    }
+
+    @Override
+    public ResponseResult updateCompanyAndOrgByUserName(String company, String organization, String username) {
+        // 创建 UpdateWrapper 对象
+        UpdateWrapper<GraphConf> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("user_name", username); // WHERE 条件
+        updateWrapper.set("company", company); // 更新字段
+        updateWrapper.set("organization", organization); // 更新字段
+
+        // 执行更新操作
+        int num = graphConfMapper.update(null, updateWrapper);
+        if (num >= 1) {
+            return ResponseResult.success();
+        } else {
+            return ResponseResult.error("修改图表模板失败！");
         }
     }
 
