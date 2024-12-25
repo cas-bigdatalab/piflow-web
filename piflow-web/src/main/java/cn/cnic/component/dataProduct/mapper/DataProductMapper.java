@@ -69,9 +69,15 @@ public interface DataProductMapper {
             + "</if>"
             + "left join product_type_associate as pt on pt.associate_id = CAST(dp.id AS CHAR) "
             + "<where>"
-            + " dp.state = 5 and crt_user = #{username} and dp.enable_flag = 1 "
+            + " dp.state = 5 and dp.enable_flag = 1 "
+            + "<if test=\"username != null and username != '' \">"
+            + "and dp.crt_user = #{username}"
+            + "</if>"
             + "<if test=\"keyword != null and keyword != '' \">"
-            + "and (dp.keyword like CONCAT('%', #{keyword}, '%') or dp.name like CONCAT('%', #{keyword}, '%'))"
+            + " and (dp.keyword like CONCAT('%', #{keyword}, '%') or dp.name like CONCAT('%', #{keyword}, '%') or dp.company like CONCAT('%', #{keyword}, '%'))"
+            + "</if>"
+            + "<if test=\"company != null and company != '' \">"
+            + " and dp.company like CONCAT('%', #{company}, '%')"
             + "</if>"
             + "</where>"
             + "</script>")
@@ -83,7 +89,7 @@ public interface DataProductMapper {
             @Result(column = "id", property = "coverFile", javaType = String.class, jdbcType = JdbcType.BIGINT, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductCoverType", fetchType = FetchType.LAZY)),
 //            @Result(column = "id", property = "file", javaType = String.class, jdbcType = JdbcType.BIGINT, one = @One(select = "cn.cnic.component.system.mapper.FileMapper.getByAssociateIdAndDataProductType", fetchType = FetchType.LAZY))
     })
-    List<DataProductVo> getByPageForHomePage(@Param("productTypeId") Long productTypeId, @Param("keyword") String keyword, @Param("username") String username);
+    List<DataProductVo> getByPageForHomePage(@Param("productTypeId") Long productTypeId, @Param("keyword") String keyword, @Param("username") String username, @Param("company") String company);
 
     @Select("<script>"
             + "select CAST(dp.id as CHAR) as id, dp.*, pt.product_type_id as productTypeId, pt.product_type_name as productTypeName from data_product as dp "

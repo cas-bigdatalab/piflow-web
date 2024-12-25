@@ -12,8 +12,8 @@ import java.util.List;
 @Mapper
 public interface SystemInfoMapper {
 
-    @Update("update sys_info set description = #{description} where id = #{id}")
-    int update(@Param("description") String description, @Param("id") String id);
+    @Update("update sys_info set description = #{description}, content = #{content} where id = #{id}")
+    int update(@Param("description") String description, @Param("id") String id, @Param("content") String content);
 
     @Select("select * from sys_info")
     SystemInfoVo select();

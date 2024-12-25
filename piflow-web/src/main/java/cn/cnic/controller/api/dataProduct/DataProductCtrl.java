@@ -94,6 +94,7 @@ public class DataProductCtrl {
      * @author tianyao
      * @description 分页查询数据产品，仅供首页的数据产品列表查看
      * 20240513 修改该接口的逻辑，页面上仅显示自己发布的，不供应别人查看
+     * 20241225 修改该接口的逻辑，页面上针对用户类型修改，管理员用户可以看到所有的已发布的，台站管理员可以看到本台站所有已发布的，普通用户只能看到自己的
      * @date 2024/2/23 16:55
      */
     @RequestMapping(value = "/getByPage", method = RequestMethod.POST)

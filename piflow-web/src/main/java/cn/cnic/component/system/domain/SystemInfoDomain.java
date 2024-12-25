@@ -26,8 +26,8 @@ public class SystemInfoDomain {
     @Autowired
     private SystemInfoMapper systemInfoMapper;
 
-    public int update(String description, String id){
-        return systemInfoMapper.update(description, id);
+    public int update(String description, String id, String content){
+        return systemInfoMapper.update(description, id, content);
     }
 
     public SystemInfoVo select() {

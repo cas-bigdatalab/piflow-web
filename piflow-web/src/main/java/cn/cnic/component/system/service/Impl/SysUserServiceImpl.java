@@ -319,6 +319,52 @@ public class SysUserServiceImpl implements ISysUserService {
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
     }
 
+    /**
+     * 假删除
+     * @param isAdmin
+     * @param username
+     * @param sysUserId
+     * @return
+     */
+    @Override
+    public String delUserOld(boolean isAdmin, String username, String sysUserId) {
+        if (StringUtils.isBlank(username)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ILLEGAL_USER_MSG());
+        }
+        if (StringUtils.isBlank(sysUserId)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("sysUserId"));
+        }
+        SysUser sysUserById = sysUserDomain.getSysUserById(isAdmin, username, sysUserId);
+        if (null == sysUserById) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(sysUserId));
+        }
+        try {
+
+            sysUserById.setLastUpdateDttm(new Date());
+            sysUserById.setLastUpdateUser(username);
+            if ("admin".equals(sysUserById.getUsername())) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
+            }
+            sysUserById.setEnableFlag(false);
+            int update = sysUserDomain.updateSysUser(sysUserById);
+
+            if (update <= 0) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
+            }
+            return ReturnMapUtils.setSucceededMsgRtnJsonStr("Started successfully");
+        } catch (Exception e) {
+            logger.error("delete failed", e);
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG());
+        }
+    }
+
+    /**
+     * 真删除  删除用户信息  角色-用户关联表   生态类型-用户关联表
+     * @param isAdmin is admin
+     * @param username username
+     * @param sysUserId       user id
+     * @return
+     */
     @Override
     public String delUser(boolean isAdmin, String username, String sysUserId) {
         if (StringUtils.isBlank(username)) {

@@ -71,13 +71,27 @@ public class AdminUserCtrl {
         return sysUserServiceImpl.getUserById( isAdmin,username, userId);
     }
 
+    @RequestMapping(value = "/delUserOld", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value="delUserOld", notes="delete user info by id")
+    public String delUserOld(String sysUserId) {
+        boolean isAdmin = SessionUserUtil.isAdmin();
+        String username = SessionUserUtil.getCurrentUsername();
+        logHelperServiceImpl.logAuthSucceed("del user" + sysUserId,username);
+        return  sysUserServiceImpl.delUserOld(isAdmin,username,sysUserId);
+    }
+
+    /**
+     * 真删除用户
+     * @param sysUserId
+     * @return
+     */
     @RequestMapping(value = "/delUser", method = RequestMethod.GET)
     @ResponseBody
     @ApiOperation(value="delUser", notes="delete user info by id")
     public String delUser(String sysUserId) {
         boolean isAdmin = SessionUserUtil.isAdmin();
         String username = SessionUserUtil.getCurrentUsername();
-        logHelperServiceImpl.logAuthSucceed("del user" + sysUserId,username);
         return  sysUserServiceImpl.delUser(isAdmin,username,sysUserId);
     }
 

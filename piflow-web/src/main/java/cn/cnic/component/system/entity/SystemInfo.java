@@ -14,5 +14,6 @@ public class SystemInfo implements Serializable {
     private String id;
     private String name;
     private String description;
+    private String content;//支持的数据产品表格
 
 }

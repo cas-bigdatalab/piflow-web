@@ -82,13 +82,13 @@ public class DataProductServiceImpl implements IDataProductService {
             }
             List<DataProduct> sameNameData = dataProductDomain.getListByName(dataProductVo.getName());
             if (CollectionUtils.isNotEmpty(sameNameData)) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("Duplicate name!!");
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("Duplicate name1!!");
             }
         } else {
             //有可能是多选数据产品发布后二次编辑，也有可能是单个数据产品一次或二次编辑
             List<DataProduct> sameNameData = dataProductDomain.getListByNameAndId(dataProductVo.getId(), dataProductVo.getName());
             if (CollectionUtils.isNotEmpty(sameNameData)) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("Duplicate name!!");
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("Duplicate name2!!");
             }
         }
         if (ids.length > 1) {//初次编辑
@@ -186,10 +186,10 @@ public class DataProductServiceImpl implements IDataProductService {
         String username = SessionUserUtil.getCurrentUsername();
         //校验，是否可以删除 生成中的状态不可删除
         DataProduct dataProduct = dataProductDomain.getBasicInfoById(Long.parseLong(id));
-        Integer state = dataProduct.getState();
         if (ObjectUtils.isEmpty(dataProduct)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG() + " data product has been deleted!!");
         }
+        Integer state = dataProduct.getState();
         if (DataProductState.CREATING.getValue().equals(state)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_ERROR_MSG() + " data product is creating, operation is not allowed!!");
         }
@@ -247,10 +247,26 @@ public class DataProductServiceImpl implements IDataProductService {
     }
 
     //分页查询数据产品，仅供首页的数据产品列表查看
+    //20241225 修改该接口的逻辑，页面上针对用户类型修改，管理员用户可以看到所有的已发布的，台站管理员可以看到本台站所有已发布的，普通用户只能看到自己的
     @Override
     public String getByPage(DataProductVo dataProductVo) {
         String username = SessionUserUtil.getCurrentUsername();
-        //查到自己已发布的数据产品
+        String company = dataProductVo.getCompany();
+        SysRoleType currentUserRole = SessionUserUtil.getCurrentUserRole();
+        switch (currentUserRole) {
+            case ORS_ADMIN: // 台站管理员角色只显示自己台站的用户,且不能搜索
+                String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
+                company = sysUserDomain.getSysUserCompanyById(userid);
+                dataProductVo.setCompany(company);
+                username = null;//username置空，可以查到台站所有的
+                break;
+            case ADMIN: // 中心管理员角色可以显示所有人的
+                username = null;//username置空
+                break;
+            default:
+                break;
+        }
+
         Page<DataProductVo> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
         dataProductDomain.getByPageForHomePage(dataProductVo, username);
         List<DataProductVo> result = page.getResult();

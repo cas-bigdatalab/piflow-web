@@ -57,7 +57,7 @@ public class SystemInfoImpl implements ISystemInfoService {
         if(StringUtils.isBlank(id) || StringUtils.isBlank(description)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id or description is null");
         }
-        int update = systemInfoDomain.update(description, id);
+        int update = systemInfoDomain.update(description, id, systemInfoVo.getContent());
         if(update > 0) {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("update success");
         }

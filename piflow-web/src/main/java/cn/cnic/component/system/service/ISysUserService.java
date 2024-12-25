@@ -83,4 +83,6 @@ public interface ISysUserService {
 
     String getAllRole();
     String jwtLogout(String username);
+
+    String delUserOld(boolean isAdmin, String username, String sysUserId);
 }

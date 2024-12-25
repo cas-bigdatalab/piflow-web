@@ -96,7 +96,7 @@ public class DataProductDomain {
     }
 
     public List<DataProductVo> getByPageForHomePage(DataProductVo dataProductVo, String username) {
-        return dataProductMapper.getByPageForHomePage(dataProductVo.getProductTypeId(), dataProductVo.getKeyword(), username);
+        return dataProductMapper.getByPageForHomePage(dataProductVo.getProductTypeId(), dataProductVo.getKeyword(), username,dataProductVo.getCompany());
     }
 
     public List<DataProductVo> getByPageForPublishing(DataProductVo dataProductVo) {

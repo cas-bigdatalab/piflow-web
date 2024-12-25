@@ -670,6 +670,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                                 .flatMap(stop -> stop.getStopPublishingPropertyVos().stream())
                                 .filter(property -> FlowStopsPublishingPropertyType.OUTPUT.getValue().equals(property.getType()))
                                 .forEach(property -> {
+                                    //首次保存没有名称
                                     DataProduct dataProduct = new DataProduct();
                                     dataProduct.setId(snowflakeGenerator.next());
                                     dataProduct.setProcessId(processId);

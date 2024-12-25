@@ -9,6 +9,9 @@ import org.apache.ibatis.mapping.FetchType;
 import cn.cnic.component.system.mapper.provider.SysUserMapperProvider;
 import cn.cnic.component.system.entity.SysUser;
 
+/**
+ * 注意事项：检索sql都需要加上enable_flag = 1
+ */
 @Mapper
 public interface SysUserMapper {
 
@@ -48,8 +51,8 @@ public interface SysUserMapper {
     @Delete("DELETE FROM sys_init_records WHERE id=#{id}")
     public int deleteUserById(String id);
 
-    @Select("select username from sys_user where username=#{username}")
+    @Select("select username from sys_user where username=#{username} and enable_flag = 1")
     public String checkUsername (String username);
-    @Select("select * from sys_user where username=#{username}")
+    @Select("select * from sys_user where username=#{username}  and enable_flag = 1")
     SysUser getSysUserByUserName(String username);
 }
