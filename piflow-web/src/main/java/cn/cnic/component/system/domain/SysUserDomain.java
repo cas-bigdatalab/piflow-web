@@ -126,6 +126,10 @@ public class SysUserDomain {
         return sysUserMapper.getSysUserByUserName(username);
     }
 
+    public SysUser findUserByEmail(String email) {
+        return sysUserMapper.findUserByEmail(email);
+    }
+
     /**
      * @param newUsername:
       * @return SysUser
@@ -144,5 +148,13 @@ public class SysUserDomain {
 
     public List<SysRole> getAllRole() {
         return sysRoleMapper.getAllRole();
+    }
+
+    public Long getTotalCompanyNum() {
+        return sysUserMapper.getTotalCompanyNum();
+    }
+
+    public List<SysUser> getStationManagerByCompany(String company) {
+        return sysUserMapper.getStationManagerByCompany(company);
     }
 }

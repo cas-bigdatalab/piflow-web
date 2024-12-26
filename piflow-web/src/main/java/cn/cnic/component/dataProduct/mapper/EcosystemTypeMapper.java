@@ -94,4 +94,6 @@ public interface EcosystemTypeMapper {
             + "</foreach>"
             + "</script>")
     int deleteBatchByAssociateId(List<String> associateIds);
+    @Select("select * from ecosystem_type where id in (select ecosystem_type_id from ecosystem_type_associate where associate_id = #{associateId})")
+    List<EcosystemType> getEcosystemTypeListByAssociateId(@Param("associateId") String associateId);
 }

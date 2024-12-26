@@ -1,5 +1,6 @@
 package cn.cnic.component.system.service;
 
+import cn.cnic.component.system.vo.ForgetUserVo;
 import cn.cnic.component.system.vo.SysUserVo;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +53,7 @@ public interface ISysUserService {
      */
     public String updatePassword(String username, String oldPassword, String password);
 
-    String updatePasswordBySystem(String username, String password);
+    String updatePasswordWhenForget(ForgetUserVo forgetUserVo);
 
     /**
      * Delete user

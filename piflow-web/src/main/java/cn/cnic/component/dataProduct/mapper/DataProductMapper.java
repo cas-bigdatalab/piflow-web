@@ -2,6 +2,7 @@ package cn.cnic.component.dataProduct.mapper;
 
 import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.mapper.provider.DataProductMapperProvider;
+import cn.cnic.component.dataProduct.vo.DataProductStatisticVo;
 import cn.cnic.component.dataProduct.vo.DataProductVo;
 import cn.cnic.component.dataProduct.vo.ProductUserVo;
 import org.apache.ibatis.annotations.*;
@@ -296,4 +297,22 @@ public interface DataProductMapper {
 
     @Update("update data_product set company = #{company}, organization = #{organization}  where crt_user = #{crtUser}")
     int updateCompanyAndOrganizationByUserName(@Param("company") String company, @Param("organization") String organization, @Param("crt_user") String crtUser);
+
+    @Select("<script>"
+            + "select CAST(count(*) as BIGINT) as totalDataProductNum, sum(CAST(dp.dataset_size as BIGINT)) as totalDataProductSize from data_product as dp"
+            + "<where>"
+            + " dp.state = 5 and dp.enable_flag = 1"
+            + "<if test=\"username != null and username != '' \">"
+            + " and dp.crt_user = #{username}"
+            + "</if>"
+            + "<if test=\"company != null and company != '' \">"
+            + " and dp.company = #{company}"
+            + "</if>"
+            + "</where>"
+            + "</script>")
+    @Results({
+            @Result(column = "totalDataProductNum", property = "totalDataProductNum", javaType = Long.class, jdbcType = JdbcType.BIGINT),
+            @Result(column = "totalDataProductSize", property = "totalDataProductSize", javaType = Long.class, jdbcType = JdbcType.BIGINT)
+    })
+    DataProductStatisticVo getStatistics(String username, String company);
 }

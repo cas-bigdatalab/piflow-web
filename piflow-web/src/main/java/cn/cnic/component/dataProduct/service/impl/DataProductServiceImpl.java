@@ -10,10 +10,7 @@ import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.entity.ProductTypeAssociate;
 import cn.cnic.component.dataProduct.entity.ProductUser;
 import cn.cnic.component.dataProduct.service.IDataProductService;
-import cn.cnic.component.dataProduct.vo.DataProductMetaDataView;
-import cn.cnic.component.dataProduct.vo.DataProductVo;
-import cn.cnic.component.dataProduct.vo.ProductUserVo;
-import cn.cnic.component.dataProduct.vo.SharePlatformMetadata;
+import cn.cnic.component.dataProduct.vo.*;
 import cn.cnic.component.system.domain.FileDomain;
 import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.File;
@@ -38,6 +35,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static cn.cnic.common.Eunm.SysRoleType.ADMIN;
 
 
 @Service
@@ -118,6 +117,14 @@ public class DataProductServiceImpl implements IDataProductService {
 //        } else {
 //            dataProduct.setState(DataProductState.TO_CHECK.getValue());
 //        }
+        //添加数据体量
+        String datasetUrls = dataProduct.getDatasetUrl();
+        String datasetSize = "";
+        if (StringUtils.isNotBlank(datasetUrls)) {
+            String[] split = datasetUrls.split(",");
+            datasetSize = FileUtils.getFilesSizeFromHdfs(Arrays.asList(split), FileUtils.getDefaultFs());
+        }
+        dataProduct.setDatasetSize(datasetSize);
         dataProduct.setState(DataProductState.PUBLISHED.getValue());
         dataProduct.setLastUpdateDttm(now);
         dataProduct.setLastUpdateUser(username);
@@ -313,7 +320,7 @@ public class DataProductServiceImpl implements IDataProductService {
         UserVo currentUser = SessionUserUtil.getCurrentUser();
         String id = sysUserDomain.findUserByUserName(currentUser.getUsername()).getId();
         String company = sysUserDomain.getSysUserCompanyById(id);
-        if (currentUserRole == SysRoleType.ADMIN) {
+        if (currentUserRole == ADMIN) {
             Page<DataProduct> page = PageHelper.startPage(dataProductVo.getPage(), dataProductVo.getLimit(), "last_update_dttm desc");
             dataProductDomain.getByPageForPublishingWithAdmin(dataProductVo);
             Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
@@ -435,6 +442,46 @@ public class DataProductServiceImpl implements IDataProductService {
             resultMap.put("metadata", view); // 回显填过的元数据
         }
         return resultMap;
+    }
+
+    /**
+     * 门户服务中数据产品添加统计信息，包括台站数量、数据产品个数、数据量
+     * 中心管理员：所有台站数量、数据产品个数、数据量
+     * 台站管理员：本台站台站数量为1、数据产品个数、数据量
+     * 普通用户：本人所在的台站数量为1，数据产品个数、数据量
+     *
+     * @return
+     */
+    @Override
+    public String getStatistics() {
+
+        Long totalCompanyNum = 0L;
+        String username = SessionUserUtil.getCurrentUsername();
+        String userid = sysUserDomain.findUserByUserName(username).getId();
+        String company = null;
+        SysRoleType currentUserRole = SessionUserUtil.getCurrentUserRole();
+        switch (currentUserRole) {
+            case ORS_ADMIN: // 台站管理员角色只显示自己台站的
+                company = sysUserDomain.getSysUserCompanyById(userid);
+                username = null;//username置空，可以查到台站所有的
+                totalCompanyNum = 1L;
+                break;
+            case ADMIN: // 中心管理员角色可以显示所有人的
+                username = null;//username置空
+                break;
+            default://普通用户
+                totalCompanyNum = 1L;
+                break;
+        }
+        //username不为空为普通用户，company不为空为台站管理员,均为空为中心管理员
+        //获取数据产品数量、数据产品体量
+        DataProductStatisticVo statisticVo = dataProductDomain.getStatistics(username, company);
+        //获取台站数量
+        if (ADMIN.equals(currentUserRole)) {
+            totalCompanyNum=  sysUserDomain.getTotalCompanyNum();
+        }
+        statisticVo.setTotalCompanyNum(totalCompanyNum);
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data",statisticVo);
     }
 
 

@@ -3,6 +3,7 @@ package cn.cnic.controller.api.other;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.component.system.service.ILogHelperService;
 import cn.cnic.component.system.service.ISysUserService;
+import cn.cnic.component.system.vo.ForgetUserVo;
 import cn.cnic.component.system.vo.SysUserVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,13 +38,16 @@ public class SystemUserCtrl {
         return sysUserServiceImpl.updatePassword(username, oldPassword, password);
     }
 
-    @RequestMapping(value = "/updatePasswordBySystem", method = RequestMethod.POST)
+    /**
+     * 忘记密码
+     * @return
+     */
+    @RequestMapping(value = "/updatePasswordWhenForget", method = RequestMethod.POST)
     @ResponseBody
-    @ApiOperation(value = "updatePasswordBySystem", notes = "update password")
-    public String updatePasswordBySystem(String username, String password) {
-        //boolean isAdmin = SessionUserUtil.isAdmin();
-        logHelperServiceImpl.logAuthSucceed("update passwd by system", username);
-        return sysUserServiceImpl.updatePasswordBySystem(username, password);
+    @ApiOperation(value = "updatePasswordWhenForget", notes = "update password when forget")
+    public String updatePasswordWhenForget(@RequestBody ForgetUserVo forgetUserVo) {
+        logHelperServiceImpl.logAuthSucceed("update passwd when forget user:", forgetUserVo.getEmail());
+        return sysUserServiceImpl.updatePasswordWhenForget(forgetUserVo);
     }
 
     /**

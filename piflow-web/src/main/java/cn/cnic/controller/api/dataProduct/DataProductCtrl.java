@@ -414,5 +414,21 @@ public class DataProductCtrl {
         return dataProductServiceImpl.permissionForUse(productUserVo);
     }
 
+    /**
+     * 门户服务中数据产品添加统计信息，包括台站数量、数据产品个数、数据量
+     * 中心管理员：所有台站数量、数据产品个数、数据量
+     * 台站管理员：本台站台站数量为1、数据产品个数、数据量
+     * 普通用户：本人所在的台站数量为1，数据产品个数、数据量
+     *
+     * @return
+     */
+    @RequestMapping(value = "/getStatistics", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "getStatistics", notes = "获取数据产品统计信息")
+    public String getStatistics() {
+        return dataProductServiceImpl.getStatistics();
+    }
+
+
 
 }

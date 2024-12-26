@@ -10,10 +10,7 @@ import cn.cnic.component.dataProduct.entity.ProductUser;
 import cn.cnic.component.dataProduct.mapper.DataProductMapper;
 import cn.cnic.component.dataProduct.mapper.DataProductMetaDataMapper;
 import cn.cnic.component.dataProduct.mapper.ProductUserMapper;
-import cn.cnic.component.dataProduct.vo.SharePlatformMetadata;
-import cn.cnic.component.dataProduct.vo.DataProductMetaDataView;
-import cn.cnic.component.dataProduct.vo.DataProductVo;
-import cn.cnic.component.dataProduct.vo.ProductUserVo;
+import cn.cnic.component.dataProduct.vo.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -224,5 +221,9 @@ public class DataProductDomain {
 
     public int updateCompanyAndOrgByUserName(String company, String organization, String crtUser) {
         return dataProductMapper.updateCompanyAndOrganizationByUserName(company,organization,crtUser);
+    }
+
+    public DataProductStatisticVo getStatistics(String username, String company) {
+        return dataProductMapper.getStatistics(username,company);
     }
 }

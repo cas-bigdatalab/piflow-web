@@ -20,6 +20,7 @@ import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.SysRole;
 import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.system.service.ISysUserService;
+import cn.cnic.component.system.vo.ForgetUserVo;
 import cn.cnic.component.system.vo.SysUserVo;
 import cn.cnic.component.visual.service.DataBaseInfoService;
 import cn.cnic.component.visual.service.GraphConfService;
@@ -75,8 +76,6 @@ public class SysUserServiceImpl implements ISysUserService {
     private final DataBaseInfoService dataBaseInfoService;
     private final ProcessGroupDomain processGroupDomain;
     private final ProcessDomain processDomain;
-
-
 
 
     private final EcosystemTypeDomain ecosystemTypeDomain;
@@ -295,24 +294,73 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     @Override
-    public String updatePasswordBySystem(String username, String password) {
+    public String updatePasswordWhenForget(ForgetUserVo forgetUserVo) {
+        //校验
+        String password = forgetUserVo.getPassword();
+        if (StringUtils.isBlank(password)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("password is empty");
+        }
         try {
             password = password.replace(" ", "+");
             password = AESUtils.aesDecrypt(password);
         } catch (Exception e) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
         }
-        SysUser userByUserName = sysUserDomain.findUserByUserName(username);
-        if (userByUserName == null || StringUtils.isBlank(userByUserName.getUsername())) {
+        String email = forgetUserVo.getEmail();
+        if (StringUtils.isBlank(email)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("email is empty");
+        }
+        SysUser userByEmail = sysUserDomain.findUserByEmail(email);
+        if (userByEmail == null || StringUtils.isBlank(userByEmail.getUsername())) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
-        PasswordUtils.updatePassword(username, password);
+        String name = forgetUserVo.getName();
+        if (StringUtils.isBlank(name) || name.equals(userByEmail.getName())) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("error name");
+        }
+        String company = forgetUserVo.getCompany();
+        if (StringUtils.isBlank(company) || !userByEmail.getCompany().contains(company)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("error company");
+        }
+        String organization = forgetUserVo.getOrganization();
+        if (StringUtils.isBlank(organization) || !userByEmail.getOrganization().contains(organization)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("error organization");
+        }
+        String phoneNumber = forgetUserVo.getPhoneNumber();
+        if (StringUtils.isBlank(phoneNumber) || userByEmail.getPhoneNumber().equals(phoneNumber)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("error phone number");
+        }
+        List<EcosystemType> ecosystemTypes = forgetUserVo.getEcosystemTypes();
+        if (CollectionUtils.isEmpty(ecosystemTypes)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("ecosystem types is empty");
+        }
+        List<EcosystemType> ecosystemTypesCheck = ecosystemTypeDomain.getEcosystemTypeListByAssociateId(userByEmail.getUsername());
+        // 判断两个列表是否一致（基于 id 和顺序）
+        boolean areListsEqual = (ecosystemTypes != null && ecosystemTypesCheck != null)
+                && ecosystemTypes.size() == ecosystemTypesCheck.size()
+                && ecosystemTypes.stream().map(EcosystemType::getId).sorted().equals(
+                ecosystemTypesCheck.stream().map(EcosystemType::getId).sorted());
+        if (!areListsEqual) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("ecosystem types do not match");
+        }
+        String stationManagerName = forgetUserVo.getStationManagerName();
+        if (StringUtils.isBlank(stationManagerName)) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("station manager is empty");
+        }
+        List<SysUser> stationManagers = sysUserDomain.getStationManagerByCompany(userByEmail.getCompany());
+        if (CollectionUtils.isNotEmpty(stationManagers)) {
+            boolean contains = stationManagers.stream().map(SysUser::getName).collect(Collectors.toList()).contains(stationManagerName);
+            if (!contains) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("station manager do not match");
+            }
+        }
+        PasswordUtils.updatePassword(userByEmail.getUsername(), password);
         String encodePassword = new BCryptPasswordEncoder().encode(password);
-        userByUserName.setPassword(encodePassword);
+        userByEmail.setPassword(encodePassword);
         String pLastUpdateDttm = DateUtils.dateTimesToStr(new Date());
-        userByUserName.setPLastUpdateDttmStr(pLastUpdateDttm);
+        userByEmail.setPLastUpdateDttmStr(pLastUpdateDttm);
         try {
-            sysUserDomain.updateSysUser(userByUserName);
+            sysUserDomain.updateSysUser(userByEmail);
         } catch (Exception e) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
@@ -321,6 +369,7 @@ public class SysUserServiceImpl implements ISysUserService {
 
     /**
      * 假删除
+     *
      * @param isAdmin
      * @param username
      * @param sysUserId
@@ -360,9 +409,10 @@ public class SysUserServiceImpl implements ISysUserService {
 
     /**
      * 真删除  删除用户信息  角色-用户关联表   生态类型-用户关联表
-     * @param isAdmin is admin
-     * @param username username
-     * @param sysUserId       user id
+     *
+     * @param isAdmin   is admin
+     * @param username  username
+     * @param sysUserId user id
      * @return
      */
     @Override

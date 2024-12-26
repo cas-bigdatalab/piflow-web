@@ -74,4 +74,8 @@ public class EcosystemTypeDomain {
     public int insertAssociateBatch(List<EcosystemTypeAssociate> associates) {
         return ecosystemTypeMapper.insertAssociateBatch(associates);
     }
+
+    public List<EcosystemType> getEcosystemTypeListByAssociateId(String associateId) {
+        return ecosystemTypeMapper.getEcosystemTypeListByAssociateId(associateId);
+    }
 }

@@ -33,6 +33,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -921,6 +923,40 @@ public class FileUtils {
             throw new RuntimeException(e);
         }
         return fileInfo;
+    }
+
+    public static String getFilesSizeFromHdfs(List<String> hdfsPaths, String defaultFs) {
+        long totalSize = 0;
+        Configuration conf = new Configuration();
+        conf.set("fs.defaultFS", defaultFs);
+        try {
+            if (ObjectUtils.isEmpty(fs)) {
+                fs = FileSystem.get(conf);
+            }
+
+            for (String hdfsPath : hdfsPaths) {
+                Path path = new Path(hdfsPath);
+                FileStatus fileStatus = fs.getFileStatus(path);
+
+                if (fileStatus.isDirectory()) {
+                    ContentSummary contentSummary = fs.getContentSummary(path);
+                    totalSize += contentSummary.getLength();
+                } else {
+                    totalSize += fileStatus.getLen();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fs != null) {
+                try {
+                    fs.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return String.valueOf(totalSize);
     }
 
 //    public static void downloadFilesFromHdfs(HttpServletResponse response, List<cn.cnic.component.system.entity.File> fileList, String zipName, String defaultFs) {

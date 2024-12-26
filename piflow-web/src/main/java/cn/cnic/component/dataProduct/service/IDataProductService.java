@@ -37,4 +37,6 @@ public interface IDataProductService {
     void downloadDataset(HttpServletResponse response, String dataProductId);
 
     Map<String, Object> getDataProductInfo(String dataProductId);
+
+    String getStatistics();
 }
