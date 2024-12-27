@@ -223,7 +223,7 @@ public class DataProductDomain {
         return dataProductMapper.updateCompanyAndOrganizationByUserName(company,organization,crtUser);
     }
 
-    public DataProductStatisticVo getStatistics(String username, String company) {
+    public List<DataProduct> getStatistics(String username, String company) {
         return dataProductMapper.getStatistics(username,company);
     }
 }

@@ -56,7 +56,7 @@ public interface SysUserMapper {
     @Select("select * from sys_user where username=#{username}  and enable_flag = 1")
     SysUser getSysUserByUserName(String username);
 
-    @Select("select count(distinct company) as totalCompanyNum from sys_user where enable_flag = 1 and company is not null and company not in ('数据中心','cnic')")
+    @Select("select count(distinct company) as totalCompanyNum from sys_user where enable_flag = 1 and company is not null and company not in ('','数据中心','cnic')")
     Long getTotalCompanyNum();
 
     @Select("select * from sys_user where email=#{email}  and enable_flag = 1")

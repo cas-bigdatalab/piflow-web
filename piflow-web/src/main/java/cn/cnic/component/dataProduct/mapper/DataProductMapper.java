@@ -298,8 +298,20 @@ public interface DataProductMapper {
     @Update("update data_product set company = #{company}, organization = #{organization}  where crt_user = #{crtUser}")
     int updateCompanyAndOrganizationByUserName(@Param("company") String company, @Param("organization") String organization, @Param("crt_user") String crtUser);
 
+//    @Select("<script>"
+//            + "select count(*) as totalDataProductNum, sum(CASE WHEN dp.dataset_size IS NULL OR dp.dataset_size = '' THEN 0 ELSE CAST(COALESCE(dp.dataset_size, '0') AS BIGINT) END) as totalDataProductSize from data_product as dp"
+//            + "<where>"
+//            + " dp.state = 5 and dp.enable_flag = 1"
+//            + "<if test=\"username != null and username != '' \">"
+//            + " and dp.crt_user = #{username}"
+//            + "</if>"
+//            + "<if test=\"company != null and company != '' \">"
+//            + " and dp.company = #{company}"
+//            + "</if>"
+//            + "</where>"
+//            + "</script>")
     @Select("<script>"
-            + "select CAST(count(*) as BIGINT) as totalDataProductNum, sum(CAST(dp.dataset_size as BIGINT)) as totalDataProductSize from data_product as dp"
+            + "select * from data_product as dp"
             + "<where>"
             + " dp.state = 5 and dp.enable_flag = 1"
             + "<if test=\"username != null and username != '' \">"
@@ -310,9 +322,5 @@ public interface DataProductMapper {
             + "</if>"
             + "</where>"
             + "</script>")
-    @Results({
-            @Result(column = "totalDataProductNum", property = "totalDataProductNum", javaType = Long.class, jdbcType = JdbcType.BIGINT),
-            @Result(column = "totalDataProductSize", property = "totalDataProductSize", javaType = Long.class, jdbcType = JdbcType.BIGINT)
-    })
-    DataProductStatisticVo getStatistics(String username, String company);
+    List<DataProduct> getStatistics(String username, String company);
 }
