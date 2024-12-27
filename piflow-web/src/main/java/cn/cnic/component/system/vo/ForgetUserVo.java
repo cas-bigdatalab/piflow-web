@@ -23,7 +23,7 @@ public class ForgetUserVo implements Serializable {
     private String company; // 所属台站
     private String organization; // 所属单位
 
-    private List<EcosystemType> ecosystemTypes;   //生态站专用，所属生态系统类型
+    private String ecosystemTypeIds;   //生态站专用，所属生态系统类型
     private String stationManagerName;//台站管理员姓名
 
 }

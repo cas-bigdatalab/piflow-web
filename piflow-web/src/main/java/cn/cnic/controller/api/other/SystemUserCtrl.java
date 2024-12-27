@@ -45,7 +45,7 @@ public class SystemUserCtrl {
     @RequestMapping(value = "/updatePasswordWhenForget", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "updatePasswordWhenForget", notes = "update password when forget")
-    public String updatePasswordWhenForget(@RequestBody ForgetUserVo forgetUserVo) {
+    public String updatePasswordWhenForget(ForgetUserVo forgetUserVo) {
         logHelperServiceImpl.logAuthSucceed("update passwd when forget user:", forgetUserVo.getEmail());
         return sysUserServiceImpl.updatePasswordWhenForget(forgetUserVo);
     }

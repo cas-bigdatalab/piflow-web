@@ -47,10 +47,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -315,7 +312,7 @@ public class SysUserServiceImpl implements ISysUserService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         String name = forgetUserVo.getName();
-        if (StringUtils.isBlank(name) || name.equals(userByEmail.getName())) {
+        if (StringUtils.isBlank(name) || !name.equals(userByEmail.getName())) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("error name");
         }
         String company = forgetUserVo.getCompany();
@@ -327,19 +324,19 @@ public class SysUserServiceImpl implements ISysUserService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("error organization");
         }
         String phoneNumber = forgetUserVo.getPhoneNumber();
-        if (StringUtils.isBlank(phoneNumber) || userByEmail.getPhoneNumber().equals(phoneNumber)) {
+        if (StringUtils.isBlank(phoneNumber) || !userByEmail.getPhoneNumber().equals(phoneNumber)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("error phone number");
         }
-        List<EcosystemType> ecosystemTypes = forgetUserVo.getEcosystemTypes();
-        if (CollectionUtils.isEmpty(ecosystemTypes)) {
+        String ecosystemTypeIds = forgetUserVo.getEcosystemTypeIds();
+        if (StringUtils.isBlank(ecosystemTypeIds)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("ecosystem types is empty");
         }
         List<EcosystemType> ecosystemTypesCheck = ecosystemTypeDomain.getEcosystemTypeListByAssociateId(userByEmail.getUsername());
-        // 判断两个列表是否一致（基于 id 和顺序）
-        boolean areListsEqual = (ecosystemTypes != null && ecosystemTypesCheck != null)
-                && ecosystemTypes.size() == ecosystemTypesCheck.size()
-                && ecosystemTypes.stream().map(EcosystemType::getId).sorted().equals(
-                ecosystemTypesCheck.stream().map(EcosystemType::getId).sorted());
+
+        // 判断两个列表是否一致（基于 id）
+        String collect = Arrays.stream(ecosystemTypeIds.split(",")).mapToLong(Long::parseLong).boxed().sorted().map(Object::toString).collect(Collectors.joining(","));
+        String collect1 = ecosystemTypesCheck.stream().map(EcosystemType::getId).sorted().map(Object::toString).collect(Collectors.joining(","));
+        boolean areListsEqual = ecosystemTypesCheck != null && collect.equals(collect1);
         if (!areListsEqual) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("ecosystem types do not match");
         }
