@@ -947,14 +947,6 @@ public class FileUtils {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            if (fs != null) {
-                try {
-                    fs.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return String.valueOf(totalSize);
     }
