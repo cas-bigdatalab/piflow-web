@@ -292,22 +292,26 @@ public class DataSpaceService {
         paramMap.put("version", "1.0");
         final String sign = md5Encrypt(paramSort(paramMap) + appSecret);
         paramMap.put("sign", sign);
+        String size = "1000";
+        paramMap.put("size", size);
 
         String body = "";
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 
-            String paramsPath = String.format("%s/api/ds.open/space/fileList?appId=%s&spaceId=%s&sign=%s&timestamp=%s&version=%s",
+            String paramsPath = String.format("%s/api/ds.open/space/fileList?appId=%s&spaceId=%s&size=%s&sign=%s&timestamp=%s&version=%s",
                     dsRemote,
                     encode(appId),
                     encode(spaceId),
+                    encode(size),
                     encode(sign),
                     encode(currentDateTimeString),
                     encode("1.0"));
             if (hash != null) {
-                paramsPath = String.format("%s/api/ds.open/space/fileList?appId=%s&spaceId=%s&sign=%s&hash=%s&timestamp=%s&version=%s",
+                paramsPath = String.format("%s/api/ds.open/space/fileList?appId=%s&spaceId=%s&size=%s&sign=%s&hash=%s&timestamp=%s&version=%s",
                         dsRemote,
                         encode(appId),
                         encode(spaceId),
+                        encode(size),
                         encode(sign),
                         encode(hash),
                         encode(currentDateTimeString),
