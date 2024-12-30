@@ -234,12 +234,13 @@ public class SysUserServiceImpl implements ISysUserService {
             // 更新台站和单位时,插入对应的表中
             if (!StringUtils.equalsIgnoreCase(oldCompany, newCompany) ||
                     !StringUtils.equalsIgnoreCase(oldOrganization, newOrganization)) {
-                dataProductDomain.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), username);
-                graphTemplateService.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), username);
-                graphConfService.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), username);
-                dataBaseInfoService.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), username);
-                processGroupDomain.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), username);
-                processDomain.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), username);
+                String targetUserName = sysUserVo.getUsername();
+                dataProductDomain.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), targetUserName);
+                graphTemplateService.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), targetUserName);
+                graphConfService.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), targetUserName);
+                dataBaseInfoService.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), targetUserName);
+                processGroupDomain.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), targetUserName);
+                processDomain.updateCompanyAndOrgByUserName(sysUserVo.getCompany(), sysUserVo.getOrganization(), targetUserName);
             }
             return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
         } catch (Exception e) {
