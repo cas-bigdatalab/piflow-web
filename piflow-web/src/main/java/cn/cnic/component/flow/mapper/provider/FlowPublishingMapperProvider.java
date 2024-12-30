@@ -24,6 +24,7 @@ public class FlowPublishingMapperProvider {
     private String productTypeDescription;
     private String description;
     private Integer flowSort;
+    private String spotlight;//注意事项
 
     private boolean preventSQLInjectionFlowPublishing(FlowPublishing flowPublishing) {
         if (null == flowPublishing) {
@@ -47,6 +48,7 @@ public class FlowPublishingMapperProvider {
         this.productTypeDescription = SqlUtils.preventSQLInjection(flowPublishing.getProductTypeDescription());
         this.description = SqlUtils.preventSQLInjection(flowPublishing.getDescription());
         this.flowSort = (null != flowPublishing.getFlowSort()) ? flowPublishing.getFlowSort() : 0;
+        this.spotlight = SqlUtils.preventSQLInjection(flowPublishing.getSpotlight());
         return true;
     }
 
@@ -63,6 +65,7 @@ public class FlowPublishingMapperProvider {
         this.productTypeDescription = null;
         this.description = null;
         this.flowSort = null;
+        this.spotlight = null;
     }
 
     /**
@@ -85,6 +88,7 @@ public class FlowPublishingMapperProvider {
             stringBuffer.append("product_type_name, ");
             stringBuffer.append("product_type_description, ");
             stringBuffer.append("description, ");
+            stringBuffer.append("spotlight, ");
             stringBuffer.append("flow_sort ");
             stringBuffer.append(") ");
             stringBuffer.append("VALUES ");
@@ -97,6 +101,7 @@ public class FlowPublishingMapperProvider {
             stringBuffer.append(this.productTypeName).append(", ");
             stringBuffer.append(this.productTypeDescription).append(", ");
             stringBuffer.append(this.description).append(", ");
+            stringBuffer.append(this.spotlight).append(", ");
             stringBuffer.append(this.flowSort);
             stringBuffer.append(" ) ");
             sqlStr = stringBuffer.toString();
@@ -133,6 +138,7 @@ public class FlowPublishingMapperProvider {
             sql.SET("product_type_name = " + productTypeName);
             sql.SET("product_type_description = " + productTypeDescription);
             sql.SET("description = " + description);
+            sql.SET("spotlight = " + spotlight);
             sql.SET("flow_sort = " + flowSort);
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();

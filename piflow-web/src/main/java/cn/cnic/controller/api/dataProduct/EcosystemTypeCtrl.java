@@ -75,7 +75,7 @@ public class EcosystemTypeCtrl {
      * @param :
      * @return String
      * @author tianyao
-     * @description 查询数据产品分类,只包含非封面实体文件信息，封面实体用其他接口获取
+     * @description 查询数据产品分类,只包含非封面实体文件信息，封面实体用其他接口获取jh
      * @date 2024/2/27 10:57
      */
     @RequestMapping(value = "/get", method = RequestMethod.GET)
