@@ -74,20 +74,20 @@ public class DataProductServiceImpl implements IDataProductService {
             //多选数据产品且为第一次编辑
             DataProduct isExist = dataProductDomain.getById(Long.parseLong(ids[0]));
             if (ObjectUtils.isEmpty(isExist)) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("Not find the data product!, please check your id where input");
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("没有找到该数据产品！");
             }
             if (!DataProductState.TO_PUBLISH.getValue().equals(isExist.getState())) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("The publish is not allowed!! state is not TO_PUBLISH");
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("操作不被允许！数据产品的状态不是待发布！");
             }
             List<DataProduct> sameNameData = dataProductDomain.getListByName(dataProductVo.getName());
             if (CollectionUtils.isNotEmpty(sameNameData)) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("Duplicate name1!!");
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("名称重复！");
             }
         } else {
             //有可能是多选数据产品发布后二次编辑，也有可能是单个数据产品一次或二次编辑
             List<DataProduct> sameNameData = dataProductDomain.getListByNameAndId(dataProductVo.getId(), dataProductVo.getName());
             if (CollectionUtils.isNotEmpty(sameNameData)) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("Duplicate name2!!");
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("名称重复！");
             }
         }
         if (ids.length > 1) {//初次编辑
@@ -101,6 +101,10 @@ public class DataProductServiceImpl implements IDataProductService {
             dataProductVo.setProcessId(oneDataProduct.getProcessId());
             dataProductVo.setPropertyId(oneDataProduct.getPropertyId().toString());
             dataProductVo.setPropertyName(oneDataProduct.getPropertyName());
+        }else {
+            //单个数据产品，补充其datasetUrl
+            DataProduct dataProductById = dataProductDomain.getById(Long.parseLong(ids[0]));
+            dataProductVo.setDatasetUrl(dataProductById.getDatasetUrl());
         }
         //数据产品记录是在进程运行完成后自动生成的，只能编辑数据产品
         //更新数据产品表，数据产品类型关联表，文件表
@@ -162,7 +166,7 @@ public class DataProductServiceImpl implements IDataProductService {
                 fileServiceImpl.uploadFile(file, false, FileAssociateType.DATA_PRODUCT_COVER.getValue(), dataProduct.getId().toString());
             } catch (Exception e) {
                 logger.error("upload data product cover error!! e:{}", e.getMessage());
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("upload data product cover error!!");
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("上传封面失败！");
             }
         }
 
