@@ -226,4 +226,8 @@ public class DataProductDomain {
     public List<DataProduct> getStatistics(String username, String company) {
         return dataProductMapper.getStatistics(username,company);
     }
+
+    public List<DataProduct> getNoDatasetSize() {
+        return dataProductMapper.getNoDatasetSize();
+    }
 }

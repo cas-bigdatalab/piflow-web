@@ -499,6 +499,36 @@ public class DataProductServiceImpl implements IDataProductService {
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", statisticVo);
     }
 
+    /**
+     * 更新所有没有数据量的已发表数据产品
+     * @return
+     */
+    @Override
+    public String temp() {
+        List<DataProduct> dataProductList = dataProductDomain.getNoDatasetSize();
+        if(CollectionUtils.isNotEmpty(dataProductList)){
+            for (DataProduct dataProduct : dataProductList) {
+                String datasetSize = "";
+                try {
+                    String datasetUrls = dataProduct.getDatasetUrl();
+                    if (StringUtils.isNotBlank(datasetUrls)) {
+                        String[] split = datasetUrls.split(",");
+                        datasetSize = FileUtils.getFilesSizeFromHdfs(Arrays.asList(split), FileUtils.getDefaultFs());
+                    }
+                    dataProduct.setDatasetSize(datasetSize);
+                } catch (Exception e) {
+                    logger.warn(e.getMessage());
+                    continue;
+                }
+                if(StringUtils.isNotBlank(datasetSize) || !"0".equals(datasetSize)){
+                    dataProductDomain.update(dataProduct);
+                }
+            }
+
+        }
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("success");
+    }
+
 
     @Override
     public void downloadDataset(HttpServletResponse response, String dataProductId) {
@@ -552,4 +582,6 @@ public class DataProductServiceImpl implements IDataProductService {
         Set<String> stringSet = FileUtils.findExcelFiles(parts, FileUtils.getDefaultFs());
         return stringSet;
     }
+
+
 }

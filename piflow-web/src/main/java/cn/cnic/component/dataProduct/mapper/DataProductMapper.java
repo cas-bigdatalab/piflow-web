@@ -323,4 +323,8 @@ public interface DataProductMapper {
             + "</where>"
             + "</script>")
     List<DataProduct> getStatistics(String username, String company);
+
+    @Select("select * from data_product where enable_flag =1 and state = 5 and dataset_size ='' ")
+    List<DataProduct> getNoDatasetSize();
+
 }

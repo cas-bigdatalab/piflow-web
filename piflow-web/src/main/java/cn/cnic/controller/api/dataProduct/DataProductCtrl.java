@@ -429,6 +429,17 @@ public class DataProductCtrl {
         return dataProductServiceImpl.getStatistics();
     }
 
+    /**
+     * 更新所有没有数据量的已发表数据产品
+     * @return
+     */
+    @RequestMapping(value = "/temp", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "temp", notes = "获取数据产品统计信息")
+    public String temp() {
+        return dataProductServiceImpl.temp();
+    }
+
 
 
 }

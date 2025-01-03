@@ -39,4 +39,6 @@ public interface IDataProductService {
     Map<String, Object> getDataProductInfo(String dataProductId);
 
     String getStatistics();
+
+    String temp();
 }
