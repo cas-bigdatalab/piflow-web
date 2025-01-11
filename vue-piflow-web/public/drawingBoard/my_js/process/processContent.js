@@ -11,7 +11,7 @@ function initProcessContentPage(nodeArr) {
             $('#runFlow').hide();
             $('#debugFlow').hide();
             $('#stopFlow').show();
-            processMonitoring(appId);
+            processMonitoring();
             //timer = window.setInterval("processMonitoring(appId)", 5000);
         } else {
             $('#runFlow').show();
@@ -325,8 +325,32 @@ function changeUrl(key) {
     });
 }
 
-function processMonitoring(appId) {
-    if (appId === '') {
+function getAppId(){
+    ajaxRequest({
+        type: "get",
+        url: `/process/getAppIdByProcessId?processId=${processId}`,
+        error: function (request) {
+            console.log("error");
+            return;
+        },
+        success: function (data) {
+            var dataMap = JSON.parse(data);
+            if (200 === dataMap.code && dataMap.appId) {
+                appId = dataMap.appId
+                processMonitoring()
+            } else {
+                setTimeout(() => {
+                    getAppId();
+                }, 5000);
+            }
+        }
+    });
+
+}
+
+function processMonitoring() {
+    if (!appId) {
+        getAppId()
         return;
     }
     ajaxRequest({
