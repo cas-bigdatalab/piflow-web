@@ -19,17 +19,17 @@ public interface SysUserMapper {
     public int updateSysUser(SysUser user);
 
     @SelectProvider(type = SysUserMapperProvider.class, method = "getSysUserById")
-    public SysUser getSysUserById(boolean isAdmin,String username, @Param("id") String id);
+    public SysUser getSysUserById(boolean isAdmin, String username, @Param("id") String id);
 
     @SelectProvider(type = SysUserMapperProvider.class, method = "getSysUserById")
     public SysUserVo getSysUserVoById(boolean isAdmin, String username, @Param("id") String id);
 
     @SelectProvider(type = SysUserMapperProvider.class, method = "getSysUserVoList")
     @Results({
-        @Result(id = true, column = "id", property = "id"),
-        @Result(column = "id", property = "role", many = @Many(select = "cn.cnic.component.system.mapper.SysRoleMapper.getSysRoleBySysUserId", fetchType = FetchType.EAGER))
+            @Result(id = true, column = "id", property = "id"),
+            @Result(column = "id", property = "role", many = @Many(select = "cn.cnic.component.system.mapper.SysRoleMapper.getSysRoleBySysUserId", fetchType = FetchType.EAGER))
     })
-    public List<SysUserVo> getSysUserVoList(@Param("isAdmin") boolean isAdmin,@Param("username") String username, @Param("param") String param);
+    public List<SysUserVo> getSysUserVoList(@Param("isAdmin") boolean isAdmin, @Param("username") String username, @Param("param") String param);
 
     @SelectProvider(type = SysUserMapperProvider.class, method = "findUserByNameLike")
     public List<SysUser> findUserByNameLike(@Param("name") String name);
@@ -44,10 +44,15 @@ public interface SysUserMapper {
     })
     public SysUser findUserByUserName(String userName);
 
-    @Delete("DELETE FROM sys_init_records WHERE id=#{id}")
-    public int deleteUserById(String id);
+//    @Delete("DELETE FROM sys_init_records WHERE id=#{id}")
+//    public int deleteUserById(String id);
 
     @Select("select username from sys_user where username=#{username}")
-    public String checkUsername (String username);
+    public String checkUsername(String username);
 
+    @Delete("DELETE FROM sys_user WHERE id=#{id}")
+    public int deleteUserById(@Param("id") String id);
+
+    @Delete("DELETE FROM sys_role WHERE fk_sys_user_id=#{sysUserId}")
+    int deleteRoleByUserId(@Param("sysUserId") String sysUserId);
 }

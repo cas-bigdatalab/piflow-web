@@ -193,6 +193,59 @@ public class FileUtils {
         return rtnMap;
     }
 
+    public static Map<String, Object> uploadRtnMap(File file, String path, String saveFileName) {
+        if (file == null || !file.exists() || file.length() == 0) {
+            return ReturnMapUtils.setFailedMsg(MessageConfig.UPLOAD_FAILED_FILE_EMPTY_MSG());
+        }
+        CheckPathUtils.isChartPathExist(path);
+        //file name
+        String fileName = file.getName();
+        String[] fileNameSplit = fileName.split("\\.");
+        if (saveFileName == null) {
+            if (fileNameSplit.length > 0) {
+                saveFileName = UUIDUtils.getUUID32() + "." + fileNameSplit[fileNameSplit.length - 1];
+            }
+        }
+        if (StringUtils.isBlank(saveFileName)) {
+            saveFileName = UUIDUtils.getUUID32();
+        }
+        File saveFile = new File(path + saveFileName);
+        if (!saveFile.getParentFile().exists()) {
+            boolean mkdirs = saveFile.getParentFile().mkdirs();
+            if (mkdirs) {
+                logger.info("File created successfully");
+            }
+        }
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(saveFile));
+            byte[] buffer = new byte[8192];
+            int bytesRead;
+            while ((bytesRead = fis.read(buffer)) != -1) {
+                out.write(buffer, 0, bytesRead);
+            }
+            out.flush();
+            out.close();
+            logger.debug(saveFile.getName() + " Upload success");
+            rtnMap.put("fileName", fileName);
+            rtnMap.put("saveFileName", saveFileName);
+            rtnMap.put("path", path + saveFileName);
+            rtnMap.put("msgInfo", "Upload success");
+            rtnMap.put("code", 200);
+        } catch (FileNotFoundException e) {
+            //e.printStackTrace();
+            rtnMap.put("msgInfo", "Upload failure");
+            logger.error("Upload failure,", e);
+        } catch (IOException e) {
+            //e.printStackTrace();
+            rtnMap.put("msgInfo", "Upload failure");
+            logger.error("Upload failure", e);
+        }
+        return rtnMap;
+    }
+
     /**
      * String to "Document"
      *
@@ -647,6 +700,44 @@ public class FileUtils {
             // 添加更多文件扩展名和对应的MIME类型
             default:
                 return "application/octet-stream";
+        }
+    }
+
+    public static Map<String,Long> getAllFilePathInDict(String fileDict, String filePrefix, String fileSuffix) {
+        return findFiles(fileDict,filePrefix,fileSuffix);
+    }
+
+    public static Map<String,Long> findFiles(String directoryPath, String prefix, String suffix) {
+        Map<String,Long> filePathsMap = new HashMap<>();
+//        List<String> filePaths = new ArrayList<>();
+        File directory = new File(directoryPath);
+
+        // 递归遍历目录和子目录
+        findFilesRecursive(directory, prefix, suffix, filePathsMap);
+
+        return filePathsMap;
+    }
+
+    private static void findFilesRecursive(File directory, String prefix, String suffix, Map<String,Long> filePathsMap) {
+        // 检查目录是否存在
+        if (!directory.exists() || !directory.isDirectory()) {
+            logger.warn("寻找的目录不存在:{}",directory.getAbsolutePath());
+            return;
+        }
+        // 遍历目录中的文件
+        for (File file : directory.listFiles()) {
+            if (file.isDirectory()) {
+                // 如果是子目录，递归调用
+                findFilesRecursive(file, prefix, suffix, filePathsMap);
+            } else {
+                // 无需前缀和后缀检查，直接添加文件路径
+                if ((StringUtils.isBlank(prefix) || file.getName().startsWith(prefix)) &&
+                        (StringUtils.isBlank(suffix) || file.getName().endsWith(suffix))) {
+                    // 将文件的绝对路径添加到列表中
+                    filePathsMap.put(file.getAbsolutePath(),file.lastModified());
+//                    filePaths.add(file.getAbsolutePath());
+                }
+            }
         }
     }
 }

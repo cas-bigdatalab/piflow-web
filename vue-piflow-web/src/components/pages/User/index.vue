@@ -28,6 +28,12 @@
                     <Icon type="ios-trash" />
                     </span>
                 </Tooltip>
+                <Tooltip content="Assign Role" placement="top-start">
+                    <span class="button-warp" @click="handleButtonSelect(row,3)">
+                    <Icon type="md-person" />
+                    </span>
+                </Tooltip>
+
             </template>
         </Table>
 
@@ -95,12 +101,15 @@
 
             </div>
         </Modal>
+    <AssignRolesForm ref="AssignRolesForm" @submit="getTableData" />
     </section>
 </template>
 <script>
+import {aesMinEncrypt} from "@/utils/crypto.js"
+import AssignRolesForm from "./assignRolesForm";
 export default {
     name:"user",
-    components:{},
+    components:{AssignRolesForm},
     data() {
         return{
             isOpen :false,
@@ -195,7 +204,7 @@ export default {
         },
 
       handleResetPassword() {
-            this.password= this.username;
+            this.password= aesMinEncrypt(this.username);
         },
 
       handleButtonSelect(row,key) {
@@ -206,10 +215,17 @@ export default {
                 case 2:
                     this.handleDeleteRow(row);
                     break;
+                case 3:
+                    this.handleAssignRoles(row);
+                    break;
                 default:
                     break;
             }
         },
+    handleAssignRoles(data) {
+        console.log(data)
+      this.$refs.AssignRolesForm.handleEdit(data.role, data.id);
+    },
 
       handleSaveUpdateData() {
             let data = {

@@ -271,8 +271,8 @@ public class ProcessServiceImpl implements IProcessService {
         // processById.setProcessId(thirdFlowInfoVo.getPid());
         processById.setProcessId(thirdFlowInfoVo.getId());
         processById.setName(thirdFlowInfoVo.getName());
-        processById.setStartTime(DateUtils.strCstToDate(thirdFlowInfoVo.getStartTime()));
-        processById.setEndTime(DateUtils.strCstToDate(thirdFlowInfoVo.getEndTime()));
+        processById.setStartTime(thirdFlowInfoVo.getStartTime());
+        processById.setEndTime(thirdFlowInfoVo.getEndTime());
         processDomain.updateProcess(processById);
         // Modify the stops information
         List<ThirdFlowInfoStopsVo> stops = thirdFlowInfoVo.getStops();
@@ -290,8 +290,8 @@ public class ProcessServiceImpl implements IProcessService {
                 ProcessStop processStopByNameAndPid = processDomain.getProcessStopByNameAndPid(processById.getId(), thirdFlowInfoStopVo.getName());
                 processStopByNameAndPid.setName(thirdFlowInfoStopVo.getName());
                 processStopByNameAndPid.setState(StopState.selectGender(thirdFlowInfoStopVo.getState()));
-                processStopByNameAndPid.setStartTime(DateUtils.strCstToDate(thirdFlowInfoStopVo.getStartTime()));
-                processStopByNameAndPid.setEndTime(DateUtils.strCstToDate(thirdFlowInfoStopVo.getEndTime()));
+                processStopByNameAndPid.setStartTime(thirdFlowInfoStopVo.getStartTime());
+                processStopByNameAndPid.setEndTime(thirdFlowInfoStopVo.getEndTime());
                 int updateProcessStop = processDomain.updateProcessStop(processStopByNameAndPid);
                 if (updateProcessStop > 0) {
                     processStopListNew.add(processStopByNameAndPid);

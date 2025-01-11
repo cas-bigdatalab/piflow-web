@@ -200,11 +200,11 @@
                 <img src="../../../assets/img/stop.png" alt="STOP" />
               </div>
               <ul class="textArea">
-                <li><p>Stop：
+                <li><p>Stop
                   <countTo :EndVal = "(Number(stopResourceInfo.STOP_COUNT) - stopNum)"></countTo>
                 </p></li>
-                <li><p>Stopgroup：
-                  <countTo :EndVal = Number(stopResourceInfo.STOPGROUP_COUNT)></countTo>
+                <li><p>StopGroup：
+                  <countTo :EndVal = "(Number(stopResourceInfo.STOPGROUP_COUNT) )"></countTo>
                 </p></li>
               </ul>
               <div class="leftTop20">

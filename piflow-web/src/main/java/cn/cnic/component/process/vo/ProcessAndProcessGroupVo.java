@@ -17,10 +17,14 @@ public class ProcessAndProcessGroupVo implements Serializable {
     private String appId;
     private String name;
     private String description;
-    private Date startTime;
-    private Date endTime;
+    private String startTime;
+    private String endTime;
     private String progress;
     private String state;
     private String parentProcessId;
     private String processType;
+    private Integer triggerMode;
+    private String scheduleId;
+    private String scheduleName;
+    private String triggerFile;
 }

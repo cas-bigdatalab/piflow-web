@@ -289,7 +289,9 @@ export default {
       "position: fixed; width: 100%; top: 0;";
     this.setSize();
     window.addEventListener('message', function(event) {
-      _this.$event.emit("loading", event.data);
+      if(event.data === true || event.data === false){
+          _this.$event.emit("loading", event.data);
+      }
     }, false);
 
     window['openDataSpace'] = (datasourceId)=>{

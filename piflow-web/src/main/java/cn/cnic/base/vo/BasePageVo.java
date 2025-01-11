@@ -16,6 +16,7 @@ public class BasePageVo extends BaseModelNoId {
 
     private Integer limit;
     private Integer page;
+    private String keyword;
 
 
 }

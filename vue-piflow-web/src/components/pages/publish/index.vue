@@ -91,12 +91,12 @@ export default {
           sortable: true
         },
         {
-          title: 'crtDttm',
+          title: this.$t("dataSource_columns.createTime"),
           key: "crtDttm",
           sortable: true
         },
         {
-          title: 'lastUpdateDttm',
+          title: this.$t("dataSource_columns.lastUpdateTime"),
           key: "lastUpdateDttm",
           sortable: true
         },

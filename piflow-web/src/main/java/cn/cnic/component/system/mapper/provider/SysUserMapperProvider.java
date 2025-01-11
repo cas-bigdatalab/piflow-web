@@ -81,13 +81,15 @@ public class SysUserMapperProvider {
 
         strBuf.append("( ");
         strBuf.append(SqlUtils.baseFieldName() + ", ");
-        strBuf.append("username, password, name, age, sex, status, developer_access_key ");
+        strBuf.append("username, password, name, age, sex, status, developer_access_key, p_last_update_dttm ");
         strBuf.append(") ");
 
         strBuf.append("values ");
         strBuf.append("(");
         strBuf.append(SqlUtils.baseFieldValues(sysUser) + ", ");
-        strBuf.append(username + "," + password + "," + name + "," + age + "," + sex + "," + status + "," + developerAccessKey);
+        strBuf.append(username + "," + password + "," + name + "," + age + "," + sex
+                + "," + status + "," + developerAccessKey
+                + "," + SqlUtils.preventSQLInjection(sysUser.getPLastUpdateDttmStr()));
         strBuf.append(")");
 
         this.resetSysUser();
@@ -127,6 +129,9 @@ public class SysUserMapperProvider {
         sql.SET("last_login_ip = " + this.lastLoginIp);
         sql.SET("developer_access_key = " + this.developerAccessKey);
 
+        if (StringUtils.isNotBlank(sysUser.getPLastUpdateDttmStr()) && !"null".equals(sysUser.getPLastUpdateDttmStr())) {
+            sql.SET("p_last_update_dttm = " + SqlUtils.preventSQLInjection(sysUser.getPLastUpdateDttmStr()));
+        }
         sql.WHERE("version = " + this.version);
         sql.WHERE("id = " + this.id);
 
@@ -221,6 +226,7 @@ public class SysUserMapperProvider {
             sql.SELECT("*");
             sql.FROM("sys_user");
             sql.WHERE("username = '" + userName + "'");
+            sql.WHERE("enable_flag = 1");
             sqlStr = sql.toString();
         }
         return sqlStr;

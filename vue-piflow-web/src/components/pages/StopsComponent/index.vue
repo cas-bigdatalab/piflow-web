@@ -40,8 +40,8 @@
               </span>
           </template>
         </vxe-table-column>
-        <vxe-table-column field="bundel" title="bundel" type="html"></vxe-table-column>
-        <vxe-table-column field="owner" title="owner" type="html"></vxe-table-column>
+        <vxe-table-column field="bundel" title="Bundel" type="html"></vxe-table-column>
+        <vxe-table-column field="owner" title="Owner" type="html"></vxe-table-column>
         <vxe-table-column field="description" :title="$t('stopsComponent_columns.description')" type="html"></vxe-table-column>
       </vxe-table>
     </div>

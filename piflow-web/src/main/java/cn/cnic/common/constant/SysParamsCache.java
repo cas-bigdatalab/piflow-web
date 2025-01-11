@@ -106,28 +106,28 @@ public class SysParamsCache {
 
     public static String IS_SEND_STATISTICS_TO_FAIRMAN;
 
-    @Value("${syspara.isSendStatisticsToFairMan}")
+    @Value("${syspara.send.fairman}")
     public void setIsSendStatisticsToFairMan(String isSendStatisticsToFairMan) {
         IS_SEND_STATISTICS_TO_FAIRMAN = isSendStatisticsToFairMan;
     }
 
     public static String DATA_CENTER_NAME;
 
-    @Value("${syspara.dataCenterName}")
+    @Value("${syspara.center.name}")
     public void setDataCenterName(String dataCenterName) {
         DATA_CENTER_NAME = dataCenterName;
     }
 
     public static String PUSH_TO_HARBOR;
 
-    @Value("${push_to_harbor}")
+    @Value("${push.to.harbor}")
     public void setPushToHarbor(String pushToHarbor) {
         PUSH_TO_HARBOR = pushToHarbor;
     }
 
     public static String DOCKER_CENTRAL_WAREHOUSE;
 
-    @Value("${docker_central_warehouse}")
+    @Value("${docker.central.warehouse}")
     public void setDockerCentralWarehouse(String dockerCentralWarehouse) {
         DOCKER_CENTRAL_WAREHOUSE = dockerCentralWarehouse;
     }

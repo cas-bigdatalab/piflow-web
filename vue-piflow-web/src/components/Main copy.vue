@@ -65,7 +65,7 @@ export default {
     display: flex;
     .content-right {
       flex-grow: 1;
-      max-width: calc(100% - 250px);
+      max-width: calc(100% - 260px);
       border-left: 1px solid #ddd;
       margin-left: 2px;
       overflow: auto;

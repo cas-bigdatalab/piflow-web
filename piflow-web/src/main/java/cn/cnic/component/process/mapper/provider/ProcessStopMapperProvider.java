@@ -64,9 +64,8 @@ public class ProcessStopMapperProvider {
                 .preventSQLInjection(null != processStop.getOutPortType() ? processStop.getOutPortType().name() : null);
         this.stateName = SqlUtils
                 .preventSQLInjection(null != processStop.getState() ? processStop.getState().name() : null);
-        String startTime = (null != processStop.getStartTime() ? DateUtils.dateTimesToStr(processStop.getStartTime())
-                : null);
-        String endTime = (null != processStop.getEndTime() ? DateUtils.dateTimesToStr(processStop.getEndTime()) : null);
+        String startTime = (null != processStop.getStartTime() ? processStop.getStartTime() : null);
+        String endTime = (null != processStop.getEndTime() ? processStop.getEndTime() : null);
         this.startTimeStr = SqlUtils.preventSQLInjection(startTime);
         this.endTimeStr = SqlUtils.preventSQLInjection(endTime);
         this.pageId = SqlUtils.preventSQLInjection(processStop.getPageId());

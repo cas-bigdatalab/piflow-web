@@ -28,8 +28,8 @@ public class ProcessStop extends BaseModelUUIDNoCorpAgentId {
     private String outports;
     private PortType outPortType;
     private StopState state = StopState.INIT;
-    private Date startTime;
-    private Date endTime;
+    private String startTime;
+    private String endTime;
     private String pageId;
     private List<ProcessStopProperty> processStopPropertyList = new ArrayList<ProcessStopProperty>();
     private List<ProcessStopCustomizedProperty> processStopCustomizedPropertyList = new ArrayList<>();

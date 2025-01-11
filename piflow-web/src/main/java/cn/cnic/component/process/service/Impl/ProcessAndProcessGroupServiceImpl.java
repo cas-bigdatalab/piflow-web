@@ -6,6 +6,7 @@ import java.util.Map;
 
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.process.domain.ProcessGroupDomain;
+import cn.cnic.component.process.vo.ProcessPageVo;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,19 +40,28 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
      *
      * @param offset Number of pages
      * @param limit  Number each page
-     * @param param  Search content
+     * @param name  Search content
      * @return json
      */
     @Override
-    public String getProcessAndProcessGroupListPage(String username, boolean isAdmin, Integer offset, Integer limit, String param) {
+    public String getProcessAndProcessGroupListPage(String username, boolean isAdmin, Integer offset, Integer limit, String name, Integer triggerMode,
+                                                    String state, String ctrDttm, String scheduleName) {
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
         Page<Process> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
+        ProcessPageVo pageVo = new ProcessPageVo();
+        pageVo.setName(name);
+        pageVo.setTriggerMode(triggerMode);
+        pageVo.setScheduleName(scheduleName);
+        pageVo.setState(state);
+        pageVo.setCrtDttm(ctrDttm);
         if (isAdmin) {
-            processGroupDomain.getProcessAndProcessGroupList(param);
+            //获取所有人的
+            processGroupDomain.getProcessAndProcessGroupList(pageVo);
         } else {
-            processGroupDomain.getProcessAndProcessGroupListByUser(param, username);
+            //获取本人的
+            processGroupDomain.getProcessAndProcessGroupListByUser(username, pageVo);
         }
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);

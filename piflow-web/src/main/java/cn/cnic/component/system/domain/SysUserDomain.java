@@ -92,4 +92,27 @@ public class SysUserDomain {
         }
         return sysUserMapper.checkUsername(username);
     }
+
+    public int deleteRoleByUserId(String sysUserId) {
+        return sysUserMapper.deleteRoleByUserId(sysUserId);
+    }
+
+    /**
+     * @param newUsername:
+     * @return SysUser
+     * @author tianyao
+     * @description 检查username是否被其他用户使用
+     * @date 2024/4/20 17:48
+     */
+    public String getOtherSameUserName(String newUsername) {
+        return sysUserMapper.checkUsername(newUsername);
+    }
+
+    public int updateRole(SysUserVo sysUserVo) {
+        return sysRoleMapper.updateRole(sysUserVo);
+    }
+
+    public List<SysRole> getAllRole() {
+        return sysRoleMapper.getAllRole();
+    }
 }

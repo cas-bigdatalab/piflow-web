@@ -253,27 +253,6 @@ export default {
           sortable: true,
         },
       ];
-      if(this.role === "ADMIN"){
-        list = list.concat([
-            {
-              title: "创建人",
-              key: "userName",
-            },
-            {
-              title: "创建人单位",
-              key: "company",
-            },
-            
-          ])
-        }else if(this.role === "ORS_ADMIN"){
-          list = list.concat([
-            {
-              title: "创建人",
-              key: "userName",
-            },
-          ])
-        }
-
         list.push({
           title: this.$t("database.action"),
           slot: "action",
