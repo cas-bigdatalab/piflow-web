@@ -335,4 +335,17 @@ public class ProcessCtrl {
         processStopServiceImpl.showViewData(response, id);
     }
 
+    /**
+     * 将运行流水线改成异步之后，需要前端先根据processId获取appId，然后再根据appId查看运行状态
+     * @param processId
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/getAppIdByProcessId", method = RequestMethod.GET)
+    @ResponseBody
+    @ApiOperation(value = "getAppIdByProcessId", notes = "根据processId获取yarn appId")
+    public String getAppIdByProcessId(String processId) throws Exception {
+        return processServiceImpl.getAppIdByProcessId(processId);
+    }
+
 }

@@ -4,6 +4,9 @@ import org.apache.tomcat.util.threads.ThreadPoolExecutor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * System parameter cache class
@@ -131,6 +134,8 @@ public class SysParamsCache {
     public void setDockerCentralWarehouse(String dockerCentralWarehouse) {
         DOCKER_CENTRAL_WAREHOUSE = dockerCentralWarehouse;
     }
+
+    public static Map<String,String> STARTED_PROCESS = new HashMap<>();
 
 
 }
