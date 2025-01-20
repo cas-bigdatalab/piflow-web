@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.mxGraph.utils.MxGraphUtils;
 import cn.cnic.component.process.vo.*;
 import cn.cnic.component.stopsComponent.domain.StopsComponentDomain;
@@ -998,6 +999,15 @@ public class ProcessServiceImpl implements IProcessService {
             obj.getJSONArray("series").getJSONObject(i).put("data", sort_data.getJSONArray(i + ""));
         }
         return obj.toString();
+    }
+
+    @Override
+    public String getAppIdByProcessId(String processId) {
+        String appId = SysParamsCache.STARTED_PROCESS.get(processId);
+        if (StringUtils.isNotBlank(appId)) {
+            SysParamsCache.STARTED_PROCESS.remove(processId);
+        }
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("appId", appId);
     }
 
 }

@@ -5,6 +5,7 @@ import cn.cnic.common.Eunm.ProcessState;
 import cn.cnic.common.Eunm.ProcessTriggerMode;
 import cn.cnic.common.Eunm.RunModeType;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataSource.domain.DataSourceDomain;
 import cn.cnic.component.dataSource.vo.DataSourceVo;
 import cn.cnic.component.flow.domain.FlowDomain;
@@ -46,6 +47,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 
 @Service
@@ -173,7 +175,7 @@ public class FlowServiceImpl implements IFlowService {
         }
         List<FlowGlobalParams> flowGlobalParamsByIds = flowById.getFlowGlobalParamsList();
         if (null != flowGlobalParamsByIds && flowGlobalParamsByIds.size() > 0 && flowGlobalParamsByIds.get(0) != null) {
-        	rtnMap.put("globalParamsList", flowGlobalParamsByIds);
+            rtnMap.put("globalParamsList", flowGlobalParamsByIds);
         }
         return ReturnMapUtils.toJson(rtnMap);
     }
@@ -243,7 +245,7 @@ public class FlowServiceImpl implements IFlowService {
         }
         int scheduleIdListByScheduleRunTemplateId = scheduleDomain.getScheduleIdListByScheduleRunTemplateId(isAdmin, username, id);
         if (scheduleIdListByScheduleRunTemplateId > 0) {
-        	return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_LINK_SCHEDULED_ERROR_MSG());
+            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.DELETE_LINK_SCHEDULED_ERROR_MSG());
         }
         List<String> publishingNameList = flowStopsPublishingDomain.getPublishingNameListByFlowId(id);
         if (null != publishingNameList && publishingNameList.size() > 0) {
@@ -294,7 +296,7 @@ public class FlowServiceImpl implements IFlowService {
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }
-        Page<FlowVo> page = PageHelper.startPage(offset, limit,"crt_dttm desc");
+        Page<FlowVo> page = PageHelper.startPage(offset, limit, "crt_dttm desc");
         flowDomain.getFlowListParam(username, isAdmin, param);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
@@ -326,57 +328,81 @@ public class FlowServiceImpl implements IFlowService {
         if (StringUtils.isBlank(flowId)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_IS_NULL_MSG("FlowId"));
         }
-        // find flow by flowId
-        Flow flowById = this.getFlowById(username, isAdmin, flowId);
-        // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
-        if (null == flowById) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(flowId));
-        }
-        Process process = ProcessUtils.flowToProcess(flowById, username, false);
-        if (null == process) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
-        }
-        RunModeType runModeType = RunModeType.RUN;
-        if (StringUtils.isNotBlank(runMode)) {
-            runModeType = RunModeType.selectGender(runMode);
-        }
-        process.setRunModeType(runModeType);
-        process.setId(UUIDUtils.getUUID32());
-        //增加进程触发模式为手动触发
-        process.setTriggerMode(ProcessTriggerMode.MANUAL.getValue());
-        int updateProcess = processDomain.addProcess(process);
-        if (updateProcess <= 0) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
-        }
-        StringBuffer checkpoint = new StringBuffer();
-        List<Stops> stopsList = flowById.getStopsList();
-        for (Stops stops : stopsList) {
-            stops.getIsCheckpoint();
-            if (null == stops.getIsCheckpoint() || !stops.getIsCheckpoint()) {
-                continue;
+        Object lock = new Object();
+        String returnProcessId = "";
+        synchronized (lock) {
+            // find flow by flowId
+            Flow flowById = this.getFlowById(username, isAdmin, flowId);
+            // addFlow is not empty and the value of ReqRtnStatus is true, then the save is successful.
+            if (null == flowById) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_BY_ID_XXX_MSG(flowId));
             }
-            if (StringUtils.isNotBlank(checkpoint)) {
-                checkpoint.append(",");
+            final Process process = ProcessUtils.flowToProcess(flowById, username, false);
+            if (null == process) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
             }
-            checkpoint.append(stops.getName());
+            RunModeType runModeType = RunModeType.RUN;
+            if (StringUtils.isNotBlank(runMode)) {
+                runModeType = RunModeType.selectGender(runMode);
+            }
+            process.setRunModeType(runModeType);
+            final RunModeType runModeType1 = process.getRunModeType();
+            process.setId(UUIDUtils.getUUID32());
+            returnProcessId = process.getId();
+            process.setState(ProcessState.INIT);
+            //增加进程触发模式为手动触发
+            process.setTriggerMode(ProcessTriggerMode.MANUAL.getValue());
+            int updateProcess = processDomain.addProcess(process);
+            if (updateProcess <= 0) {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.CONVERSION_FAILED_MSG());
+            }
+            StringBuffer checkpoint = new StringBuffer();
+            List<Stops> stopsList = flowById.getStopsList();
+            for (Stops stops : stopsList) {
+                stops.getIsCheckpoint();
+                if (null == stops.getIsCheckpoint() || !stops.getIsCheckpoint()) {
+                    continue;
+                }
+                if (StringUtils.isNotBlank(checkpoint)) {
+                    checkpoint.append(",");
+                }
+                checkpoint.append(stops.getName());
+            }
+            String processId = process.getId();
+            //改成异步获取appid
+            CompletableFuture<Map<String, Object>> starFlowFuture = null; //定义future结构
+            starFlowFuture = CompletableFuture.supplyAsync(() ->
+                    flowImpl.startFlow(process, checkpoint.toString(), runModeType1));
+            // 当 CompletableFuture 完成时更新appID
+            starFlowFuture.whenComplete((result, throwable) -> {
+                // 检查是否有异常抛出
+                if (throwable != null) {
+                    logger.error("start flow failed: " + throwable.getMessage());
+                } else {
+                    if (null == result || 200 != ((Integer) result.get("code"))) {
+                        processDomain.updateProcessEnableFlag(username, isAdmin, processId);
+                    } else {
+                        //更新进程状态
+                        SysParamsCache.STARTED_PROCESS.put(processId, (String) result.get("appId"));
+                        Process process1 = processDomain.getProcessById(username, isAdmin, processId);
+                        process1.setLastUpdateDttm(new Date());
+                        process1.setLastUpdateUser(username);
+                        process1.setAppId((String) result.get("appId"));
+                        process1.setProcessId((String) result.get("appId"));
+                        process1.setState(ProcessState.STARTED);
+                        process1.setLastUpdateUser(username);
+                        process1.setLastUpdateDttm(new Date());
+                        try {
+                            processDomain.updateProcess(process1);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+            });
         }
-        String processId = process.getId();
-        Map<String, Object> stringObjectMap = flowImpl.startFlow(process, checkpoint.toString(), runModeType);
-        if (null == stringObjectMap || 200 != ((Integer) stringObjectMap.get("code"))) {
-            processDomain.updateProcessEnableFlag(username, isAdmin, processId);
-            return ReturnMapUtils.setFailedMsgRtnJsonStr((String) stringObjectMap.get("errorMsg"));
-        }
-        process = processDomain.getProcessById(username, isAdmin, processId);
-        process.setLastUpdateDttm(new Date());
-        process.setLastUpdateUser(username);
-        process.setAppId((String) stringObjectMap.get("appId"));
-        process.setProcessId((String) stringObjectMap.get("appId"));
-        process.setState(ProcessState.STARTED);
-        process.setLastUpdateUser(username);
-        process.setLastUpdateDttm(new Date());
-        processDomain.updateProcess(process);
         logger.info("========run flow finish==================");
-        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processId", process.getId());
+        return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processId", returnProcessId);
     }
 
     @Override
@@ -391,7 +417,7 @@ public class FlowServiceImpl implements IFlowService {
         if (null == flowIdByPublishingId || flowIdByPublishingId.size() <= 0) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NO_DATA_MSG());
         }
-        return runFlow(username,isAdmin,flowIdByPublishingId.get(0), runMode);
+        return runFlow(username, isAdmin, flowIdByPublishingId.get(0), runMode);
     }
 
     @Override
@@ -563,7 +589,7 @@ public class FlowServiceImpl implements IFlowService {
         rtnMap.put("groupsVoList", groupsVoList);
         // DataSource the left
         List<DataSourceVo> dataSourceVoList = dataSourceDomain.getStopDataSourceForFlowPage(username, isAdmin);
-        rtnMap.put("dataSourceVoList",dataSourceVoList);
+        rtnMap.put("dataSourceVoList", dataSourceVoList);
         Integer maxStopPageId = this.getMaxStopPageId(load);
         // 'maxStopPageId'defaults to 2 if it's empty, otherwise'maxStopPageId'+1
         maxStopPageId = null == maxStopPageId ? 2 : (maxStopPageId + 1);
@@ -621,7 +647,7 @@ public class FlowServiceImpl implements IFlowService {
         //补充文件触发调度信息
         process.setTriggerMode(ProcessTriggerMode.FILE.getValue());
         String[] pathParts = filePath.split(java.io.File.separator);
-        process.setTriggerFile(pathParts[pathParts.length-1]);
+        process.setTriggerFile(pathParts[pathParts.length - 1]);
         process.setScheduleId(fileSchedule.getId().toString());
         process.setScheduleName(fileSchedule.getName());
         int updateProcess = processDomain.addProcess(process);

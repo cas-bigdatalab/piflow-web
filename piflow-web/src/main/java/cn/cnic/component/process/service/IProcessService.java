@@ -226,4 +226,6 @@ public interface IProcessService {
      * @return
      */
     public String getProcessStopVoByPageId(String processId, String pageId);
+
+    String getAppIdByProcessId(String processId);
 }
