@@ -53,6 +53,10 @@ public class SqlUtils {
     public static String baseFieldName() {
         return " `id`, `crt_dttm`, `crt_user`, `last_update_dttm`, `last_update_user`, `enable_flag`, `version` ";
     }
+
+    public static String baseFieldNameNoVersion() {
+        return " `id`, `crt_dttm`, `crt_user`, `last_update_dttm`, `last_update_user`, `enable_flag` ";
+    }
     public static String baseFieldNameWithNoId() {
         return " `crt_dttm`, `crt_user`, `last_update_dttm`, `last_update_user`, `enable_flag`, `version` ";
     }
@@ -67,6 +71,18 @@ public class SqlUtils {
 
         valueStringBuffer.append(SqlUtils.preventSQLInjection(id) + ",");
         valueStringBuffer.append(baseFieldValuesNoId(baseInfo));
+        return valueStringBuffer.toString();
+    }
+    public static String baseFieldValuesNoVersion(BaseModelUUIDNoCorpAgentId baseInfo) {
+        if (null == baseInfo) {
+            return " ";
+        }
+        StringBuffer valueStringBuffer = new StringBuffer();
+        String id = StringUtils.isNotBlank(baseInfo.getId()) ? baseInfo.getId() : UUIDUtils.getUUID32();
+
+
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(id) + ",");
+        valueStringBuffer.append(baseFieldValuesNoIdAndVersion(baseInfo));
         return valueStringBuffer.toString();
     }
 
@@ -126,6 +142,28 @@ public class SqlUtils {
         valueStringBuffer.append(SqlUtils.preventSQLInjection(lastUpdateUser) + ",");
         valueStringBuffer.append(((null != enableFlag && enableFlag) ? 1 : 0) + ",");
         valueStringBuffer.append((null != version ? version : 0L) + " ");
+        return valueStringBuffer.toString();
+    }
+
+    public static String baseFieldValuesNoIdAndVersion(BaseModelUUIDNoCorpAgentId baseInfo) {
+        if (null == baseInfo) {
+            return " ";
+        }
+        StringBuffer valueStringBuffer = new StringBuffer();
+        String crtUser = StringUtils.isNotBlank(baseInfo.getCrtUser()) ? baseInfo.getCrtUser() : "-1";
+        String lastUpdateUser = baseInfo.getLastUpdateUser();
+        Boolean enableFlag = baseInfo.getEnableFlag();
+        Date crtDttm = (null == baseInfo.getCrtDttm()) ? new Date() : baseInfo.getCrtDttm();
+        String crtDttmStr = DateUtils.dateTimesToStr(crtDttm);
+        Date lastUpdateDttm = (null == baseInfo.getLastUpdateDttm()) ? new Date() : baseInfo.getLastUpdateDttm();
+        String lastUpdateDttmStr = DateUtils.dateTimesToStr(null != lastUpdateDttm ? lastUpdateDttm : new Date());
+
+
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(crtDttmStr) + ",");
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(crtUser) + ",");
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(lastUpdateDttmStr) + ",");
+        valueStringBuffer.append(SqlUtils.preventSQLInjection(lastUpdateUser) + ",");
+        valueStringBuffer.append(((null != enableFlag && enableFlag) ? 1 : 0) + " ");
         return valueStringBuffer.toString();
     }
 
