@@ -83,7 +83,7 @@ public class ErrorLogMappingServiceImpl implements IErrorLogMappingService {
     public String getByPage(ErrorLogMappingVo errorLogMappingVo) {
         String username = SessionUserUtil.getCurrentUsername();
         Page<ErrorLogMappingVo> page = PageHelper.startPage(errorLogMappingVo.getPage(), errorLogMappingVo.getLimit(), "last_update_dttm desc");
-        errorLogMappingDomain.getByPage(errorLogMappingVo, username);
+        errorLogMappingDomain.getByPage(errorLogMappingVo);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         return PageHelperUtils.setLayTableParamRtnStr(page, rtnMap);
     }

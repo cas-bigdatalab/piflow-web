@@ -34,11 +34,11 @@ public class ErrorLogMappingDomain {
         return errorLogMappingMapper.getById(id);
     }
 
-    public List<ErrorLogMappingVo> getByPage(ErrorLogMappingVo errorLogMappingVo, String username) {
-        return errorLogMappingMapper.getByPage(errorLogMappingVo.getKeyword(), username);
+    public List<ErrorLogMappingVo> getByPage(ErrorLogMappingVo errorLogMappingVo) {
+        return errorLogMappingMapper.getByPage(errorLogMappingVo.getKeyword());
     }
 
-    public List<ErrorLogMapping> getAllAvailable() {
-        return errorLogMappingMapper.getAllAvailable();
+    public List<ErrorLogMappingVo> getAllAvailable(String flowPublishId) {
+        return errorLogMappingMapper.getAllAvailable(flowPublishId);
     }
 }

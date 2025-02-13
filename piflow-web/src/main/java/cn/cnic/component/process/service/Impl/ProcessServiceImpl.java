@@ -954,68 +954,94 @@ public class ProcessServiceImpl implements IProcessService {
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("processStopVo", processStopVo);
     }
 
-//    @Override
-//    public String getErrorLogInfo(String appId) {
-//        String amContainerLogs = flowImpl.getFlowLog(appId);
-//        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-//        if (StringUtils.isNotBlank(amContainerLogs)) {
-//            String stdoutLog = amContainerLogs + "/stdout/?start=0";
-//            String stderrLog = amContainerLogs + "/stderr/?start=0";
-//            String stdoutLogHtml = HttpUtils.getHtml(stdoutLog);
-//            String stderrLogHtml = HttpUtils.getHtml(stderrLog);
-//            //截取错误信息
-//            String error1 = extractExceptionLines(stdoutLogHtml);
-//            String error2 = extractExceptionLines(stderrLogHtml);
-//            Map<String, String> errorMap = new HashMap<>();
-//            errorMap.put("errorInfo", error1 + error2);
-//            rtnMap.put("data", errorMap);
-//        } else {
-//            rtnMap.put("code", 200);
-//            rtnMap.put("errorMsg", MessageConfig.INTERFACE_CALL_ERROR_MSG());
-//        }
-//        return ReturnMapUtils.toJson(rtnMap);
-//    }
-
-//    @Override
-//    public String getErrorLogInStop(String appId) {
-//        String amContainerLogs = flowImpl.getFlowLog(appId);
-//        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-//        if (StringUtils.isNotBlank(amContainerLogs)) {
-//            String stdoutLog = amContainerLogs + "/stdout/?start=0";
-//            String stdoutLogHtml = HttpUtils.getHtml(stdoutLog);
-//            //截取错误信息
-//            String error1 = extractExceptionLines(stdoutLogHtml);
-//            Map<String, String> errorMap = new HashMap<>();
-//            errorMap.put("errorInfo", error1);
-//            rtnMap.put("data", errorMap);
-//        } else {
-//            rtnMap.put("code", 200);
-//            rtnMap.put("errorMsg", MessageConfig.INTERFACE_CALL_ERROR_MSG());
-//        }
-//        return ReturnMapUtils.toJson(rtnMap);
-//    }
-//
-//    @Override
-//    public String getErrorLogInSystem(String appId) {
-//        String amContainerLogs = flowImpl.getFlowLog(appId);
-//        Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
-//        if (StringUtils.isNotBlank(amContainerLogs)) {
-//            String stderrLog = amContainerLogs + "/stderr/?start=0";
-//            String stderrLogHtml = HttpUtils.getHtml(stderrLog);
-//            //截取错误信息
-//            String error2 = extractExceptionLines(stderrLogHtml);
-//            Map<String, String> errorMap = new HashMap<>();
-//            errorMap.put("errorInfo", error2);
-//            rtnMap.put("data", errorMap);
-//        } else {
-//            rtnMap.put("code", 200);
-//            rtnMap.put("errorMsg", MessageConfig.INTERFACE_CALL_ERROR_MSG());
-//        }
-//        return ReturnMapUtils.toJson(rtnMap);
-//    }
-
+    /**
+     * 常见问题库中匹配问题分析，
+     * 先按照关联的发布流水线id筛选出相关的问题库，然后再截取所有的Exception信息，与问题库中的关键词进行包含匹配
+     * @param appId
+     * @return
+     */
     @Override
     public String getErrorLogForUser(String appId) {
+        Process processByAppId = processDomain.getProcessByAppId(appId);
+        String amContainerLogs = flowImpl.getFlowLog(appId);
+        if (StringUtils.isNotBlank(amContainerLogs)) {
+            String stderrLog = amContainerLogs + "/stderr/?start=0";
+            String stderrLogHtml = HttpUtils.getHtml(stderrLog);
+            Map<String,ErrorLogMappingVo> errorLogs = extractExceptionLines(stderrLogHtml,processByAppId.getFlowId());
+            if(!errorLogs.isEmpty()){
+                List<ErrorLogMappingVo> result = new ArrayList<>(errorLogs.values());
+                return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data",result);
+            }else {
+                return ReturnMapUtils.setFailedMsgRtnJsonStr("没有匹配到数据");
+            }
+        } else {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("没有错误日志");
+        }
+    }
+
+    private Map<String,ErrorLogMappingVo> extractExceptionLines(String input,String flowPublishId) {
+        HashMap<String,ErrorLogMappingVo> errorLogMaps = new LinkedHashMap<>();
+        String[] lines = input.split("\n");
+        String regex = "(?i).*\\b(fail|exception)\\b.*"; // 使用正则表达式，忽略大小写匹配关键字
+        boolean capture = false;
+        int rows = 0;
+        StringBuilder result = new StringBuilder();
+        for (String line : lines) {
+            if (line.matches(regex)) {
+                capture = true;
+                rows++;
+                result.append(line).append("\n");
+            } else if (capture && (rows > 2 || line.contains("<"))) { //捕捉到的异常每次都只截取三行或者遇到一些html标签
+                capture = false;
+                rows = 0;
+                //获取中文映射
+                String originErrorLog = result.toString();
+                //先获取有效的用户错误日志配置列表
+                //一个一个匹配错误信息
+                List<ErrorLogMappingVo> errorLogMappings = errorLogMappingDomain.getAllAvailable(flowPublishId);
+                if (CollectionUtils.isNotEmpty(errorLogMappings)) {
+                    for (ErrorLogMappingVo errorLogMapping : errorLogMappings) {
+                        String regexPattern = errorLogMapping.getRegexPattern();
+                        String[] split = regexPattern.split(",");
+                        for (String s : split) {
+                            if(originErrorLog.contains(s)){
+                                errorLogMaps.put(errorLogMapping.getId(),errorLogMapping);
+                                break;
+                            }
+                        }
+                    }
+                }
+                //重新清空待解析的日志
+                result.setLength(0);
+            } else if (capture) {
+                rows++;
+                result.append(line).append("\n");
+            }
+        }
+        return errorLogMaps;
+    }
+
+    private List<ErrorLogMappingVo> convertErrorToZh(String originErrorLog, String flowPublishId) {
+        List<ErrorLogMappingVo> answers = new ArrayList<>();
+        //先获取有效的用户错误日志配置列表
+        //一个一个匹配错误信息
+        List<ErrorLogMappingVo> errorLogMappings = errorLogMappingDomain.getAllAvailable(flowPublishId);
+        if (CollectionUtils.isNotEmpty(errorLogMappings)) {
+            for (ErrorLogMappingVo errorLogMapping : errorLogMappings) {
+                String regexPattern = errorLogMapping.getRegexPattern();
+                String[] split = regexPattern.split(",");
+                for (String s : split) {
+                    if(originErrorLog.contains(s)){
+                        answers.add(errorLogMapping);
+                        break;
+                    }
+                }
+            }
+        }
+        return answers;
+    }
+
+    public String getErrorLogForUser_V0(String appId) {
         String amContainerLogs = flowImpl.getFlowLog(appId);
         Map<String, Object> rtnMap = ReturnMapUtils.setSucceededMsg(MessageConfig.SUCCEEDED_MSG());
         if (StringUtils.isNotBlank(amContainerLogs)) {
@@ -1023,7 +1049,7 @@ public class ProcessServiceImpl implements IProcessService {
             String stderrLogHtml = HttpUtils.getHtml(stderrLog);
             //分析错误信息
             StringBuffer error = new StringBuffer("根据您的错误日志，为您解读出以下内容：").append("\n");
-            Map<String, List<String>> extractInfo = extractExceptionLines(stderrLogHtml);
+            Map<String, List<String>> extractInfo = extractExceptionLines_V0(stderrLogHtml);
             for (String orginLog : extractInfo.keySet()) {
                 error.append("原始报错信息为：").append("\n").append(orginLog).append("\n\n");
                 error.append("根据您的原始报错信息推断，可能会存在以下问题：").append("\n");
@@ -1048,7 +1074,7 @@ public class ProcessServiceImpl implements IProcessService {
         return ReturnMapUtils.toJson(rtnMap);
     }
 
-    private Map<String, List<String>> extractExceptionLines(String input) {
+    private Map<String, List<String>> extractExceptionLines_V0(String input) {
         Map<String, List<String>> extractInfo = new LinkedHashMap<>();
         String[] lines = input.split("\n");
         String regex = "(?i).*\\b(fail|exception)\\b.*"; // 使用正则表达式，忽略大小写匹配关键字
@@ -1065,7 +1091,7 @@ public class ProcessServiceImpl implements IProcessService {
                 rows = 0;
                 //获取中文映射
                 String originErrorLog = result.toString();
-                List<String> answers = convertErrorToZh(originErrorLog);
+                List<String> answers = convertErrorToZh_V0(originErrorLog);
                 extractInfo.put(originErrorLog, answers);
                 //重新清空待解析的日志
                 result.setLength(0);
@@ -1077,13 +1103,13 @@ public class ProcessServiceImpl implements IProcessService {
         return extractInfo;
     }
 
-    private List<String> convertErrorToZh(String originErrorLog) {
+    private List<String> convertErrorToZh_V0(String originErrorLog) {
         List<String> answers = new ArrayList<>();
         //先获取有效的用户错误日志配置列表
         //一个一个匹配错误信息
-        List<ErrorLogMapping> errorLogMappings = errorLogMappingDomain.getAllAvailable();
+        List<ErrorLogMappingVo> errorLogMappings = errorLogMappingDomain.getAllAvailable("");
         if (CollectionUtils.isNotEmpty(errorLogMappings)) {
-            for (ErrorLogMapping errorLogMapping : errorLogMappings) {
+            for (ErrorLogMappingVo errorLogMapping : errorLogMappings) {
                 Pattern pattern = Pattern.compile(errorLogMapping.getRegexPattern());
                 Matcher matcher = pattern.matcher(originErrorLog);
                 List<String> matchGroup = new ArrayList<>();

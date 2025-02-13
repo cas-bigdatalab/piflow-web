@@ -40,7 +40,7 @@ public class DataProductMapperProvider {
     private String associateId;
     private String company;
     private String organization;
-    private String year; // 年份
+    private String datasetYear; // 年份
     private String datasetLine; // 数据条数
 
     private boolean preventSQLInjectionDataProduct(DataProduct dataProduct) {
@@ -82,7 +82,7 @@ public class DataProductMapperProvider {
         this.associateId = SqlUtils.preventSQLInjection(dataProduct.getAssociateId());
         this.company = SqlUtils.preventSQLInjection(dataProduct.getCompany());
         this.organization = SqlUtils.preventSQLInjection(dataProduct.getOrganization());
-        this.year = SqlUtils.preventSQLInjection(dataProduct.getYear());
+        this.datasetYear = SqlUtils.preventSQLInjection(dataProduct.getDatasetYear());
         this.datasetLine = SqlUtils.preventSQLInjection(dataProduct.getDatasetLine());
         return true;
     }
@@ -117,7 +117,7 @@ public class DataProductMapperProvider {
         this.associateId = null;
         this.company = null;
         this.organization = null;
-        this.year = null;
+        this.datasetYear = null;
         this.datasetLine = null;
     }
 
@@ -151,7 +151,7 @@ public class DataProductMapperProvider {
             stringBuffer.append("is_share, ");
             stringBuffer.append("company, ");
             stringBuffer.append("organization, ");
-            stringBuffer.append("year, ");
+            stringBuffer.append("dataset_year, ");
             stringBuffer.append("dataset_line, ");
             if (!"null".equals(this.doiId)) {
                 stringBuffer.append("doi_id, ");
@@ -194,7 +194,7 @@ public class DataProductMapperProvider {
             stringBuffer.append(this.isShare).append(", ");
             stringBuffer.append(this.company).append(", ");
             stringBuffer.append(this.organization).append(", ");
-            stringBuffer.append(this.year).append(", ");
+            stringBuffer.append(this.datasetYear).append(", ");
             stringBuffer.append(this.datasetLine).append(", ");
             if (!"null".equals(this.doiId)) {
                 stringBuffer.append(this.doiId).append(", ");
@@ -293,8 +293,8 @@ public class DataProductMapperProvider {
             if (null != dataProduct.getCompany()) {
                 sql.SET("organization = " + organization);
             }
-            if (null != dataProduct.getYear()) {
-                sql.SET("year = " + year);
+            if (null != dataProduct.getDatasetYear()) {
+                sql.SET("dataset_year = " + datasetYear);
             }
             if (null != dataProduct.getDatasetLine()) {
                 sql.SET("dataset_line = " + datasetLine);

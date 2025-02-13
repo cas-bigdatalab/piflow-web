@@ -380,7 +380,7 @@ public class ProcessCtrl {
      * @param appId:
      * @return String
      * @author tianyao
-     * @description 获取用户可用日志
+     * @description 获取用户可用日志  更新为获取用户可用常见问题库
      * @date 2024/6/6 10:03
      */
     @RequestMapping(value = "/getErrorLogForUser", method = RequestMethod.GET)

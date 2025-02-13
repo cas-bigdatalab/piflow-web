@@ -19,6 +19,8 @@ public class ErrorLogMappingMapperProvider {
     private String originAbstract;//原始报错摘要
     private String explainZh;//中文解释映射
     private String regexPattern;//关键词匹配
+    private String flowPublishId; //关联的发布流水线id
+    private String flowPublishName; //关联的发布流水线名称
 
     private boolean preventSQLInjection(ErrorLogMapping errorLogMapping) {
         if (null == errorLogMapping) {
@@ -39,6 +41,8 @@ public class ErrorLogMappingMapperProvider {
         this.originAbstract = SqlUtils.preventSQLInjection(errorLogMapping.getOriginAbstract());
         this.explainZh = SqlUtils.preventSQLInjection(errorLogMapping.getExplainZh());
         this.regexPattern = SqlUtils.preventSQLInjection(errorLogMapping.getRegexPattern());
+        this.flowPublishId = SqlUtils.preventSQLInjection(errorLogMapping.getFlowPublishId());
+        this.flowPublishName = SqlUtils.preventSQLInjection(errorLogMapping.getFlowPublishName());
         return true;
     }
 
@@ -52,6 +56,8 @@ public class ErrorLogMappingMapperProvider {
         this.originAbstract = null;
         this.explainZh = null;
         this.regexPattern = null;
+        this.flowPublishId = null;
+        this.flowPublishName = null;
     }
 
     /**
@@ -71,7 +77,9 @@ public class ErrorLogMappingMapperProvider {
             stringBuffer.append("name, ");
             stringBuffer.append("origin_abstract, ");
             stringBuffer.append("explain_zh, ");
-            stringBuffer.append("regex_pattern ");
+            stringBuffer.append("regex_pattern, ");
+            stringBuffer.append("flow_publish_id, ");
+            stringBuffer.append("flow_publish_name ");
             stringBuffer.append(") ");
             stringBuffer.append("VALUES ");
             stringBuffer.append("( ");
@@ -80,7 +88,9 @@ public class ErrorLogMappingMapperProvider {
             stringBuffer.append(this.name).append(", ");
             stringBuffer.append(this.originAbstract).append(", ");
             stringBuffer.append(this.explainZh).append(", ");
-            stringBuffer.append(this.regexPattern);
+            stringBuffer.append(this.regexPattern).append(", ");
+            stringBuffer.append(this.flowPublishId).append(", ");
+            stringBuffer.append(this.flowPublishName);
             stringBuffer.append(" ) ");
             sqlStr = stringBuffer.toString();
             this.reset();
@@ -116,6 +126,8 @@ public class ErrorLogMappingMapperProvider {
             sql.SET("origin_abstract = " + originAbstract);
             sql.SET("explain_zh = " + explainZh);
             sql.SET("regex_pattern = " + regexPattern);
+            sql.SET("flow_publish_id = " + flowPublishId);
+            sql.SET("flow_publish_name = " + flowPublishName);
             sql.WHERE("id = " + id);
             sqlStr = sql.toString();
         }

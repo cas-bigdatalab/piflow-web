@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+/**
+ * 更新为常见问题库
+ */
+
 @Api(value = "error log mapping api", tags = "error log mapping api")
 @Controller
 @RequestMapping("/errorLogMapping")

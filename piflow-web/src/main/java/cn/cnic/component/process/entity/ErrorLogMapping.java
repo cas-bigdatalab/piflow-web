@@ -14,6 +14,8 @@ public class ErrorLogMapping extends BaseModelIDNoCorpAgentId {
 
     private String name;//名称
     private String originAbstract;//原始报错摘要
-    private String explainZh;//中文解释映射  如果需要填充上匹配的关键字，格式必须是xxx[1]xxxx[2]xxxxxxx
-    private String regexPattern;//关键词匹配
+    private String explainZh;//中文解释映射  如果需要填充上匹配的关键字，格式必须是xxx[1]xxxx[2]xxxxxxx 更新为问题分析
+    private String regexPattern;//关键词匹配  匹配方式改为错误信息包含模式
+    private String flowPublishId; //关联的发布流水线id
+    private String flowPublishName; //关联的发布流水线名称
 }
