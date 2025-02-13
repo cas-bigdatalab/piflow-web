@@ -45,4 +45,6 @@ public class DataProduct extends BaseModelIDNoCorpAgentId {
 
     private String company; // 创建人台站
     private String organization ; // 创建人单位
+    private String year; // 年份
+    private String datasetLine; // 数据条数
 }

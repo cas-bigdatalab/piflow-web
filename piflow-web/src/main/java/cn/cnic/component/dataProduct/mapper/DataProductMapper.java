@@ -21,13 +21,13 @@ public interface DataProductMapper {
             + "insert into data_product (id, process_id, property_id, property_name, dataset_url, `name`, "
             + "description, permission, keyword, sdPublisher, email, `state`, opinion, down_reason, "
             + "is_share, doi_id, cstr_id, subject_type_id, time_range, spacial_range, dataset_size, dataset_type, associate_id, "
-            + "crt_dttm, crt_user, enable_flag, last_update_dttm, last_update_user, version, company, organization, bak3) values "
+            + "crt_dttm, crt_user, enable_flag, last_update_dttm, last_update_user, version, company, organization, year, dataset_line, bak3) values "
             + "<foreach collection='list' item='item' index='index' separator=', '>"
             + "(#{item.id}, #{item.processId}, #{item.propertyId}, #{item.propertyName}, #{item.datasetUrl}, #{item.name}, "
             + "#{item.description}, #{item.permission}, #{item.keyword}, #{item.sdPublisher}, #{item.email}, #{item.state}, #{item.opinion}, #{item.downReason}, "
             + "#{item.isShare}, #{item.doiId}, #{item.cstrId}, #{item.subjectTypeId}, #{item.timeRange}, #{item.spacialRange}, #{item.datasetSize}, #{item.datasetType}, "
             + "#{item.associateId}, "
-            + "#{item.crtDttmStr}, #{item.crtUser}, #{item.enableFlagNum}, #{item.lastUpdateDttmStr}, #{item.lastUpdateUser}, 0, #{item.company}, #{item.organization}, #{item.bak3})"
+            + "#{item.crtDttmStr}, #{item.crtUser}, #{item.enableFlagNum}, #{item.lastUpdateDttmStr}, #{item.lastUpdateUser}, 0, #{item.company}, #{item.organization}, #{item.year}, #{item.datasetLine}, #{item.bak3})"
             + "</foreach>"
             + "</script>")
     int addBatch(List<DataProduct> dataProducts);
