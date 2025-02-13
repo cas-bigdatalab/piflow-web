@@ -493,6 +493,7 @@ public class DataProductServiceImpl implements IDataProductService {
         statisticVo.setTotalDataProductNum(Long.valueOf(size));
         //获取台站数量
         if (ADMIN.equals(currentUserRole)) {
+            totalCompanyNum = dataProductDomain.getTotalCompanyNum();
             totalCompanyNum = sysUserDomain.getTotalCompanyNum();
         }
         statisticVo.setTotalCompanyNum(totalCompanyNum);

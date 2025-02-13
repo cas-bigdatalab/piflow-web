@@ -230,4 +230,8 @@ public class DataProductDomain {
     public List<DataProduct> getNoDatasetSize() {
         return dataProductMapper.getNoDatasetSize();
     }
+
+    public Long getTotalCompanyNum() {
+        return dataProductMapper.getTotalCompanyNum();
+    }
 }

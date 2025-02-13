@@ -327,4 +327,6 @@ public interface DataProductMapper {
     @Select("select * from data_product where enable_flag =1 and state = 5 and dataset_size ='' ")
     List<DataProduct> getNoDatasetSize();
 
+    @Select("select count(distinct company) as totalCompanyNum from data_product where enable_flag = 1 and state = 5 and company is not null and company not in ('','数据中心','cnic')")
+    Long getTotalCompanyNum();
 }
