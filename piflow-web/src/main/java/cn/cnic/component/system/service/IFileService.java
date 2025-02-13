@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface IFileService {
 
-    String uploadFile(MultipartFile file, Boolean unzip, Integer associateType, String associateId);
+    String uploadFile(MultipartFile file, Boolean unzip, Integer associateType, String associateId, String flowPublishId);
 
     String uploadFilesZip(MultipartFile file, Boolean unzip, Integer associateType, String associateId);
 

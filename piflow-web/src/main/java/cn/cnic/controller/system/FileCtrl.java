@@ -29,6 +29,7 @@ public class FileCtrl {
      * @param unzip:是否解压缩, 上传文件、上传文件夹不解压缩，为false，上传文件夹并解压缩，为true  门户的运行界面，上传文件zip时会为true
      * @param associateType:
      * @param associateId:
+     * @param flowPublishId: 只有当用户在运行发布流水线时上传待处理数据时使用
      * @return String
      * @author tianyao
      * @description 上传文件，分两类文件来上传，数据产品分类封面图和数据产品封面图放到服务器上，其他放在hdfs上
@@ -37,8 +38,8 @@ public class FileCtrl {
     @RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "uploadFile", notes = "上传文件")
-    public String uploadFile(MultipartFile file, Boolean unzip, Integer associateType, String associateId) {
-        return fileServiceImpl.uploadFile(file, unzip, associateType, associateId);
+    public String uploadFile(MultipartFile file, Boolean unzip, Integer associateType, String associateId, String flowPublishId) {
+        return fileServiceImpl.uploadFile(file, unzip, associateType, associateId,flowPublishId);
     }
 
     /**

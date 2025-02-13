@@ -8,7 +8,9 @@ import cn.cnic.component.dataProduct.entity.DataProductType;
 import cn.cnic.component.dataProduct.vo.DataProductTypeVo;
 import cn.cnic.component.flow.domain.FlowStopsPublishingPropertyDomain;
 import cn.cnic.component.system.domain.FileDomain;
+import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.File;
+import cn.cnic.component.system.entity.SysUser;
 import cn.cnic.component.system.service.IFileService;
 import cn.cnic.component.system.vo.FileVo;
 import cn.hutool.core.lang.generator.SnowflakeGenerator;
@@ -38,23 +40,23 @@ public class FileServiceImpl implements IFileService {
     private final FileDomain fileDomain;
 
     private final SnowflakeGenerator snowflakeGenerator;
-
-    private final FlowStopsPublishingPropertyDomain flowStopsPublishingPropertyDomain;
+    private final SysUserDomain sysUserDomain;
 
     @Autowired
-    public FileServiceImpl(FileDomain fileDomain, SnowflakeGenerator snowflakeGenerator, FlowStopsPublishingPropertyDomain flowStopsPublishingPropertyDomain) {
+    public FileServiceImpl(FileDomain fileDomain, SnowflakeGenerator snowflakeGenerator, SysUserDomain sysUserDomain) {
         this.fileDomain = fileDomain;
         this.snowflakeGenerator = snowflakeGenerator;
-        this.flowStopsPublishingPropertyDomain = flowStopsPublishingPropertyDomain;
+        this.sysUserDomain = sysUserDomain;
     }
 
     @Override
-    public String uploadFile(MultipartFile file, Boolean unzip, Integer associateType, String associateId) {
+    public String uploadFile(MultipartFile file, Boolean unzip, Integer associateType, String associateId, String flowPublishId) {
         if (unzip == null) unzip = false;
         String username = SessionUserUtil.getCurrentUsername();
         if (StringUtils.isBlank(username)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.NOT_LOGIN);
         }
+        SysUser sysUser = sysUserDomain.getSysUserByUserName(username);
         //先删除原有的绑定文件，同一个type和id只能绑定一个文件,除了流水线发布参数（也就是运行时上传文件）
         if (!Objects.equals(FileAssociateType.FLOW_PUBLISHING_PROPERTY.getValue(), associateType)) {
             fileDomain.deleteByAssociateId(associateId, associateType);
@@ -80,12 +82,20 @@ public class FileServiceImpl implements IFileService {
                 if (split[1].equals("rar") || split[1].equals("tar") || split[1].equals("tar.gz"))
                     return ReturnMapUtils.setFailedMsgRtnJsonStr("please unload .zip");
                 path = SysParamsCache.FILE_STORAGE_PATH + snowflakeGenerator.next() + "/";
+                if(associateType.equals(FileAssociateType.FLOW_PUBLISHING_PROPERTY.getValue())){
+                    //如果是用户在运行发布流水线时上传待处理数据，数据目录需要按照特定规则， /prefix/台站名/用户名/关联发布流水线id/随机数/
+                    path = SysParamsCache.FILE_STORAGE_PATH + sysUser.getCompany()+"/"+sysUser.getName()+ "/" +flowPublishId + "/" + snowflakeGenerator.next() + "/";
+                }
                 FileUtils.saveFileToHdfs(file, fileName, path, FileUtils.getDefaultFs());
             }
             filePath = path + fileName;
         } else {
             if (!split[1].equals("zip")) return ReturnMapUtils.setFailedMsgRtnJsonStr("please unload .zip");
             path = SysParamsCache.FILE_STORAGE_PATH + snowflakeGenerator.next() + "/";
+            if(associateType.equals(FileAssociateType.FLOW_PUBLISHING_PROPERTY.getValue())){
+                //如果是用户在运行发布流水线时上传待处理数据，数据目录需要按照特定规则， /prefix/台站名/用户名/关联发布流水线id/随机数/
+                path = SysParamsCache.FILE_STORAGE_PATH + sysUser.getCompany()+"/"+sysUser.getName()+ "/" +flowPublishId + "/" + snowflakeGenerator.next() + "/";
+            }
             FileUtils.saveAndUnzipToHdfs(file, fileName, path, FileUtils.getDefaultFs());
             filePath = path + fileName.split("\\.")[0] + "/";
         }

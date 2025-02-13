@@ -163,7 +163,7 @@ public class DataProductServiceImpl implements IDataProductService {
         //删除并新增数据产品类型封面
         if (ObjectUtils.isNotEmpty(file)) {
             try {
-                fileServiceImpl.uploadFile(file, false, FileAssociateType.DATA_PRODUCT_COVER.getValue(), dataProduct.getId().toString());
+                fileServiceImpl.uploadFile(file, false, FileAssociateType.DATA_PRODUCT_COVER.getValue(), dataProduct.getId().toString(),null);
             } catch (Exception e) {
                 logger.error("upload data product cover error!! e:{}", e.getMessage());
                 return ReturnMapUtils.setFailedMsgRtnJsonStr("上传封面失败！");
