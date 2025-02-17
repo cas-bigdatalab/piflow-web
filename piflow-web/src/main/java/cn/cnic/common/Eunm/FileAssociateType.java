@@ -10,7 +10,8 @@ public enum FileAssociateType {
     FLOW_PUBLISHING_INSTRUCTION(6),//流水线发布说明书 唯一
     FLOW_PUBLISHING_HEADER(7),//流水线发布数据产品表头 唯一
     SYSTEM_INSTRUCTION(8),//系统说明书 唯一
-    USER_APPLY(9);//用户申请表 唯一
+    USER_APPLY(9),//用户申请表 唯一
+    SYSTEM_SUPPORTED_DATA_PRODUCT(10);//系统当前支持的数据产品 唯一
 
     private final Integer value;
 
