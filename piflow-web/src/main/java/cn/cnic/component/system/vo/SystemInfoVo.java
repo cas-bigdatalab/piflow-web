@@ -19,5 +19,7 @@ public class SystemInfoVo implements Serializable {
     private String instructionFileName;//系统说明书名
     private String userApplyFileId;//用户申请表id
     private String userApplyFileName;//用户申请表名
+    private String supportedDataProductFileId;//系统支持的数据产品文件id
+    private String supportedDataProductFileName;//系统支持的数据产品文件名称
 
 }

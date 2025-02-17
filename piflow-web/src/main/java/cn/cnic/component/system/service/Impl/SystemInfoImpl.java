@@ -79,6 +79,12 @@ public class SystemInfoImpl implements ISystemInfoService {
             systemInfoVo.setUserApplyFileId(userFile.getId().toString());
             systemInfoVo.setUserApplyFileName(userFile.getFileName().toString());
         }
+        //获取系统支持的数据产品文件
+        File dataProductFile = fileDomain.getByAssociateId(systemInfoVo.getId(), FileAssociateType.SYSTEM_SUPPORTED_DATA_PRODUCT.getValue());
+        if (ObjectUtils.isNotEmpty(dataProductFile)) {
+            systemInfoVo.setSupportedDataProductFileId(dataProductFile.getId().toString());
+            systemInfoVo.setSupportedDataProductFileName(dataProductFile.getFileName().toString());
+        }
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data",systemInfoVo);
     }
 }
