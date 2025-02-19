@@ -200,9 +200,9 @@ public class ProcessUtils {
             for (Stops stops : stopsList) {
                 ProcessStop processStop = stopsToProcessStop(stops, username, isAddId);
                 if (null == processStop) {
-                   if (null != stops && null != stops.getIsDisabled() && stops.getIsDisabled()) {
-                       disablePageIds.add(stops.getPageId());
-                   }
+                    if (null != stops && null != stops.getIsDisabled() && stops.getIsDisabled()) {
+                        disablePageIds.add(stops.getPageId());
+                    }
                     continue;
                 }
                 // Associate foreign key
@@ -271,7 +271,7 @@ public class ProcessUtils {
             processStop.setId(null);
         }
         processStop.setFlowStopId(stops.getId());
-        
+
         // Remove the properties of stops
         List<Property> properties = stops.getProperties();
         // Determine if the stops attribute is empty
@@ -341,9 +341,9 @@ public class ProcessUtils {
             processStop.setProcessStopCustomizedPropertyList(processStopCustomizedPropertyList);
         }
         return processStop;
-        
+
     }
-    
+
     public static List<Process> copyProcessList(List<Process> processList, String username, RunModeType runModeType, ProcessGroup processGroup, boolean isAddId) {
         List<Process> copyProcessList = null;
         if (null != processList && processList.size() > 0) {
@@ -389,7 +389,7 @@ public class ProcessUtils {
         // copy processMxGraphModel
         MxGraphModel processMxGraphModel = process.getMxGraphModel();
         MxGraphModel copyMxGraphModel = MxGraphModelUtils.copyMxGraphModelAndNewNoIdAndUnlink(username, processMxGraphModel, isAddId, null);
-        copyMxGraphModel = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(copyMxGraphModel, username,isAddId);
+        copyMxGraphModel = MxGraphModelUtils.initMxGraphModelBasicPropertiesNoId(copyMxGraphModel, username, isAddId);
         // add link
         copyMxGraphModel.setProcess(copyProcess);
         copyProcess.setMxGraphModel(copyMxGraphModel);
@@ -477,20 +477,21 @@ public class ProcessUtils {
         Map<String, Object> rtnMap = new HashMap<>();
         Map<String, Object> flowVoMap = new HashMap<>();
         if (null != flowGlobalParamsList && flowGlobalParamsList.size() > 0) {
-        	Map<String, Object> environmentVariableMap = new HashMap<>();
-        	for (FlowGlobalParams flowGlobalParams : flowGlobalParamsList) {
-                if (null ==flowGlobalParams || StringUtils.isBlank(flowGlobalParams.getName())) {
-                	continue;
+            Map<String, Object> environmentVariableMap = new HashMap<>();
+            for (FlowGlobalParams flowGlobalParams : flowGlobalParamsList) {
+                if (null == flowGlobalParams || StringUtils.isBlank(flowGlobalParams.getName())) {
+                    continue;
                 }
                 environmentVariableMap.put("${" + flowGlobalParams.getName() + "}", flowGlobalParams.getContent());
-			}
-        	flowVoMap.put("environmentVariable", environmentVariableMap);
+            }
+            flowVoMap.put("environmentVariable", environmentVariableMap);
         }
         flowVoMap.put("driverMemory", process.getDriverMemory());
         flowVoMap.put("executorMemory", process.getExecutorMemory());
         flowVoMap.put("executorCores", process.getExecutorCores());
         flowVoMap.put("executorNumber", process.getExecutorNumber());
-        flowVoMap.put("name", process.getName());
+        String processName = process.getName();
+        flowVoMap.put("name", processName.length() > 10 ? processName.substring(0, 10) : processName);
         flowVoMap.put("uuid", process.getId());
 
         // all stops
@@ -542,19 +543,19 @@ public class ProcessUtils {
             thirdStopVo.put("name", processStop.getName());
             thirdStopVo.put("bundle", processStop.getBundel());
 
-            if(ComponentFileType.PYTHON.equals(processStop.getComponentType())){
+            if (ComponentFileType.PYTHON.equals(processStop.getComponentType())) {
                 Map<String, Object> pythonProperties = new HashMap<String, Object>();
                 String ymlContent = generateYmlContent(processStop);
-                pythonProperties.put("inports",processStop.getInports());
-                pythonProperties.put("outports",processStop.getOutports());
-                pythonProperties.put("ymlContent",ymlContent);       //convert yml to server
+                pythonProperties.put("inports", processStop.getInports());
+                pythonProperties.put("outports", processStop.getOutports());
+                pythonProperties.put("ymlContent", ymlContent);       //convert yml to server
                 thirdStopVo.put("properties", pythonProperties);
                 thirdStopVo.put("bundle", "cn.piflow.bundle.script.DockerExecute");
             }
 
             // StopProperty
             List<ProcessStopProperty> processStopPropertyList = processStop.getProcessStopPropertyList();
-            Map<String, Object> properties = (Map<String, Object>)thirdStopVo.get("properties");
+            Map<String, Object> properties = (Map<String, Object>) thirdStopVo.get("properties");
             if (null == properties) {
                 properties = new HashMap<String, Object>();
             }
@@ -670,7 +671,7 @@ public class ProcessUtils {
     }
 
     //generate yml for docker execute
-    public static String generateYmlContent(ProcessStop processStop){
+    public static String generateYmlContent(ProcessStop processStop) {
         long currentTimeMillis = System.currentTimeMillis();
         StringBuffer ymlContentSb = new StringBuffer();
         String ymlName = processStop.getName() + "-" + currentTimeMillis;
@@ -678,7 +679,7 @@ public class ProcessUtils {
         ymlContentSb.append("services:" + System.lineSeparator());
         ymlContentSb.append("  docker-python-demo:" + System.lineSeparator());
         //docker image name,example:10.1.23.456/example:latest   docker url/imageName:tag
-        ymlContentSb.append("    image: \"" + processStop.getDockerImagesName()+"\"" + System.lineSeparator());
+        ymlContentSb.append("    image: \"" + processStop.getDockerImagesName() + "\"" + System.lineSeparator());
 //        //2023-01-05:因为想把Python也进行分发,所以这里的参数不能再写本地的,改为可以替换的值,将来在哪个server提交任务,哪个sever去替换bigflow_extra_hosts
 //        //param that .py needs,used to store procedure data
         ymlContentSb.append("    extra_hosts:piflow_extra_hosts" + System.lineSeparator());
@@ -690,12 +691,12 @@ public class ProcessUtils {
         ymlContentSb.append("      - TZ=Asia/Shanghai" + System.lineSeparator());
         ymlContentSb.append("    volumes:" + System.lineSeparator());
         ymlContentSb.append("      - ../app:/app" + System.lineSeparator());
-        ymlContentSb.append("    command: python3 /pythonDir/" + processStop.getBundel()+" " );
+        ymlContentSb.append("    command: python3 /pythonDir/" + processStop.getBundel() + " ");
         //params that .py needs,used to run .py
-        if (processStop.getProcessStopPropertyList() !=null && processStop.getProcessStopPropertyList().size()>0){
+        if (processStop.getProcessStopPropertyList() != null && processStop.getProcessStopPropertyList().size() > 0) {
             Collections.sort(processStop.getProcessStopPropertyList());
             for (ProcessStopProperty processStopProperty : processStop.getProcessStopPropertyList()) {
-                ymlContentSb.append(processStopProperty.getCustomValue()+" ");
+                ymlContentSb.append(processStopProperty.getCustomValue() + " ");
             }
         }
         ymlContentSb.append(System.lineSeparator());
