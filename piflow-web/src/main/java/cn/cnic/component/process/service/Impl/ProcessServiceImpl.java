@@ -972,7 +972,7 @@ public class ProcessServiceImpl implements IProcessService {
                 List<ErrorLogMappingVo> result = new ArrayList<>(errorLogs.values());
                 return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data",result);
             }else {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("没有匹配到数据");
+                return ReturnMapUtils.setSucceededMsgRtnJsonStr("没有匹配到数据");
             }
         } else {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("没有错误日志");

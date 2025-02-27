@@ -49,6 +49,15 @@ public class FileServiceImpl implements IFileService {
         this.sysUserDomain = sysUserDomain;
     }
 
+    /**
+     * 数据产品分类封面和数据产品封面 补充自动压缩的逻辑
+     * @param file
+     * @param unzip
+     * @param associateType
+     * @param associateId
+     * @param flowPublishId
+     * @return
+     */
     @Override
     public String uploadFile(MultipartFile file, Boolean unzip, Integer associateType, String associateId, String flowPublishId) {
         if (unzip == null) unzip = false;
@@ -75,7 +84,7 @@ public class FileServiceImpl implements IFileService {
                 path = SysParamsCache.FILE_PATH;
                 logger.info("local path:{}", path);
                 fileName = split[0] + "_" + snowflakeGenerator.next() + "." + split[1];
-                Map<String, Object> stringObjectMap = FileUtils.uploadRtnMap(file, path, fileName);
+                Map<String, Object> stringObjectMap = FileUtils.compressAndUploadRtnMap(file, path, fileName,512);
                 logger.info("upload to local:result:{}", JSON.toJSONString(stringObjectMap));
                 path = SysParamsCache.SYS_CONTEXT_PATH + "/files/";
             } else {
@@ -84,7 +93,7 @@ public class FileServiceImpl implements IFileService {
                 path = SysParamsCache.FILE_STORAGE_PATH + snowflakeGenerator.next() + "/";
                 if(associateType.equals(FileAssociateType.FLOW_PUBLISHING_PROPERTY.getValue())){
                     //如果是用户在运行发布流水线时上传待处理数据，数据目录需要按照特定规则， /prefix/台站名/用户名/关联发布流水线id/随机数/
-                    path = SysParamsCache.FILE_STORAGE_PATH + sysUser.getCompany()+"/"+sysUser.getName()+ "/" +flowPublishId + "/" + snowflakeGenerator.next() + "/";
+                    path = SysParamsCache.FILE_STORAGE_PATH + sysUser.getCompany()+"/"+sysUser.getUsername()+ "/" +flowPublishId + "/" + snowflakeGenerator.next() + "/";
                 }
                 FileUtils.saveFileToHdfs(file, fileName, path, FileUtils.getDefaultFs());
             }
@@ -94,7 +103,7 @@ public class FileServiceImpl implements IFileService {
             path = SysParamsCache.FILE_STORAGE_PATH + snowflakeGenerator.next() + "/";
             if(associateType.equals(FileAssociateType.FLOW_PUBLISHING_PROPERTY.getValue())){
                 //如果是用户在运行发布流水线时上传待处理数据，数据目录需要按照特定规则， /prefix/台站名/用户名/关联发布流水线id/随机数/
-                path = SysParamsCache.FILE_STORAGE_PATH + sysUser.getCompany()+"/"+sysUser.getName()+ "/" +flowPublishId + "/" + snowflakeGenerator.next() + "/";
+                path = SysParamsCache.FILE_STORAGE_PATH + sysUser.getCompany()+"/"+sysUser.getUsername()+ "/" +flowPublishId + "/" + snowflakeGenerator.next() + "/";
             }
             FileUtils.saveAndUnzipToHdfs(file, fileName, path, FileUtils.getDefaultFs());
             filePath = path + fileName.split("\\.")[0] + "/";

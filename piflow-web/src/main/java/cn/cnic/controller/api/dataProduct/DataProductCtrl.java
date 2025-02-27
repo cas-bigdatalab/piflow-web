@@ -59,7 +59,6 @@ public class DataProductCtrl {
     private final SysUserDomain sysUserDomain;
 
 
-
     @Value("${share.platform.url}")
     public String sharePlatformUrl;
     @Value("${share.platform.upload.uri}")
@@ -87,7 +86,6 @@ public class DataProductCtrl {
     }
 
 
-
     /**
      * @param dataProductVo:
      * @return String
@@ -109,7 +107,7 @@ public class DataProductCtrl {
     @ResponseBody
     @ApiOperation(value = "uploadDocument", notes = "上传说明文档")
     public String uploadDocument(MultipartFile file) {
-        return JsonUtils.toJsonNoException(uploadRtnMap(file, SysParamsCache.FILE_PATH,  file.getOriginalFilename()));
+        return JsonUtils.toJsonNoException(uploadRtnMap(file, SysParamsCache.FILE_PATH, file.getOriginalFilename()));
     }
 
 
@@ -147,7 +145,7 @@ public class DataProductCtrl {
         params.put("identification", AES256Utils.encrypt(sharePlatformId, sharePlatformAES256Key));
         params.put("dataProductId", identifier);
         params.put("link", AES256Utils.encrypt(localDatacenterUrl, sharePlatformAES256Key));
-        logger.info("call_share_platform_upload_uri: {} " , sharePlatformUrl + sharePlatformUploadUri);
+        logger.info("call_share_platform_upload_uri: {} ", sharePlatformUrl + sharePlatformUploadUri);
         String sendPostData = HttpUtils.doPostParmaMap(sharePlatformUrl + sharePlatformUploadUri, params, 30 * 1000);
         if (StringUtils.isBlank(sendPostData)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.INTERFACE_RETURN_VALUE_IS_NULL_MSG());
@@ -165,13 +163,14 @@ public class DataProductCtrl {
 
     /**
      * 转换为元数据Excel的格式
+     *
      * @param dataProductMetaDataView
      * @return
      */
     private DataProductMetaDataExcelVo transferToExcelVo(DataProductMetaDataView dataProductMetaDataView) {
         DataProductMetaDataExcelVo excelVo = new DataProductMetaDataExcelVo();
         BeanUtils.copyProperties(dataProductMetaDataView, excelVo);
-        excelVo.setIdentifier(dataProductMetaDataView.getInnerIdentifier() + "_" +dataProductMetaDataView.getIdentifier()); // 台站名称+数据集标识
+        excelVo.setIdentifier(dataProductMetaDataView.getInnerIdentifier() + "_" + dataProductMetaDataView.getIdentifier()); // 台站名称+数据集标识
         excelVo.setDocumentationAddress(dataProductMetaDataView.getDocumentationAddress());
         excelVo.setIconAddress(getFileNameFromPath(dataProductMetaDataView.getIconAddress()));
         return excelVo;
@@ -185,17 +184,18 @@ public class DataProductCtrl {
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", metadata);
     }
 
-        /**
-         * 根据数据产品获取可配置的数据源列表
-         * @param
-         * @return
-         */
+    /**
+     * 根据数据产品获取可配置的数据源列表
+     *
+     * @param
+     * @return
+     */
     @RequestMapping(value = "/getDataSourceListFromProduct", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "getDataSourceListFromProduct", notes = "获取数据产品对应的excel列表")
-    public String getDataSourceListFromProduct(String id,  String datasetUrl) {
+    public String getDataSourceListFromProduct(String id, String datasetUrl) {
         //参数校验
-        if(StringUtils.isAnyBlank(id, datasetUrl)) {
+        if (StringUtils.isAnyBlank(id, datasetUrl)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.PARAM_ERROR_MSG());
         }
         Set<String> excels = dataProductServiceImpl.getDataSourceListFromProduct(id, datasetUrl);
@@ -298,7 +298,7 @@ public class DataProductCtrl {
     @ApiOperation(value = "save", notes = "数据产品发布（和编辑做成一个接口）数据产品记录是在进程运行完成后自动生成的，只能编辑数据产品")
     public String save(MultipartFile file, String id, String name, String description, Integer permission,
                        String keyword, String sdPublisher, String email, Integer state, Long version,
-                       Long productTypeId, String productTypeName) {
+                       Long productTypeId, String productTypeName, String company, String datasetYear, String datasetLine) {
         DataProductVo dataProductVo = new DataProductVo();
         if (StringUtils.isBlank(id)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("id is blank!!");
@@ -313,6 +313,8 @@ public class DataProductCtrl {
         dataProductVo.setKeyword(keyword);
         dataProductVo.setSdPublisher(sdPublisher);
         dataProductVo.setEmail(email);
+        dataProductVo.setDatasetLine(datasetLine);
+        dataProductVo.setDatasetYear(datasetYear);
         if (null == state) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("state is blank, not allowed!!");
         }
@@ -332,7 +334,7 @@ public class DataProductCtrl {
         String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
         SysUser user = sysUserDomain.getSysUserById(userid);
 
-        dataProductVo.setCompany(StringUtils.defaultString(user.getCompany()));
+        dataProductVo.setCompany(StringUtils.isBlank(company) ? StringUtils.defaultString(user.getCompany()) : company);
         dataProductVo.setOrganization(StringUtils.defaultString(user.getOrganization()));
         return dataProductServiceImpl.save(file, dataProductVo);
     }
@@ -431,6 +433,7 @@ public class DataProductCtrl {
 
     /**
      * 更新所有没有数据量的已发表数据产品
+     *
      * @return
      */
     @RequestMapping(value = "/temp", method = RequestMethod.GET)
@@ -439,7 +442,6 @@ public class DataProductCtrl {
     public String temp() {
         return dataProductServiceImpl.temp();
     }
-
 
 
 }

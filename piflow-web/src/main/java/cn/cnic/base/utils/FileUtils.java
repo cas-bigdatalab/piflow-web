@@ -196,6 +196,68 @@ public class FileUtils {
         return rtnMap;
     }
 
+    public static Map<String, Object> uploadWithBytes(byte[] fileBytes, String path, String originFileName, String saveFileName) {
+        if (fileBytes == null || fileBytes.length == 0) {
+            return ReturnMapUtils.setFailedMsg(MessageConfig.UPLOAD_FAILED_FILE_EMPTY_MSG());
+        }
+        CheckPathUtils.isChartPathExist(path);
+        //file name
+        String[] fileNameSplit = originFileName.split("\\.");
+        if (saveFileName == null) {
+            if (fileNameSplit.length > 0) {
+                saveFileName = UUIDUtils.getUUID32() + "." + fileNameSplit[fileNameSplit.length - 1];
+            }
+        }
+        if (StringUtils.isBlank(saveFileName)) {
+            saveFileName = UUIDUtils.getUUID32();
+        }
+        File saveFile = new File(path + saveFileName);
+        if (!saveFile.getParentFile().exists()) {
+            boolean mkdirs = saveFile.getParentFile().mkdirs();
+            if (mkdirs) {
+                logger.info("File created successfully");
+            }
+        }
+
+        Map<String, Object> rtnMap = new HashMap<>();
+        rtnMap.put("code", 500);
+        try (BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(saveFile))) {
+            out.write(fileBytes);
+            out.flush();
+            logger.debug(saveFile.getName() + " Upload success");
+            rtnMap.put("fileName", saveFileName);
+            rtnMap.put("saveFileName", saveFileName);
+            rtnMap.put("path", saveFile.getAbsolutePath());
+            rtnMap.put("msgInfo", "Upload success");
+            rtnMap.put("code", 200);
+        } catch (FileNotFoundException e) {
+            rtnMap.put("msgInfo", "Upload failure");
+            logger.error("Upload failure", e);
+        } catch (IOException e) {
+            rtnMap.put("msgInfo", "Upload failure");
+            logger.error("Upload failure", e);
+        }
+        return rtnMap;
+    }
+
+    public static Map<String, Object> compressAndUploadRtnMap(MultipartFile file, String path, String saveFileName, long desFileSize) {
+        if (file.isEmpty()) {
+            return ReturnMapUtils.setFailedMsg(MessageConfig.UPLOAD_FAILED_FILE_EMPTY_MSG());
+        }
+        // 读取文件的字节数组
+        byte[] fileBytes = null;
+        try {
+            fileBytes = file.getBytes();
+        } catch (IOException e) {
+            logger.error("Failed to read file bytes", e);
+            return ReturnMapUtils.setFailedMsg("Failed to read file bytes");
+        }
+        // 压缩图片（注意：这里只处理图片文件）
+        byte[] compressedBytes = ImageUtils.compressPicForScale(fileBytes, desFileSize); // KB
+        // 存储压缩后的文件
+        return FileUtils.uploadWithBytes(compressedBytes, path, file.getOriginalFilename(), saveFileName); // saveFileName 可以为 null，让方法生成一个
+    }
+
     /**
      * String to "Document"
      *
@@ -770,11 +832,11 @@ public class FileUtils {
             if (lastUnderLineIndex != -1) {
                 // 获取最后一个下划线前面的部分
                 filePrefix = fileName.substring(0, lastUnderLineIndex);
-            }else {
+            } else {
                 //获取最后一个.前面的部分
-                filePrefix =fileName.substring(0,lastPointIndex);
+                filePrefix = fileName.substring(0, lastPointIndex);
             }
-            String name = filePrefix + "_" + getCurDateTimeYYYYMMDD() + "." +fileName.substring(lastPointIndex+1);
+            String name = filePrefix + "_" + getCurDateTimeYYYYMMDD() + "." + fileName.substring(lastPointIndex + 1);
             response.reset();
             response.addHeader("Access-Control-Allow-Origin", "*");
             response.addHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");

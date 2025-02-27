@@ -482,19 +482,25 @@ public class DataProductServiceImpl implements IDataProductService {
         List<DataProduct> dataProductList = dataProductDomain.getStatistics(username, company);
         int size = dataProductList.size();
         Long totalDataProductSize = 0L;
+        Long totalDataProductLine = 0L;
         for (DataProduct dataProduct : dataProductList) {
             String datasetSize = dataProduct.getDatasetSize();
             if (StringUtils.isNotBlank(datasetSize)) {
                 totalDataProductSize += Long.parseLong(datasetSize);
             }
+            String datasetLine = dataProduct.getDatasetLine();
+            if(StringUtils.isNoneBlank(datasetLine)){
+                totalDataProductLine +=Long.parseLong(datasetLine);
+            }
         }
         DataProductStatisticVo statisticVo = new DataProductStatisticVo();
         statisticVo.setTotalDataProductSize(totalDataProductSize);
         statisticVo.setTotalDataProductNum(Long.valueOf(size));
+        statisticVo.setTotalDataProductLine(totalDataProductLine);
         //获取台站数量
         if (ADMIN.equals(currentUserRole)) {
             totalCompanyNum = dataProductDomain.getTotalCompanyNum();
-            totalCompanyNum = sysUserDomain.getTotalCompanyNum();
+//            totalCompanyNum = sysUserDomain.getTotalCompanyNum();
         }
         statisticVo.setTotalCompanyNum(totalCompanyNum);
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", statisticVo);
