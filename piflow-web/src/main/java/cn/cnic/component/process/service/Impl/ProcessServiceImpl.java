@@ -967,10 +967,9 @@ public class ProcessServiceImpl implements IProcessService {
         if (StringUtils.isNotBlank(amContainerLogs)) {
             String stderrLog = amContainerLogs + "/stderr/?start=0";
             String stderrLogHtml = HttpUtils.getHtml(stderrLog);
-            Map<String,ErrorLogMappingVo> errorLogs = extractExceptionLines(stderrLogHtml,processByAppId.getFlowId());
+            Map<String,Object> errorLogs = extractExceptionLines(stderrLogHtml,processByAppId.getFlowId());
             if(!errorLogs.isEmpty()){
-                List<ErrorLogMappingVo> result = new ArrayList<>(errorLogs.values());
-                return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data",result);
+                return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data",errorLogs);
             }else {
                 return ReturnMapUtils.setSucceededMsgRtnJsonStr("没有匹配到数据");
             }
@@ -979,19 +978,22 @@ public class ProcessServiceImpl implements IProcessService {
         }
     }
 
-    private Map<String,ErrorLogMappingVo> extractExceptionLines(String input,String flowPublishId) {
-        HashMap<String,ErrorLogMappingVo> errorLogMaps = new LinkedHashMap<>();
+    private Map<String,Object> extractExceptionLines(String input,String flowPublishId) {
+        HashMap<String,Object> errorLogMaps = new LinkedHashMap<>();
         String[] lines = input.split("\n");
         String regex = "(?i).*\\b(fail|exception)\\b.*"; // 使用正则表达式，忽略大小写匹配关键字
         boolean capture = false;
         int rows = 0;
         StringBuilder result = new StringBuilder();
+//        StringBuilder originException = new StringBuilder();
+//        lines
+        List<ErrorLogMappingVo> mappingVos = new ArrayList<>();
         for (String line : lines) {
             if (line.matches(regex)) {
                 capture = true;
                 rows++;
                 result.append(line).append("\n");
-            } else if (capture && (rows > 2 || line.contains("<"))) { //捕捉到的异常每次都只截取三行或者遇到一些html标签
+            } else if (capture && (rows > SysParamsCache.ERROR_LOG_LINES || line.contains("<"))) { //捕捉到的异常每次都只截取三行或者遇到一些html标签
                 capture = false;
                 rows = 0;
                 //获取中文映射
@@ -1005,14 +1007,18 @@ public class ProcessServiceImpl implements IProcessService {
                         String[] split = regexPattern.split(",");
                         for (String s : split) {
                             if(originErrorLog.contains(s)){
-                                errorLogMaps.put(errorLogMapping.getId(),errorLogMapping);
+                                mappingVos.add(errorLogMapping);
+//                                mappingVos.put(errorLogMapping.getId(),errorLogMapping);
                                 break;
                             }
                         }
                     }
                 }
-                //重新清空待解析的日志
-                result.setLength(0);
+                errorLogMaps.put("log",result);
+                errorLogMaps.put("map",mappingVos);
+                break; //结束匹配
+//                重新清空待解析的日志
+//                result.setLength(0);
             } else if (capture) {
                 rows++;
                 result.append(line).append("\n");

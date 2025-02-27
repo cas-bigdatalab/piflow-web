@@ -119,4 +119,12 @@ public class SysParamsCache {
 
     public static Map<String,String> STARTED_PROCESS = new HashMap<>();
 
+
+    public static Integer ERROR_LOG_LINES;
+
+    @Value("${error.log.lines}")
+    public void setErrorLogLines(Integer errorLogLines) {
+        ERROR_LOG_LINES = errorLogLines;
+    }
+
 }
