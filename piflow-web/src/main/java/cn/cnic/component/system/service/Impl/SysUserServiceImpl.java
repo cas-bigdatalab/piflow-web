@@ -327,30 +327,30 @@ public class SysUserServiceImpl implements ISysUserService {
         if (StringUtils.isBlank(phoneNumber) || !userByEmail.getPhoneNumber().equals(phoneNumber)) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("error phone number");
         }
-        String ecosystemTypeIds = forgetUserVo.getEcosystemTypeIds();
-        if (StringUtils.isBlank(ecosystemTypeIds)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("ecosystem types is empty");
-        }
-        List<EcosystemType> ecosystemTypesCheck = ecosystemTypeDomain.getEcosystemTypeListByAssociateId(userByEmail.getUsername());
-
-        // 判断两个列表是否一致（基于 id）
-        String collect = Arrays.stream(ecosystemTypeIds.split(",")).mapToLong(Long::parseLong).boxed().sorted().map(Object::toString).collect(Collectors.joining(","));
-        String collect1 = ecosystemTypesCheck.stream().map(EcosystemType::getId).sorted().map(Object::toString).collect(Collectors.joining(","));
-        boolean areListsEqual = ecosystemTypesCheck != null && collect.equals(collect1);
-        if (!areListsEqual) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("ecosystem types do not match");
-        }
-        String stationManagerName = forgetUserVo.getStationManagerName();
-        if (StringUtils.isBlank(stationManagerName)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("station manager is empty");
-        }
-        List<SysUser> stationManagers = sysUserDomain.getStationManagerByCompany(userByEmail.getCompany());
-        if (CollectionUtils.isNotEmpty(stationManagers)) {
-            boolean contains = stationManagers.stream().map(SysUser::getName).collect(Collectors.toList()).contains(stationManagerName);
-            if (!contains) {
-                return ReturnMapUtils.setFailedMsgRtnJsonStr("station manager do not match");
-            }
-        }
+//        String ecosystemTypeIds = forgetUserVo.getEcosystemTypeIds();
+//        if (StringUtils.isBlank(ecosystemTypeIds)) {
+//            return ReturnMapUtils.setFailedMsgRtnJsonStr("ecosystem types is empty");
+//        }
+//        List<EcosystemType> ecosystemTypesCheck = ecosystemTypeDomain.getEcosystemTypeListByAssociateId(userByEmail.getUsername());
+//
+//        // 判断两个列表是否一致（基于 id）
+//        String collect = Arrays.stream(ecosystemTypeIds.split(",")).mapToLong(Long::parseLong).boxed().sorted().map(Object::toString).collect(Collectors.joining(","));
+//        String collect1 = ecosystemTypesCheck.stream().map(EcosystemType::getId).sorted().map(Object::toString).collect(Collectors.joining(","));
+//        boolean areListsEqual = ecosystemTypesCheck != null && collect.equals(collect1);
+//        if (!areListsEqual) {
+//            return ReturnMapUtils.setFailedMsgRtnJsonStr("ecosystem types do not match");
+//        }
+//        String stationManagerName = forgetUserVo.getStationManagerName();
+//        if (StringUtils.isBlank(stationManagerName)) {
+//            return ReturnMapUtils.setFailedMsgRtnJsonStr("station manager is empty");
+//        }
+//        List<SysUser> stationManagers = sysUserDomain.getStationManagerByCompany(userByEmail.getCompany());
+//        if (CollectionUtils.isNotEmpty(stationManagers)) {
+//            boolean contains = stationManagers.stream().map(SysUser::getName).collect(Collectors.toList()).contains(stationManagerName);
+//            if (!contains) {
+//                return ReturnMapUtils.setFailedMsgRtnJsonStr("station manager do not match");
+//            }
+//        }
         PasswordUtils.updatePassword(userByEmail.getUsername(), password);
         String encodePassword = new BCryptPasswordEncoder().encode(password);
         userByEmail.setPassword(encodePassword);
