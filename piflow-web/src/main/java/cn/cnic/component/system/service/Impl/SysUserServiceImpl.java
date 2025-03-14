@@ -295,7 +295,7 @@ public class SysUserServiceImpl implements ISysUserService {
         //校验
         String password = forgetUserVo.getPassword();
         if (StringUtils.isBlank(password)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("password is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("密码不能为空！");
         }
         try {
             password = password.replace(" ", "+");
@@ -305,7 +305,7 @@ public class SysUserServiceImpl implements ISysUserService {
         }
         String email = forgetUserVo.getEmail();
         if (StringUtils.isBlank(email)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("email is empty");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("邮箱不能为空！");
         }
         SysUser userByEmail = sysUserDomain.findUserByEmail(email);
         if (userByEmail == null || StringUtils.isBlank(userByEmail.getUsername())) {
@@ -313,19 +313,19 @@ public class SysUserServiceImpl implements ISysUserService {
         }
         String name = forgetUserVo.getName();
         if (StringUtils.isBlank(name) || !name.equals(userByEmail.getName())) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("error name");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("没有找到该姓名的用户！");
         }
         String company = forgetUserVo.getCompany();
         if (StringUtils.isBlank(company) || !userByEmail.getCompany().contains(company)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("error company");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("您的所属台站有误，请确认后修改！");
         }
         String organization = forgetUserVo.getOrganization();
         if (StringUtils.isBlank(organization) || !userByEmail.getOrganization().contains(organization)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("error organization");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("您的所属单位有误，请确认后修改！");
         }
         String phoneNumber = forgetUserVo.getPhoneNumber();
         if (StringUtils.isBlank(phoneNumber) || !userByEmail.getPhoneNumber().equals(phoneNumber)) {
-            return ReturnMapUtils.setFailedMsgRtnJsonStr("error phone number");
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("您的电话号码有误，请确认后修改！");
         }
 //        String ecosystemTypeIds = forgetUserVo.getEcosystemTypeIds();
 //        if (StringUtils.isBlank(ecosystemTypeIds)) {
