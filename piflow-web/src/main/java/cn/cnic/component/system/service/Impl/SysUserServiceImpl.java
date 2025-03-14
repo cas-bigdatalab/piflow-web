@@ -316,15 +316,15 @@ public class SysUserServiceImpl implements ISysUserService {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("没有找到该姓名的用户！");
         }
         String company = forgetUserVo.getCompany();
-        if (StringUtils.isBlank(company) || !userByEmail.getCompany().contains(company)) {
+        if (StringUtils.isBlank(company) || !company.equals(userByEmail.getCompany())) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("您的所属台站有误，请确认后修改！");
         }
         String organization = forgetUserVo.getOrganization();
-        if (StringUtils.isBlank(organization) || !userByEmail.getOrganization().contains(organization)) {
+        if (StringUtils.isBlank(organization) || !organization.equals(userByEmail.getOrganization())) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("您的所属单位有误，请确认后修改！");
         }
         String phoneNumber = forgetUserVo.getPhoneNumber();
-        if (StringUtils.isBlank(phoneNumber) || !userByEmail.getPhoneNumber().equals(phoneNumber)) {
+        if (StringUtils.isBlank(phoneNumber) || !phoneNumber.equals(userByEmail.getPhoneNumber())) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("您的电话号码有误，请确认后修改！");
         }
 //        String ecosystemTypeIds = forgetUserVo.getEcosystemTypeIds();
