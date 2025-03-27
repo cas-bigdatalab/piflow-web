@@ -51,8 +51,6 @@ public class DataProductServiceImpl implements IDataProductService {
     private final SnowflakeGenerator snowflakeGenerator;
     private final SysUserDomain sysUserDomain;
 
-    @Value("${share.platform.identification}")
-    public String sharePlatformId;
 
     @Autowired
     public DataProductServiceImpl(DataProductDomain dataProductDomain, DataProductTypeDomain dataProductTypeDomain, FileDomain fileDomain, IFileService fileServiceImpl, SnowflakeGenerator snowflakeGenerator, SysUserDomain sysUserDomain) {
@@ -431,7 +429,7 @@ public class DataProductServiceImpl implements IDataProductService {
             return new HashMap<>();
         }
         Map<String, Object> resultMap = new HashMap<>();
-        resultMap.put("innerIdentifier", sharePlatformId);
+        resultMap.put("innerIdentifier", getIdentification());
         resultMap.put("identifier", result.getId());
         resultMap.put("title", result.getName());
         resultMap.put("version", "v1");
@@ -446,6 +444,16 @@ public class DataProductServiceImpl implements IDataProductService {
             resultMap.put("metadata", view); // 回显填过的元数据
         }
         return resultMap;
+    }
+
+    private String getIdentification() {
+        String username = SessionUserUtil.getCurrentUser().getUsername();
+        String sharePlatformId2 = dataProductDomain.getSharePlatformId(username);
+        if (StringUtils.isBlank(sharePlatformId2)) {
+            logger.error("sharePlatformId is null for user : " + username);
+            throw new RuntimeException("sharePlatformId is null for user : " + username);
+        }
+        return sharePlatformId2;
     }
 
     /**

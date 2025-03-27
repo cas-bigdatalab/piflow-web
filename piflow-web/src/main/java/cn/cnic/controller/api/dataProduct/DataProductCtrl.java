@@ -65,10 +65,6 @@ public class DataProductCtrl {
     public String sharePlatformUploadUri;
     @Value("${share.platform.AES.key}")
     public String sharePlatformAES256Key;
-    @Value("${share.platform.identification}")
-    public String sharePlatformId;
-    @Value("${share.platform.user}")
-    public String sharePlatformUser;
     @Value("${local.datacenter.url}")
     public String localDatacenterUrl;
 
@@ -122,6 +118,9 @@ public class DataProductCtrl {
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", dataProductInfo);
     }
 
+    /**
+     * 调用共享服务中心,推送资源id到共享服务中心
+     */
     @RequestMapping(value = "/uploadToSharePlatform", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value = "uploadToSharePlatform", notes = "上传数据产品到资源共享平台")
@@ -141,8 +140,8 @@ public class DataProductCtrl {
         }
         // 16个字节的密钥
         Map<String, String> params = new HashMap<>();
-        params.put("user", AES256Utils.encrypt(sharePlatformUser, sharePlatformAES256Key));
-        params.put("identification", AES256Utils.encrypt(sharePlatformId, sharePlatformAES256Key));
+        params.put("identification", getIdentificationEncrypt());
+        params.put("user", getUserEncrypt());
         params.put("dataProductId", identifier);
         params.put("link", AES256Utils.encrypt(localDatacenterUrl, sharePlatformAES256Key));
         logger.info("call_share_platform_upload_uri: {} ", sharePlatformUrl + sharePlatformUploadUri);
@@ -159,6 +158,26 @@ public class DataProductCtrl {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("共享服务中心返回[" + message + "], 请修改");
         }
         return ReturnMapUtils.setSucceededMsgRtnJsonStr(MessageConfig.SUCCEEDED_MSG());
+    }
+
+    private String getUserEncrypt() {
+        String username = SessionUserUtil.getCurrentUser().getUsername();
+        String sharePlatformUser2 = dataProductDomain.getSharePlatformUser(username);
+        if (StringUtils.isBlank(sharePlatformUser2)) {
+            logger.error("sharePlatformUser is null for user : " + username);
+            throw new RuntimeException("sharePlatformUser is null for user : " + username);
+        }
+        return AES256Utils.encrypt(sharePlatformUser2, sharePlatformAES256Key);
+    }
+
+    private String getIdentificationEncrypt() {
+        String username = SessionUserUtil.getCurrentUser().getUsername();
+        String sharePlatformId2 = dataProductDomain.getSharePlatformId(username);
+        if (StringUtils.isBlank(sharePlatformId2)) {
+            logger.error("sharePlatformId is null for user : " + username);
+            throw new RuntimeException("sharePlatformId is null for user : " + username);
+        }
+        return AES256Utils.encrypt(sharePlatformId2, sharePlatformAES256Key);
     }
 
     /**

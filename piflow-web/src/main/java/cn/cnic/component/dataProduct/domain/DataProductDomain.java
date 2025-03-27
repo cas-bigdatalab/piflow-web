@@ -7,9 +7,11 @@ import cn.cnic.common.Eunm.DataProductMetaDataStatus;
 import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.entity.DataProduct;
 import cn.cnic.component.dataProduct.entity.ProductUser;
+import cn.cnic.component.dataProduct.entity.UserSharePlatformIdentification;
 import cn.cnic.component.dataProduct.mapper.DataProductMapper;
 import cn.cnic.component.dataProduct.mapper.DataProductMetaDataMapper;
 import cn.cnic.component.dataProduct.mapper.ProductUserMapper;
+import cn.cnic.component.dataProduct.mapper.UserSharePlatformIdentificationMapper;
 import cn.cnic.component.dataProduct.vo.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.slf4j.Logger;
@@ -36,6 +38,8 @@ public class DataProductDomain {
     private ProductUserMapper productUserMapper;
     @Autowired
     private DataProductMetaDataMapper dataProductMetaDataMapper;
+    @Autowired
+    private UserSharePlatformIdentificationMapper identificationMapper;
 
     public int insert(DataProduct dataProduct) {
         return dataProductMapper.insert(dataProduct);
@@ -233,5 +237,25 @@ public class DataProductDomain {
 
     public Long getTotalCompanyNum() {
         return dataProductMapper.getTotalCompanyNum();
+    }
+
+    public String getSharePlatformId(String username) {
+        QueryWrapper<UserSharePlatformIdentification> wrapper = new QueryWrapper<>();
+        wrapper.eq("username", username);
+        UserSharePlatformIdentification identification = identificationMapper.selectOne(wrapper);
+        if (identification == null) {
+            return null;
+        }
+        return identification.getSharePlatformIdentification();
+    }
+
+    public String getSharePlatformUser(String username) {
+        QueryWrapper<UserSharePlatformIdentification> wrapper = new QueryWrapper<>();
+        wrapper.eq("username", username);
+        UserSharePlatformIdentification identification = identificationMapper.selectOne(wrapper);
+        if (identification == null) {
+            return null;
+        }
+        return identification.getSharePlatformUser();
     }
 }

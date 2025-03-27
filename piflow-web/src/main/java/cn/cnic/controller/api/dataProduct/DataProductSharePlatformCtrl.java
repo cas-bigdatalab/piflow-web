@@ -1,10 +1,7 @@
 package cn.cnic.controller.api.dataProduct;
 
 
-import cn.cnic.base.utils.AES256Utils;
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.ReturnMapUtils;
-import cn.cnic.base.utils.SpringContextUtil;
+import cn.cnic.base.utils.*;
 import cn.cnic.common.Eunm.DataProductMetaDataStatus;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
 import cn.cnic.component.dataProduct.service.IDataProductService;
@@ -43,9 +40,6 @@ public class DataProductSharePlatformCtrl {
 
     @Value("${share.platform.AES.key}")
     public String sharePlatformAES256Key;
-    @Value("${share.platform.identification}")
-    public String sharePlatformId;
-
 
 
     public DataProductSharePlatformCtrl(DataProductDomain dataProductDomain, IDataProductService dataProductServiceImpl) {
@@ -54,6 +48,9 @@ public class DataProductSharePlatformCtrl {
     }
 
 
+    /**
+     * 共享服务中心调用,设置数据产品url以及审核状态
+     */
     @RequestMapping(value = "/setDataProductStatus")
     @ResponseBody
     @ApiOperation(value = "setDataProductStatus", notes = "返回url以及审核状态")
@@ -67,7 +64,7 @@ public class DataProductSharePlatformCtrl {
 
         }
         logger.info("setDataProductStatus, dataProductId:{}, releasedDatasetUrl:{}, status:{}, message:{}, decrypt:{}", dataProductId, releasedDatasetUrl, status, message, decrypt);
-        if (!StringUtils.equalsIgnoreCase(decrypt, sharePlatformId + "_productUrl")) {
+        if (!StringUtils.equalsIgnoreCase(decrypt, getIdentification() + "_productUrl")) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr("身份校验失败!请联系管理员, 明文为" + decrypt);
         }
         if (status == DataProductMetaDataStatus.NEEDCHANGED.getValue()) {
@@ -80,6 +77,9 @@ public class DataProductSharePlatformCtrl {
     }
 
 
+    /**
+     * 共享服务中心调用,数据产品下载
+     */
     @RequestMapping(value = "/downloadDataset")
     @ResponseBody
     @ApiOperation(value = "downloadDataset", notes = "数据产品下载")
@@ -89,7 +89,7 @@ public class DataProductSharePlatformCtrl {
         logger.info("downloadDataset, dataProductId:{}, decrypt:{}", dataProductId, decrypt);
         System.out.println("downloadDataset, dataProductId:" + dataProductId +", decrypt: "+ decrypt);
 
-        if (!StringUtils.equalsIgnoreCase(decrypt, sharePlatformId + "_rawFile")) {
+        if (!StringUtils.equalsIgnoreCase(decrypt, getIdentification() + "_rawFile")) {
 
             try {
                 response.reset();
@@ -110,6 +110,9 @@ public class DataProductSharePlatformCtrl {
     }
 
 
+    /**
+     * 共享服务中心调用,获取元数据和图片,说明文档,并压缩为zip文件
+     */
     @RequestMapping(value = "/downloadMetaDataFile")
     @ResponseBody
     @ApiOperation(value = "getMetaDataFile", notes = "获取元数据和图片,说明文档,并压缩为zip文件")
@@ -118,7 +121,7 @@ public class DataProductSharePlatformCtrl {
         String decrypt = AES256Utils.decrypt(encryptedIdentification, sharePlatformAES256Key);
         logger.info("getMetaDataFile, dataProductId:{}, decrypt:{}", dataProductId, decrypt);
         System.out.println("getMetaDataFile, dataProductId:" + dataProductId +", decrypt: "+ decrypt);
-        if (!StringUtils.equalsIgnoreCase(decrypt, sharePlatformId + "_metadata")) {
+        if (!StringUtils.equalsIgnoreCase(decrypt, getIdentification() + "_metadata")) {
             try {
                 response.reset();
                 response.setStatus(HttpServletResponse.SC_OK); // 设置HTTP状态码为200
@@ -250,5 +253,16 @@ public class DataProductSharePlatformCtrl {
             // 记录日志或者进行其他处理
             ex.printStackTrace();
         }
+    }
+
+
+    private String getIdentification() {
+        String username = SessionUserUtil.getCurrentUser().getUsername();
+        String sharePlatformId2 = dataProductDomain.getSharePlatformId(username);
+        if (StringUtils.isBlank(sharePlatformId2)) {
+            logger.error("sharePlatformId is null for user : " + username);
+            throw new RuntimeException("sharePlatformId is null for user : " + username);
+        }
+        return sharePlatformId2;
     }
 }
