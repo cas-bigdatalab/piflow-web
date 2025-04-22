@@ -43,7 +43,7 @@
                         <excludes>
                             <exclude>**/application.properties</exclude>
                             <exclude>**/application-h2.properties</exclude>
-<!--                            <exclude>**/application-mysql.properties</exclude>-->
+                            <exclude>**/application-mysql.properties</exclude>
                         </excludes>
                     </resource>
                 </resources>

@@ -982,7 +982,8 @@ public class ProcessServiceImpl implements IProcessService {
     private Map<String, Object> extractExceptionLines(String input, String flowPublishId) {
         HashMap<String, Object> errorLogMaps = new LinkedHashMap<>();
         String[] lines = input.split("\n");
-        String regex = "(?i).*\\b(fail|exception)\\b.*"; // 使用正则表达式，忽略大小写匹配关键字
+//        String regex = "(?i).*\\b(fail|exception)\\b.*"; // 使用正则表达式，忽略大小写匹配关键字
+        String regex = "(?i).*Exception.*|.*Error.*";
         boolean capture = false;
         int rows = 0;
         StringBuilder result = new StringBuilder();
@@ -992,7 +993,7 @@ public class ProcessServiceImpl implements IProcessService {
         Integer errorLogLines = SysParamsCache.ERROR_LOG_LINES;
         logger.info("规定的捕捉总行数：{}", errorLogLines);
         for (String line : lines) {
-            logger.info("开始捕捉异常，当前行数：{}，line:{}", rows, line);
+//            logger.info("开始捕捉异常，当前行数：{}，line:{}", rows, line);
             if (capture && rows <= errorLogLines) {
                 logger.info("捕捉到异常，但是还没有截取成固定的总行数，继续添加异常信息");
                 rows++;
@@ -1003,6 +1004,7 @@ public class ProcessServiceImpl implements IProcessService {
                 rows = 0;
                 //获取中文映射
                 String originErrorLog = result.toString();
+                logger.info("要适配的原异常为：{}",originErrorLog);
                 //先获取有效的用户错误日志配置列表
                 //一个一个匹配错误信息
                 List<ErrorLogMappingVo> errorLogMappings = errorLogMappingDomain.getAllAvailable(flowPublishId);
@@ -1011,7 +1013,9 @@ public class ProcessServiceImpl implements IProcessService {
                         String regexPattern = errorLogMapping.getRegexPattern();
                         String[] split = regexPattern.split(",");
                         for (String s : split) {
+                            logger.info("定义的错误日志为:{}",s);
                             if (originErrorLog.contains(s)) {
+                                logger.info("匹配上了");
                                 mappingVos.add(errorLogMapping);
                                 break;
                             }
@@ -1021,6 +1025,9 @@ public class ProcessServiceImpl implements IProcessService {
                 if (CollectionUtils.isNotEmpty(mappingVos)) {
                     logger.info("错误日志已匹配到，不再匹配");
                     break; //结束匹配
+                }else {
+                    logger.info("错误日志未匹配到，继续匹配");
+                    result.setLength(0); //清空原有的报错信息，继续匹配
                 }
 
             } else if (line.matches(regex)) {
