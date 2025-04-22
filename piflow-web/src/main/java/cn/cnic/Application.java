@@ -29,6 +29,7 @@ import javax.servlet.ServletException;
         @PropertySource(value = "classpath:apiConfig.properties", encoding = "utf-8"),
         @PropertySource(value = "classpath:baseConfig.properties", encoding = "utf-8"),
         @PropertySource(value = "classpath:messageConfig.properties", encoding = "utf-8"),
+        @PropertySource(value = "classpath:application-mysql.properties", encoding = "utf-8"),
         @PropertySource(value = "classpath:docker.properties", encoding = "utf-8")
 })
 @MapperScan(basePackages = "cn.cnic.**.mapper")
