@@ -957,6 +957,7 @@ public class ProcessServiceImpl implements IProcessService {
     /**
      * 常见问题库中匹配问题分析，
      * 先按照关联的发布流水线id筛选出相关的问题库，然后再截取所有的Exception信息，与问题库中的关键词进行包含匹配
+     *
      * @param appId
      * @return
      */
@@ -967,10 +968,10 @@ public class ProcessServiceImpl implements IProcessService {
         if (StringUtils.isNotBlank(amContainerLogs)) {
             String stderrLog = amContainerLogs + "/stderr/?start=0";
             String stderrLogHtml = HttpUtils.getHtml(stderrLog);
-            Map<String,Object> errorLogs = extractExceptionLines(stderrLogHtml,processByAppId.getFlowId());
-            if(!errorLogs.isEmpty()){
-                return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data",errorLogs);
-            }else {
+            Map<String, Object> errorLogs = extractExceptionLines(stderrLogHtml, processByAppId.getFlowId());
+            if (!errorLogs.isEmpty()) {
+                return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("data", errorLogs);
+            } else {
                 return ReturnMapUtils.setSucceededMsgRtnJsonStr("没有匹配到数据");
             }
         } else {
@@ -978,8 +979,8 @@ public class ProcessServiceImpl implements IProcessService {
         }
     }
 
-    private Map<String,Object> extractExceptionLines(String input,String flowPublishId) {
-        HashMap<String,Object> errorLogMaps = new LinkedHashMap<>();
+    private Map<String, Object> extractExceptionLines(String input, String flowPublishId) {
+        HashMap<String, Object> errorLogMaps = new LinkedHashMap<>();
         String[] lines = input.split("\n");
         String regex = "(?i).*\\b(fail|exception)\\b.*"; // 使用正则表达式，忽略大小写匹配关键字
         boolean capture = false;
@@ -988,12 +989,16 @@ public class ProcessServiceImpl implements IProcessService {
 //        StringBuilder originException = new StringBuilder();
 //        lines
         List<ErrorLogMappingVo> mappingVos = new ArrayList<>();
+        Integer errorLogLines = SysParamsCache.ERROR_LOG_LINES;
+        logger.info("规定的捕捉总行数：{}", errorLogLines);
         for (String line : lines) {
-            if (line.matches(regex)) {
-                capture = true;
+            logger.info("开始捕捉异常，当前行数：{}，line:{}", rows, line);
+            if (capture && rows <= errorLogLines) {
+                logger.info("捕捉到异常，但是还没有截取成固定的总行数，继续添加异常信息");
                 rows++;
                 result.append(line).append("\n");
-            } else if (capture && (rows > SysParamsCache.ERROR_LOG_LINES || line.contains("<"))) { //捕捉到的异常每次都只截取三行或者遇到一些html标签
+            } else if (capture && (rows > errorLogLines || line.contains("<"))) { //捕捉到的异常每次都只截取三行或者遇到一些html标签
+                logger.info("已到达截取总行数，开始适配这段异常中包含的错误日志，当前行数：{}", rows);
                 capture = false;
                 rows = 0;
                 //获取中文映射
@@ -1006,24 +1011,27 @@ public class ProcessServiceImpl implements IProcessService {
                         String regexPattern = errorLogMapping.getRegexPattern();
                         String[] split = regexPattern.split(",");
                         for (String s : split) {
-                            if(originErrorLog.contains(s)){
+                            if (originErrorLog.contains(s)) {
                                 mappingVos.add(errorLogMapping);
-//                                mappingVos.put(errorLogMapping.getId(),errorLogMapping);
                                 break;
                             }
                         }
                     }
                 }
-                errorLogMaps.put("log",result);
-                errorLogMaps.put("map",mappingVos);
-                break; //结束匹配
-//                重新清空待解析的日志
-//                result.setLength(0);
-            } else if (capture) {
+                if (CollectionUtils.isNotEmpty(mappingVos)) {
+                    logger.info("错误日志已匹配到，不再匹配");
+                    break; //结束匹配
+                }
+
+            } else if (line.matches(regex)) {
+                logger.info("捕捉到异常，当前行数：{}，内容：{}", rows, line);
+                capture = true;
                 rows++;
                 result.append(line).append("\n");
             }
         }
+        errorLogMaps.put("log", result);
+        errorLogMaps.put("map", mappingVos);
         return errorLogMaps;
     }
 
@@ -1037,7 +1045,7 @@ public class ProcessServiceImpl implements IProcessService {
                 String regexPattern = errorLogMapping.getRegexPattern();
                 String[] split = regexPattern.split(",");
                 for (String s : split) {
-                    if(originErrorLog.contains(s)){
+                    if (originErrorLog.contains(s)) {
                         answers.add(errorLogMapping);
                         break;
                     }
