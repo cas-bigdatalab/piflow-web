@@ -56,7 +56,7 @@ public class ProcessAndProcessGroupServiceImpl implements IProcessAndProcessGrou
      */
     @Override
     public String getProcessAndProcessGroupListPage(String createUser, Integer offset, Integer limit, String param,
-                                                    String name, String state, String company) {
+                                                    String name, String state, String company, Integer triggerMode, String ctrDttm, String scheduleName) {
         if (null == offset || null == limit) {
             return ReturnMapUtils.setFailedMsgRtnJsonStr(MessageConfig.ERROR_MSG());
         }

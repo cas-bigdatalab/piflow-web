@@ -27,7 +27,13 @@ public class SessionUserUtil {
     public static UserVo getCurrentUser() {
         UserVo user = null;
         SecurityContext ctx = SecurityContextHolder.getContext();
+        if (null == ctx) {
+            return null;
+        }
         Authentication auth = ctx.getAuthentication();
+        if (null == auth) {
+            return null;
+        }
         if (auth.getPrincipal() instanceof UserDetails) {
             user = (UserVo) auth.getPrincipal();
         }

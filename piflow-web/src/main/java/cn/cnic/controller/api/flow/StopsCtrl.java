@@ -58,6 +58,13 @@ public class StopsCtrl {
         return ReturnMapUtils.setSucceededCustomParamRtnJsonStr("load", load);
     }
 
+    /**
+     * 单击flow页面某个组件,查询此组件的详细信息
+     *
+     * @param fid        flow的id
+     * @param stopPageId flow页面,组件所在的page值
+     * @return
+     */
     @RequestMapping(value = "/queryIdInfo", method = RequestMethod.POST)
     @ResponseBody
     @ApiOperation(value="queryIdInfo", notes="query id info")

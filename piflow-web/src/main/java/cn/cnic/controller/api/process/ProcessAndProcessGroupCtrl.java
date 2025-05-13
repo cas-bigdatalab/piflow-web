@@ -51,7 +51,7 @@ public class ProcessAndProcessGroupCtrl {
     @ResponseBody
     @ApiOperation(value="ProcessAndProcessGroupListPage", notes="Process and ProcessGroup list page")
     public String processAndProcessGroupListPage(Integer page, Integer limit, String param, String name, String state,
-                                                 String company, String createUser) {
+                                                 String company, String createUser, Integer triggerMode, String ctrDttm, String scheduleName) {
 
         SysRoleType role = SessionUserUtil.getCurrentUserRole();
         switch (role) {
@@ -66,7 +66,7 @@ public class ProcessAndProcessGroupCtrl {
                 break;
             default:
         }
-        return processAndProcessGroupServiceImpl.getProcessAndProcessGroupListPage(createUser, page, limit, param, name, state, company);
+        return processAndProcessGroupServiceImpl.getProcessAndProcessGroupListPage(createUser, page, limit, param, name, state, company, triggerMode, ctrDttm, scheduleName);
     }
 
     /**

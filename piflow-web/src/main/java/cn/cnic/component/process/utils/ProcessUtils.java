@@ -671,15 +671,16 @@ public class ProcessUtils {
     }
 
     //generate yml for docker execute
-    public static String generateYmlContent(ProcessStop processStop) {
+    public static String generateYmlContent(ProcessStop processStop){
         long currentTimeMillis = System.currentTimeMillis();
         StringBuffer ymlContentSb = new StringBuffer();
-        String ymlName = processStop.getName() + "-" + currentTimeMillis;
+//        String ymlName = processStop.getName() + "-" + currentTimeMillis;
+        String ymlName = processStop.getBundel() + "-" + currentTimeMillis;
         ymlContentSb.append("version: \"3\"" + System.lineSeparator());
         ymlContentSb.append("services:" + System.lineSeparator());
         ymlContentSb.append("  docker-python-demo:" + System.lineSeparator());
         //docker image name,example:10.1.23.456/example:latest   docker url/imageName:tag
-        ymlContentSb.append("    image: \"" + processStop.getDockerImagesName() + "\"" + System.lineSeparator());
+        ymlContentSb.append("    image: \"" + processStop.getDockerImagesName()+"\"" + System.lineSeparator());
 //        //2023-01-05:因为想把Python也进行分发,所以这里的参数不能再写本地的,改为可以替换的值,将来在哪个server提交任务,哪个sever去替换bigflow_extra_hosts
 //        //param that .py needs,used to store procedure data
         ymlContentSb.append("    extra_hosts:piflow_extra_hosts" + System.lineSeparator());
@@ -688,15 +689,17 @@ public class ProcessUtils {
         ymlContentSb.append("    environment:" + System.lineSeparator());
 //        ymlymlContentSb.append(String.format("      - hdfs_url=%s", SysParamsCache.HDFS_URL) + System.lineSeparator());       //从配置文件中获取
         ymlContentSb.append("      - hdfs_url=piflow_hdfs_url" + System.lineSeparator());    //params that .py needs,used to store procedure data
+        ymlContentSb.append("      - embed_model=embed_models_path" + System.lineSeparator());    //params that .py needs,used to get embed models
         ymlContentSb.append("      - TZ=Asia/Shanghai" + System.lineSeparator());
         ymlContentSb.append("    volumes:" + System.lineSeparator());
         ymlContentSb.append("      - ../app:/app" + System.lineSeparator());
-        ymlContentSb.append("    command: python3 /pythonDir/" + processStop.getBundel() + " ");
+        ymlContentSb.append("      - /data:/data" + System.lineSeparator());
+        ymlContentSb.append("    command: python3 /pythonDir/" + processStop.getBundel()+" " );
         //params that .py needs,used to run .py
-        if (processStop.getProcessStopPropertyList() != null && processStop.getProcessStopPropertyList().size() > 0) {
+        if (processStop.getProcessStopPropertyList() !=null && processStop.getProcessStopPropertyList().size()>0){
             Collections.sort(processStop.getProcessStopPropertyList());
             for (ProcessStopProperty processStopProperty : processStop.getProcessStopPropertyList()) {
-                ymlContentSb.append(processStopProperty.getCustomValue() + " ");
+                ymlContentSb.append(processStopProperty.getCustomValue()+" ");
             }
         }
         ymlContentSb.append(System.lineSeparator());

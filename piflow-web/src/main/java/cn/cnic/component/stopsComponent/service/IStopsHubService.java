@@ -15,7 +15,7 @@ public interface IStopsHubService {
      * @param languageVersion
      * @return
      */
-    public String uploadStopsHubFile(String username, MultipartFile file, String type, String languageVersion);
+    public String uploadStopsHubFile(String username, MultipartFile file, String description, String type, String languageVersion, String baseImage);
 
     /**
      * mount stopsHub
