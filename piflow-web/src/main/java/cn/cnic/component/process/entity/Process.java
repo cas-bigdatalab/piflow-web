@@ -60,4 +60,9 @@ public class Process extends BaseModelUUIDNoCorpAgentId {
         this.flowId = flowId;
     }
 
+    private Integer triggerMode;
+    private String scheduleId;
+    private String scheduleName;
+    private String triggerFile;
+
 }

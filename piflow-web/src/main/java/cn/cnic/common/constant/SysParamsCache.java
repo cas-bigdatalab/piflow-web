@@ -127,4 +127,19 @@ public class SysParamsCache {
         ERROR_LOG_LINES = errorLogLines;
     }
 
+    public static String PUSH_TO_HARBOR;
+
+    @Value("${push.to.harbor}")
+    public void setPushToHarbor(String pushToHarbor) {
+        PUSH_TO_HARBOR = pushToHarbor;
+    }
+
+
+    public static String DOCKER_CENTRAL_WAREHOUSE;
+
+    @Value("${docker.central.warehouse}")
+    public void setDockerCentralWarehouse(String dockerCentralWarehouse) {
+        DOCKER_CENTRAL_WAREHOUSE = dockerCentralWarehouse;
+    }
+
 }

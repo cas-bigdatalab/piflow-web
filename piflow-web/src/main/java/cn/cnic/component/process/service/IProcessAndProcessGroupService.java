@@ -11,7 +11,7 @@ public interface IProcessAndProcessGroupService {
      * @param param  Search content
      * @return json
      */
-    public String getProcessAndProcessGroupListPage(String username, Integer offset, Integer limit, String param, String name, String state, String company);
+    public String getProcessAndProcessGroupListPage(String username, Integer offset, Integer limit, String param, String name, String state, String company, Integer triggerMode, String ctrDttm, String scheduleName);
 
     /**
      * getAppInfoList

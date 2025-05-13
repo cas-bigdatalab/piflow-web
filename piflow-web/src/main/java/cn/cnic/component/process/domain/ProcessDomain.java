@@ -3,6 +3,7 @@ package cn.cnic.component.process.domain;
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.base.utils.UUIDUtils;
+import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.flow.utils.FlowGlobalParamsUtils;
 import cn.cnic.component.mxGraph.domain.MxGraphModelDomain;
 import cn.cnic.component.mxGraph.entity.MxGraphModel;
@@ -79,9 +80,17 @@ public class ProcessDomain {
         if (StringUtils.isBlank(id)) {
             process.setId(UUIDUtils.getUUID32());
         }
-        String userid = sysUserDomain.findUserByUserName(SessionUserUtil.getCurrentUser().getUsername()).getId();
-        SysUser user = sysUserDomain.getSysUserById(userid);
-        int affectedRows = processMapper.addProcess(process, user.getCompany(), user.getOrganization());
+        int affectedRows;
+        UserVo currentUser = SessionUserUtil.getCurrentUser();
+        if (null == currentUser) {
+            affectedRows = processMapper.addProcess(process, "未知台站", "未知单位");
+        } else {
+            String username = currentUser.getUsername();
+            SysUser userByUserName = sysUserDomain.findUserByUserName(username);
+            String userid = userByUserName.getId();
+            SysUser user = sysUserDomain.getSysUserById(userid);
+            affectedRows = processMapper.addProcess(process, user.getCompany(), user.getOrganization());
+        }
         if (affectedRows <= 0) {
             throw new Exception("save failed");
         }

@@ -1013,6 +1013,44 @@ public class FileUtils {
         return String.valueOf(totalSize);
     }
 
+    public static Map<String,Long> getAllFilePathInDict(String fileDict, String filePrefix, String fileSuffix) {
+        return findFiles(fileDict,filePrefix,fileSuffix);
+    }
+
+    public static Map<String,Long> findFiles(String directoryPath, String prefix, String suffix) {
+        Map<String,Long> filePathsMap = new HashMap<>();
+//        List<String> filePaths = new ArrayList<>();
+        File directory = new File(directoryPath);
+
+        // 递归遍历目录和子目录
+        findFilesRecursive(directory, prefix, suffix, filePathsMap);
+
+        return filePathsMap;
+    }
+
+    private static void findFilesRecursive(File directory, String prefix, String suffix, Map<String,Long> filePathsMap) {
+        // 检查目录是否存在
+        if (!directory.exists() || !directory.isDirectory()) {
+            logger.warn("寻找的目录不存在:{}",directory.getAbsolutePath());
+            return;
+        }
+        // 遍历目录中的文件
+        for (File file : directory.listFiles()) {
+            if (file.isDirectory()) {
+                // 如果是子目录，递归调用
+                findFilesRecursive(file, prefix, suffix, filePathsMap);
+            } else {
+                // 无需前缀和后缀检查，直接添加文件路径
+                if ((StringUtils.isBlank(prefix) || file.getName().startsWith(prefix)) &&
+                        (StringUtils.isBlank(suffix) || file.getName().endsWith(suffix))) {
+                    // 将文件的绝对路径添加到列表中
+                    filePathsMap.put(file.getAbsolutePath(),file.lastModified());
+//                    filePaths.add(file.getAbsolutePath());
+                }
+            }
+        }
+    }
+
 //    public static void downloadFilesFromHdfs(HttpServletResponse response, List<cn.cnic.component.system.entity.File> fileList, String zipName, String defaultFs) {
 //        Configuration conf = new Configuration();
 //        conf.set("fs.defaultFS", defaultFs);
