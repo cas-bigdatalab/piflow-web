@@ -1,8 +1,6 @@
 package cn.cnic.controller.system;
 
-import cn.cnic.base.utils.LoggerUtil;
-import cn.cnic.base.utils.PasswordUtils;
-import cn.cnic.base.utils.SessionUserUtil;
+import cn.cnic.base.utils.*;
 import cn.cnic.base.vo.UserVo;
 import cn.cnic.component.system.service.ILogHelperService;
 import cn.cnic.component.system.service.ISysUserService;
@@ -12,12 +10,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-
+import javax.mail.MessagingException;
+import java.util.Map;
 
 
 @Controller
@@ -105,5 +102,29 @@ public class LoginCtrl {
     @ResponseBody
     public String checkUserName(String username) {
         return sysUserServiceImpl.checkUserName(username);
+    }
+
+    /**
+     * 用户提交邮箱，发送重置邮件
+     */
+    @PostMapping("/sendEmail")
+    @ResponseBody
+    public String sendResetEmail(@RequestBody Map<String, String> request) throws MessagingException {
+        String identifier = request.get("email");
+        return sysUserServiceImpl.sendResetEmail(identifier);
+    }
+
+    @PostMapping("/reset")
+    @ResponseBody
+    public String resetPassword(@RequestBody Map<String, String> request) throws Exception {
+        String newPassword = request.get("password");
+        String token = request.get("token");
+        try {
+            newPassword = newPassword.replace(" ", "+");
+            newPassword = AESUtils.aesDecrypt(newPassword);
+        } catch (Exception e) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("aesDecrypt error: " + e);
+        }
+        return sysUserServiceImpl.resetPassword(token, newPassword);
     }
 }

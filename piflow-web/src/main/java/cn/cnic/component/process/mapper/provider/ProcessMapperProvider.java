@@ -151,6 +151,9 @@ public class ProcessMapperProvider {
             strBuf.append("fk_flow_process_group_id, ");
             strBuf.append("view_xml, ");
             strBuf.append("company, ");
+            if (process.getContainInput() != null) {
+                strBuf.append("contain_input, ");
+            }
             strBuf.append("organization ");
             strBuf.append(") ");
 
@@ -178,6 +181,9 @@ public class ProcessMapperProvider {
             strBuf.append(processGroup_id + ", ");
             strBuf.append(viewXml + ", ");
             strBuf.append(this.company + ", ");
+            if (process.getContainInput() != null) {
+                strBuf.append(process.getContainInput()).append(", ");
+            }
             strBuf.append(this.organization + " ");
 
             strBuf.append(") ");
@@ -555,18 +561,18 @@ public class ProcessMapperProvider {
         }
         return sqlStr;
     }
-    
+
     public String getGlobalParamsIdsByProcessId(String processId) {
         if (StringUtils.isBlank(processId)) {
-        	return "SELECT 0";
+            return "SELECT 0";
         }
         String sqlStr = ("SELECT global_params_id FROM `association_global_params_flow` WHERE process_id= " + SqlUtils.preventSQLInjection(processId));
         return sqlStr;
     }
-    
+
     public String linkGlobalParams(String processId, String[] globalParamsIds) {
         if (StringUtils.isBlank(processId) || globalParamsIds.length <= 0) {
-        	return "SELECT 0";
+            return "SELECT 0";
         }
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("INSERT INTO `association_global_params_flow` ");
@@ -576,21 +582,21 @@ public class ProcessMapperProvider {
         strBuf.append(") ");
         strBuf.append("values ");
         for (int i = 0; i < globalParamsIds.length; i++) {
-        	strBuf.append("( ");
-        	strBuf.append(SqlUtils.preventSQLInjection(processId) + ", ");
-        	strBuf.append(SqlUtils.preventSQLInjection(globalParamsIds[i]));
-        	strBuf.append(") ");
-        	if((i+1) < globalParamsIds.length) {
-        		strBuf.append(", ");	
-        	}
-		}
+            strBuf.append("( ");
+            strBuf.append(SqlUtils.preventSQLInjection(processId) + ", ");
+            strBuf.append(SqlUtils.preventSQLInjection(globalParamsIds[i]));
+            strBuf.append(") ");
+            if ((i + 1) < globalParamsIds.length) {
+                strBuf.append(", ");
+            }
+        }
         String sqlStr = strBuf.toString();
         return sqlStr;
     }
-    
+
     public String unlinkGlobalParams(String processId, String[] globalParamsIds) {
         if (StringUtils.isBlank(processId) || globalParamsIds.length <= 0) {
-        	return "SELECT 0";
+            return "SELECT 0";
         }
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("DELETE FROM `association_global_params_flow` ");
@@ -600,12 +606,12 @@ public class ProcessMapperProvider {
         strBuf.append(" `global_params_id` in ");
         strBuf.append("( ");
         for (int i = 0; i < globalParamsIds.length; i++) {
-        	strBuf.append(SqlUtils.preventSQLInjection(globalParamsIds[i]));
-        	if((i+1) < globalParamsIds.length) {
-        		strBuf.append(", ");	
-        	}
-		}
-    	strBuf.append(") ");
+            strBuf.append(SqlUtils.preventSQLInjection(globalParamsIds[i]));
+            if ((i + 1) < globalParamsIds.length) {
+                strBuf.append(", ");
+            }
+        }
+        strBuf.append(") ");
         String sqlStr = strBuf.toString();
         return sqlStr;
     }

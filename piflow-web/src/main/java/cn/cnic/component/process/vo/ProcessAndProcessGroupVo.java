@@ -30,4 +30,6 @@ public class ProcessAndProcessGroupVo implements Serializable {
 
     private Long productTypeId;
     private String productTypeName;
+
+    private Integer containInput;
 }

@@ -27,5 +27,6 @@ public class Property extends BaseModelUUIDNoCorpAgentId {
     private Long propertySort;
     private Boolean isOldData = false;
     private String example;
+    private Integer type;  //0file  1common 2output 为了发布流水线的进程追踪上传文件所用，不保存到flow stop property表
 
 }

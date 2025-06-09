@@ -24,6 +24,7 @@ public class ProcessStopPropertyMapperProvider {
     private Integer required;
     private Integer sensitive;
     private String processStopId;
+    private Integer type;
 
     private boolean preventSQLInjectionProcessStopProperty(ProcessStopProperty processStopProperty) {
         if (null == processStopProperty || StringUtils.isBlank(processStopProperty.getLastUpdateUser())) {
@@ -50,6 +51,7 @@ public class ProcessStopPropertyMapperProvider {
         this.sensitive = (null == processStopProperty.getSensitive() ? null : (processStopProperty.getSensitive() ? 1 : 0));
         String processStopIdStr = (null != processStopProperty.getProcessStop() ? processStopProperty.getProcessStop().getId() : null);
         this.processStopId = (null != processStopIdStr ? SqlUtils.preventSQLInjection(processStopIdStr) : null);
+        this.type = (null != processStopProperty.getType() ? processStopProperty.getType() : null);
         return true;
     }
 
@@ -66,6 +68,7 @@ public class ProcessStopPropertyMapperProvider {
         this.required = null;
         this.sensitive = null;
         this.processStopId = null;
+        this.type = null;
 
     }
 
@@ -85,6 +88,7 @@ public class ProcessStopPropertyMapperProvider {
             strBuf.append("allowable_values, ");
             strBuf.append("property_required, ");
             strBuf.append("property_sensitive, ");
+            strBuf.append("type, ");
             strBuf.append("fk_flow_process_stop_id ");
             strBuf.append(") VALUES ( ");
             strBuf.append(SqlUtils.baseFieldValues(processStopProperty) + ", ");
@@ -95,6 +99,7 @@ public class ProcessStopPropertyMapperProvider {
             strBuf.append(this.allowableValues + ", ");
             strBuf.append(this.required + ", ");
             strBuf.append(this.sensitive + ", ");
+            strBuf.append(this.type + ", ");
             strBuf.append(this.processStopId + " ");
             strBuf.append(") ");
             sqlStr = strBuf.toString();

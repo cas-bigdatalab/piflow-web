@@ -1,5 +1,6 @@
 package cn.cnic.base.utils;
 
+import cn.cnic.common.interfaces.ExcelColumn;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -7,11 +8,11 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.slf4j.Logger;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 public class ExcelUtils {
 
@@ -66,7 +67,6 @@ public class ExcelUtils {
             workbook = new XSSFWorkbook(fis);
             sheet = workbook.getSheetAt(0);
         } catch (IOException e) {
-
             e.printStackTrace();
             logger.error("读取源文件失败", e);
             return;
@@ -139,4 +139,88 @@ public class ExcelUtils {
             }
         }
     }
+    /**
+     * 将对象列表写入 Excel 的指定 Sheet 并通过 HttpServletResponse 输出
+     *
+     * @param pojoList 用户对象列表
+     * @param response HTTP 响应对象
+     * @param sheetName 指定的 Sheet 名称，默认为 "Sheet1"
+     * @param fileName 自定义输出文件名（含 .xlsx）
+     * @throws IOException 如果写入失败
+     * @throws IllegalAccessException 反射访问字段失败
+     */
+    public static void writeListToExcel(List<?> pojoList, HttpServletResponse response, String sheetName, String fileName)
+            throws IOException, IllegalAccessException {
+
+        if (pojoList == null || pojoList.isEmpty()) {
+            logger.warn("提供的对象列表为空，未生成 Excel 文件");
+            return;
+        }
+
+        Class<?> clazz = pojoList.get(0).getClass();
+        List<Field> excelFields = new ArrayList<>();
+        Map<Integer, String> headerMap = new LinkedHashMap<>();
+
+        // 获取带有 @ExcelColumn 的字段
+        for (Field field : clazz.getDeclaredFields()) {
+            if (field.isAnnotationPresent(ExcelColumn.class)) {
+                ExcelColumn annotation = field.getAnnotation(ExcelColumn.class);
+                excelFields.add(field);
+                headerMap.put(excelFields.size() - 1, annotation.value());
+            }
+        }
+
+        // 写入表头
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet(sheetName);
+        Row headerRow = sheet.createRow(0);
+        for (Map.Entry<Integer, String> entry : headerMap.entrySet()) {
+            Cell cell = headerRow.createCell(entry.getKey());
+            cell.setCellValue(entry.getValue());
+        }
+
+        // 写入数据行
+        int rowNum = 1;
+        for (Object pojo : pojoList) {
+            Row row = sheet.createRow(rowNum++);
+            for (int i = 0; i < excelFields.size(); i++) {
+                Field field = excelFields.get(i);
+                field.setAccessible(true);
+                Object value = field.get(pojo);
+
+                Cell cell = row.createCell(i);
+                if (value != null) {
+                    if (value instanceof Date) {
+                        cell.setCellValue(DateUtils.dateTimesToStr((Date) value));
+                    } else {
+                        cell.setCellValue(value.toString());
+                    }
+                } else {
+                    cell.setCellValue("");
+                }
+            }
+        }
+
+        // 设置响应头
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment; filename=" + new String(fileName.getBytes(), StandardCharsets.UTF_8));
+
+        // 输出到响应流
+        try (OutputStream os = response.getOutputStream()) {
+            workbook.write(os);
+            logger.info("成功导出 {} 条记录到 Excel 文件：{}", pojoList.size(), fileName);
+        } catch (IOException e) {
+            logger.error("写入 Excel 文件失败，文件名：{}", fileName, e);
+            throw e;
+        } finally {
+            try {
+                workbook.close();
+            } catch (IOException e) {
+                logger.warn("关闭 Excel 工作簿时发生警告", e);
+            }
+        }
+    }
+
+
+
 }

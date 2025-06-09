@@ -49,7 +49,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.swing.*;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -1004,7 +1006,7 @@ public class ProcessServiceImpl implements IProcessService {
                 rows = 0;
                 //获取中文映射
                 String originErrorLog = result.toString();
-                logger.info("要适配的原异常为：{}",originErrorLog);
+                logger.info("要适配的原异常为：{}", originErrorLog);
                 //先获取有效的用户错误日志配置列表
                 //一个一个匹配错误信息
                 List<ErrorLogMappingVo> errorLogMappings = errorLogMappingDomain.getAllAvailable(flowPublishId);
@@ -1013,7 +1015,7 @@ public class ProcessServiceImpl implements IProcessService {
                         String regexPattern = errorLogMapping.getRegexPattern();
                         String[] split = regexPattern.split(",");
                         for (String s : split) {
-                            logger.info("定义的错误日志为:{}",s);
+                            logger.info("定义的错误日志为:{}", s);
                             if (originErrorLog.contains(s)) {
                                 logger.info("匹配上了");
                                 mappingVos.add(errorLogMapping);
@@ -1025,7 +1027,7 @@ public class ProcessServiceImpl implements IProcessService {
                 if (CollectionUtils.isNotEmpty(mappingVos)) {
                     logger.info("错误日志已匹配到，不再匹配");
                     break; //结束匹配
-                }else {
+                } else {
                     logger.info("错误日志未匹配到，继续匹配");
                     result.setLength(0); //清空原有的报错信息，继续匹配
                 }
@@ -1403,6 +1405,32 @@ public class ProcessServiceImpl implements IProcessService {
             return ReturnMapUtils.setSucceededMsgRtnJsonStr("Successfully Deleted");
         }
         return ReturnMapUtils.setFailedMsgRtnJsonStr("Failed Deleted");
+    }
+
+    @Override
+    public void downloadFilesByProcessId(HttpServletResponse response, String processId) throws IOException {
+        List<String> filePaths = getFilePathsByProcessId(processId);
+        if (CollectionUtils.isEmpty(filePaths)) {
+            logger.warn("未找到可下载的文件");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "没有权限");
+            return;
+        }
+
+        // 构造虚拟 File 列表用于调用现有工具类
+        List<File> fileList = filePaths.stream().map(path -> {
+            File file = new File();
+            file.setFilePath(path);
+            return file;
+        }).collect(Collectors.toList());
+
+//        String zipName = "process_upload_files_" + processId + ".zip";
+        String time = DateUtils.dateTimesToStrNew(new Date());
+        String zipName = "Download_" + time + ".zip";
+        FileUtils.downloadFilesFromHdfs(response, fileList, zipName, FileUtils.getDefaultFs());
+    }
+
+    private List<String> getFilePathsByProcessId(String processId) {
+        return processDomain.getFilePathsByProcessId(processId);
     }
 
     @SuppressWarnings("rawtypes")

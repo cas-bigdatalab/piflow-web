@@ -22,6 +22,8 @@ public class ProcessStopProperty extends BaseModelUUIDNoCorpAgentId implements C
     //TODO not save in table recently
     private Long propertySort;
 
+    private Integer type; //0file 1common 2output
+
     @Override
     public int compareTo(ProcessStopProperty o) {
         return this.propertySort.compareTo(o.propertySort);

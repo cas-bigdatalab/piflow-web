@@ -142,4 +142,11 @@ public class SysParamsCache {
         DOCKER_CENTRAL_WAREHOUSE = dockerCentralWarehouse;
     }
 
+    public static String REST_URL;
+
+    @Value("${spring.mail.reset.url}")
+    public void setRestUrl(String restUrl) {
+        REST_URL = restUrl;
+    }
+
 }

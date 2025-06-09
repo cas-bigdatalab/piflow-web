@@ -577,6 +577,7 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
             }
         }
         //将tempSaveValue值赋值到flow的stop property中的displayName中,先把别名给去掉
+        boolean containInput = false;
         Map<String, StopPublishingVo> stopPublishingVoMap = flowPublishingVo.getStops().stream().collect(Collectors.toMap(StopPublishingVo::getStopId, vo -> vo));
         for (Stops stops : flowById.getStopsList()) {
             if (stopPublishingVoMap.containsKey(stops.getId())) {
@@ -584,13 +585,18 @@ public class FlowPublishServiceImpl implements IFlowPublishService {
                 for (Property property : stops.getProperties()) {
                     property.setDisplayName(null);
                     if (publishingPropertyVoMap.containsKey(property.getId())) {
+                        property.setType(publishingPropertyVoMap.get(property.getId()).getType());
                         property.setDisplayName(publishingPropertyVoMap.get(property.getId()).getTempSaveValue());
                         property.setCustomValue(publishingPropertyVoMap.get(property.getId()).getCustomValue());
+                        if (FlowStopsPublishingPropertyType.FILE.getValue().equals(property.getType())) {
+                            containInput = true;
+                        }
                     }
                 }
             }
         }
         process = ProcessUtils.flowToProcess(flowById, username, false);
+        if(containInput) process.setContainInput(1);
         RunModeType runModeType = RunModeType.RUN;
         process.setRunModeType(runModeType);
         process.setId(UUIDUtils.getUUID32());

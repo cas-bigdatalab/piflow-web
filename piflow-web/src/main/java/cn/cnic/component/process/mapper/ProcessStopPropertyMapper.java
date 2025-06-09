@@ -36,4 +36,6 @@ public interface ProcessStopPropertyMapper {
     @UpdateProvider(type = ProcessStopPropertyMapperProvider.class, method = "updateEnableFlagByProcessStopId")
     public int updateEnableFlagByProcessStopId(String processStopId, String username);
 
+    @Select("SELECT custom_value FROM flow_process_stop_property WHERE fk_flow_process_stop_id = #{processStopId} and type = 0")
+    List<String> getProcessStopPropertyListByProcessStopId(@Param("processStopId") String processStopId);
 }

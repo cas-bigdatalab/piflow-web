@@ -12,6 +12,7 @@ import cn.cnic.component.process.entity.*;
 import cn.cnic.component.process.mapper.*;
 import cn.cnic.component.system.domain.SysUserDomain;
 import cn.cnic.component.system.entity.SysUser;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -537,5 +539,18 @@ public class ProcessDomain {
 
     public int updateCompanyAndOrgByUserName( String company, String organization,String crtUser) {
         return processMapper.updateCompanyAndOrgByUserName(company, organization, crtUser);
+    }
+
+    public List<String> getFilePathsByProcessId(String processId) {
+        List<String> allFilePath = new ArrayList<>();
+        // 获取进程所有的stop
+        List<String> processStopIdList = processStopMapper.getProcessStopListByProcessId(processId);
+        if (CollectionUtils.isNotEmpty(processStopIdList)){
+            for (String processStopId : processStopIdList) {
+                List<String> filePaths = processStopPropertyMapper.getProcessStopPropertyListByProcessStopId(processStopId);
+                if(CollectionUtils.isNotEmpty(filePaths)) allFilePath.addAll(filePaths);
+            }
+        }
+        return allFilePath;
     }
 }

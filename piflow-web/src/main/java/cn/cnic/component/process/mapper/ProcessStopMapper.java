@@ -123,4 +123,6 @@ public interface ProcessStopMapper {
     @UpdateProvider(type = ProcessStopMapperProvider.class, method = "updateEnableFlagByProcessId")
     public int updateEnableFlagByProcessId(String processId, String username);
 
+    @Select("SELECT id FROM flow_process_stop WHERE fk_flow_process_id = #{processId}")
+    List<String> getProcessStopListByProcessId(@Param("processId") String processId);
 }

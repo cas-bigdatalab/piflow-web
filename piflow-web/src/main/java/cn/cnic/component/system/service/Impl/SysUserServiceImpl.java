@@ -10,16 +10,21 @@ import cn.cnic.common.Eunm.EcosystemTypeAssociateType;
 import cn.cnic.common.Eunm.ResultCode;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.common.constant.MessageConfig;
+import cn.cnic.common.constant.SysParamsCache;
 import cn.cnic.component.dataProduct.domain.DataProductDomain;
 import cn.cnic.component.dataProduct.domain.EcosystemTypeDomain;
 import cn.cnic.component.dataProduct.entity.EcosystemType;
 import cn.cnic.component.dataProduct.entity.EcosystemTypeAssociate;
 import cn.cnic.component.process.domain.ProcessDomain;
 import cn.cnic.component.process.domain.ProcessGroupDomain;
+import cn.cnic.component.system.domain.PasswordResetTokenDomain;
 import cn.cnic.component.system.domain.SysUserDomain;
+import cn.cnic.component.system.entity.PasswordResetToken;
 import cn.cnic.component.system.entity.SysRole;
 import cn.cnic.component.system.entity.SysUser;
+import cn.cnic.component.system.mapper.PasswordResetTokenMapper;
 import cn.cnic.component.system.service.ISysUserService;
+import cn.cnic.component.system.service.MailService;
 import cn.cnic.component.system.vo.ForgetUserVo;
 import cn.cnic.component.system.vo.SysUserVo;
 import cn.cnic.component.visual.service.DataBaseInfoService;
@@ -27,6 +32,7 @@ import cn.cnic.component.visual.service.GraphConfService;
 import cn.cnic.component.visual.service.GraphTemplateService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import org.apache.catalina.User;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -47,6 +53,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.*;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -77,6 +86,12 @@ public class SysUserServiceImpl implements ISysUserService {
 
     private final EcosystemTypeDomain ecosystemTypeDomain;
 
+    private final PasswordResetTokenDomain passwordResetTokenDomain;
+
+    @Autowired
+    private MailService mailService;
+
+
     @Autowired
     public SysUserServiceImpl(AuthenticationManager authenticationManager,
                               @Qualifier("customUserDetailsService") UserDetailsService userDetailsService,
@@ -86,7 +101,7 @@ public class SysUserServiceImpl implements ISysUserService {
                               GraphConfService graphConfService,
                               DataBaseInfoService dataBaseInfoService,
                               ProcessGroupDomain processGroupDomain,
-                              ProcessDomain processDomain, EcosystemTypeDomain ecosystemTypeDomain) {
+                              ProcessDomain processDomain, EcosystemTypeDomain ecosystemTypeDomain, PasswordResetTokenDomain passwordResetTokenDomain) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
@@ -98,6 +113,7 @@ public class SysUserServiceImpl implements ISysUserService {
         this.processGroupDomain = processGroupDomain;
         this.processDomain = processDomain;
         this.ecosystemTypeDomain = ecosystemTypeDomain;
+        this.passwordResetTokenDomain = passwordResetTokenDomain;
     }
 
     /**
@@ -404,6 +420,107 @@ public class SysUserServiceImpl implements ISysUserService {
         }
     }
 
+    @Override
+    public void exportUsersToExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
+        List<SysUserVo> result = sysUserDomain.getSysUserVoList(null, null, null, null, null);
+        if (CollectionUtils.isNotEmpty(result)) {
+            for (SysUserVo sysUserVo : result) {
+                // 获取用户所属生态系统类型
+                List<EcosystemTypeAssociate> associates = ecosystemTypeDomain.getAssociateByAssociateId(sysUserVo.getUsername());
+                if (CollectionUtils.isNotEmpty(associates)) {
+                    List<EcosystemType> ecosystemTypes = ecosystemTypeDomain.getByIds(
+                            associates.stream()
+                                    .map(x -> String.valueOf(x.getEcosystemTypeId()))
+                                    .collect(Collectors.joining(","))
+                    );
+                    sysUserVo.setEcosystemTypes(ecosystemTypes);
+
+                    // 拼接生态系统类型名称
+                    String ecosystemTypeNames = ecosystemTypes.stream()
+                            .map(EcosystemType::getName)
+                            .collect(Collectors.joining(","));
+                    sysUserVo.setEcosystemTypeNames(ecosystemTypeNames);
+                }
+
+                // 假设你有 roles 字段或 roleNames 字段
+                if (sysUserVo.getRole() != null) {
+                    String roleName = sysUserVo.getRole().getRole().getValue();
+                    sysUserVo.setRoleName(roleName);
+                }
+            }
+        }
+
+        ExcelUtils.writeListToExcel(result, response, "Sheet1", "users.xlsx");
+    }
+
+    @Override
+    public String sendResetEmail(String identifier) {
+        SysUser user = sysUserDomain.findUserByEmail(identifier);
+        if (user == null || StringUtils.isBlank(user.getEmail())) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("用户不存在或未绑定邮箱");
+        }
+
+        String token = UUID.randomUUID().toString();
+        Date expiryDate = new Date(System.currentTimeMillis() + 3600_000); // 1小时有效期
+
+        PasswordResetToken resetToken = new PasswordResetToken();
+        resetToken.setId(UUID.randomUUID().toString());
+        resetToken.setUserId(user.getUsername());
+        resetToken.setToken(token);
+        resetToken.setExpiryDate(expiryDate);
+        resetToken.setUsed(false);
+
+        passwordResetTokenDomain.save(resetToken);
+
+        // 发送邮件（示例）TODO
+        String resetUrl = SysParamsCache.REST_URL + "?token=" + token;
+        String emailContent = "请点击以下链接重置密码：" + resetUrl;
+        try {
+            mailService.sendMail(user.getEmail(), "EcoFlow重置密码", emailContent);
+        } catch (MessagingException e) {
+            logger.error("邮件发送失败 [{}]", e.getMessage());
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("send error [e：]" + e.getMessage());
+        }
+        logger.info("邮件已发送，请查收");
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("邮件已发送，请查收");
+    }
+
+    @Override
+    public String resetPassword(String token, String newPassword) {
+        PasswordResetToken resetToken = passwordResetTokenDomain.findByToken(token);
+        if (resetToken == null || resetToken.isUsed()) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("无效或已使用的 token");
+        }
+        if (newPassword == null || newPassword.length() < 6) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("密码长度不合法");
+        }
+
+        if (new Date().after(resetToken.getExpiryDate())) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("token 已过期");
+        }
+
+        SysUser user = sysUserDomain.getSysUserByUserName(resetToken.getUserId());
+        if (user == null) {
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("用户不存在");
+        }
+
+        String encodedPassword = new BCryptPasswordEncoder().encode(newPassword);
+        user.setPassword(encodedPassword);
+        user.setPLastUpdateDttmStr(DateUtils.dateTimesToStr(new Date()));
+        try {
+            sysUserDomain.updateSysUser(user);
+        } catch (Exception e) {
+            logger.error("密码重置失败 [{}]", e.getMessage());
+            return ReturnMapUtils.setFailedMsgRtnJsonStr("密码重置失败");
+        }
+
+        passwordResetTokenDomain.markAsUsed(token);
+
+        return ReturnMapUtils.setSucceededMsgRtnJsonStr("密码重置成功");
+//        return ReturnMapUtils.setSucceededMsgRtnJsonStr("reset success");
+    }
+
+
     /**
      * 真删除  删除用户信息  角色-用户关联表   生态类型-用户关联表
      *
@@ -691,8 +808,35 @@ public class SysUserServiceImpl implements ISysUserService {
     }
 
     public static void main(String[] args) {
-        String password = "PFkj6H@vV";
-        String encodePassword = new BCryptPasswordEncoder().encode(password);
-        System.out.println(encodePassword);
+//        String password = "PFkj6H@vV";
+//        String encodePassword = new BCryptPasswordEncoder().encode(password);
+//        System.out.println(encodePassword);
+
+        final String username = "tianyao_0315@163.com";
+        final String password = "FCdKNgHHduKXYj4V";
+
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.163.com");
+        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.socketFactory.port", "465");
+
+        Session session = Session.getInstance(props,
+                new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+
+        try {
+            Transport transport = session.getTransport("smtp");
+            transport.connect();
+            System.out.println("连接成功!");
+            transport.close();
+        } catch (MessagingException e) {
+            System.out.println("连接失败:");
+            e.printStackTrace();
+        }
     }
 }

@@ -1,5 +1,6 @@
 package cn.cnic.controller.api.process;
 
+import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.common.constant.MessageConfig;
 import cn.cnic.component.process.vo.ProcessVo;
 import cn.cnic.component.system.service.ILogHelperService;
@@ -21,6 +22,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 
 @Api(value = "process api", tags = "process api")
@@ -452,5 +454,17 @@ public class ProcessCtrl {
         return processServiceImpl.deleteForPublishing(id);
     }
 
-
+    /**
+     * 下载某个进程下所有组件中包含参数type=0 的文件（即用户上传的文件）
+     */
+    @GetMapping("/downloadProcessFiles/{processId}")
+    public void downloadProcessFiles(@PathVariable String processId, HttpServletResponse response) throws IOException {
+        SysRoleType currentUserRole = SessionUserUtil.getCurrentUserRole();
+        boolean isAdmin = currentUserRole == SysRoleType.ADMIN;
+        if(!isAdmin){
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "没有权限");
+            return;
+        }
+        processServiceImpl.downloadFilesByProcessId(response, processId);
+    }
 }

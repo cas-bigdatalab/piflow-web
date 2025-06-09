@@ -1,11 +1,14 @@
 package cn.cnic.component.process.service;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import cn.cnic.component.process.vo.DebugDataRequest;
 import cn.cnic.component.process.vo.ProcessVo;
 import cn.cnic.controller.requestVo.GetProcessHistoryRequestVo;
+
+import javax.servlet.http.HttpServletResponse;
 
 public interface IProcessService {
 
@@ -245,4 +248,6 @@ public interface IProcessService {
     String getAppIdByProcessId(String processId);
 
     String deleteForPublishing(String processId);
+
+    void downloadFilesByProcessId(HttpServletResponse response, String processId) throws IOException;
 }

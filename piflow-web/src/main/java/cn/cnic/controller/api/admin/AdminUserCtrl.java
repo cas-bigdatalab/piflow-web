@@ -1,5 +1,8 @@
 package cn.cnic.controller.api.admin;
 
+import cn.cnic.base.utils.AESUtils;
+import cn.cnic.base.utils.ExcelUtils;
+import cn.cnic.base.utils.ReturnMapUtils;
 import cn.cnic.base.utils.SessionUserUtil;
 import cn.cnic.common.Eunm.SysRoleType;
 import cn.cnic.component.system.domain.SysUserDomain;
@@ -9,12 +12,16 @@ import cn.cnic.component.system.vo.SysUserVo;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 @Api(value = "system user manage api", tags = "system user manage api")
 @Controller
@@ -122,6 +129,11 @@ public class AdminUserCtrl {
     @ResponseBody
     public String getAllRole() {
         return  sysUserServiceImpl.getAllRole();
+    }
+
+    @GetMapping("/export/excel")
+    public void exportUsersToExcel(HttpServletResponse response) throws IOException, IllegalAccessException {
+        sysUserServiceImpl.exportUsersToExcel(response);
     }
 
 }

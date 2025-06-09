@@ -4,6 +4,10 @@ import cn.cnic.component.system.vo.ForgetUserVo;
 import cn.cnic.component.system.vo.SysUserVo;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 
 @Service
 public interface ISysUserService {
@@ -86,4 +90,10 @@ public interface ISysUserService {
     String jwtLogout(String username);
 
     String delUserOld(boolean isAdmin, String username, String sysUserId);
+
+    void exportUsersToExcel(HttpServletResponse response) throws IOException, IllegalAccessException;
+
+    String sendResetEmail(String identifier);
+
+    String resetPassword(String token, String newPassword);
 }

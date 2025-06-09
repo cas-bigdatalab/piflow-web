@@ -4,6 +4,7 @@ import java.util.List;
 
 import cn.cnic.base.utils.LoggerUtil;
 import cn.cnic.component.system.vo.SysUserVo;
+import org.apache.catalina.User;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.slf4j.Logger;
@@ -156,5 +157,10 @@ public class SysUserDomain {
 
     public List<SysUser> getStationManagerByCompany(String company) {
         return sysUserMapper.getStationManagerByCompany(company);
+    }
+
+    public List<User> getAllUsers() {
+        List<User> users = sysUserMapper.getAllUsers();
+        return null;
     }
 }

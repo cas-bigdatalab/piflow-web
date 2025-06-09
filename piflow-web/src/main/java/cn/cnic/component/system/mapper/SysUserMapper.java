@@ -3,6 +3,7 @@ package cn.cnic.component.system.mapper;
 import java.util.List;
 
 import cn.cnic.component.system.vo.SysUserVo;
+import org.apache.catalina.User;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.mapping.FetchType;
 
@@ -65,4 +66,7 @@ public interface SysUserMapper {
     @Select("select * from sys_user where company=#{company} and enable_flag = 1 " +
             "and id in (select fk_sys_user_id from sys_role where role = 'ORS_ADMIN')")
     List<SysUser> getStationManagerByCompany(@Param("company") String company);
+
+    @Select("select * from sys_user where enable_flag = 1")
+    List<User> getAllUsers();
 }

@@ -65,4 +65,6 @@ public class Process extends BaseModelUUIDNoCorpAgentId {
     private String scheduleName;
     private String triggerFile;
 
+    private Integer containInput; //流水线发布是否包含输入
+
 }
