@@ -50,6 +50,9 @@ public interface SysUserMapper {
     @Select("select username from sys_user where username=#{username}")
     public String checkUsername(String username);
 
+    @Select("select * from sys_user where id=#{id}")
+    public SysUser findUserById(String id);
+
     @Delete("DELETE FROM sys_user WHERE id=#{id}")
     public int deleteUserById(@Param("id") String id);
 

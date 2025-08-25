@@ -70,6 +70,11 @@ export default new Router({
               component: () => import('../components/pages/FileSchedule')
             },
             {
+              path: '/messageSchedule',
+              name: 'messageSchedule',
+              component: () => import('../components/pages/MessageSchedule')
+            },
+            {
               path: '/stopHub',
               name: 'stopHub',
               component: () => import('../components/pages/StopHub')

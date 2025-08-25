@@ -445,7 +445,11 @@ public class ProcessDomain {
         return processMapper.getProcessStateById(id);
 
     }
-    
+
+    public ProcessState getProcessStateByIdIgnoreFlag(String id) {
+        return processMapper.getProcessStateByIdIgnoreFlag(id);
+
+    }
     public String[] getGlobalParamsIdsByProcessId(String processId) {
     	return processMapper.getGlobalParamsIdsByProcessId(processId);
     }

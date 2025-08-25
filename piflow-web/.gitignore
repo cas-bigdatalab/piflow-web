@@ -10,3 +10,6 @@
 .idea/
 .DS_Store
 target/
+!logs/
+*.gz
+*.log

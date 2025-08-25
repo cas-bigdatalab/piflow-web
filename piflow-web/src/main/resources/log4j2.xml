@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <!--
+    共有8个级别，按照从低到高为：ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF。
+    -->
+    <Configuration status="warn" monitorInterval="30">
+
+    <!-- 定义全局变量 -->
+    <Properties>
+    <!-- 缺省配置（用于开发环境）。其他环境需要在VM参数中指定，如下：
+    测试：-Dlog.level.console=warn -Dlog.level.xjj=trace
+    生产：-Dlog.level.console=warn -Dlog.level.xjj=info
+    -->
+    <Property name="log.level.console">info</Property>
+    <Property name="log.path">./logs</Property>
+    <Property name="log4j2.isThreadContextMapInheritable">true</Property>
+    <Property name="instanceLogDir">scheduleTaskInstance</Property>
+    <Property name="project.name">opendoc</Property>
+  <Property name="log.pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} -%5p ${PID:-} [%15.15t] %-30.30C{1.} : %m%n</Property>
+    </Properties>
+
+    <Appenders>
+    <!-- 输出到控制台 -->
+    <Console name="CONSOLE" target="SYSTEM_OUT">
+    <PatternLayout pattern="${log.pattern}"/>
+    </Console>
+
+    <!-- 启动日志 -->
+    <RollingFile name="ROLLING_FILE"
+    fileName="${log.path}/${project.name}.log"
+    filePattern="${log.path}/historyRunLog/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz">
+    <PatternLayout pattern="${log.pattern}"/>
+    <Filters>
+    <!-- 一定要先去除不接受的日志级别，然后获取需要接受的日志级别 -->
+    <ThresholdFilter level="error" onMatch="DENY" onMismatch="NEUTRAL"/>
+    <ThresholdFilter level="info" onMatch="ACCEPT" onMismatch="DENY"/>
+    </Filters>
+    <Policies>
+    <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+    </Policies>
+    <DefaultRolloverStrategy max="100"/>
+    </RollingFile>
+
+    <!-- 平台日志 -->
+    <RollingFile name="PLATFORM_ROLLING_FILE"
+    fileName="${log.path}/platform/${project.name}_platform.log"
+    filePattern="${log.path}/platform/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
+    ignoreExceptions="false">
+    <PatternLayout pattern="${log.pattern}"/>
+    <Policies>
+    <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+    </Policies>
+    <DefaultRolloverStrategy max="100"/>
+    </RollingFile>
+
+    <!-- 业务日志 -->
+    <RollingFile name="BUSSINESS_ROLLING_FILE"
+    fileName="${log.path}/bussiness/${project.name}_bussiness.log"
+    filePattern="${log.path}/bussiness/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
+    ignoreExceptions="false">
+    <PatternLayout pattern="${log.pattern}"/>
+    <Policies>
+    <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+    </Policies>
+    <DefaultRolloverStrategy max="100"/>
+    </RollingFile>
+
+    <!-- 错误日志 -->
+    <RollingFile name="EXCEPTION_ROLLING_FILE"
+    fileName="${log.path}/exception/${project.name}_exception.log"
+    filePattern="${log.path}/exception/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
+    ignoreExceptions="false">
+    <ThresholdFilter level="error" onMatch="ACCEPT" onMismatch="DENY"/>
+    <PatternLayout pattern="${log.pattern}"/>
+    <Policies>
+    <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+    </Policies>
+    <DefaultRolloverStrategy max="100"/>
+    </RollingFile>
+
+    <!-- DB 日志 -->
+    <RollingFile name="DB_ROLLING_FILE"
+    fileName="${log.path}/db/${project.name}_db.log"
+    filePattern="${log.path}/db/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
+    ignoreExceptions="false">
+    <PatternLayout pattern="${log.pattern}"/>
+    <Policies>
+    <TimeBasedTriggeringPolicy modulate="true" interval="1"/>
+    </Policies>
+    <DefaultRolloverStrategy max="100"/>
+    </RollingFile>
+
+    <!-- 调度任务日志 -->
+    <RollingFile name="ScheduleTaskInstanceFiles"
+                 fileName="${log.path}/${instanceLogDir}/schedule.log"
+                 filePattern="${log.path}/${instanceLogDir}/%d{yyyy-MM-dd}/schedule.log">
+    <!-- 新日志的 Pattern，包含 MDC 信息 -->
+      <PatternLayout pattern="${log.pattern}"/>
+    <Policies>
+    <SizeBasedTriggeringPolicy size="10MB"/>
+    <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+    </Policies>
+    <DefaultRolloverStrategy max="5"/>
+
+    <Filters>
+      <MdcKeyExistsFilter key="triggerInstanceId" onMatch="ACCEPT" onMismatch="DENY"/>
+    </Filters>
+    </RollingFile>
+    </Appenders>
+
+    <Loggers>
+    <Root level="info">
+    <AppenderRef ref="CONSOLE"/>
+    <AppenderRef ref="ROLLING_FILE"/>
+    <AppenderRef ref="EXCEPTION_ROLLING_FILE"/>
+    <AppenderRef ref="ScheduleTaskInstanceFiles"/>
+
+    </Root>
+    <Logger name="platform" level="info" additivity="false">
+    <AppenderRef ref="CONSOLE"/>
+    <AppenderRef ref="PLATFORM_ROLLING_FILE"/>
+    </Logger>
+    <Logger name="bussiness" level="info" additivity="false">
+    <AppenderRef ref="BUSSINESS_ROLLING_FILE"/>
+    </Logger>
+    <Logger name="exception" level="debug" additivity="true">
+    <AppenderRef ref="EXCEPTION_ROLLING_FILE"/>
+    </Logger>
+    <Logger name="db" level="info" additivity="false">
+    <AppenderRef ref="DB_ROLLING_FILE"/>
+    </Logger>
+
+    <!--
+    监听具体包下面的日志
+    # 为com.xjj包配置特殊的Log级别，方便调试
+    <Logger name="com.xjj" additivity="false" level="${sys:log.level.xjj}">
+    <AppenderRef ref="CONSOLE"/>
+    <AppenderRef ref="ROLLING_FILE"/>
+    </Logger>
+    -->
+    </Loggers>
+    </Configuration>

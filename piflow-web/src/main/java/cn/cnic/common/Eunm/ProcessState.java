@@ -39,4 +39,9 @@ public enum ProcessState {
         }
         return null;
     }
+    public static boolean isFinalFailState(ProcessState state) {
+        return  state == ProcessState.FAILED ||
+                state == ProcessState.ABORTED ||
+                state == ProcessState.KILLED;
+    }
 }

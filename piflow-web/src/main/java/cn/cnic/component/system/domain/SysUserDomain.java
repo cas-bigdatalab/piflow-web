@@ -93,6 +93,13 @@ public class SysUserDomain {
         return sysUserMapper.checkUsername(username);
     }
 
+    public SysUser findUserById(String id) {
+        if (StringUtils.isBlank(id)) {
+            return null;
+        }
+        return sysUserMapper.findUserById(id);
+    }
+
     public int deleteRoleByUserId(String sysUserId) {
         return sysUserMapper.deleteRoleByUserId(sysUserId);
     }
@@ -114,5 +121,8 @@ public class SysUserDomain {
 
     public List<SysRole> getAllRole() {
         return sysRoleMapper.getAllRole();
+    }
+    public SysRole getSysRoleBySysUserId(String sysUserId){
+        return sysRoleMapper.getSysRoleBySysUserId(sysUserId);
     }
 }

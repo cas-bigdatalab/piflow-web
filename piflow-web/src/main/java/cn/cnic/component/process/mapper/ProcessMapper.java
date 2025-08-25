@@ -235,7 +235,10 @@ public interface ProcessMapper {
     
     @Select("select state from flow_process where enable_flag=1 and id=#{id} ")
     public ProcessState getProcessStateById(String id);
-    
+
+    @Select("select state from flow_process where id=#{id} ")
+    public ProcessState getProcessStateByIdIgnoreFlag(String id);
+
     /**
      * get globalParams ids by process id
      *

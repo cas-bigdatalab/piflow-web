@@ -9,6 +9,7 @@ import cn.cnic.component.stopsComponent.service.IBaseImageService;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.crypto.CipherInputStream;
 
-@Log4j
+@Log4j2
 @Service
 public class BaseImageServiceImpl implements IBaseImageService {
 

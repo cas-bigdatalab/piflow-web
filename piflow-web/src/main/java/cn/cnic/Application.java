@@ -17,6 +17,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -35,6 +36,7 @@ import javax.servlet.ServletException;
 @EnableTransactionManagement
 @SpringBootApplication
 @EnableCaching(proxyTargetClass = true)
+@EnableAsync
 public class Application extends SpringBootServletInitializer {
 
 	/**

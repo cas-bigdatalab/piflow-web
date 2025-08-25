@@ -104,6 +104,12 @@ export default {
                 router: "/fileSchedule",
                 name: "fileSchedule",
               },
+              {
+                btnName: "sidebar.MessageSchedule",
+                icoName: "ios-color-filter",
+                router: "/messageSchedule",
+                name: "messageSchedule",
+              },
             ],
           },
           {
