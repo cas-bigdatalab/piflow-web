@@ -16,8 +16,8 @@ public interface MessageSourceConfigMapper {
     /**
      * 插入新的消息源配置
      */
-    @Insert("INSERT INTO message_trigger_task_definition (name,type,  protocol, properties, filter_rule_type, filter_rule_json, target_workflow_id, target_workflow_name, context_mapping_json, concurrency_limit, status, creator_id, create_time, update_time) " +
-            "VALUES (#{name}, #{type}, #{protocol}, #{properties},  #{filterRuleType}, #{filterRuleJson}, #{targetWorkflowId},#{targetWorkflowName}, #{contextMappingJson}, #{concurrencyLimit}, #{status}, #{creatorId}, #{createTime}, #{updateTime})")
+    @Insert("INSERT INTO message_trigger_task_definition (name,type,  protocol, properties, filter_rule_type, filter_rule_json, target_workflow_id, target_workflow_name, advanced_config, concurrency_limit, status, creator_id, create_time, update_time) " +
+            "VALUES (#{name}, #{type}, #{protocol}, #{properties},  #{filterRuleType}, #{filterRuleJson}, #{targetWorkflowId},#{targetWorkflowName}, #{advancedConfig}, #{concurrencyLimit}, #{status}, #{creatorId}, #{createTime}, #{updateTime})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     int insert(MessageTriggerTaskDefinition config);
 
@@ -32,6 +32,7 @@ public interface MessageSourceConfigMapper {
         "  <if test='type != null'>type = #{type},</if>",
         "  <if test='protocol != null'>protocol = #{protocol},</if>",
         "  <if test='properties != null'>properties = #{properties},</if>",
+        "  <if test='advancedConfig != null'>advanced_config = #{advancedConfig},</if>",
         "  <if test='filterRuleType != null'>filter_rule_type = #{filterRuleType},</if>",
         "  <if test='filterRuleJson != null'>filter_rule_json = #{filterRuleJson},</if>",
         "  <if test='targetWorkflowId != null'>target_workflow_id = #{targetWorkflowId},</if>",

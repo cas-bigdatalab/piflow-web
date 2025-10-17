@@ -33,12 +33,12 @@
               <Icon type="ios-create-outline"/>
             </span>
         </Tooltip>
-        <Tooltip content="Stop" placement="top-stop" v-if="row.status==='ACTIVE'  || row.status==='RECONNECTING'">
+        <Tooltip content="Stop" placement="top-start" v-if="row.status==='ACTIVE'  || row.status==='RECONNECTING'">
             <span class="button-warp" @click="handleButtonSelect(row,3)">
               <Icon type="ios-square"/>
             </span>
         </Tooltip>
-        <Tooltip v-else content="Run" placement="top-start" v-if="row.status==='INACTIVE'">
+        <Tooltip v-if="row.status==='INACTIVE'" content="Run" placement="top-start">
             <span class="button-warp" @click="handleButtonSelect(row,3)">
               <Icon type="ios-play" />
             </span>
@@ -248,7 +248,6 @@ export default {
           params: data,
         })
         .then((res) => {
-          console.log('接口返回：', res.data);
           if (res.data.code === 200) {
             // 适配后端数据
             this.tableData = (res.data.data || res.data || []).map(item => {
@@ -316,12 +315,10 @@ export default {
       const properties = JSON.stringify(propertiesObject);
       this.currentMessageSource = { ...row, properties};
 
-      console.log("编辑的数据已处理:", this.currentMessageSource);
       this.showMessageForm = true;
     },
     handleSaveEvent(formData) {
       // 新增或编辑事件定义，调用后端保存接口
-      console.log("Saving event with data:", formData);
       const url = formData.id ? `/schedule/messageSources/${formData.id}` : '/schedule/messageSources';
       const method = formData.id ? 'PUT' : 'POST';
 

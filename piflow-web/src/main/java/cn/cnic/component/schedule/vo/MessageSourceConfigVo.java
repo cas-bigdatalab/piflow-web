@@ -17,8 +17,9 @@ public class MessageSourceConfigVo {
     private String type; // 调度类型
     private String protocol; // 与 MessageProtocol 枚举对应
 
-    // 通用的属性Map，存储所有协议特有的配置
     private String properties;
+    private String advancedConfig;
+
     private String filterRuleType;
     private String filterRuleJson;
     private String targetWorkflowId;

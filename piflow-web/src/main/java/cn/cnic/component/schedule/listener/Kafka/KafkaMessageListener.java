@@ -1,6 +1,7 @@
 package cn.cnic.component.schedule.listener.Kafka;
 
 import cn.cnic.base.utils.AESUtils;
+import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.common.Eunm.MessageProtocol;
 import cn.cnic.component.schedule.entity.MessageTriggerTaskDefinition;
 import cn.cnic.component.schedule.listener.IMessageListener;
@@ -73,9 +74,19 @@ public class KafkaMessageListener implements IMessageListener {
             throw new IllegalArgumentException("Kafka properties are not configured.");
         }
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        this.kafkaConfig = objectMapper.readValue(definition.getProperties(), KafkaConfig.class);
+        this.kafkaConfig = JsonUtils.toObject(definition.getProperties(), KafkaConfig.class);
         log.info("[KafkaListener-INIT] 成功将 properties 转换为 KafkaConfig. sourceId={}", definition.getId());
+        
+        // 解析高级配置
+        if (definition.getAdvancedConfig() != null) {
+            try {
+                this.kafkaConfig.setAdvancedConfig(JsonUtils.toObject(definition.getAdvancedConfig(), KafkaAdvancedConfig.class));
+                log.info("[KafkaListener-INIT] 成功解析 KafkaAdvancedConfig. sourceId={}", definition.getId());
+            } catch (Exception e) {
+                log.error("[KafkaListener-INIT-ERROR] 转换 KafkaAdvancedConfig 失败，sourceId={}，错误：{}", definition.getId(), e.getMessage(), e);
+                throw new RuntimeException("Kafka 高级配置解析失败", e);
+            }
+        }
 
         //基础配置
         Properties baseProps = new Properties();
@@ -84,16 +95,73 @@ public class KafkaMessageListener implements IMessageListener {
         baseProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         baseProps.put(ConsumerConfig.DEFAULT_API_TIMEOUT_MS_CONFIG, 5000); // 用于API调用的默认超时
 
-        if (StringUtils.isNotBlank(kafkaConfig.getUsername()) || StringUtils.isNotBlank(kafkaConfig.getPassword())) {
+        // 只有在用户名和密码都配置且不为空时才启用SASL认证
+        if (StringUtils.isNotBlank(kafkaConfig.getUsername()) && StringUtils.isNotBlank(kafkaConfig.getPassword())) {
             String jaasConfig = String.format(
                     "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";",
                     kafkaConfig.getUsername(),
                     AESUtils.aesDecrypt(kafkaConfig.getPassword())
             );
-//            baseProps.put("sasl.jaas.config", jaasConfig);
-            // 根据你的Kafka集群配置，可能还需要以下安全协议设置
-            // baseProps.put("security.protocol", "SASL_PLAINTEXT");
-            // baseProps.put("sasl.mechanism", "PLAIN");
+            baseProps.put("sasl.jaas.config", jaasConfig);
+            baseProps.put("security.protocol", "SASL_PLAINTEXT");
+            baseProps.put("sasl.mechanism", "PLAIN");
+            log.info("[KafkaListener-INIT] 启用SASL认证, username={}, sourceId={}", 
+                    kafkaConfig.getUsername(), definition.getId());
+        } else {
+            log.info("[KafkaListener-INIT] 未配置认证信息，使用无认证模式, sourceId={}", definition.getId());
+        }
+        
+        // 根据KafkaAdvancedConfig设置高级配置
+        KafkaAdvancedConfig advancedConfig = kafkaConfig.getAdvancedConfig();
+        if (advancedConfig != null) {
+            // 参数校验
+            validateKafkaAdvancedConfig(advancedConfig);
+            
+            // 设置请求超时时间
+            if (advancedConfig.getRequestTimeout() != null) {
+                baseProps.put(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG, advancedConfig.getRequestTimeout());
+                log.info("[KafkaListener-INIT] 设置请求超时时间: {}毫秒, sourceId={}", 
+                        advancedConfig.getRequestTimeout(), definition.getId());
+            }
+            
+            // 设置重连退避最大时间
+            if (advancedConfig.getReconnectBackoffMax() != null) {
+                baseProps.put(ConsumerConfig.RECONNECT_BACKOFF_MAX_MS_CONFIG, advancedConfig.getReconnectBackoffMax());
+                log.info("[KafkaListener-INIT] 设置重连退避最大时间: {}毫秒, sourceId={}", 
+                        advancedConfig.getReconnectBackoffMax(), definition.getId());
+            }
+            
+            // 设置单次poll最大记录数
+            if (advancedConfig.getMaxPollRecords() != null) {
+                baseProps.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, advancedConfig.getMaxPollRecords());
+                log.info("[KafkaListener-INIT] 设置单次poll最大记录数: {}, sourceId={}", 
+                        advancedConfig.getMaxPollRecords(), definition.getId());
+            }
+            
+            // 设置最大poll间隔时间
+            if (advancedConfig.getMaxPollInterval() != null) {
+                baseProps.put(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG, advancedConfig.getMaxPollInterval());
+                log.info("[KafkaListener-INIT] 设置最大poll间隔时间: {}毫秒, sourceId={}", 
+                        advancedConfig.getMaxPollInterval(), definition.getId());
+            }
+            
+            // 设置会话超时时间
+            if (advancedConfig.getSessionTimeout() != null) {
+                baseProps.put(ConsumerConfig.SESSION_TIMEOUT_MS_CONFIG, advancedConfig.getSessionTimeout());
+                log.info("[KafkaListener-INIT] 设置会话超时时间: {}毫秒, sourceId={}", 
+                        advancedConfig.getSessionTimeout(), definition.getId());
+            }
+            
+            // 设置心跳间隔时间
+            if (advancedConfig.getHeartbeatInterval() != null) {
+                baseProps.put(ConsumerConfig.HEARTBEAT_INTERVAL_MS_CONFIG, advancedConfig.getHeartbeatInterval());
+                log.info("[KafkaListener-INIT] 设置心跳间隔时间: {}毫秒, sourceId={}", 
+                        advancedConfig.getHeartbeatInterval(), definition.getId());
+            }
+            
+            log.info("[KafkaListener-INIT] 高级配置已应用, sourceId={}", definition.getId());
+        } else {
+            log.info("[KafkaListener-INIT] 未配置高级参数，使用默认设置, sourceId={}", definition.getId());
         }
 
         // --- 1. 为主消费者准备专属配置 ---
@@ -114,6 +182,57 @@ public class KafkaMessageListener implements IMessageListener {
         this.healthCheckConsumer = new KafkaConsumer<>(healthCheckProps);
 
         log.info("[KafkaListener-INIT] Kafka properties and health-check consumer initialized for sourceId={}", definition.getId());
+    }
+
+    /**
+     * 校验Kafka高级配置参数的合理性
+     * @param advancedConfig Kafka高级配置
+     */
+    private void validateKafkaAdvancedConfig(KafkaAdvancedConfig advancedConfig) {
+        // 1. 心跳间隔必须小于会话超时时间
+        if (advancedConfig.getHeartbeatInterval() != null && advancedConfig.getSessionTimeout() != null) {
+            if (advancedConfig.getHeartbeatInterval() >= advancedConfig.getSessionTimeout()) {
+                String errorMsg = String.format("心跳间隔(%dms)必须小于会话超时时间(%dms)", 
+                        advancedConfig.getHeartbeatInterval(), advancedConfig.getSessionTimeout());
+                log.error("[KafkaListener-VALIDATE] 参数校验失败: {}", errorMsg);
+                throw new IllegalArgumentException("Kafka配置参数校验失败: " + errorMsg);
+            }
+        }
+        
+        // 2. 会话超时时间必须小于最大poll间隔时间
+        if (advancedConfig.getSessionTimeout() != null && advancedConfig.getMaxPollInterval() != null) {
+            if (advancedConfig.getSessionTimeout() >= advancedConfig.getMaxPollInterval()) {
+                String errorMsg = String.format("会话超时时间(%dms)必须小于最大poll间隔时间(%dms)", 
+                        advancedConfig.getSessionTimeout(), advancedConfig.getMaxPollInterval());
+                log.error("[KafkaListener-VALIDATE] 参数校验失败: {}", errorMsg);
+                throw new IllegalArgumentException("Kafka配置参数校验失败: " + errorMsg);
+            }
+        }
+        
+        // 3. 请求超时时间必须小于会话超时时间
+        if (advancedConfig.getRequestTimeout() != null && advancedConfig.getSessionTimeout() != null) {
+            if (advancedConfig.getRequestTimeout() >= advancedConfig.getSessionTimeout()) {
+                String errorMsg = String.format("请求超时时间(%dms)必须小于会话超时时间(%dms)", 
+                        advancedConfig.getRequestTimeout(), advancedConfig.getSessionTimeout());
+                log.error("[KafkaListener-VALIDATE] 参数校验失败: {}", errorMsg);
+                throw new IllegalArgumentException("Kafka配置参数校验失败: " + errorMsg);
+            }
+        }
+        
+        // 4. 数值范围校验
+        if (advancedConfig.getHeartbeatInterval() != null && advancedConfig.getHeartbeatInterval() < 100) {
+            log.warn("[KafkaListener-VALIDATE] 心跳间隔时间过小({}ms)，建议设置为100ms以上", advancedConfig.getHeartbeatInterval());
+        }
+        
+        if (advancedConfig.getSessionTimeout() != null && advancedConfig.getSessionTimeout() < 1000) {
+            log.warn("[KafkaListener-VALIDATE] 会话超时时间过小({}ms)，建议设置为1000ms以上", advancedConfig.getSessionTimeout());
+        }
+        
+        if (advancedConfig.getMaxPollRecords() != null && advancedConfig.getMaxPollRecords() > 5000) {
+            log.warn("[KafkaListener-VALIDATE] 单次poll记录数过大({})，可能影响性能，建议设置为5000以下", advancedConfig.getMaxPollRecords());
+        }
+        
+        log.info("[KafkaListener-VALIDATE] Kafka高级配置参数校验通过, sourceId={}", definition.getId());
     }
 
     @Override

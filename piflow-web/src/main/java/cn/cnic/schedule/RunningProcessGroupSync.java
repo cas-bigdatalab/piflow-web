@@ -37,7 +37,7 @@ public class RunningProcessGroupSync extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:SSS");
-//        logger.info("processGroupSync start : " + formatter.format(new Date()));
+        logger.info("processGroupSync start : " + formatter.format(new Date()));
         List<String> runningProcessGroup = processGroupMapper.getRunningProcessGroupAppId();
         if (CollectionUtils.isNotEmpty(runningProcessGroup)) {
             for (String groupId : runningProcessGroup) {
@@ -53,7 +53,7 @@ public class RunningProcessGroupSync extends QuartzJobBean {
             }
 
         }
-//        logger.info("processGroupSync end : " + formatter.format(new Date()));
+        logger.info("processGroupSync end : " + formatter.format(new Date()));
     }
 
     class ProcessGroupCallable implements Callable<String> {

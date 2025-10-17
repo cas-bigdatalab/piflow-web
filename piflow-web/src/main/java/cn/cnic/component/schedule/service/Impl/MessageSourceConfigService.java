@@ -1,6 +1,7 @@
 package cn.cnic.component.schedule.service.Impl;
 
 import cn.cnic.base.utils.AESUtils;
+import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.component.schedule.domain.MessageSourceConfigDomain;
 import cn.cnic.component.schedule.domain.TaskTriggerInstanceDomain;
 import cn.cnic.component.schedule.dto.MessageConfigDTO;
@@ -313,7 +314,7 @@ public class MessageSourceConfigService {
         switch (protocol) {
             case RABBITMQ:
                 // 1. 转换为 RabbitMQConfig
-                RabbitMQConfig rabbitMQConfig = objectMapper.readValue(messageConfig.getProperties(), RabbitMQConfig.class);
+                RabbitMQConfig rabbitMQConfig = JsonUtils.toObject(messageConfig.getProperties(), RabbitMQConfig.class);
 
                 // 2. 尝试连接 RabbitMQ
                 ConnectionFactory factory = new ConnectionFactory();
@@ -335,7 +336,7 @@ public class MessageSourceConfigService {
                 }
                 break;
             case KAFKA:
-                KafkaConfig kafkaConfig = objectMapper.readValue(messageConfig.getProperties(), KafkaConfig.class);
+                KafkaConfig kafkaConfig = JsonUtils.toObject(messageConfig.getProperties(), KafkaConfig.class);
                 String bootstrapServers = kafkaConfig.getBootstrapServers();
                 if (StringUtils.isBlank(bootstrapServers)) {
                     throw new IllegalArgumentException("Kafka bootstrapServers 不能为空");

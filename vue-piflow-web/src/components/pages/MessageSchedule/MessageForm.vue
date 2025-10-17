@@ -1,5 +1,5 @@
 <template>
-  <Modal v-model="visible" :title="form.id ? $t('messageSchedule.editTitle') : $t('messageSchedule.addTitle')" @on-cancel="handleCancel" width="500">
+  <Modal v-model="modalVisible" :title="form.id ? $t('messageSchedule.editTitle') : $t('messageSchedule.addTitle')" @on-cancel="handleCancel" width="500">
     <div class="modal-warp" style="padding-right: 5px;">
       <Steps :current="currentStep" style="margin-bottom: 24px; margin-right: 40px;">
         <Step :title="$t('messageSchedule.stepCore')" />
@@ -83,7 +83,174 @@
             <InputNumber v-model="form.connectionTimeout" :min="0" style="width: 340px" />
           </FormItem>
           <FormItem :label="$t('messageSchedule.advancedConfig')" prop="advancedConfig">
-            <Input v-model="form.advancedConfig" type="textarea" :rows="2" :placeholder="$t('messageSchedule.advancedConfigPlaceholder')" style="width: 340px" />
+            <!-- Kafka 高级配置 -->
+            <div v-if="isKafkaProtocol" class="advanced-config">
+              <Tabs v-model="kafkaActiveTab" type="card">
+                <!-- Connection 页签 -->
+                <TabPane :label="$t('messageSchedule.kafkaConnection')" name="connection">
+                  <Form :model="advancedConfigObject" :label-width="140">
+                    <FormItem prop="requestTimeout">
+                      <template slot="label">
+                        {{ $t('messageSchedule.requestTimeout') }}
+                      </template>
+                      <InputNumber 
+                        v-model="advancedConfigObject.requestTimeout" 
+                        :min="0" 
+                        :placeholder="$t('messageSchedule.requestTimeoutPlaceholder')"
+                        style="width: 200px" 
+                      />
+                    </FormItem>
+                    
+                    <FormItem prop="reconnectBackoffMax">
+                      <template slot="label">
+                        {{ $t('messageSchedule.maxReconnectBackoff') }}
+                      </template>
+                      <InputNumber 
+                        v-model="form.advancedConfig.reconnectBackoffMax" 
+                        :min="0" 
+                        :placeholder="$t('messageSchedule.maxReconnectBackoffPlaceholder')"
+                        style="width: 200px" 
+                      />
+                    </FormItem>
+                  </Form>
+                </TabPane>
+
+                <!-- Polling 页签 -->
+                <TabPane :label="$t('messageSchedule.kafkaPolling')" name="polling">
+                  <Form :model="advancedConfigObject" :label-width="140">
+                    <FormItem prop="maxPollRecords">
+                      <template slot="label">
+                        {{ $t('messageSchedule.maxPollRecords') }}
+                      </template>
+                      <InputNumber 
+                        v-model="form.advancedConfig.maxPollRecords" 
+                        :min="1" 
+                        :placeholder="$t('messageSchedule.maxPollRecordsPlaceholder')"
+                        style="width: 200px" 
+                      />
+                    </FormItem>
+                    
+                    <FormItem prop="maxPollInterval">
+                      <template slot="label">
+                        {{ $t('messageSchedule.maxPollInterval') }}
+                      </template>
+                      <InputNumber 
+                        v-model="form.advancedConfig.maxPollInterval" 
+                        :min="0" 
+                        :placeholder="$t('messageSchedule.maxPollIntervalPlaceholder')"
+                        style="width: 200px" 
+                      />
+                    </FormItem>
+                  </Form>
+                </TabPane>
+
+                <!-- Session 页签 -->
+                <TabPane :label="$t('messageSchedule.kafkaSession')" name="session">
+                  <Form :model="advancedConfigObject" :label-width="140">
+                    <FormItem prop="sessionTimeout">
+                      <template slot="label">
+                        {{ $t('messageSchedule.sessionTimeout') }}
+                      </template>
+                      <InputNumber 
+                        v-model="form.advancedConfig.sessionTimeout" 
+                        :min="0" 
+                        :placeholder="$t('messageSchedule.sessionTimeoutPlaceholder')"
+                        style="width: 200px" 
+                      />
+                    </FormItem>
+                    
+                    <FormItem prop="heartbeatInterval">
+                      <template slot="label">
+                        {{ $t('messageSchedule.heartbeatInterval') }}
+                      </template>
+                      <InputNumber 
+                        v-model="form.advancedConfig.heartbeatInterval" 
+                        :min="0" 
+                        :placeholder="$t('messageSchedule.heartbeatIntervalPlaceholder')"
+                        style="width: 200px" 
+                      />
+                    </FormItem>
+                  </Form>
+                </TabPane>
+              </Tabs>
+            </div>
+
+            <!-- RabbitMQ 高级配置 -->
+            <div v-else class="advanced-config">
+              <Tabs v-model="rabbitmqActiveTab" type="card">
+                <!-- Connection 页签 -->
+                <TabPane :label="$t('messageSchedule.rabbitmqConnection')" name="connection">
+                  <Form :model="advancedConfigObject" :label-width="140">
+                    <FormItem prop="requestedHeartbeat">
+                      <template slot="label">
+                        {{ $t('messageSchedule.heartbeat') }}
+                      </template>
+                      <InputNumber 
+                        v-model="form.advancedConfig.requestedHeartbeat" 
+                        :min="0" 
+                        :placeholder="$t('messageSchedule.heartbeatPlaceholder')"
+                        style="width: 200px" 
+                      />
+                    </FormItem>
+                    
+                    <FormItem prop="networkRecoveryInterval">
+                      <template slot="label">
+                        {{ $t('messageSchedule.networkRecoveryInterval') }}
+                      </template>
+                      <InputNumber 
+                        v-model="form.advancedConfig.networkRecoveryInterval" 
+                        :min="0" 
+                        :placeholder="$t('messageSchedule.networkRecoveryIntervalPlaceholder')"
+                        style="width: 200px" 
+                      />
+                    </FormItem>
+                  </Form>
+                </TabPane>
+
+                <!-- Exchange 页签 -->
+                <TabPane :label="$t('messageSchedule.rabbitmqExchange')" name="exchange">
+                  <Form :model="advancedConfigObject" :label-width="140">
+                    <FormItem prop="exchangeName">
+                      <template slot="label">
+                        {{ $t('messageSchedule.exchangeName') }}
+                      </template>
+                      <Input 
+                        v-model="form.advancedConfig.exchangeName" 
+                        :placeholder="$t('messageSchedule.exchangeNamePlaceholder')"
+                        style="width: 200px" 
+                      />
+                    </FormItem>
+                    
+                    <FormItem prop="exchangeType">
+                      <template slot="label">
+                        {{ $t('messageSchedule.exchangeType') }}
+                      </template>
+                      <Input 
+                        v-model="form.advancedConfig.exchangeType" 
+                        :placeholder="$t('messageSchedule.exchangeTypePlaceholder')"
+                        style="width: 200px" 
+                      />
+                    </FormItem>
+                  </Form>
+                </TabPane>
+
+                <!-- Binding 页签 -->
+                <TabPane :label="$t('messageSchedule.rabbitmqBinding')" name="binding">
+                  <Form :model="advancedConfigObject" :label-width="140">
+                    <FormItem prop="routingKey">
+                      <template slot="label">
+                        {{ $t('messageSchedule.routingKey') }}
+                      </template>
+                      <Input 
+                        v-model="form.advancedConfig.routingKey" 
+                        :placeholder="$t('messageSchedule.routingKeyPlaceholder')"
+                        style="width: 200px" 
+                      />
+                    </FormItem>
+                  </Form>
+                </TabPane>
+              </Tabs>
+            </div>
           </FormItem>
         </Form>
         <div style="text-align:right; margin-top:10px;">
@@ -206,14 +373,40 @@ export default {
         filterRuleExpression: '',
         filterRuleJson: '',
         properties: '',
+        advancedConfig: {},
+        advancedConfigJson: '',
       },
       testLoading: false,
       formKey: 0,
+      kafkaActiveTab: 'connection',
+      rabbitmqActiveTab: 'connection',
+      localWorkflowList: [],
     }
   },
   computed: {
+    modalVisible: {
+      get() {
+        return this.visible
+      },
+      set(value) {
+        if (!value) {
+          this.$emit('close')
+        }
+      }
+    },
     workflowListComputed() {
-      return this.workflowList
+      return this.localWorkflowList.length > 0 ? this.localWorkflowList : this.workflowList
+    },
+    advancedConfigObject() {
+      // 确保Form的model始终是对象
+      if (typeof this.form.advancedConfig === 'string') {
+        try {
+          return JSON.parse(this.form.advancedConfig);
+        } catch (e) {
+          return {};
+        }
+      }
+      return this.form.advancedConfig || {};
     },
     isKafkaProtocol() {
       return this.form.protocol === 'KAFKA'
@@ -295,6 +488,8 @@ export default {
           targetWorkflowName: '',
           filterRuleJson: '',
           properties: '',
+        
+          advancedConfig: {},
           filterRuleType: 'default', // 默认设置为简单模式
           filterRulesKv: [
             { key: '', op: '==', value: '' }
@@ -305,6 +500,20 @@ export default {
         let properties = {};
         try {
           properties = val && val.properties ? JSON.parse(val.properties) : {};
+          
+          // 解析高级配置
+          if (val.advancedConfig) {
+            try {
+              base.advancedConfig = JSON.parse(val.advancedConfig);
+            } catch (e) {
+              console.error('Failed to parse advancedConfig JSON:', val.advancedConfig, e);
+              base.advancedConfig = {};
+            }
+          } else {
+            // 如果没有高级配置，设置默认配置
+            base.advancedConfig = {};
+          }
+          
           //根据filterRuleType初始化filterRulesKv或filterRuleExpression
           if (val.filterRuleType === 'expression') {
             base.filterRuleType = 'expression';
@@ -337,10 +546,12 @@ export default {
           console.error('Failed to parse properties JSON string:', val.properties, e);
           properties = {};
         }
-        // 3. 合并到 form
-        this.form = Object.assign({}, base, val, properties);
+        // 3. 合并到 form，但排除val中的advancedConfig字符串，使用解析后的对象
+        const { advancedConfig, ...valWithoutAdvancedConfig } = val;
+        this.form = Object.assign({}, base, valWithoutAdvancedConfig, properties);
         this.formKey += 1;
         this.currentStep = 0;
+        this.syncTargetWorkflowName();
         this.$nextTick(() => {
           if (this.$refs.MessageForm0) this.$refs.MessageForm0.resetFields();
           if (this.$refs.MessageForm1) this.$refs.MessageForm1.resetFields();
@@ -351,10 +562,16 @@ export default {
     },
     workflowList: {
       handler(){
-        this.syncTargetWorkflowName()
+        this.syncTargetWorkflowName();
       },
-    immediate: true
-  },
+      immediate: true
+    },
+    localWorkflowList: {
+      handler(){
+        this.syncTargetWorkflowName();
+      },
+      immediate: true
+    },
     resetFieldsFlag() {
       // 外部传入变化时，重置所有表单校验
       this.$nextTick(() => {
@@ -371,9 +588,37 @@ export default {
   },
     'form.type'(val) {
       this.handleGetTemplateData(val);
+    },
+    'form.protocol'(val) {
+      // 当协议变化时，只有在创建新数据时才初始化默认配置
+      if (!this.event || !this.event.id) {
+        this.initAdvancedConfig(val);
+      }
     }
   },
   methods: {
+    initAdvancedConfig(protocol) {
+      if (protocol === 'KAFKA') {
+        this.form.advancedConfig = {
+          requestTimeout: 30000,
+          reconnectBackoffMax: 1000,
+          maxPollRecords: 500,
+          maxPollInterval: 300000,
+          sessionTimeout: 10000,
+          heartbeatInterval: 3000
+        };
+      } else if (protocol === 'RABBITMQ') {
+        this.form.advancedConfig = {
+          requestedHeartbeat: 60,
+          networkRecoveryInterval: 5000,
+          exchangeName: '',
+          exchangeType: 'direct',
+          routingKey: ''
+        };
+      } else {
+        this.form.advancedConfig = {};
+      }
+    },
     nextStep() {
       const refName = `MessageForm${this.currentStep}`
       this.$refs[refName].validate(valid => {
@@ -383,9 +628,10 @@ export default {
       })
     },
     syncTargetWorkflowName() {
-    const selected = this.workflowListComputed.find(w => w.id === this.form.targetWorkflowId)
-    this.form.targetWorkflowName = selected ? selected.name : 'unkown';
-  },
+      const selected = this.workflowListComputed.find(w => w.id === this.form.targetWorkflowId);
+      
+      this.form.targetWorkflowName = selected ? selected.name : 'unknown';
+    },
     prevStep() {
       if (this.currentStep > 0) this.currentStep--
     },
@@ -402,7 +648,7 @@ export default {
         .then((res) => {
           if (res.data.code === 200 && Array.isArray(res.data.data)) {
             // 只保留 id 和 name
-            this.workflowList = res.data.data.map(item => ({
+            this.localWorkflowList = res.data.data.map(item => ({
               id: item.id,
               name: item.name
             }));
@@ -428,7 +674,7 @@ export default {
         .then((res) => {
           if (res.data.code === 200 && Array.isArray(res.data.data)) {
             // 只保留 id 和 name
-            this.workflowList = res.data.data.map(item => ({
+            this.localWorkflowList = res.data.data.map(item => ({
               id: item.id,
               name: item.name
             }));
@@ -470,10 +716,12 @@ handleSubmit() {
           protocolFields.port = this.form.port;
         }
 
-        protocolFields.advancedConfig = this.form.advancedConfig;
+        // 合并高级配置
+        // 将高级配置序列化为JSON字符串
+        this.form.advancedConfig = JSON.stringify(this.form.advancedConfig);
+        
         protocolFields.connectionTimeout = this.form.connectionTimeout;
         protocolFields.username = this.form.username;
-        console.log("this.form.password", this.form.password)
         if (this.form.password !== '') {
           protocolFields.password = aesMinEncrypt(this.form.password);
         }
@@ -491,6 +739,8 @@ handleSubmit() {
         delete this.form.filterRulesKv;
         delete this.form.filterRuleExpression;
         delete this.form.password;
+        // 清理对象形式的advancedConfig，只保留JSON字符串
+        // delete this.form.advancedConfig;
         this.form.properties = JSON.stringify(protocolFields);
         if (this.form.concurrencyLimit === '') {
           this.form.concurrencyLimit = null;
@@ -578,18 +828,22 @@ handleSubmit() {
   ];
     },
     removeRule(index) {
-      // 保证至少剩下一条规则
       if (this.form.filterRulesKv.length > 1) {
         this.form.filterRulesKv.splice(index, 1);
       } else {
-        // 或者清空内容，而不是删除最后一行
         this.form.filterRulesKv[index] = { key: '', op: '==', value: '' };
-        // 您也可以在这里使用 UI 库的 $Message.warning 提示用户
       }
     }
   }
 }
 </script>
+
+<style scoped>
+.advanced-config {
+  max-height: 400px;
+  overflow-y: auto;
+}
+</style>
 
 <style scoped>
 .modal-warp {

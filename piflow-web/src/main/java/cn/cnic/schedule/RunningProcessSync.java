@@ -38,7 +38,7 @@ public class RunningProcessSync extends QuartzJobBean {
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:SSS");
-//        logger.info("processSync start : " + formatter.format(new Date()));
+        logger.info("processSync start : " + formatter.format(new Date()));
         List<String> runningProcess = processDomain.getRunningProcessAppId();
         if (CollectionUtils.isNotEmpty(runningProcess)) {
 
@@ -55,7 +55,7 @@ public class RunningProcessSync extends QuartzJobBean {
                 ServicesExecutor.TASK_FUTURE.put(appId, submit);
             }
         }
-//        logger.info("processSync end : " + formatter.format(new Date()));
+        logger.info("processSync end : " + formatter.format(new Date()));
     }
 
     @Getter

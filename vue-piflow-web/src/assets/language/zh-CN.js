@@ -549,6 +549,108 @@ module.exports = {
         advancedConfig: '高级配置',
         advancedConfigPlaceholder: '请输入JSON格式的高级配置',
         
+        // Kafka 高级配置
+        kafkaConnection: '连接配置',
+        kafkaPolling: '拉取配置',
+        kafkaSession: '会话配置',
+        kafkaSecurity: '安全配置',
+        
+        // Kafka Connection
+        requestTimeout: '请求超时 (ms)',
+        requestTimeoutPlaceholder: '30000',
+        requestTimeoutTip: '客户端等待请求响应的最长时间 (毫秒)。默认值: 30000',
+        reconnectBackoff: '重连退避 (ms)',
+        reconnectBackoffPlaceholder: '50',
+        reconnectBackoffTip: '尝试重连到失败节点的基础等待时间 (毫秒)。默认值: 50',
+        maxReconnectBackoff: '最大重连时间（毫秒）',
+        maxReconnectBackoffPlaceholder: '1000',
+        maxReconnectBackoffTip: '重连时的最大等待时间 (毫秒)。默认值: 1000',
+        defaultApiTimeout: '默认 API 超时时间（毫秒）',
+        defaultApiTimeoutPlaceholder: '60000',
+        defaultApiTimeoutTip: 'API调用的默认超时时间 (毫秒)。默认值: 60000',
+        
+        // Kafka Polling
+        maxPollRecords: '最大轮询记录数',
+        maxPollRecordsPlaceholder: '500',
+        maxPollRecordsTip: '单次 poll() 调用返回的最大记录数。默认值: 500',
+        maxPollInterval: '最大轮询间隔（毫秒）',
+        maxPollIntervalPlaceholder: '300000',
+        maxPollIntervalTip: 'poll() 调用的最大间隔时间。如果消息处理耗时较长，应调高此值。默认值: 300000',
+        fetchMinBytes: '获取最小字节数',
+        fetchMinBytesPlaceholder: '1',
+        fetchMinBytesTip: '服务器为fetch请求返回的最小数据量 (字节)。默认值: 1',
+        fetchMaxWait: '获取最大等待时间（毫秒）',
+        fetchMaxWaitPlaceholder: '500',
+        fetchMaxWaitTip: '在没有足够数据满足 fetch.min.bytes 时，服务器最长等待时间 (毫秒)。默认值: 500',
+        fetchMaxBytes: '获取最大字节数',
+        fetchMaxBytesPlaceholder: '52428800',
+        fetchMaxBytesTip: '服务器为fetch请求返回的最大数据量 (字节)。默认值: 52428800',
+        
+        // Kafka Session
+        sessionTimeout: '会话超时 (ms)',
+        sessionTimeoutPlaceholder: '10000',
+        sessionTimeoutTip: '消费者会话超时时间。超过该时间未收到心跳，消费者将被认为失败。默认值: 10000',
+        heartbeatInterval: '心跳间隔 (ms)',
+        heartbeatIntervalPlaceholder: '3000',
+        heartbeatIntervalTip: '消费者心跳间隔时间，必须小于 Session Timeout。建议为其1/3。默认值: 3000',
+        
+        // Kafka Security
+        securityProtocol: '安全协议',
+        securityProtocolPlaceholder: '请选择安全协议',
+        securityProtocolTip: '与Broker通信的安全协议。',
+        saslMechanism: 'SASL 机制',
+        saslMechanismPlaceholder: '请选择SASL机制',
+        saslMechanismTip: 'SASL认证机制。仅在 security.protocol 设置为SASL相关时生效。',
+        
+        // RabbitMQ 高级配置
+        rabbitmqConnection: '连接配置',
+        rabbitmqExchange: '交换机配置',
+        rabbitmqQueue: '队列配置',
+        rabbitmqBinding: '绑定配置',
+        
+        // RabbitMQ Connection
+        heartbeat: '心跳（秒）',
+        heartbeatPlaceholder: '60',
+        heartbeatTip: '连接心跳超时时间 (秒)。0表示禁用。默认值: 60',
+        networkRecoveryInterval: '网络恢复间隔（毫秒）',
+        networkRecoveryIntervalPlaceholder: '5000',
+        networkRecoveryIntervalTip: '自动重连的时间间隔 (毫秒)。默认值: 5000',
+        
+        // RabbitMQ Exchange
+        exchangeName: 'Exchange Name',
+        exchangeNamePlaceholder: '请输入交换机名称',
+        exchangeNameTip: '交换机的名称。',
+        exchangeType: 'Exchange Type',
+        exchangeTypePlaceholder: '请选择交换机类型',
+        exchangeTypeTip: '交换机的类型，决定消息如何路由。',
+        exchangeDurable: 'Durable',
+        exchangeDurableTip: '交换机是否持久化。持久化后，Broker重启交换机依然存在。',
+        exchangeAutoDelete: 'Auto-Delete',
+        exchangeAutoDeleteTip: '当所有绑定的队列都解绑后，交换机是否自动删除。',
+        exchangeArguments: 'Arguments',
+        exchangeArgumentsTip: '交换机的其他参数，以键值对形式提供。',
+        
+        // RabbitMQ Queue
+        queueDurable: 'Durable',
+        queueDurableTip: '队列是否持久化。持久化后，Broker重启队列依然存在。',
+        queueExclusive: 'Exclusive',
+        queueExclusiveTip: '队列是否为排他性。排他队列只对首次声明它的连接可见，连接断开后自动删除。',
+        queueAutoDelete: 'Auto-Delete',
+        queueAutoDeleteTip: '当最后一个消费者断开连接后，队列是否自动删除。',
+        queueArguments: 'Arguments',
+        queueArgumentsTip: '队列的其他参数，例如设置死信交换机、消息TTL等。',
+        
+        // RabbitMQ Binding
+        routingKey: 'Routing Key',
+        routingKeyPlaceholder: '请输入路由键',
+        routingKeyTip: '绑定队列和交换机时使用的路由键。支持通配符 (在topic类型交换机中)。',
+        
+        // 通用
+        addArgument: '添加参数',
+        argumentKeyPlaceholder: '参数键',
+        argumentValuePlaceholder: '参数值',
+        queueArgumentKeyPlaceholder: '选择或输入参数键',
+        
         // --- 按钮 ---
         prevStep: '上一步',
         nextStep: '下一步',

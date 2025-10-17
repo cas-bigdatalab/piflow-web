@@ -551,6 +551,108 @@ module.exports = {
         // Advanced Config
         advancedConfig: 'Advanced Config',
         advancedConfigPlaceholder: 'Please enter advanced configurations in JSON format',
+        
+        // Kafka Advanced Config
+        kafkaConnection: 'Connection',
+        kafkaPolling: 'Polling',
+        kafkaSession: 'Session',
+        kafkaSecurity: 'Security',
+        
+        // Kafka Connection
+        requestTimeout: 'Request Timeout (ms)',
+        requestTimeoutPlaceholder: '30000',
+        requestTimeoutTip: 'Maximum time the client will wait for a response to a request (milliseconds). Default: 30000',
+        reconnectBackoff: 'Reconnect Backoff (ms)',
+        reconnectBackoffPlaceholder: '50',
+        reconnectBackoffTip: 'Base time to wait before attempting to reconnect to a failed node (milliseconds). Default: 50',
+        maxReconnectBackoff: 'Max Reconnect Backoff (ms)',
+        maxReconnectBackoffPlaceholder: '1000',
+        maxReconnectBackoffTip: 'Maximum time to wait before attempting to reconnect (milliseconds). Default: 1000',
+        defaultApiTimeout: 'Default API Timeout (ms)',
+        defaultApiTimeoutPlaceholder: '60000',
+        defaultApiTimeoutTip: 'Default timeout for API calls (milliseconds). Default: 60000',
+        
+        // Kafka Polling
+        maxPollRecords: 'Max Poll Records',
+        maxPollRecordsPlaceholder: '500',
+        maxPollRecordsTip: 'Maximum number of records returned in a single poll() call. Default: 500',
+        maxPollInterval: 'Max Poll Interval (ms)',
+        maxPollIntervalPlaceholder: '300000',
+        maxPollIntervalTip: 'Maximum time between poll() calls. Should be increased if message processing takes longer. Default: 300000',
+        fetchMinBytes: 'Fetch Min Bytes',
+        fetchMinBytesPlaceholder: '1',
+        fetchMinBytesTip: 'Minimum amount of data the server should return for a fetch request (bytes). Default: 1',
+        fetchMaxWait: 'Fetch Max Wait (ms)',
+        fetchMaxWaitPlaceholder: '500',
+        fetchMaxWaitTip: 'Maximum time the server will block before answering the fetch request (milliseconds). Default: 500',
+        fetchMaxBytes: 'Fetch Max Bytes',
+        fetchMaxBytesPlaceholder: '52428800',
+        fetchMaxBytesTip: 'Maximum amount of data the server should return for a fetch request (bytes). Default: 52428800',
+        
+        // Kafka Session
+        sessionTimeout: 'Session Timeout (ms)',
+        sessionTimeoutPlaceholder: '10000',
+        sessionTimeoutTip: 'Consumer session timeout. If no heartbeat is received within this time, the consumer is considered failed. Default: 10000',
+        heartbeatInterval: 'Heartbeat Interval (ms)',
+        heartbeatIntervalPlaceholder: '3000',
+        heartbeatIntervalTip: 'Consumer heartbeat interval. Must be less than Session Timeout. Recommended to be 1/3 of session timeout. Default: 3000',
+        
+        // Kafka Security
+        securityProtocol: 'Security Protocol',
+        securityProtocolPlaceholder: 'Please select security protocol',
+        securityProtocolTip: 'Security protocol used to communicate with the broker.',
+        saslMechanism: 'SASL Mechanism',
+        saslMechanismPlaceholder: 'Please select SASL mechanism',
+        saslMechanismTip: 'SASL authentication mechanism. Only effective when security.protocol is set to SASL-related.',
+        
+        // RabbitMQ Advanced Config
+        rabbitmqConnection: 'Connection',
+        rabbitmqExchange: 'Exchange',
+        rabbitmqQueue: 'Queue',
+        rabbitmqBinding: 'Binding',
+        
+        // RabbitMQ Connection
+        heartbeat: 'Heartbeat (seconds)',
+        heartbeatPlaceholder: '60',
+        heartbeatTip: 'Connection heartbeat timeout (seconds). 0 means disabled. Default: 60',
+        networkRecoveryInterval: 'Network Recovery Interval (ms)',
+        networkRecoveryIntervalPlaceholder: '5000',
+        networkRecoveryIntervalTip: 'Time interval for automatic reconnection (milliseconds). Default: 5000',
+        
+        // RabbitMQ Exchange
+        exchangeName: 'Exchange Name',
+        exchangeNamePlaceholder: 'Please enter exchange name',
+        exchangeNameTip: 'Name of the exchange.',
+        exchangeType: 'Exchange Type',
+        exchangeTypePlaceholder: 'Please select exchange type',
+        exchangeTypeTip: 'Type of the exchange, determines how messages are routed.',
+        exchangeDurable: 'Durable',
+        exchangeDurableTip: 'Whether the exchange is durable. Durable exchanges survive broker restarts.',
+        exchangeAutoDelete: 'Auto-Delete',
+        exchangeAutoDeleteTip: 'Whether the exchange is automatically deleted when all bound queues are unbound.',
+        exchangeArguments: 'Arguments',
+        exchangeArgumentsTip: 'Additional arguments for the exchange, provided as key-value pairs.',
+        
+        // RabbitMQ Queue
+        queueDurable: 'Durable',
+        queueDurableTip: 'Whether the queue is durable. Durable queues survive broker restarts.',
+        queueExclusive: 'Exclusive',
+        queueExclusiveTip: 'Whether the queue is exclusive. Exclusive queues are only visible to the connection that declared them and are deleted when the connection closes.',
+        queueAutoDelete: 'Auto-Delete',
+        queueAutoDeleteTip: 'Whether the queue is automatically deleted when the last consumer unsubscribes.',
+        queueArguments: 'Arguments',
+        queueArgumentsTip: 'Additional arguments for the queue, such as dead letter exchange, message TTL, etc.',
+        
+        // RabbitMQ Binding
+        routingKey: 'Routing Key',
+        routingKeyPlaceholder: 'Please enter routing key',
+        routingKeyTip: 'Routing key used when binding the queue to the exchange. Supports wildcards (in topic-type exchanges).',
+        
+        // Common
+        addArgument: 'Add Argument',
+        argumentKeyPlaceholder: 'Argument Key',
+        argumentValuePlaceholder: 'Argument Value',
+        queueArgumentKeyPlaceholder: 'Select or enter argument key',
 
         // --- Buttons ---
         prevStep: 'Previous',

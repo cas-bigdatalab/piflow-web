@@ -1,5 +1,6 @@
 package cn.cnic.component.schedule.service.Impl;
 
+import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.component.flow.service.IFlowGroupService;
 import cn.cnic.component.flow.service.IFlowService;
 import cn.cnic.component.schedule.entity.TaskTriggerInstance;
@@ -52,7 +53,6 @@ public class TaskTriggerInstanceService {
 
     private final TaskTriggerInstanceDomain domain;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
     /**
      * 分页查询任务实例 (返回MyBatis-Plus Page对象)
      * 注意：这里的Page对象是手动构建的，因为Domain层返回的是List和Total Count。
@@ -230,11 +230,11 @@ public class TaskTriggerInstanceService {
         ResponseObject responseObject = null;
         if ("FLOW".equals(type)) {
             String response = flowServiceImpl.runFlow(userName, isAdmin, targetWorkflowId, "RUN");
-            responseObject = objectMapper.readValue(response, ResponseObject.class);
+            responseObject = JsonUtils.toObject(response, ResponseObject.class);
 
         }else if ("FLOW_GROUP".equals(type)) {
             String response = groupServiceImpl.runFlowGroup(isAdmin, userName, targetWorkflowId, "RUN");
-            responseObject = objectMapper.readValue(response, ResponseObject.class);
+            responseObject = JsonUtils.toObject(response, ResponseObject.class);
         }
 
         if (responseObject == null || (200 != responseObject.getCode()) || !"Succeeded".equals(responseObject.getErrorMsg())) {

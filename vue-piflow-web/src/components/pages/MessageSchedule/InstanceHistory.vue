@@ -170,7 +170,6 @@ export default {
     viewDetail(row) {
       // 根据类型进入不同的界面
           let src = "";
-          console.log("Viewing details for row:", row);
           if (row.processType === "TASK") {
             src = `/drawingBoard/page/process/mxGraph/index.html?drawingBoardType=PROCESS&processType=${row.processType}&load=${row.id}`;
           } else if (row.processType === "GROUP") {

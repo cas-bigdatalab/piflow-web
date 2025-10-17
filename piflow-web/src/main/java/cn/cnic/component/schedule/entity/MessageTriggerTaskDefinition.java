@@ -26,15 +26,15 @@ public class MessageTriggerTaskDefinition implements Serializable {
     private String type; // 调度类型
     private MessageProtocol protocol; // 消息协议类型 (如 RABBITMQ, KAFKA)
 
-    // 协议相关配置，以通用Map形式存储
-    private String properties; // 存储所有协议特有的配置，例如 host, port, queueName 或 brokerAddresses, topicName 等
+    private String properties;
+    private String advancedConfig;
+
 
     // 触发规则与目标
     private String filterRuleType;
     private String filterRuleJson; // 消息过滤规则（Aviator Script表达式）JSON
     private String targetWorkflowId; // 目标工作流ID（或PiFlow流程ID）
     private String targetWorkflowName; // 目标工作流的ID或名称
-    private String contextMappingJson; // 消息内容到工作流上下文的映射规则 JSON
     private Integer concurrencyLimit;
     private String status; // 消息源状态：ENABLED, PAUSED, DELETED
     private String creatorId;

@@ -98,13 +98,12 @@ public class WorkflowTriggerService {
                     log.info("[SEMAPHORE_ACQUIRE_SUCCESS] 获取到许可，立即触发工作流。triggerInstanceId={}", triggerInstanceId);
                     
                     // 触发远程工作流
-//                  String sysUserId = definition.getCreatorId();
-//                  SysUser user = sysUserDomain.findUserById(sysUserId);
-//                  SysRole role = sysUserDomain.getSysRoleBySysUserId(sysUserId);
-//                  String userName = user.getName();
-//                  boolean isAdmin = role.getRole().equals(SysRoleType.ADMIN);
-//                  String processId = startWorkflow(definition.getTargetWorkflowId(), definition.getType(), userName, isAdmin);
-                    String processId = "111";
+                  String sysUserId = definition.getCreatorId();
+                  SysUser user = sysUserDomain.findUserById(sysUserId);
+                  SysRole role = sysUserDomain.getSysRoleBySysUserId(sysUserId);
+                  String userName = user.getName();
+                  boolean isAdmin = role.getRole().equals(SysRoleType.ADMIN);
+                  String processId = startWorkflow(definition.getTargetWorkflowId(), definition.getType(), userName, isAdmin);
                     ackAction.run();
                     log.info("[TRIGGER_COMPLETE] triggerInstanceId={}, 完成触发流水线。sourceId={}",
                             definition.getTargetWorkflowId(), definitionId);
@@ -177,21 +176,20 @@ public class WorkflowTriggerService {
     }
 
     public String startWorkflow(String targetWorkflowId, String type, String userName,Boolean isAdmin) throws Exception {
-        return "111";
-//        ResponseObject responseObject = null;
-//        if ("FLOW".equals(type)) {
-//            String response = flowServiceImpl.runFlow(userName, isAdmin, targetWorkflowId, "RUN");
-//             responseObject = objectMapper.readValue(response, ResponseObject.class);
-//
-//        }else if ("FLOW_GROUP".equals(type)) {
-//            String response = groupServiceImpl.runFlowGroup(isAdmin, userName, targetWorkflowId, "RUN");
-//             responseObject = objectMapper.readValue(response, ResponseObject.class);
-//        }
-//
-//        if (responseObject == null || (200 != responseObject.getCode()) || !"Succeeded".equals(responseObject.getErrorMsg())) {
-//            throw new Exception("触发对应workflow失败:");
-//        }
-//
-//        return responseObject.getProcessId();
+        ResponseObject responseObject = null;
+        if ("FLOW".equals(type)) {
+            String response = flowServiceImpl.runFlow(userName, isAdmin, targetWorkflowId, "RUN");
+             responseObject = objectMapper.readValue(response, ResponseObject.class);
+
+        }else if ("FLOW_GROUP".equals(type)) {
+            String response = groupServiceImpl.runFlowGroup(isAdmin, userName, targetWorkflowId, "RUN");
+             responseObject = objectMapper.readValue(response, ResponseObject.class);
+        }
+
+        if (responseObject == null || (200 != responseObject.getCode()) || !"Succeeded".equals(responseObject.getErrorMsg())) {
+            throw new Exception("触发对应workflow失败:");
+        }
+
+        return responseObject.getProcessId();
     }
 }

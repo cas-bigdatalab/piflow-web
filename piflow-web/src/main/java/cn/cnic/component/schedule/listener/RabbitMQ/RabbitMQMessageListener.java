@@ -1,6 +1,7 @@
 package cn.cnic.component.schedule.listener.RabbitMQ;
 
 import cn.cnic.base.utils.AESUtils;
+import cn.cnic.base.utils.JsonUtils;
 import cn.cnic.common.Eunm.MessageProtocol;
 import cn.cnic.component.schedule.entity.MessageTriggerTaskDefinition;
 import cn.cnic.component.schedule.listener.IMessageListener;
@@ -60,11 +61,7 @@ public class RabbitMQMessageListener implements IMessageListener {
         // 将 properties Map 转换为 RabbitMQConfig 对象
         if (definition.getProperties() != null) {
             try {
-                ObjectMapper objectMapper = new ObjectMapper();
-                this.rabbitMQConfig = objectMapper.readValue(definition.getProperties(), RabbitMQConfig.class);
-                if (StringUtils.isNoneEmpty(this.rabbitMQConfig.getAdvancedConfig())) {
-                    this.rabbitMQConfig.setRabbitMQAdvancedConfig(objectMapper.readValue(this.rabbitMQConfig.getAdvancedConfig(), RabbitMQAdvancedConfig.class));
-                }
+                this.rabbitMQConfig = JsonUtils.toObject(definition.getProperties(), RabbitMQConfig.class);
                 log.info("[RabbitMQListener-INIT] 成功将 properties 转换为 RabbitMQConfig. sourceId={}", definition.getId());
             } catch (Exception e) {
                 log.error("[RabbitMQListener-INIT-ERROR] 转换 RabbitMQConfig 失败，sourceId={}，错误：{}", definition.getId(), e.getMessage(), e);
@@ -75,6 +72,15 @@ public class RabbitMQMessageListener implements IMessageListener {
             log.warn("[RabbitMQListener-INIT] properties 为空，无法初始化 RabbitMQ 配置。sourceId={}", definition.getId());
             throw new IllegalArgumentException("RabbitMQ 配置不能为空");
         }
+        if (definition.getAdvancedConfig() != null) {
+            try {
+                this.rabbitMQConfig.setAdvancedConfig(JsonUtils.toObject(definition.getAdvancedConfig(), RabbitMQAdvancedConfig.class));
+            } catch (Exception e) {
+                log.error("[RabbitMQListener-INIT-ERROR] 转换 RabbitMQAdvancedConfig 失败，sourceId={}，错误：{}", definition.getId(), e.getMessage(), e);
+                throw new RuntimeException("RabbitMQ 高级配置解析失败", e);
+            }
+        }
+        
         // 配置 ConnectionFactory
         if (rabbitConnectionFactory == null) {
             rabbitConnectionFactory = new ConnectionFactory();
@@ -84,6 +90,32 @@ public class RabbitMQMessageListener implements IMessageListener {
         rabbitConnectionFactory.setUsername(rabbitMQConfig.getUsername());
         rabbitConnectionFactory.setPassword(AESUtils.aesDecrypt(rabbitMQConfig.getPassword()));
         rabbitConnectionFactory.setVirtualHost(rabbitMQConfig.getVirtualHost());
+        
+        // 根据RabbitMQAdvancedConfig设置高级配置
+        RabbitMQAdvancedConfig advancedConfig = rabbitMQConfig.getAdvancedConfig();
+        if (advancedConfig != null) {
+            // 设置心跳间隔
+            if (advancedConfig.getRequestedHeartbeat() != null) {
+                rabbitConnectionFactory.setRequestedHeartbeat(advancedConfig.getRequestedHeartbeat());
+                log.info("[RabbitMQListener-INIT] 设置心跳间隔: {}秒, sourceId={}",
+                        advancedConfig.getRequestedHeartbeat(), definition.getId());
+            }
+            
+            // 设置网络恢复间隔
+            if (advancedConfig.getNetworkRecoveryInterval() != null) {
+                rabbitConnectionFactory.setNetworkRecoveryInterval(advancedConfig.getNetworkRecoveryInterval());
+                log.info("[RabbitMQListener-INIT] 设置网络恢复间隔: {}毫秒, sourceId={}",
+                        advancedConfig.getNetworkRecoveryInterval(), definition.getId());
+            }
+            
+            // 启用自动恢复
+            rabbitConnectionFactory.setAutomaticRecoveryEnabled(true);
+            rabbitConnectionFactory.setTopologyRecoveryEnabled(true);
+            
+            log.info("[RabbitMQListener-INIT] 高级配置已应用, sourceId={}", definition.getId());
+        } else {
+            log.info("[RabbitMQListener-INIT] 未配置高级参数，使用默认设置, sourceId={}", definition.getId());
+        }
     }
 
     /**
@@ -131,10 +163,33 @@ public class RabbitMQMessageListener implements IMessageListener {
             // 参数：queue, durable, exclusive, autoDelete, arguments
             channel.queueDeclare(rabbitMQConfig.getQueueName(), true, false, false, null);
 
-            RabbitMQAdvancedConfig advancedConfig = rabbitMQConfig.getRabbitMQAdvancedConfig();
+            // 根据RabbitMQAdvancedConfig配置交换机和队列绑定
+            RabbitMQAdvancedConfig advancedConfig = rabbitMQConfig.getAdvancedConfig();
             if (advancedConfig != null) {
-                channel.exchangeDeclare(advancedConfig.getExchangeName(), "direct");
-                channel.queueBind(rabbitMQConfig.getQueueName(), advancedConfig.getExchangeName(), advancedConfig.getRoutingKey());
+                // 配置交换机
+                if (StringUtils.isNotBlank(advancedConfig.getExchangeName())) {
+                    String exchangeType = StringUtils.isNotBlank(advancedConfig.getExchangeType()) 
+                            ? advancedConfig.getExchangeType() 
+                            : "direct"; // 默认使用direct类型
+                    
+                    channel.exchangeDeclare(advancedConfig.getExchangeName(), exchangeType, true, false, null);
+                    log.info("[RabbitMQListener-START] 声明交换机: name={}, type={}, sourceId={}", 
+                            advancedConfig.getExchangeName(), exchangeType, definition.getId());
+                    
+                    // 配置队列绑定
+                    if (StringUtils.isNotBlank(advancedConfig.getRoutingKey())) {
+                        channel.queueBind(rabbitMQConfig.getQueueName(), advancedConfig.getExchangeName(), advancedConfig.getRoutingKey());
+                        log.info("[RabbitMQListener-START] 绑定队列到交换机: queue={}, exchange={}, routingKey={}, sourceId={}", 
+                                rabbitMQConfig.getQueueName(), advancedConfig.getExchangeName(), 
+                                advancedConfig.getRoutingKey(), definition.getId());
+                    } else {
+                        log.warn("[RabbitMQListener-START] 交换机已配置但路由键为空，跳过队列绑定, sourceId={}", definition.getId());
+                    }
+                } else {
+                    log.info("[RabbitMQListener-START] 未配置交换机，使用默认队列模式, sourceId={}", definition.getId());
+                }
+            } else {
+                log.info("[RabbitMQListener-START] 未配置高级参数，使用默认队列模式, sourceId={}", definition.getId());
             }
 
             connection.addShutdownListener(new ShutdownListener() {

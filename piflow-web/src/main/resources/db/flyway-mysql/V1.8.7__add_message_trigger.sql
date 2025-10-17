@@ -41,11 +41,11 @@ CREATE TABLE `message_trigger_task_definition` (
                                                    `protocol` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '消息协议类型 (例如: RABBITMQ, KAFKA)',
                                                    `properties` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '配置组名',
                                                    `filter_rule_json` text COMMENT '消息过滤规则的JSON配置 (例如: {"expression": "..."})',
+                                                   `advanced_config` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '高级配置参数',
                                                    `filter_rule_type` varchar(50) DEFAULT NULL COMMENT '消息过滤规则类型 (例如: AVIATOR)',
-                                                   `context_mapping_json` text COMMENT '上下文映射规则的JSON配置 (例如: {"workflow_param": "$.json_path"})',
-                                                   `context_mapping_rule_type` varchar(50) DEFAULT NULL COMMENT '上下文映射规则类型 (例如: JSON_PATH)',
                                                    `target_workflow_id` varchar(255) NOT NULL COMMENT '消息触发后要调用的目标工作流ID',
                                                    `target_workflow_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '工作流名称',
+                                                   `concurrency_limit` bigint DEFAULT NULL COMMENT '定义的并发执行上限',
                                                    `status` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'PAUSED' COMMENT '消息源状态 (ENABLED:启用, PAUSED:暂停, DISABLED:禁用)',
                                                    `creator_id` varchar(40) NOT NULL COMMENT '创建者id',
                                                    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
@@ -54,6 +54,6 @@ CREATE TABLE `message_trigger_task_definition` (
                                                    KEY `idx_type` (`protocol`),
                                                    KEY `idx_status` (`status`),
                                                    KEY `idx_target_workflow_id` (`target_workflow_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='消息触发任务定义表';
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='消息触发任务定义表';
 
 SET FOREIGN_KEY_CHECKS = 1;

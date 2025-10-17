@@ -16,9 +16,8 @@ public class RabbitMQConfig extends IMessageConfig {
     private String queueName;
     private Integer prefetchCount;
     private String virtualHost;
-    // ... 其他RabbitMQ特有配置
-    private RabbitMQAdvancedConfig rabbitMQAdvancedConfig;
-    private String advancedConfig;
+
+    private RabbitMQAdvancedConfig advancedConfig;
 
     @Override
     public MessageProtocol getProtocolType() {
@@ -30,6 +29,28 @@ public class RabbitMQConfig extends IMessageConfig {
 @AllArgsConstructor
 @NoArgsConstructor
 class RabbitMQAdvancedConfig {
+    /**
+     * 请求心跳间隔（秒）
+     */
+    private Integer requestedHeartbeat;
+    
+    /**
+     * 网络恢复间隔（秒）
+     */
+    private Integer networkRecoveryInterval;
+    
+    /**
+     * 交换机名称
+     */
     private String exchangeName;
+    
+    /**
+     * 交换机类型
+     */
+    private String exchangeType;
+    
+    /**
+     * 路由键
+     */
     private String routingKey;
 }
