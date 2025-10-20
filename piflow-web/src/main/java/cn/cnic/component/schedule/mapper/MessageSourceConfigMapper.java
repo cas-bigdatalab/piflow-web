@@ -63,7 +63,7 @@ public interface MessageSourceConfigMapper {
      * 根据ID获取并发数量
      */
     @Select("SELECT concurrency_limit FROM message_trigger_task_definition WHERE id=#{id}")
-    int getConcurrencyLimitById(@Param("id") Long id);
+    Integer getConcurrencyLimitById(@Param("id") Long id);
 
     @Select({
         "<script>",

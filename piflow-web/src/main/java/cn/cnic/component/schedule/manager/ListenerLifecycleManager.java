@@ -46,7 +46,27 @@ public class ListenerLifecycleManager implements ApplicationListener<Application
     @Autowired
     private TriggerConcurrencyManager concurrencyManager;
 
-    @PostConstruct
+    @Override
+    public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
+        log.info("[ListenerLifecycleManager-INIT] 首次同步监听器状态...");
+        initialize();
+        syncListenerStates();
+        syncTriggerTaskStates();
+        processPendingTasks();
+    }
+
+    /**
+     * 定时任务：每隔一段时间（例如，60秒）执行一次监听器状态同步。
+     * 可以根据实际需求调整 cron 表达式，例如 "0 * * * * ?" 表示每分钟执行一次。
+     */
+    @Scheduled(fixedRate = 60000) // 每 60 秒执行一次
+    public void scheduledSync() {
+        log.info("[ListenerLifecycleManager-SCHEDULED] 定时同步监听器状态...");
+        syncListenerStates();
+        syncTriggerTaskStates();
+        processPendingTasks();
+    }
+
     public void initialize() {
         log.info("开始按任务定义恢复 Semaphore 状态...");
 
@@ -87,26 +107,6 @@ public class ListenerLifecycleManager implements ApplicationListener<Application
         });
 
         log.info("Semaphore 状态恢复流程完成。");
-    }
-
-    @Override
-    public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        log.info("[ListenerLifecycleManager-INIT] 首次同步监听器状态...");
-        syncListenerStates();
-        syncTriggerTaskStates();
-        processPendingTasks();
-    }
-
-    /**
-     * 定时任务：每隔一段时间（例如，60秒）执行一次监听器状态同步。
-     * 可以根据实际需求调整 cron 表达式，例如 "0 * * * * ?" 表示每分钟执行一次。
-     */
-    @Scheduled(fixedRate = 60000) // 每 60 秒执行一次
-    public void scheduledSync() {
-        log.info("[ListenerLifecycleManager-SCHEDULED] 定时同步监听器状态...");
-        syncListenerStates();
-        syncTriggerTaskStates();
-        processPendingTasks();
     }
 
     /**
@@ -185,7 +185,7 @@ public class ListenerLifecycleManager implements ApplicationListener<Application
                     taskTriggerInstance.getMessageSourceId(), taskTriggerInstance.getProcessId());
             ProcessState state = processDomain.getProcessStateByIdIgnoreFlag(taskTriggerInstance.getProcessId());
             Long definitionId = taskTriggerInstance.getMessageSourceId();
-            int concurrencyLimit = definitionDomain.getConcurrencyLimitById(definitionId);
+            Integer concurrencyLimit = definitionDomain.getConcurrencyLimitById(definitionId);
             if (ProcessState.isFinalFailState(state)) {
                 log.info("[CHECK_PROCESS] PROCESS执行结果为失败，triggerInstanceId={}, sourceId={}, processId={}", triggerInstanceId,
                         taskTriggerInstance.getMessageSourceId(), taskTriggerInstance.getProcessId());

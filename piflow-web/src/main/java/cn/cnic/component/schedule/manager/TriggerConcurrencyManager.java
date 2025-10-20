@@ -22,9 +22,9 @@ public class TriggerConcurrencyManager {
      * @param concurrencyLimit  此定义配置的并发数
      * @return true表示成功获取许可，false表示无法获取许可
      */
-    public boolean tryAcquire(Long definitionId, String triggerInstanceId, int concurrencyLimit) {
+    public boolean tryAcquire(Long definitionId, String triggerInstanceId, Integer concurrencyLimit) {
         // 如果并发数小于等于0，则认为不限制，直接返回true
-        if (concurrencyLimit <= 0) {
+        if (concurrencyLimit == null || concurrencyLimit <= 0) {
             return true;
         }
 
@@ -52,8 +52,8 @@ public class TriggerConcurrencyManager {
      * @param definitionId     任务定义的唯一ID
      * @param concurrencyLimit 此定义配置的并发数
      */
-    public void release(Long definitionId, int concurrencyLimit, int runningCount) {
-        if (concurrencyLimit <= 0) {
+    public void release(Long definitionId, Integer concurrencyLimit, int runningCount) {
+        if (concurrencyLimit == null || concurrencyLimit <= 0) {
             return;
         }
 

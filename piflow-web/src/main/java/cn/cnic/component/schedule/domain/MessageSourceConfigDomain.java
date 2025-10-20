@@ -32,7 +32,7 @@ public class MessageSourceConfigDomain {
     public MessageTriggerTaskDefinition getById(Long id) {
         return mapper.getById(id);
     }
-    public int getConcurrencyLimitById(Long id) {
+    public Integer getConcurrencyLimitById(Long id) {
         return mapper.getConcurrencyLimitById(id);
     }
 
